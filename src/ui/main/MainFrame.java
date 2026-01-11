@@ -11,7 +11,7 @@ public class MainFrame extends JFrame {
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
         setBackground(Color.white);
-        ContentPaner contentPaner = new ContentPaner();
+        ContentPaner contentPaner = new ContentPaner(this);
         TopPaner topConTentPaner = new TopPaner();
 
         add(topConTentPaner, BorderLayout.NORTH);

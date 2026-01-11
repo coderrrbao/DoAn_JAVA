@@ -15,6 +15,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import util.TaoUI;
+
 public class TopPaner extends JPanel {
     public TopPaner() {
         setBackground(Color.white);
@@ -36,6 +38,7 @@ public class TopPaner extends JPanel {
         thongTinUser.setLayout(new BoxLayout(thongTinUser, BoxLayout.X_AXIS));
 
         ImageIcon icon1 = new ImageIcon(getClass().getResource("/assets/img/goku.png"));
+        icon1 = TaoUI.taoAnhBoTron(icon1, 50);
         Image img1 = icon1.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
         ImageIcon avata = new ImageIcon(img1);
         JLabel anhDaiDien = new JLabel(avata);

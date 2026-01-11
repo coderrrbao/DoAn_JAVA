@@ -2,7 +2,7 @@ package dto;
 
 import java.sql.Date;
 
-public class NuocGiaiKhat {
+public class SanPham {
     private String ma;
     private String ten;
     // Nước ngọt,Nước suối,Trà,Cà phê,Nước tăng lực

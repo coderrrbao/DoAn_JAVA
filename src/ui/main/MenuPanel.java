@@ -44,6 +44,8 @@ public class MenuPanel extends JPanel {
         add(Box.createVerticalStrut(2));
 
         add(new MenuPanelItem("Thống kê", cardLayout, cardPanel));
+        add(Box.createVerticalStrut(2));
+        add(new MenuPanelItem("Khách hàng", cardLayout, cardPanel));
 
         add(Box.createVerticalGlue());
 
