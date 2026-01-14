@@ -16,6 +16,7 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 
+import ui.thongke.thongkechung.ThongKeChungSpPanel;
 import util.TaoUI;
 
 public class ThongKeSanPhamPanel extends JPanel {
@@ -27,8 +28,8 @@ public class ThongKeSanPhamPanel extends JPanel {
         JPanel thongKeSp = new JPanel();
         thongKeSp.setLayout(new BoxLayout(thongKeSp, BoxLayout.Y_AXIS));
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(870, 125);
-        top.add(new ThongKeChungPanel());
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(870, 100);
+        top.add(new ThongKeChungSpPanel());
         thongKeSp.add(top);
 
         JPanel mid = TaoUI.taoPanelBoxLayoutNgang(870, 380);
@@ -84,8 +85,7 @@ public class ThongKeSanPhamPanel extends JPanel {
         model.addRow(new Object[] { "SP002", "Bàn phím cơ", 1 });
         model.addRow(new Object[] { "SP001", "Chuột máy tính", 2 });
         model.addRow(new Object[] { "SP002", "Bàn phím cơ", 1 });
-        JTable table = new JTable(model);
-        JScrollPane scrollPaneTb = TaoUI.taoScrollPane(table);
+        JScrollPane scrollPaneTb = TaoUI.taoTableScroll(model);
         bottom.add(scrollPaneTb);
 
         JScrollPane scrollPane = TaoUI.taoScrollPane(thongKeSp);

@@ -1,7 +1,7 @@
 package ui.banhang;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.GridLayout;
 
 import javax.swing.JPanel;
@@ -9,7 +9,7 @@ import javax.swing.JPanel;
 public class BanHangUI extends JPanel {
     public BanHangUI() {
         setLayout(new GridLayout(1, 2, 0, 0));
-
+        setBackground(Color.white);
         JPanel leftPanel = new JPanel(new BorderLayout());
         JPanel rightPanel = new JPanel(new BorderLayout());
 

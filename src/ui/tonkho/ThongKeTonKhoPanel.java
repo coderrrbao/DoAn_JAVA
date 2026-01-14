@@ -1,18 +1,19 @@
-package ui.thongke;
+package ui.tonkho;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
-import javax.swing.BorderFactory;
+import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import util.TaoUI;
 
-public class ThongKeChungPanel extends JPanel{
-     private JPanel taoTheThongKe(String iconPath, String so, String tieuDe, Color mauNen) {
-        JPanel card = TaoUI.taoPanelCanGiua(200, 100);
+public class ThongKeTonKhoPanel extends JPanel {
+    private JPanel taoTheThongKe(String iconPath, String so, String tieuDe, Color mauNen) {
+        JPanel card = TaoUI.taoPanelCanGiua(280, 100);
         card.setBackground(mauNen);
 
         JLabel icon = TaoUI.taoJlabelAnh(iconPath, 50, 50);
@@ -32,11 +33,15 @@ public class ThongKeChungPanel extends JPanel{
         TaoUI.addItem(card, info, 10, true);
         return card;
     }
-    public ThongKeChungPanel(){
+
+    public ThongKeTonKhoPanel() {
         TaoUI.taoPanelBoxLayoutNgang(this, 3000, 100);
         add(taoTheThongKe("/assets/img/logo.png", "36", "Sản phẩm", Color.RED));
-        add(taoTheThongKe("/assets/img/logo.png", "12", "Hóa đơn", Color.YELLOW));
-        add(taoTheThongKe("/assets/img/logo.png", "5", "Phiếu nhập", Color.CYAN));
-        add(taoTheThongKe("/assets/img/logo.png", "99tr", "Doanh thu", Color.GREEN));
+        add(Box.createRigidArea(new Dimension(25, 0)));
+        add(taoTheThongKe("/assets/img/logo.png", "12", "Hết hạn sử dụng", Color.YELLOW));
+        add(Box.createRigidArea(new Dimension(25, 0)));
+        add(taoTheThongKe("/assets/img/logo.png", "5", "Hết hàng", Color.CYAN));
+        add(Box.createRigidArea(new Dimension(25, 0)));
     }
+
 }

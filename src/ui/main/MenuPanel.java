@@ -3,14 +3,27 @@ package ui.main;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
+import javax.swing.JDialog;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import dto.NhanVien;
+import ui.component.MenuPanelItem;
+import ui.thongtinuser.ThongTinDialog;
+
 public class MenuPanel extends JPanel {
-    public MenuPanel(CardLayout cardLayout, JPanel cardPanel) {
+    private List<MenuPanelItem> menuItems;
+
+    public MenuPanel(CardLayout cardLayout, JPanel cardPanel,JFrame frame) {
+        menuItems = new ArrayList<>();
+
         setPreferredSize(new Dimension(200, 700));
         setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
         setMinimumSize(new Dimension(200, 700));
@@ -18,38 +31,54 @@ public class MenuPanel extends JPanel {
         setOpaque(true);
         setBorder(BorderFactory.createEmptyBorder(0, 5, 10, 0));
         setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
 
-        setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
         add(Box.createVerticalStrut(2));
-        add(new MenuPanelItem("Quản lý sản phẩm", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
+        addMenuItem("Quản lý sản phẩm", cardLayout, cardPanel);
+        addMenuItem("Nhà cung cấp", cardLayout, cardPanel);
+        addMenuItem("Nhập kho", cardLayout, cardPanel);
+        addMenuItem("Tồn kho", cardLayout, cardPanel);
+        addMenuItem("Xuất kho", cardLayout, cardPanel);
+        addMenuItem("Bán hàng", cardLayout, cardPanel);
+        addMenuItem("Hóa đơn", cardLayout, cardPanel);
+        addMenuItem("Khách hàng", cardLayout, cardPanel);
+        addMenuItem("Nhân viên", cardLayout, cardPanel);
+        addMenuItem("Tài khoản", cardLayout, cardPanel);
+        addMenuItem("Thống kê", cardLayout, cardPanel);
+        addMenuItem("Thông tin", ()->{
 
-        add(new MenuPanelItem("Nhà cung cấp", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Nhập kho", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Tồn kho", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Bán hàng", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Hóa đơn", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Nhân viên", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-
-        add(new MenuPanelItem("Thống kê", cardLayout, cardPanel));
-        add(Box.createVerticalStrut(2));
-        add(new MenuPanelItem("Khách hàng", cardLayout, cardPanel));
+            NhanVien nv = new NhanVien(
+            "NV001",           // maNV
+            "Nguyễn Văn A",    // tenNV
+            "Nam",             // gioiTinh
+            Date.valueOf("1995-05-20"),        // ngaySinh (lấy ngày hiện tại)
+            "0901234567",      // sdt
+            "123 Đường ABC, HCM", // diaChi
+            "Quản lý"          // chucVu
+        );
+            JDialog thongTin = new ThongTinDialog(null,nv);
+            thongTin.setVisible(true);
+        });
 
         add(Box.createVerticalGlue());
 
-        add(new MenuPanelItem("Đăng xuất", cardLayout, cardPanel));
+        addMenuItem("Đăng xuất", cardLayout, cardPanel);
+    }
 
+    private void addMenuItem(String title, CardLayout cardLayout, JPanel cardPanel) {
+        MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel);
+        menuItems.add(item);
+        add(item);
+        add(Box.createVerticalStrut(2));
+    }
+
+    private void addMenuItem(String title, Runnable sukien) {
+        MenuPanelItem item = new MenuPanelItem(title, sukien);
+        menuItems.add(item);
+        add(item);
+        add(Box.createVerticalStrut(2));
+    }
+
+    public List<MenuPanelItem> getMenuItems() {
+        return menuItems;
     }
 }

@@ -45,6 +45,8 @@ import org.jfree.chart.renderer.category.BarRenderer;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
+import org.jfree.chart.plot.PlotOrientation;
+import org.jfree.chart.renderer.category.AreaRenderer;
 
 public class TaoUI {
 
@@ -530,4 +532,62 @@ public class TaoUI {
         // Đảm bảo layout manager cập nhật lại giao diện
         button.revalidate();
     }
+
+
+
+
+public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,
+                                       DefaultCategoryDataset dataset) {
+    // 1. Tạo biểu đồ miền (Area Chart)
+    JFreeChart chart = ChartFactory.createAreaChart(
+            tenBieuDo, 
+            tenTrucNgang, 
+            tenTrucDoc, 
+            dataset, 
+            PlotOrientation.VERTICAL, 
+            true, true, false);
+
+    // ===== ĐỊNH DẠNG FONT =====
+    Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
+    Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
+    Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
+
+    chart.getTitle().setFont(fontTieuDe);
+    if (chart.getLegend() != null) {
+        chart.getLegend().setItemFont(fontTick);
+    }
+
+    // ===== TÙY CHỈNH PLOT =====
+    CategoryPlot plot = chart.getCategoryPlot();
+    plot.getDomainAxis().setLabelFont(fontTruc);
+    plot.getDomainAxis().setTickLabelFont(fontTick);
+    plot.getRangeAxis().setLabelFont(fontTruc);
+    plot.getRangeAxis().setTickLabelFont(fontTick);
+
+    // ===== NỀN + GRID (GIỮ GIỐNG BẢN CŨ CỦA BẠN) =====
+    plot.setBackgroundPaint(Color.WHITE);
+    plot.setRangeGridlinePaint(new Color(220, 220, 220));
+    plot.setDomainGridlinePaint(new Color(220, 220, 220));
+    plot.setOutlineVisible(false); // Ẩn đường viền khung biểu đồ cho hiện đại
+
+    // ===== TÙY CHỈNH MIỀN (RENDERER) =====
+    AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
+    
+    // Đặt màu cho miền (Ví dụ: Màu xanh lá cây của Bao Store với độ trong suốt 150/255)
+    Color colorArea = new Color(76, 175, 80, 150); 
+    renderer.setSeriesPaint(0, colorArea);
+    
+    // Giúp đường kẻ mượt mà hơn
+    chart.setAntiAlias(true);
+
+    // ===== TẠO CHART PANEL =====
+    ChartPanel chartPanel = new ChartPanel(chart);
+    chartPanel.setPreferredSize(new Dimension(800, 400));
+    chartPanel.setMouseWheelEnabled(false); // Tắt zoom chuột
+    chartPanel.setDomainZoomable(false);
+    chartPanel.setRangeZoomable(false);
+    chartPanel.setBackground(Color.WHITE);
+
+    return chartPanel;
+}
 }

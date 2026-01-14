@@ -1,45 +1,61 @@
 package ui.banhang;
 
 import java.awt.BorderLayout;
-import java.awt.Button;
 import java.awt.Color;
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import dto.NhaCungCap;
+import dto.SanPham;
 import util.TaoUI;
 
 public class ListSanPhamPanel extends JPanel {
 
-    public JPanel taoSanPham() {
-        JPanel sanPhamPanel = TaoUI.taoPanelBoxLayoutDoc(100, 150);
-        sanPhamPanel.setBackground(Color.red);
-        return sanPhamPanel;
-    }
-
     public ListSanPhamPanel() {
         TaoUI.taoPanelBorderLayout(this, 0, 0);
-        setBackground(Color.red);
-        JPanel titlePanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
-        titlePanel.add(new JLabel("Danh sách sản phẩm"));
-        add(titlePanel, BorderLayout.NORTH);
+        initGUI();
+    }
 
-        JPanel listSanPhamPanel = new JPanel(new GridLayout(0,4,5,5));
-        listSanPhamPanel.setBorder(BorderFactory.createEmptyBorder(5, 5,5, 5));
+    private void taoTopPanel() {
+        JPanel titlePanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
+        titlePanel.add(new JLabel("Danh sách sản phẩm"));
+        titlePanel.setBackground(new Color(225, 235, 245));
+        add(titlePanel, BorderLayout.NORTH);
+    }
+
+    private void taoListSpPanel(){
+        JPanel listSanPhamPanel = TaoUI.taoPanelFlowLayout(450, 530, 5, 5);
+        TaoUI.suaBorderChoPanel(listSanPhamPanel, 0, 5,0, 10);
         JScrollPane scrollPaneListSp = TaoUI.taoScrollPane(listSanPhamPanel);
-        for (int i = 0; i < 9; i++) {
-            listSanPhamPanel.add(taoSanPham());
+        for (int i = 0; i < 20; i++) {
+            NhaCungCap ncc = new NhaCungCap("NCC01", "PepsiCo", "TP.HCM", "0123456789");
+
+            SanPham sp = new SanPham();
+            sp.setMa("SP" + System.currentTimeMillis() % 1000);
+            sp.setTen("Pepsi Lon 320ml");
+            sp.setGiaBan(11000);
+            sp.setLoaiNuoc("Có sẵn");
+            sp.setNhaCungCap(ncc);
+            sp.setSoLuongTon(100);
+            listSanPhamPanel.add(new SanPhamBhItemPanel(sp, "Mặc định"));
         }
         add(scrollPaneListSp, BorderLayout.CENTER);
-
+    }
+    private void taoThanhChuyenPage(){
         JPanel phanTrang = TaoUI.taoPanelFlowLayout(Integer.MAX_VALUE, 40, 2, 0);
-        phanTrang.add(new Button("<"));
+        phanTrang.add(new JButton("<"));
         phanTrang.add(new JLabel("1/2"));
-        phanTrang.add(new Button(">"));
+        phanTrang.add(new JButton(">"));
         add(phanTrang, BorderLayout.SOUTH);
+    }
+    private void initGUI() {
+        taoTopPanel();
+        taoListSpPanel();
+        taoThanhChuyenPage();
     }
 }

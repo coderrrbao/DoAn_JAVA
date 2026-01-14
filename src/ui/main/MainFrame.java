@@ -18,7 +18,7 @@ public class MainFrame extends JFrame {
         add(contentPaner, BorderLayout.CENTER);
         CardLayout cardLayout = (CardLayout) contentPaner.getLayout();
         cardLayout.show(contentPaner, "Quản lý sản phẩm");
-        MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner);
+        MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner,this);
         add(menuPanel, BorderLayout.WEST);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

@@ -4,9 +4,12 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Frame;
 
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ui.thongke.ThongKeUI;
+import ui.tonkho.TonKhoUI;
+import ui.xuatkho.XuatKhoUI;
 import ui.banhang.BanHangUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
@@ -14,10 +17,11 @@ import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
 import ui.nhapkho.NhapKhoUI;
 import ui.quanlysanpham.QuanLySanPhamUI;
+import ui.taikhoan.TaiKhoanUI;
 
 public class ContentPaner extends JPanel {
 
-    private QuanLySanPhamUI sanPhamUI;
+    private QuanLySanPhamUI quanLySanPhamUI;
     private NhaCungCapUI nhaCungCapUI;
     private NhapKhoUI nhapKhoUI;
     private ThongKeUI thongKeUI;
@@ -25,21 +29,30 @@ public class ContentPaner extends JPanel {
     private KhachHangUI khachHangUI;
     private HoaDonUI hoaDonUI;
     private NhanVienUI nhanVienUI;
+    private TaiKhoanUI taiKhoanUI;
+    private XuatKhoUI xuatKhoUI;
+    private TonKhoUI tonKhoUI;
 
-    public ContentPaner(Frame ouner) {
+    private CardLayout cardLayout;
 
-        setLayout(new CardLayout());
+    public ContentPaner(JFrame owner) {
+        cardLayout = new CardLayout();
+        setLayout(cardLayout);
         setBackground(Color.white);
-        sanPhamUI = new QuanLySanPhamUI();
+
+        quanLySanPhamUI = new QuanLySanPhamUI(owner);
         nhaCungCapUI = new NhaCungCapUI();
-        nhapKhoUI = new NhapKhoUI(ouner);
+        nhapKhoUI = new NhapKhoUI(owner);
         thongKeUI = new ThongKeUI();
         banHangUI = new BanHangUI();
         khachHangUI = new KhachHangUI();
         hoaDonUI = new HoaDonUI();
         nhanVienUI = new NhanVienUI();
+        taiKhoanUI = new TaiKhoanUI();
+        xuatKhoUI = new XuatKhoUI();
+        tonKhoUI = new TonKhoUI();
 
-        add(sanPhamUI, "Quản lý sản phẩm");
+        add(quanLySanPhamUI, "Quản lý sản phẩm");
         add(nhaCungCapUI, "Nhà cung cấp");
         add(nhapKhoUI, "Nhập kho");
         add(thongKeUI, "Thống kê");
@@ -47,6 +60,58 @@ public class ContentPaner extends JPanel {
         add(khachHangUI, "Khách hàng");
         add(hoaDonUI, "Hóa đơn");
         add(nhanVienUI, "Nhân viên");
+        add(taiKhoanUI, "Tài khoản");
+        add(xuatKhoUI, "Xuất kho");
+        add(tonKhoUI, "Tồn kho");
+    }
+
+    public void switchPage(String name) {
+        cardLayout.show(this, name);
+    }
+
+    public QuanLySanPhamUI getQuanLySanPhamUI() {
+        return quanLySanPhamUI;
+    }
+
+    public NhaCungCapUI getNhaCungCapUI() {
+        return nhaCungCapUI;
+    }
+
+    public NhapKhoUI getNhapKhoUI() {
+        return nhapKhoUI;
+    }
+
+    public ThongKeUI getThongKeUI() {
+        return thongKeUI;
+    }
+
+    public BanHangUI getBanHangUI() {
+        return banHangUI;
+    }
+
+    public KhachHangUI getKhachHangUI() {
+        return khachHangUI;
+    }
+
+    public HoaDonUI getHoaDonUI() {
+        return hoaDonUI;
+    }
+
+    public NhanVienUI getNhanVienUI() {
+        return nhanVienUI;
+    }
+
+    public TaiKhoanUI getTaiKhoanUI() {
+        return taiKhoanUI;
+    }
+
+
+    public XuatKhoUI getXuatKhoUI() {
+        return xuatKhoUI;
+    }
+
+    public TonKhoUI getTonKhoUI() {
+        return tonKhoUI;
     }
 
     public void loadAll() {

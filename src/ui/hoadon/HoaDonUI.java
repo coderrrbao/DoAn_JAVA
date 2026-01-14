@@ -1,83 +1,92 @@
 package ui.hoadon;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import ui.component.Search_Item;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
+    private JButton btnXemChiTiet, btnXoa, btnLoc;
+    private Search_Item search_Item;
+    private JTable tableUI;
+    private DefaultTableModel model;
+
     public HoaDonUI() {
         setLayout(new BorderLayout());
-        JPanel topContent = new JPanel();
-        topContent.setPreferredSize(new Dimension(100, 45));
-        topContent.setLayout(new FlowLayout(FlowLayout.LEFT));
-        topContent.setBackground(Color.WHITE);
-        JButton loc = new JButton("Lọc");
-        loc.setPreferredSize(new Dimension(loc.getPreferredSize().width, 35));
-        topContent.add(loc);
-        JTextField timKiem = new JTextField();
 
-        timKiem.setToolTipText("Nhấn vào đây để tìm kiếm sản phẩm");
-        timKiem.setPreferredSize(new Dimension(300, 35));
-        timKiem.setFont(new Font("Arial", Font.PLAIN, 17));
-        topContent.add(timKiem);
-        JButton tao = new JButton("Tạo mới");
-        tao.setPreferredSize(new Dimension(tao.getPreferredSize().width, 35));
-        topContent.add(tao);
-        JButton xoa = new JButton("Xóa");
-        xoa.setPreferredSize(new Dimension(xoa.getPreferredSize().width, 35));
-        topContent.add(xoa);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        top.setBackground(Color.WHITE);
+        top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        JButton xemChiTiet = new JButton("Xem chi tiết");
-        xemChiTiet.setPreferredSize(new Dimension(xemChiTiet.getPreferredSize().width, 35));
-        topContent.add(xemChiTiet);
+        search_Item = new Search_Item(300, 30);
+        
+        btnXemChiTiet = new JButton("Xem chi tiết");
+        TaoUI.setHeightButton(btnXemChiTiet, 27);
+        
+        btnXoa = new JButton("Xóa");
+        TaoUI.setHeightButton(btnXoa, 27);
 
-        add(topContent, BorderLayout.NORTH);
+        btnLoc = new JButton("Lọc");
+        TaoUI.setHeightButton(btnLoc, 27);
 
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(new BorderLayout());
+        top.add(search_Item);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXemChiTiet);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnLoc);
+        top.add(Box.createHorizontalGlue());
 
-        DefaultTableModel model = new DefaultTableModel() {
+        add(top, BorderLayout.NORTH);
+
+        model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        model.addColumn("MaHD");
-        model.addColumn("NgayTao");
-        model.addColumn("MaNV");
-        model.addColumn("MaKH");
-        model.addColumn("TongTien");
+        model.addColumn("Mã HD");
+        model.addColumn("Ngày tạo");
+        model.addColumn("Mã nhân viên");
+        model.addColumn("Mã khách hàng");
+        model.addColumn("Tổng tiền");
 
-        model.addRow(new Object[] { "1", "2026-01-06", "NV01", "KH01", "100000" });
-        model.addRow(new Object[] { "2", "2026-01-06", "NV02", "KH02", "200000" });
-        model.addRow(new Object[] { "3", "2026-01-06", "NV03", "KH03", "300000" });
-        model.addRow(new Object[] { "4", "2026-01-06", "NV04", "KH04", "400000" });
+        model.addRow(new Object[] { "HD001", "2026-01-06", "NV01", "KH01", "100.000" });
+        model.addRow(new Object[] { "HD002", "2026-01-06", "NV02", "KH02", "200.000" });
+        model.addRow(new Object[] { "HD003", "2026-01-13", "NV01", "KH03", "150.000" });
 
-        JTable tableUI = new JTable(model);
+        tableUI = new JTable(model);
+        tableUI.setRowHeight(35);
+        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
+        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        tableUI.getColumnModel().getColumn(0).setPreferredWidth(60); // maNCC
-        tableUI.getColumnModel().getColumn(1).setPreferredWidth(150); // tenNCC
-        tableUI.getColumnModel().getColumn(2).setPreferredWidth(100); // SDT
-        tableUI.getColumnModel().getColumn(3).setPreferredWidth(100); // DiaChi
-        tableUI.getColumnModel().getColumn(4).setPreferredWidth(100); // DiaChi
-        tableUI.setRowHeight(40);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
-        JScrollPane scrollPane = new JScrollPane(tableUI);
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-        tablePanel = TaoUI.suaBorderChoPanel(tablePanel, 5, 5, 0, 5);
-        add(tablePanel, BorderLayout.CENTER);
+        tableUI.getColumnModel().getColumn(0).setPreferredWidth(80);
+        tableUI.getColumnModel().getColumn(1).setPreferredWidth(150);
+        tableUI.getColumnModel().getColumn(2).setPreferredWidth(100);
+        tableUI.getColumnModel().getColumn(3).setPreferredWidth(100);
+        tableUI.getColumnModel().getColumn(4).setPreferredWidth(120);
+
+        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.setBackground(new Color(238, 238, 238));
+        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+
+        add(tableContainer, BorderLayout.CENTER);
     }
+
+    public JButton getBtnXemChiTiet() { return btnXemChiTiet; }
+    public JButton getBtnXoa() { return btnXoa; }
+    public JButton getBtnLoc() { return btnLoc; }
+    public Search_Item getSearch_Item() { return search_Item; }
+    public JTable getTableUI() { return tableUI; }
+    public DefaultTableModel getModel() { return model; }
 }

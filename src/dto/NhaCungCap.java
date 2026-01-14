@@ -6,6 +6,16 @@ public class NhaCungCap {
     private String diaCHi;
     private String sdt;
 
+    public NhaCungCap() {
+    }
+
+    public NhaCungCap(String ma, String ten, String diaCHi, String sdt) {
+        this.ma = ma;
+        this.ten = ten;
+        this.diaCHi = diaCHi;
+        this.sdt = sdt;
+    }
+
     public String getDiaCHi() {
         return diaCHi;
     }
@@ -32,5 +42,8 @@ public class NhaCungCap {
 
     public void setSdt(String sdt) {
         this.sdt = sdt;
+    }
+    public void setTen(String ten) {
+        this.ten = ten;
     }
 }

@@ -1,4 +1,4 @@
-package ui.nhapkho;
+package ui.nhapkho.sanpham;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
 import util.TaoUI;
 
-public class NhapKhoDialog extends JDialog {
+public class NhapKhoSanPhamDialog extends JDialog {
     Search_Item search_Item;
     private JTextField txtMaSp;
     private JTextField txtLoaiSp;
@@ -44,7 +44,7 @@ public class NhapKhoDialog extends JDialog {
     private JTable tblChiTietPhieuNhap;
     private DefaultTableModel modelChiTietPhieuNhap;
     private JButton themSpPNHBtn;
-    public NhapKhoDialog(Frame owner) {
+    public NhapKhoSanPhamDialog(Frame owner) {
         super(owner, "Nhập Kho Sản Phẩm", true);
         setSize(900, 680);
         setLocationRelativeTo(owner);
@@ -282,7 +282,39 @@ public class NhapKhoDialog extends JDialog {
         }
         txtMaSp.setEditable(false);
         txtMaPN.setEditable(false);
+
+        addEvents();
     }
+
+
+    private void addEvents() {
+    // Lấy model quản lý việc chọn lựa của bảng Kho Hàng
+    tblKhoHang.getSelectionModel().addListSelectionListener(e -> {
+        // Kiểm tra nếu sự kiện đang trong quá trình thay đổi (để tránh chạy 2 lần)
+        if (!e.getValueIsAdjusting()) {
+            int selectedRow = tblKhoHang.getSelectedRow();
+            
+            if (selectedRow != -1) { // Nếu có dòng được chọn
+                // Lấy dữ liệu từ TableModel dựa trên chỉ số dòng
+                String maSp = modelKhoHang.getValueAt(selectedRow, 0).toString();
+                String tenSp = modelKhoHang.getValueAt(selectedRow, 1).toString();
+                String giaNhap = modelKhoHang.getValueAt(selectedRow, 2).toString();
+                
+                // Đổ dữ liệu vào các ô TextField
+                txtMaSp.setText(maSp);
+                txtTenSp.setText(tenSp);
+                txtGiaNhap.setText(giaNhap);
+                
+                // Giả định loại SP (vì trong modelKhoHang của bạn chưa có cột này)
+                txtLoaiSp.setText("Nước giải khát"); 
+                
+                // Focus vào ô số lượng để người dùng nhập ngay
+                txtSoLuong.requestFocus();
+                txtSoLuong.selectAll();
+            }
+        }
+    });
+}
 
     // public static void main(String[] args) {
     //     Frame frame = new Frame();

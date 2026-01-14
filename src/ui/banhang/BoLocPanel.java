@@ -1,20 +1,17 @@
 package ui.banhang;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
 import javax.swing.BorderFactory;
-
-import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import util.TaoUI;
 
@@ -23,10 +20,11 @@ public class BoLocPanel extends JPanel {
 
     public BoLocPanel() {
         searchTextField = new JTextField();
-        TaoUI.taoPanelBoxLayoutDoc(this, Integer.MAX_VALUE, 150);
-        TaoUI.suaBorderChoPanel(this, 0, 10, 10, 10);
-        JPanel titleMain = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
+        TaoUI.taoPanelBoxLayoutDoc(this, Integer.MAX_VALUE, 140);
+        TaoUI.suaBorderChoPanel(this, 0, 0, 0, 0);
+        JPanel titleMain = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
         titleMain.add(new JLabel("Bộ lọc"));
+        titleMain.setBackground(new Color(225, 235, 245));
         add(titleMain);
 
         JPanel topPanel = TaoUI.taoPanelFlowLayout(Integer.MAX_VALUE, 60, 5, 0);

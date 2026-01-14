@@ -1,79 +1,82 @@
 package ui.nhacungcap;
 
 import java.awt.BorderLayout;
-
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import ui.component.Search_Item;
 import util.TaoUI;
 
 public class NhaCungCapUI extends JPanel {
+    private JButton btnTao, btnXoa, btnSua;
+    private Search_Item search_Item;
+    private JTable tableUI;
+    private DefaultTableModel model;
+
     public NhaCungCapUI() {
         setLayout(new BorderLayout());
-        JPanel topContent = new JPanel();
-        topContent.setPreferredSize(new Dimension(100, 45));
-        topContent.setLayout(new FlowLayout(FlowLayout.LEFT));
-        topContent.setBackground(Color.WHITE);
-        JButton loc = new JButton("Lọc");
-        loc.setPreferredSize(new Dimension(loc.getPreferredSize().width, 35));
-        topContent.add(loc);
-        JTextField timKiem = new JTextField();
 
-        timKiem.setToolTipText("Nhấn vào đây để tìm kiếm sản phẩm");
-        timKiem.setPreferredSize(new Dimension(300, 35));
-        timKiem.setFont(new Font("Arial", Font.PLAIN, 17));
-        topContent.add(timKiem);
-        JButton lamMoi = new JButton("làm mới");
-        lamMoi.setPreferredSize(new Dimension(lamMoi.getPreferredSize().width, 35));
-        topContent.add(lamMoi);
-        JButton tao = new JButton("Tạo mới");
-        tao.setPreferredSize(new Dimension(tao.getPreferredSize().width, 35));
-        topContent.add(tao);
-        JButton xoa = new JButton("Xóa");
-        xoa.setPreferredSize(new Dimension(xoa.getPreferredSize().width, 35));
-        topContent.add(xoa);
-        add(topContent, BorderLayout.NORTH);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        top.setBackground(Color.WHITE);
+        top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        JPanel tablePanel = new JPanel();
-        tablePanel.setLayout(new BorderLayout());
+        search_Item = new Search_Item(300, 30);
+        
+        btnTao = new JButton("Thêm");
+        TaoUI.setHeightButton(btnTao, 27);
+        
+        btnSua = new JButton("Sửa");
+        TaoUI.setHeightButton(btnSua, 27);
+        
+        btnXoa = new JButton("Xóa");
+        TaoUI.setHeightButton(btnXoa, 27);
 
-        DefaultTableModel model = new DefaultTableModel() {
+        top.add(search_Item);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnTao);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnSua);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(Box.createHorizontalGlue());
+
+        add(top, BorderLayout.NORTH);
+
+        model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return false;
             }
         };
-        model.addColumn("maNCC");
-        model.addColumn("tenNCC");
-        model.addColumn("SDT");
-        model.addColumn("DiaChi");
+        model.addColumn("Mã NCC");
+        model.addColumn("Tên nhà cung cấp");
+        model.addColumn("Loại cung cấp");
+        model.addColumn("Số điện thoại");
+        model.addColumn("Địa chỉ");
 
-        model.addRow(new Object[] { "1", "Pepsi", "11111", "Trái Đất" });
-        model.addRow(new Object[] { "2", "Coca Cola", "22222", "Sao Hỏa" });
-        model.addRow(new Object[] { "3", "Lavie", "33333", "Sao Kim" });
-        model.addRow(new Object[] { "4", "Heineken", "44444", "Mặt Trăng" });
+        model.addRow(new Object[] { "NCC001", "Pepsi Việt Nam", "Sản phẩm", "0123456789", "TP. Hồ Chí Minh" });
+        model.addRow(new Object[] { "NCC002", "Coca-Cola", "Sản phẩm", "0987654321", "Bình Dương" });
+        model.addRow(new Object[] { "NCC003", "Lavie", "Sản phẩm", "0333444555", "Long An" });
+        model.addRow(new Object[] { "NCC004", "Nông trại Việt", "Nguyên liệu", "0944555666", "Đà Lạt" });
 
-        JTable tableUI = new JTable(model);
 
-        tableUI.getColumnModel().getColumn(0).setPreferredWidth(60); // maNCC
-        tableUI.getColumnModel().getColumn(1).setPreferredWidth(150); // tenNCC
-        tableUI.getColumnModel().getColumn(2).setPreferredWidth(100); // SDT
-        tableUI.getColumnModel().getColumn(3).setPreferredWidth(250); // DiaChi
-        tableUI.setRowHeight(40);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 13));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 13));
-        JScrollPane scrollPane = new JScrollPane(tableUI);
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-        tablePanel = TaoUI.suaBorderChoPanel(tablePanel, 5, 5, 0, 5);
-        add(tablePanel, BorderLayout.CENTER);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        JPanel tableContainer = new JPanel(new BorderLayout());
+        tableContainer.setBackground(new Color(238, 238, 238));
+        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+
+        add(tableContainer, BorderLayout.CENTER);
     }
+
+    public JButton getBtnTao() { return btnTao; }
+    public JButton getBtnXoa() { return btnXoa; }
+    public JButton getBtnSua() { return btnSua; }
+    public Search_Item getSearch_Item() { return search_Item; }
+    public JTable getTableUI() { return tableUI; }
+    public DefaultTableModel getModel() { return model; }
 }

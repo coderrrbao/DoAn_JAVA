@@ -5,7 +5,6 @@ import java.sql.Date;
 public class SanPham {
     private String ma;
     private String ten;
-    // Nước ngọt,Nước suối,Trà,Cà phê,Nước tăng lực
     private String loaiNuoc;
     private long giaNhap;
     private long giaBan;
@@ -18,6 +17,26 @@ public class SanPham {
     private String anh;
     private String gioiThieu;
 
+    public SanPham() {
+    }
+
+    public SanPham(String ma, String ten, String loaiNuoc, long giaNhap, long giaBan, int dungTichMl, 
+                   NhaCungCap nhaCungCap, int soLuongTon, Date hanSanXuat, Date hanSuDung, 
+                   boolean trangThai, String anh, String gioiThieu) {
+        this.ma = ma;
+        this.ten = ten;
+        this.loaiNuoc = loaiNuoc;
+        this.giaNhap = giaNhap;
+        this.giaBan = giaBan;
+        this.dungTichMl = dungTichMl;
+        this.nhaCungCap = nhaCungCap;
+        this.soLuongTon = soLuongTon;
+        this.hanSanXuat = hanSanXuat;
+        this.hanSuDung = hanSuDung;
+        this.trangThai = trangThai;
+        this.anh = anh;
+        this.gioiThieu = gioiThieu;
+    }
     public int getDungTichMl() {
         return dungTichMl;
     }
