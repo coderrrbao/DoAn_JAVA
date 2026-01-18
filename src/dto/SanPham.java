@@ -1,117 +1,144 @@
 package dto;
-public class SanPham {
 
-    private String maSP;
-    private String tenSP;
-    private String maDM;
-    private double giaNhap;
-    private double giaBan;
-    private String maNCC;
+import java.sql.Date;
+
+public class SanPham {
+    private String ma;
+    private String ten;
+    // Nước ngọt,Nước suối,Trà,Cà phê,Nước tăng lực
+    private String loaiNuoc;
+    private long giaNhap;
+    private long giaBan;
+    private int dungTichMl;
+    private NhaCungCap nhaCungCap;
     private int soLuongTon;
-    private String trangThaiSP;
+    private Date hanSanXuat;
+    private Date hanSuDung;
+    private boolean trangThai;
     private String anh;
-    private String moTa;
-    private boolean coSan;
-    private boolean TrangThai;
+    private String gioiThieu;
 
     public SanPham() {
     }
 
-    public SanPham(String maSP, String tenSP, String maDM, double giaNhap, double giaBan,
-                   String maNCC, int soLuongTon, String trangThaiSP, String anh, String moTa, boolean coSan) {
-        this.maSP = maSP;
-        this.tenSP = tenSP;
-        this.maDM = maDM;
+    public SanPham(String ma, String ten, String loaiNuoc, long giaNhap, long giaBan, int dungTichMl, 
+                   NhaCungCap nhaCungCap, int soLuongTon, Date hanSanXuat, Date hanSuDung, 
+                   boolean trangThai, String anh, String gioiThieu) {
+        this.ma = ma;
+        this.ten = ten;
+        this.loaiNuoc = loaiNuoc;
         this.giaNhap = giaNhap;
         this.giaBan = giaBan;
-        this.maNCC = maNCC;
+        this.dungTichMl = dungTichMl;
+        this.nhaCungCap = nhaCungCap;
         this.soLuongTon = soLuongTon;
-        this.trangThaiSP = trangThaiSP;
+        this.hanSanXuat = hanSanXuat;
+        this.hanSuDung = hanSuDung;
+        this.trangThai = trangThai;
         this.anh = anh;
-        this.moTa = moTa;
-        this.coSan = coSan;
+        this.gioiThieu = gioiThieu;
+    }
+    public int getDungTichMl() {
+        return dungTichMl;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaSP() { 
-        return maSP; 
-    }
-    public void setMaSP(String maSP) { 
-        this.maSP = maSP; 
+    public String getAnh() {
+        return anh;
     }
 
-    public String getTenSP() { 
-        return tenSP; 
-    }
-    public void setTenSP(String tenSP) { 
-        this.tenSP = tenSP; 
+    public long getGiaBan() {
+        return giaBan;
     }
 
-    public String getMaDM() { 
-        return maDM; 
-    }
-    public void setMaDM(String maDM) { 
-        this.maDM = maDM; 
+    public long getGiaNhap() {
+        return giaNhap;
     }
 
-    public double getGiaNhap() { 
-        return giaNhap; 
-    }
-    public void setGiaNhap(double giaNhap) { 
-        this.giaNhap = giaNhap; 
+    public String getGioiThieu() {
+        return gioiThieu;
     }
 
-    public double getGiaBan() { 
-        return giaBan; 
-    }
-    public void setGiaBan(double giaBan) { 
-        this.giaBan = giaBan; 
+    public Date getHanSanXuat() {
+        return hanSanXuat;
     }
 
-    public String getMaNCC() { 
-        return maNCC; 
-    }
-    public void setMaNCC(String maNCC) { 
-        this.maNCC = maNCC; 
+    public Date getHanSuDung() {
+        return hanSuDung;
     }
 
-    public int getSoLuongTon() { 
-        return soLuongTon; 
-    }
-    public void setSoLuongTon(int soLuongTon) { 
-        this.soLuongTon = soLuongTon; 
+    public String getLoaiNuoc() {
+        return loaiNuoc;
     }
 
-    public String getTrangThaiSP() { 
-        return trangThaiSP; 
-    }
-    public void setTrangThaiSP(String trangThaiSP) { 
-        this.trangThaiSP = trangThaiSP; 
+    public String getMa() {
+        return ma;
     }
 
-    public String getAnh() { 
-        return anh; 
-    }
-    public void setAnh(String anh) { 
-        this.anh = anh; 
+    public NhaCungCap getNhaCungCap() {
+        return nhaCungCap;
     }
 
-    public String getMoTa() { 
-        return moTa; 
-    }
-    public void setMoTa(String moTa) { 
-        this.moTa = moTa; 
+    public int getSoLuongTon() {
+        return soLuongTon;
     }
 
-    public boolean isCoSan() { 
-        return coSan; 
+    public String getTen() {
+        return ten;
     }
-    public void setCoSan(boolean coSan) { 
-        this.coSan = coSan; 
+
+    public boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setAnh(String anh) {
+        this.anh = anh;
+    }
+
+    public void setGiaBan(long giaBan) {
+        this.giaBan = giaBan;
+    }
+
+    public void setGiaNhap(long giaNhap) {
+        this.giaNhap = giaNhap;
+    }
+
+    public void setGioiThieu(String gioiThieu) {
+        this.gioiThieu = gioiThieu;
+    }
+
+    public void setHanSanXuat(Date hanSanXuat) {
+        this.hanSanXuat = hanSanXuat;
+    }
+
+    public void setHanSuDung(Date hanSuDung) {
+        this.hanSuDung = hanSuDung;
+    }
+
+    public void setLoaiNuoc(String loaiNuoc) {
+        this.loaiNuoc = loaiNuoc;
+    }
+
+    public void setMa(String ma) {
+        this.ma = ma;
+    }
+
+    public void setNhaCungCap(NhaCungCap nhaCungCap) {
+        this.nhaCungCap = nhaCungCap;
+    }
+
+    public void setSoLuongTon(int soLuongTon) {
+        this.soLuongTon = soLuongTon;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
+    }
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
+    }
+
+    public void setDungTichMl(int dungTichMl) {
+        this.dungTichMl = dungTichMl;
     }
 }

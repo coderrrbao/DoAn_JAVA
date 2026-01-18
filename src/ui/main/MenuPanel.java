@@ -15,7 +15,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import dto.NhanVien;
-import ui.component.MenuPanelItem;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {

@@ -1,22 +1,23 @@
 package dto;
 
-public class NhanVien {
+import java.util.Date;
 
+public class NhanVien {
     private String maNV;
     private String tenNV;
     private String gioiTinh;
-    private String ngaySinh;
+    private Date ngaySinh;
     private String sdt;
     private String diaChi;
     private String chucVu;
-    private boolean trangThai;
-    private String phanQuyen;
+
+    private TaiKhoan taiKhoan;
 
     public NhanVien() {
     }
 
-    public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String sdt,
-                    String diaChi, String chucVu, boolean trangThai, String phanQuyen) {
+    public NhanVien(String maNV, String tenNV, String gioiTinh, Date ngaySinh, String sdt, String diaChi,
+            String chucVu) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
@@ -24,70 +25,69 @@ public class NhanVien {
         this.sdt = sdt;
         this.diaChi = diaChi;
         this.chucVu = chucVu;
-        this.trangThai = trangThai;
-        this.phanQuyen = phanQuyen;
     }
 
-    public String getMaNV() { 
-        return maNV; 
-    }
-    public void setMaNV(String maNV) { 
-        this.maNV = maNV; 
+    public String getMaNV() {
+        return maNV;
     }
 
-    public String getTenNV() { 
-        return tenNV; 
-    }
-    public void setTenNV(String tenNV) { 
-        this.tenNV = tenNV; 
+    public void setMaNV(String maNV) {
+        this.maNV = maNV;
     }
 
-    public String getGioiTinh() { 
-        return gioiTinh; 
-    }
-    public void setGioiTinh(String gioiTinh) { 
-        this.gioiTinh = gioiTinh; 
+    public String getTenNV() {
+        return tenNV;
     }
 
-    public String getNgaySinh() { 
-        return ngaySinh; 
-    }
-    public void setNgaySinh(String ngaySinh) { 
-        this.ngaySinh = ngaySinh; 
+    public void setTenNV(String tenNV) {
+        this.tenNV = tenNV;
     }
 
-    public String getSdt() { 
-        return sdt; 
-    }
-    public void setSdt(String sdt) { 
-        this.sdt = sdt; 
+    public String getGioiTinh() {
+        return gioiTinh;
     }
 
-    public String getDiaChi() { 
-        return diaChi; 
-    }
-    public void setDiaChi(String diaChi) { 
-        this.diaChi = diaChi; 
+    public void setGioiTinh(String gioiTinh) {
+        this.gioiTinh = gioiTinh;
     }
 
-    public String getChucVu() { 
-        return chucVu; 
-    }
-    public void setChucVu(String chucVu) { 
-        this.chucVu = chucVu; 
+    public Date getNgaySinh() {
+        return ngaySinh;
     }
 
-    public boolean getTrangThai() { 
-        return trangThai; 
-    }
-    public void setTrangThai(boolean trangThai) { 
-        this.trangThai = trangThai; 
+    public void setNgaySinh(Date ngaySinh) {
+        this.ngaySinh = ngaySinh;
     }
 
-    public String getPhanQuyen() { 
-        return phanQuyen; 
+    public String getSdt() {
+        return sdt;
     }
-    public void setPhanQuyen(String phanQuyen) { 
-        this.phanQuyen = phanQuyen; 
+
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
+    }
+
+    public String getDiaChi() {
+        return diaChi;
+    }
+
+    public void setDiaChi(String diaChi) {
+        this.diaChi = diaChi;
+    }
+
+    public String getChucVu() {
+        return chucVu;
+    }
+
+    public void setChucVu(String chucVu) {
+        this.chucVu = chucVu;
+    }
+
+    public TaiKhoan getTaiKhoan() {
+        return taiKhoan;
+    }
+
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
+        this.taiKhoan = taiKhoan;
     }
 }

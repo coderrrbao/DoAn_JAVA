@@ -6,7 +6,7 @@ import java.awt.*;
 
 public class MainFrame extends JFrame {
     public MainFrame() {
-        setSize(1100, 700);
+        setSize(1200, 700);
         setTitle("Quản lý cửa hàng nước giải khát");
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());

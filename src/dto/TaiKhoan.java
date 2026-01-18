@@ -1,36 +1,35 @@
 package dto;
 
 public class TaiKhoan {
-
-    private String maNV;
+    private String maNV; 
+    private String tenTaiKhoan;
     private String matKhau;
-    private boolean TrangThai;
+    private String phanQuyen;
+    private String trangThai;
 
-    public TaiKhoan() {
-    }
+    public TaiKhoan() {}
 
-    public TaiKhoan(String maNV, String matKhau) {
-        this.maNV = maNV;
-        this.matKhau = matKhau;
-    }
  
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaNV() { 
-        return maNV; 
-    }
-    public void setMaNV(String maNV) { 
-        this.maNV = maNV; 
+    public TaiKhoan(String maNV, String tenTaiKhoan, String matKhau, String phanQuyen, String trangThai) {
+        this.maNV = maNV;
+        this.tenTaiKhoan = tenTaiKhoan;
+        this.matKhau = matKhau;
+        this.phanQuyen = phanQuyen;
+        this.trangThai = trangThai;
     }
 
-    public String getMatKhau() { 
-        return matKhau; 
-    }
-    public void setMatKhau(String matKhau) { 
-        this.matKhau = matKhau; 
-    }
+    public String getMaNV() { return maNV; }
+    public void setMaNV(String maNV) { this.maNV = maNV; }
+
+    public String getTenTaiKhoan() { return tenTaiKhoan; }
+    public void setTenTaiKhoan(String tenTaiKhoan) { this.tenTaiKhoan = tenTaiKhoan; }
+
+    public String getMatKhau() { return matKhau; }
+    public void setMatKhau(String matKhau) { this.matKhau = matKhau; }
+
+    public String getPhanQuyen() { return phanQuyen; }
+    public void setPhanQuyen(String phanQuyen) { this.phanQuyen = phanQuyen; }
+
+    public String getTrangThai() { return trangThai; }
+    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
 }

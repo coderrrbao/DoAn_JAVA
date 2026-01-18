@@ -8,14 +8,16 @@ import java.awt.Font;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
-    private JButton btnXemChiTiet, btnXoa, btnLoc;
+    private JButton btnXemChiTiet, btnXoa;
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
+    private LocNgay_Item locNgay;
 
     public HoaDonUI() {
         setLayout(new BorderLayout());
@@ -24,24 +26,22 @@ public class HoaDonUI extends JPanel {
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
+        locNgay = new LocNgay_Item(350, 27);
         search_Item = new Search_Item(300, 30);
         
-        btnXemChiTiet = new JButton("Xem chi tiết");
+        btnXemChiTiet = new JButton("Chi tiết");
         TaoUI.setHeightButton(btnXemChiTiet, 27);
         
         btnXoa = new JButton("Xóa");
         TaoUI.setHeightButton(btnXoa, 27);
 
-        btnLoc = new JButton("Lọc");
-        TaoUI.setHeightButton(btnLoc, 27);
-
+        top.add(locNgay);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
-        top.add(Box.createRigidArea(new Dimension(10, 0)));
-        top.add(btnLoc);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -85,7 +85,6 @@ public class HoaDonUI extends JPanel {
 
     public JButton getBtnXemChiTiet() { return btnXemChiTiet; }
     public JButton getBtnXoa() { return btnXoa; }
-    public JButton getBtnLoc() { return btnLoc; }
     public Search_Item getSearch_Item() { return search_Item; }
     public JTable getTableUI() { return tableUI; }
     public DefaultTableModel getModel() { return model; }

@@ -4,17 +4,17 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 
 public class DBConnection {
-    private static final String URL = "wfwf";
-    private static String taiKhoan;
-    private static String matKhau;
+    private static final String URL = "jdbc:sqlserver://127.0.0.1:1433;"
+                                    + "databaseName=QL_NUOC;" 
+                                    + "encrypt=true;"
+                                    + "trustServerCertificate=true;";
 
     public static Connection getConnection() {
         try {
-            return DriverManager.getConnection(URL, taiKhoan, matKhau);
+            return DriverManager.getConnection(URL, "sa", "123456");
         } catch (Exception e) {
-            e.printStackTrace();
+            System.err.println("Lỗi kết nối Java: " + e.getMessage());
             return null;
         }
-
     }
 }

@@ -1,45 +1,50 @@
 package dto;
 
 public class NhaCungCap {
-
-    private String maNCC;
-    private String tenNCC;
-    private String soDienThoai;
-    private boolean TrangThai;
+    private String ma;
+    private String ten;
+    private String diaCHi;
+    private String sdt;
 
     public NhaCungCap() {
     }
 
-    public NhaCungCap(String maNCC, String tenNCC, String soDienThoai) {
-        this.maNCC = maNCC;
-        this.tenNCC = tenNCC;
-        this.soDienThoai = soDienThoai;
+    public NhaCungCap(String ma, String ten, String diaCHi, String sdt) {
+        this.ma = ma;
+        this.ten = ten;
+        this.diaCHi = diaCHi;
+        this.sdt = sdt;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaNCC() { 
-        return maNCC; 
-    }
-    public void setMaNCC(String maNCC) { 
-        this.maNCC = maNCC; 
+    public String getDiaCHi() {
+        return diaCHi;
     }
 
-    public String getTenNCC() { 
-        return tenNCC; 
-    }
-    public void setTenNCC(String tenNCC) { 
-        this.tenNCC = tenNCC; 
+    public String getMa() {
+        return ma;
     }
 
-    public String getSoDienThoai() { 
-        return soDienThoai; 
+    public String getSdt() {
+        return sdt;
     }
-    public void setSoDienThoai(String soDienThoai) { 
-        this.soDienThoai = soDienThoai; 
+
+    public String getTen() {
+        return ten;
+    }
+
+    public void setDiaCHi(String diaCHi) {
+        this.diaCHi = diaCHi;
+    }
+
+    public void setMa(String ma) {
+        this.ma = ma;
+    }
+
+    public void setSdt(String sdt) {
+        this.sdt = sdt;
+    }
+
+    public void setTen(String ten) {
+        this.ten = ten;
     }
 }

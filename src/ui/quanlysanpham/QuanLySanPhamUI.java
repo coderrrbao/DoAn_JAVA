@@ -73,9 +73,8 @@ public class QuanLySanPhamUI extends JPanel {
     }
 
     private void initMainContent() {
-        danhSachSp = TaoUI.taoPanelFlowLayout(450, 900, 20, 20);
+        danhSachSp = TaoUI.taoPanelFlowLayout(450, 850, 10, 10);
         danhSachSp.setBackground(new Color(242, 242, 242));
-
         JPanel content = new JPanel(new BorderLayout());
         
         content.add(taoThanhPhanTrang(),BorderLayout.SOUTH);

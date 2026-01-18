@@ -1,4 +1,4 @@
-package ui.component;
+package ui.main;
 
 import javax.swing.*;
 import java.awt.*;
@@ -32,7 +32,7 @@ public class MenuPanelItem extends JPanel {
     }
 
     private void initUI(String text) {
-        Dimension size = new Dimension(200, 40);
+        Dimension size = new Dimension(200, 36);
         setPreferredSize(size);
         setMaximumSize(size);
         setMinimumSize(size);
