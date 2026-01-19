@@ -7,7 +7,7 @@ public class Size {
     private String tenSize;
     private int phanTramGia;
     private int phanTramNL;
-    private boolean TrangThai;
+    private boolean trangThai;
 
     public Size() {
     }
@@ -20,44 +20,51 @@ public class Size {
         this.phanTramNL = phanTramNL;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaSize() { 
-        return maSize; 
-    }
-    public void setMaSize(String maSize) { 
-        this.maSize = maSize; 
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getMaSP() { 
-        return maSP; 
-    }
-    public void setMaSP(String maSP) { 
-        this.maSP = maSP; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
 
-    public String getTenSize() { 
-        return tenSize; 
-    }
-    public void setTenSize(String tenSize) { 
-        this.tenSize = tenSize; 
+    public String getMaSize() {
+        return maSize;
     }
 
-    public int getPhanTramGia() { 
-        return phanTramGia; 
-    }
-    public void setPhanTramGia(int phanTramGia) { 
-        this.phanTramGia = phanTramGia; 
+    public void setMaSize(String maSize) {
+        this.maSize = maSize;
     }
 
-    public int getPhanTramNL() { 
-        return phanTramNL; 
+    public String getMaSP() {
+        return maSP;
     }
-    public void setPhanTramNL(int phanTramNL) { 
-        this.phanTramNL = phanTramNL; 
+
+    public void setMaSP(String maSP) {
+        this.maSP = maSP;
+    }
+
+    public String getTenSize() {
+        return tenSize;
+    }
+
+    public void setTenSize(String tenSize) {
+        this.tenSize = tenSize;
+    }
+
+    public int getPhanTramGia() {
+        return phanTramGia;
+    }
+
+    public void setPhanTramGia(int phanTramGia) {
+        this.phanTramGia = phanTramGia;
+    }
+
+    public int getPhanTramNL() {
+        return phanTramNL;
+    }
+
+    public void setPhanTramNL(int phanTramNL) {
+        this.phanTramNL = phanTramNL;
     }
 }

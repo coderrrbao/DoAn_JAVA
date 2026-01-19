@@ -4,8 +4,8 @@ public class CongThuc {
 
     private String maCT;
     private String maSP;
-    private boolean TrangThai;
-    
+    private boolean trangThai;
+
     public CongThuc() {
     }
 
@@ -14,23 +14,27 @@ public class CongThuc {
         this.maSP = maSP;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaCT() { 
-        return maCT; 
-    }
-    public void setMaCT(String maCT) { 
-        this.maCT = maCT; 
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getMaSP() { 
-        return maSP; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
-    public void setMaSP(String maSP) { 
-        this.maSP = maSP; 
+
+    public String getMaCT() {
+        return maCT;
+    }
+
+    public void setMaCT(String maCT) {
+        this.maCT = maCT;
+    }
+
+    public String getMaSP() {
+        return maSP;
+    }
+
+    public void setMaSP(String maSP) {
+        this.maSP = maSP;
     }
 }

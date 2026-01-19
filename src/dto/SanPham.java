@@ -1,45 +1,41 @@
 package dto;
 
-import java.sql.Date;
-
 public class SanPham {
-    private String ma;
-    private String ten;
-    // Nước ngọt,Nước suối,Trà,Cà phê,Nước tăng lực
-    private String loaiNuoc;
+    private String maSP;
+    private String tenSP;
+    private DanhMuc danhMuc;
     private long giaNhap;
     private long giaBan;
-    private int dungTichMl;
     private NhaCungCap nhaCungCap;
     private int soLuongTon;
-    private Date hanSanXuat;
-    private Date hanSuDung;
-    private boolean trangThai;
+    private String loaiNuoc;
     private String anh;
-    private String gioiThieu;
+    private int theTich;
+    private int mucCanhBao;
+    private boolean trangThai;
 
     public SanPham() {
     }
 
-    public SanPham(String ma, String ten, String loaiNuoc, long giaNhap, long giaBan, int dungTichMl, 
-                   NhaCungCap nhaCungCap, int soLuongTon, Date hanSanXuat, Date hanSuDung, 
-                   boolean trangThai, String anh, String gioiThieu) {
-        this.ma = ma;
-        this.ten = ten;
-        this.loaiNuoc = loaiNuoc;
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
+            NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
+            int theTich, int mucCanhBao, boolean trangThai) {
+        this.maSP = maSP;
+        this.tenSP = tenSP;
+        this.danhMuc = danhMuc;
         this.giaNhap = giaNhap;
         this.giaBan = giaBan;
-        this.dungTichMl = dungTichMl;
         this.nhaCungCap = nhaCungCap;
         this.soLuongTon = soLuongTon;
-        this.hanSanXuat = hanSanXuat;
-        this.hanSuDung = hanSuDung;
-        this.trangThai = trangThai;
+        this.loaiNuoc = loaiNuoc;
         this.anh = anh;
-        this.gioiThieu = gioiThieu;
+        this.theTich = theTich;
+        this.mucCanhBao = mucCanhBao;
+        this.trangThai = trangThai;
     }
-    public int getDungTichMl() {
-        return dungTichMl;
+
+    public int getTheTich() {
+        return theTich;
     }
 
     public String getAnh() {
@@ -54,24 +50,20 @@ public class SanPham {
         return giaNhap;
     }
 
-    public String getGioiThieu() {
-        return gioiThieu;
-    }
-
-    public Date getHanSanXuat() {
-        return hanSanXuat;
-    }
-
-    public Date getHanSuDung() {
-        return hanSuDung;
+    public int getMucCanhBao() {
+        return mucCanhBao;
     }
 
     public String getLoaiNuoc() {
         return loaiNuoc;
     }
 
-    public String getMa() {
-        return ma;
+    public String getMaSP() {
+        return maSP;
+    }
+
+    public DanhMuc getDanhMuc() {
+        return danhMuc;
     }
 
     public NhaCungCap getNhaCungCap() {
@@ -82,8 +74,8 @@ public class SanPham {
         return soLuongTon;
     }
 
-    public String getTen() {
-        return ten;
+    public String getTenSP() {
+        return tenSP;
     }
 
     public boolean getTrangThai() {
@@ -102,24 +94,16 @@ public class SanPham {
         this.giaNhap = giaNhap;
     }
 
-    public void setGioiThieu(String gioiThieu) {
-        this.gioiThieu = gioiThieu;
-    }
-
-    public void setHanSanXuat(Date hanSanXuat) {
-        this.hanSanXuat = hanSanXuat;
-    }
-
-    public void setHanSuDung(Date hanSuDung) {
-        this.hanSuDung = hanSuDung;
-    }
-
     public void setLoaiNuoc(String loaiNuoc) {
         this.loaiNuoc = loaiNuoc;
     }
 
-    public void setMa(String ma) {
-        this.ma = ma;
+    public void setMaSP(String maSP) {
+        this.maSP = maSP;
+    }
+
+    public void setDanhMuc(DanhMuc danhMuc) {
+        this.danhMuc = danhMuc;
     }
 
     public void setNhaCungCap(NhaCungCap nhaCungCap) {
@@ -130,15 +114,19 @@ public class SanPham {
         this.soLuongTon = soLuongTon;
     }
 
-    public void setTen(String ten) {
-        this.ten = ten;
+    public void setTenSP(String tenSP) {
+        this.tenSP = tenSP;
     }
 
     public void setTrangThai(boolean trangThai) {
         this.trangThai = trangThai;
     }
 
-    public void setDungTichMl(int dungTichMl) {
-        this.dungTichMl = dungTichMl;
+    public void setTheTich(int theTich) {
+        this.theTich = theTich;
+    }
+
+    public void setMucCanhBao(int mucCanhBao) {
+        this.mucCanhBao = mucCanhBao;
     }
 }

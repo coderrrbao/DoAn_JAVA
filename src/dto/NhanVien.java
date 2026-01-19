@@ -10,14 +10,14 @@ public class NhanVien {
     private String sdt;
     private String diaChi;
     private String chucVu;
-
-    private TaiKhoan taiKhoan;
+    private String taiKhoan;
+    private boolean trangThai;
 
     public NhanVien() {
     }
 
     public NhanVien(String maNV, String tenNV, String gioiTinh, Date ngaySinh, String sdt, String diaChi,
-            String chucVu) {
+            String chucVu, String taiKhoan, boolean trangThai) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
@@ -25,6 +25,8 @@ public class NhanVien {
         this.sdt = sdt;
         this.diaChi = diaChi;
         this.chucVu = chucVu;
+        this.taiKhoan = taiKhoan;
+        this.trangThai = trangThai;
     }
 
     public String getMaNV() {
@@ -83,11 +85,19 @@ public class NhanVien {
         this.chucVu = chucVu;
     }
 
-    public TaiKhoan getTaiKhoan() {
+    public String getTaiKhoan() {
         return taiKhoan;
     }
 
-    public void setTaiKhoan(TaiKhoan taiKhoan) {
+    public void setTaiKhoan(String taiKhoan) {
         this.taiKhoan = taiKhoan;
+    }
+
+    public boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 }

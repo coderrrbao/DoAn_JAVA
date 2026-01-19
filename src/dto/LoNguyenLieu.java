@@ -9,13 +9,13 @@ public class LoNguyenLieu {
     private String ngayNhap;
     private String ngaySanXuat;
     private String hanSuDung;
-    private boolean TrangThai;
-    
+    private boolean trangThai;
+
     public LoNguyenLieu() {
     }
 
     public LoNguyenLieu(String maLoNL, String maPN, String maNL, int soLuong,
-                        String ngayNhap, String ngaySanXuat, String hanSuDung) {
+            String ngayNhap, String ngaySanXuat, String hanSuDung) {
         this.maLoNL = maLoNL;
         this.maPN = maPN;
         this.maNL = maNL;
@@ -25,58 +25,67 @@ public class LoNguyenLieu {
         this.hanSuDung = hanSuDung;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaLoNL() { 
-        return maLoNL; 
-    }
-    public void setMaLoNL(String maLoNL) { 
-        this.maLoNL = maLoNL; 
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getMaPN() { 
-        return maPN; 
-    }
-    public void setMaPN(String maPN) { 
-        this.maPN = maPN; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
 
-    public String getMaNL() { 
-        return maNL; 
-    }
-    public void setMaNL(String maNL) { 
-        this.maNL = maNL; 
+    public String getMaLoNL() {
+        return maLoNL;
     }
 
-    public int getSoLuong() { 
-        return soLuong; 
-    }
-    public void setSoLuong(int soLuong) { 
-        this.soLuong = soLuong; 
+    public void setMaLoNL(String maLoNL) {
+        this.maLoNL = maLoNL;
     }
 
-    public String getNgayNhap() { 
-        return ngayNhap; 
-    }
-    public void setNgayNhap(String ngayNhap) { 
-        this.ngayNhap = ngayNhap; 
+    public String getMaPN() {
+        return maPN;
     }
 
-    public String getNgaySanXuat() { 
-        return ngaySanXuat; 
-    }
-    public void setNgaySanXuat(String ngaySanXuat) { 
-        this.ngaySanXuat = ngaySanXuat; 
+    public void setMaPN(String maPN) {
+        this.maPN = maPN;
     }
 
-    public String getHanSuDung() { 
-        return hanSuDung; 
+    public String getMaNL() {
+        return maNL;
     }
-    public void setHanSuDung(String hanSuDung) { 
-        this.hanSuDung = hanSuDung; 
+
+    public void setMaNL(String maNL) {
+        this.maNL = maNL;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public String getNgayNhap() {
+        return ngayNhap;
+    }
+
+    public void setNgayNhap(String ngayNhap) {
+        this.ngayNhap = ngayNhap;
+    }
+
+    public String getNgaySanXuat() {
+        return ngaySanXuat;
+    }
+
+    public void setNgaySanXuat(String ngaySanXuat) {
+        this.ngaySanXuat = ngaySanXuat;
+    }
+
+    public String getHanSuDung() {
+        return hanSuDung;
+    }
+
+    public void setHanSuDung(String hanSuDung) {
+        this.hanSuDung = hanSuDung;
     }
 }

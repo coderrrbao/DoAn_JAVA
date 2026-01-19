@@ -51,10 +51,23 @@ import org.jfree.chart.renderer.category.AreaRenderer;
 public class TaoUI {
 
     public static JLabel taoJlabelAnh(String src, int rong, int dai) {
+        if (src == null) {
+            src = "/assets/img/douongmd.png";
+        }
+        ImageIcon icon1 = new ImageIcon(TaoUI.class.getResource(src));
+
+        Image img1 = icon1.getImage().getScaledInstance(rong, dai, Image.SCALE_SMOOTH);
+        ImageIcon avata = new ImageIcon(img1);
+        JLabel lb = new JLabel(avata);
+        setFixSize(lb, rong, dai);
+        return lb;
+    }
+
+    public static ImageIcon taoImageIcon(String src,int rong,int dai) {
         ImageIcon icon1 = new ImageIcon(TaoUI.class.getResource(src));
         Image img1 = icon1.getImage().getScaledInstance(rong, dai, Image.SCALE_SMOOTH);
         ImageIcon avata = new ImageIcon(img1);
-        return new JLabel(avata);
+        return avata;
     }
 
     public static JLabel taoJlabelAnh_Svg(String src, int rong, int dai) {
@@ -527,67 +540,65 @@ public class TaoUI {
         int preferredWidth = button.getPreferredSize().width;
 
         // Thiết lập kích thước mới với chiều cao tùy chỉnh
-        button.setPreferredSize(new Dimension(preferredWidth+30, height));
-        button.setMaximumSize(new Dimension(preferredWidth+30, height));
+        button.setPreferredSize(new Dimension(preferredWidth + 30, height));
+        button.setMaximumSize(new Dimension(preferredWidth + 30, height));
         // Đảm bảo layout manager cập nhật lại giao diện
         button.revalidate();
     }
 
+    public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,
+            DefaultCategoryDataset dataset) {
+        // 1. Tạo biểu đồ miền (Area Chart)
+        JFreeChart chart = ChartFactory.createAreaChart(
+                tenBieuDo,
+                tenTrucNgang,
+                tenTrucDoc,
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
 
+        // ===== ĐỊNH DẠNG FONT =====
+        Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
+        Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
+        Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
 
+        chart.getTitle().setFont(fontTieuDe);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setItemFont(fontTick);
+        }
 
-public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,
-                                       DefaultCategoryDataset dataset) {
-    // 1. Tạo biểu đồ miền (Area Chart)
-    JFreeChart chart = ChartFactory.createAreaChart(
-            tenBieuDo, 
-            tenTrucNgang, 
-            tenTrucDoc, 
-            dataset, 
-            PlotOrientation.VERTICAL, 
-            true, true, false);
+        // ===== TÙY CHỈNH PLOT =====
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.getDomainAxis().setLabelFont(fontTruc);
+        plot.getDomainAxis().setTickLabelFont(fontTick);
+        plot.getRangeAxis().setLabelFont(fontTruc);
+        plot.getRangeAxis().setTickLabelFont(fontTick);
 
-    // ===== ĐỊNH DẠNG FONT =====
-    Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
-    Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
-    Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
+        // ===== NỀN + GRID (GIỮ GIỐNG BẢN CŨ CỦA BẠN) =====
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(new Color(220, 220, 220));
+        plot.setDomainGridlinePaint(new Color(220, 220, 220));
+        plot.setOutlineVisible(false); // Ẩn đường viền khung biểu đồ cho hiện đại
 
-    chart.getTitle().setFont(fontTieuDe);
-    if (chart.getLegend() != null) {
-        chart.getLegend().setItemFont(fontTick);
+        // ===== TÙY CHỈNH MIỀN (RENDERER) =====
+        AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
+
+        // Đặt màu cho miền (Ví dụ: Màu xanh lá cây của Bao Store với độ trong suốt
+        // 150/255)
+        Color colorArea = new Color(76, 175, 80, 150);
+        renderer.setSeriesPaint(0, colorArea);
+
+        // Giúp đường kẻ mượt mà hơn
+        chart.setAntiAlias(true);
+
+        // ===== TẠO CHART PANEL =====
+        ChartPanel chartPanel = new ChartPanel(chart);
+        chartPanel.setPreferredSize(new Dimension(800, 400));
+        chartPanel.setMouseWheelEnabled(false); // Tắt zoom chuột
+        chartPanel.setDomainZoomable(false);
+        chartPanel.setRangeZoomable(false);
+        chartPanel.setBackground(Color.WHITE);
+
+        return chartPanel;
     }
-
-    // ===== TÙY CHỈNH PLOT =====
-    CategoryPlot plot = chart.getCategoryPlot();
-    plot.getDomainAxis().setLabelFont(fontTruc);
-    plot.getDomainAxis().setTickLabelFont(fontTick);
-    plot.getRangeAxis().setLabelFont(fontTruc);
-    plot.getRangeAxis().setTickLabelFont(fontTick);
-
-    // ===== NỀN + GRID (GIỮ GIỐNG BẢN CŨ CỦA BẠN) =====
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setRangeGridlinePaint(new Color(220, 220, 220));
-    plot.setDomainGridlinePaint(new Color(220, 220, 220));
-    plot.setOutlineVisible(false); // Ẩn đường viền khung biểu đồ cho hiện đại
-
-    // ===== TÙY CHỈNH MIỀN (RENDERER) =====
-    AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
-    
-    // Đặt màu cho miền (Ví dụ: Màu xanh lá cây của Bao Store với độ trong suốt 150/255)
-    Color colorArea = new Color(76, 175, 80, 150); 
-    renderer.setSeriesPaint(0, colorArea);
-    
-    // Giúp đường kẻ mượt mà hơn
-    chart.setAntiAlias(true);
-
-    // ===== TẠO CHART PANEL =====
-    ChartPanel chartPanel = new ChartPanel(chart);
-    chartPanel.setPreferredSize(new Dimension(800, 400));
-    chartPanel.setMouseWheelEnabled(false); // Tắt zoom chuột
-    chartPanel.setDomainZoomable(false);
-    chartPanel.setRangeZoomable(false);
-    chartPanel.setBackground(Color.WHITE);
-
-    return chartPanel;
-}
 }

@@ -21,7 +21,7 @@ public class SanPhamBhItemPanel extends JPanel {
         TaoUI.addItem(anhPanel, TaoUI.taoJlabelAnh("../assets/img/pepsi.png", 70, 70), 0, true);
 
         JPanel tenSanPhamPanel = TaoUI.taoPanelCanGiua(100, 20);
-        TaoUI.addItem(tenSanPhamPanel, new JLabel(sanPham.getTen()), 0, true);
+        TaoUI.addItem(tenSanPhamPanel, new JLabel(sanPham.getTenSP()), 0, true);
 
         JPanel giaSpPanel = TaoUI.taoPanelCanGiua(100, 20);
         JLabel lblGia = new JLabel(String.format("%,d", sanPham.getGiaBan()) + "đ");
@@ -41,7 +41,7 @@ public class SanPhamBhItemPanel extends JPanel {
         tonNumber.setFont(fontNho);
         tonKhoPanel.add(titleTon);
         tonKhoPanel.add(tonNumber);
-        tonKhoPanel.add(Box.createRigidArea(new Dimension(5,0)));
+        tonKhoPanel.add(Box.createRigidArea(new Dimension(5, 0)));
 
         add(anhPanel);
         add(tenSanPhamPanel);

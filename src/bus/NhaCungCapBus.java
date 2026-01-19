@@ -1,0 +1,17 @@
+package bus;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+
+import dao.DBConnection;
+import dao.NhaCungCapDAO;
+import dto.NhaCungCap;
+
+public class NhaCungCapBus {
+    private NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
+
+    public NhaCungCap timNhaCungCap(String ma) {
+        return nhaCungCapDAO.timNhaCungCap(ma);
+    }
+}

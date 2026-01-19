@@ -1,35 +1,50 @@
 package dto;
 
 public class TaiKhoan {
-    private String maNV; 
-    private String tenTaiKhoan;
+    private String tenDangNhap;
     private String matKhau;
-    private String phanQuyen;
-    private String trangThai;
+    private String maNQ;
+    private boolean trangThai;
 
-    public TaiKhoan() {}
+    public TaiKhoan() {
+    }
 
- 
-    public TaiKhoan(String maNV, String tenTaiKhoan, String matKhau, String phanQuyen, String trangThai) {
-        this.maNV = maNV;
-        this.tenTaiKhoan = tenTaiKhoan;
+    public TaiKhoan(String tenDangNhap, String matKhau, String maNQ, boolean trangThai) {
+        this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
-        this.phanQuyen = phanQuyen;
+        this.maNQ = maNQ;
         this.trangThai = trangThai;
     }
 
-    public String getMaNV() { return maNV; }
-    public void setMaNV(String maNV) { this.maNV = maNV; }
+    public String getTenDangNhap() {
+        return tenDangNhap;
+    }
 
-    public String getTenTaiKhoan() { return tenTaiKhoan; }
-    public void setTenTaiKhoan(String tenTaiKhoan) { this.tenTaiKhoan = tenTaiKhoan; }
+    public void setTenDangNhap(String tenDangNhap) {
+        this.tenDangNhap = tenDangNhap;
+    }
 
-    public String getMatKhau() { return matKhau; }
-    public void setMatKhau(String matKhau) { this.matKhau = matKhau; }
+    public String getMatKhau() {
+        return matKhau;
+    }
 
-    public String getPhanQuyen() { return phanQuyen; }
-    public void setPhanQuyen(String phanQuyen) { this.phanQuyen = phanQuyen; }
+    public void setMatKhau(String matKhau) {
+        this.matKhau = matKhau;
+    }
 
-    public String getTrangThai() { return trangThai; }
-    public void setTrangThai(String trangThai) { this.trangThai = trangThai; }
+    public String getMaNQ() {
+        return maNQ;
+    }
+
+    public void setMaNQ(String maNQ) {
+        this.maNQ = maNQ;
+    }
+
+    public boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
+    }
 }

@@ -1,46 +1,40 @@
 package dto;
 
 public class DanhMuc {
-
     private String maDM;
     private String tenDM;
-    private String moTa;
-    private boolean TrangThai;
+    private boolean trangThai;
 
     public DanhMuc() {
     }
 
-    public DanhMuc(String maDM, String tenDM, String moTa) {
+    public DanhMuc(String maDM, String tenDM, boolean trangThai) {
         this.maDM = maDM;
         this.tenDM = tenDM;
-        this.moTa = moTa;
+        this.trangThai = trangThai;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaDM() { 
-        return maDM; 
-    }
-    public void setMaDM(String maDM) { 
-        this.maDM = maDM; 
+    public String getMaDM() {
+        return maDM;
     }
 
-    public String getTenDM() { 
-        return tenDM; 
-    }
-    public void setTenDM(String tenDM) { 
-        this.tenDM = tenDM; 
+    public void setMaDM(String maDM) {
+        this.maDM = maDM;
     }
 
-    public String getMoTa() { 
-        return moTa; 
+    public String getTenDM() {
+        return tenDM;
     }
-    public void setMoTa(String moTa) { 
-        this.moTa = moTa; 
+
+    public void setTenDM(String tenDM) {
+        this.tenDM = tenDM;
+    }
+
+    public boolean getTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 }
-

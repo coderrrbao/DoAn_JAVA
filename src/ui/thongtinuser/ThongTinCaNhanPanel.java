@@ -85,9 +85,9 @@ public class ThongTinCaNhanPanel extends JPanel {
         tfDiaChi.setText(nv.getDiaChi());
         tfChucVu.setText(nv.getChucVu());
 
-        if (nv.getTaiKhoan() != null) {
-            tfTenTaiKhoan.setText(nv.getTaiKhoan().getTenTaiKhoan());
-            tfPhanQuyen.setText(nv.getTaiKhoan().getPhanQuyen());
-        }
+        // if (nv.getTaiKhoan() != null) {
+        //     tfTenTaiKhoan.setText(nv.getTaiKhoan().getTenTaiKhoan());
+        //     tfPhanQuyen.setText(nv.getTaiKhoan().getPhanQuyen());
+        // }
     }
 }

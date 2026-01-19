@@ -7,7 +7,7 @@ public class PhieuNhap {
     private String maNV;
     private double tongTien;
     private String maNCC;
-    private boolean TrangThai;
+    private boolean trangThai;
 
     public PhieuNhap() {
     }
@@ -20,44 +20,51 @@ public class PhieuNhap {
         this.maNCC = maNCC;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaPN() { 
-        return maPN; 
-    }
-    public void setMaPN(String maPN) { 
-        this.maPN = maPN; 
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getNgayNhap() { 
-        return ngayNhap; 
-    }
-    public void setNgayNhap(String ngayNhap) { 
-        this.ngayNhap = ngayNhap; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
 
-    public String getMaNV() { 
-        return maNV; 
-    }
-    public void setMaNV(String maNV) { 
-        this.maNV = maNV; 
+    public String getMaPN() {
+        return maPN;
     }
 
-    public double getTongTien() { 
-        return tongTien; 
-    }
-    public void setTongTien(double tongTien) { 
-        this.tongTien = tongTien; 
+    public void setMaPN(String maPN) {
+        this.maPN = maPN;
     }
 
-    public String getMaNCC() { 
-        return maNCC; 
+    public String getNgayNhap() {
+        return ngayNhap;
     }
-    public void setMaNCC(String maNCC) { 
-        this.maNCC = maNCC; 
+
+    public void setNgayNhap(String ngayNhap) {
+        this.ngayNhap = ngayNhap;
+    }
+
+    public String getMaNV() {
+        return maNV;
+    }
+
+    public void setMaNV(String maNV) {
+        this.maNV = maNV;
+    }
+
+    public double getTongTien() {
+        return tongTien;
+    }
+
+    public void setTongTien(double tongTien) {
+        this.tongTien = tongTien;
+    }
+
+    public String getMaNCC() {
+        return maNCC;
+    }
+
+    public void setMaNCC(String maNCC) {
+        this.maNCC = maNCC;
     }
 }

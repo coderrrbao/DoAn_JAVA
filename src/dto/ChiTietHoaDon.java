@@ -7,8 +7,8 @@ public class ChiTietHoaDon {
     private String maSize;
     private int soLuong;
     private double gia;
-    private boolean TrangThai;
-    
+    private boolean trangThai;
+
     public ChiTietHoaDon() {
     }
 
@@ -20,44 +20,51 @@ public class ChiTietHoaDon {
         this.gia = gia;
     }
 
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
-    }
-    public String getMaHD() { 
-        return maHD; 
-    }
-    public void setMaHD(String maHD) { 
-        this.maHD = maHD; 
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getMaSP() { 
-        return maSP; 
-    }
-    public void setMaSP(String maSP) { 
-        this.maSP = maSP; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
 
-    public String getMaSize() { 
-        return maSize; 
-    }
-    public void setMaSize(String maSize) { 
-        this.maSize = maSize; 
+    public String getMaHD() {
+        return maHD;
     }
 
-    public int getSoLuong() { 
-        return soLuong; 
-    }
-    public void setSoLuong(int soLuong) { 
-        this.soLuong = soLuong; 
+    public void setMaHD(String maHD) {
+        this.maHD = maHD;
     }
 
-    public double getGia() { 
-        return gia; 
+    public String getMaSP() {
+        return maSP;
     }
-    public void setGia(double gia) { 
-        this.gia = gia; 
+
+    public void setMaSP(String maSP) {
+        this.maSP = maSP;
+    }
+
+    public String getMaSize() {
+        return maSize;
+    }
+
+    public void setMaSize(String maSize) {
+        this.maSize = maSize;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
+    }
+
+    public double getGia() {
+        return gia;
+    }
+
+    public void setGia(double gia) {
+        this.gia = gia;
     }
 }

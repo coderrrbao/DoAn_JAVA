@@ -5,7 +5,8 @@ public class Kho {
     private String maSP;
     private int soLuongTon;
     private int mucCanhBao;
-    private boolean TrangThai;
+    private boolean trangThai;
+
     public Kho() {
     }
 
@@ -14,33 +15,36 @@ public class Kho {
         this.soLuongTon = soLuongTon;
         this.mucCanhBao = mucCanhBao;
     }
-    
-        
-    public void setTrangThai(boolean TrangThai){
-        this.TrangThai = TrangThai;
-    }
-    public boolean getTrangThai(){
-        return TrangThai;
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 
-    public String getMaSP() { 
-        return maSP; 
-    }
-    public void setMaSP(String maSP) { 
-        this.maSP = maSP; 
+    public boolean getTrangThai() {
+        return trangThai;
     }
 
-    public int getSoLuongTon() { 
-        return soLuongTon; 
-    }
-    public void setSoLuongTon(int soLuongTon) { 
-        this.soLuongTon = soLuongTon; 
+    public String getMaSP() {
+        return maSP;
     }
 
-    public int getMucCanhBao() { 
-        return mucCanhBao; 
+    public void setMaSP(String maSP) {
+        this.maSP = maSP;
     }
-    public void setMucCanhBao(int mucCanhBao) { 
-        this.mucCanhBao = mucCanhBao; 
+
+    public int getSoLuongTon() {
+        return soLuongTon;
+    }
+
+    public void setSoLuongTon(int soLuongTon) {
+        this.soLuongTon = soLuongTon;
+    }
+
+    public int getMucCanhBao() {
+        return mucCanhBao;
+    }
+
+    public void setMucCanhBao(int mucCanhBao) {
+        this.mucCanhBao = mucCanhBao;
     }
 }

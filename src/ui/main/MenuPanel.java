@@ -46,13 +46,6 @@ public class MenuPanel extends JPanel {
         addMenuItem("Thông tin", ()->{
 
             NhanVien nv = new NhanVien(
-            "NV001",           // maNV
-            "Nguyễn Văn A",    // tenNV
-            "Nam",             // gioiTinh
-            Date.valueOf("1995-05-20"),        // ngaySinh (lấy ngày hiện tại)
-            "0901234567",      // sdt
-            "123 Đường ABC, HCM", // diaChi
-            "Quản lý"          // chucVu
         );
             JDialog thongTin = new ThongTinDialog(null,nv);
             thongTin.setVisible(true);
