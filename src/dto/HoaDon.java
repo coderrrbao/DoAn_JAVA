@@ -1,31 +1,37 @@
 package dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class HoaDon {
 
     private String maHD;
-    private String maNV;
+    // private String maNV;
+    private NhanVien nhanVien;
     private String maKH;
-    private String maKM;
+    // private String maKM;
+    private MaGiamGia maGiamGia = null;
     private Date ngayBan;
     private double tongTien;
     private double tienKhuyenMai;
     private boolean trangThai;
+    ArrayList<ChiTietHoaDon> listChiTietHoaDon;
 
     public HoaDon() {
+        this.listChiTietHoaDon = new ArrayList<>();
     }
 
-    public HoaDon(String maHD, String maNV, String maKH, String maKM,
+    public HoaDon(String maHD, NhanVien nhanVien, String maKH, MaGiamGia maGiamGia,
             Date ngayBan, double tongTien, double tienKhuyenMai, boolean trangThai) {
         this.maHD = maHD;
-        this.maNV = maNV;
+        this.nhanVien = nhanVien;
         this.maKH = maKH;
-        this.maKM = maKM;
+        this.maGiamGia = maGiamGia;
         this.ngayBan = ngayBan;
         this.tongTien = tongTien;
         this.tienKhuyenMai = tienKhuyenMai;
         this.trangThai = trangThai;
+        this.listChiTietHoaDon = new ArrayList<>();
     }
 
     public void setTrangThai(boolean trangThai) {
@@ -44,12 +50,12 @@ public class HoaDon {
         this.maHD = maHD;
     }
 
-    public String getMaNV() {
-        return maNV;
+    public NhanVien getNhanVien() {
+        return nhanVien;
     }
 
-    public void setMaNV(String maNV) {
-        this.maNV = maNV;
+    public void setNhanVien(NhanVien nhanVien) {
+        this.nhanVien = nhanVien;
     }
 
     public String getMaKH() {
@@ -60,12 +66,12 @@ public class HoaDon {
         this.maKH = maKH;
     }
 
-    public String getMaKM() {
-        return maKM;
+    public MaGiamGia getMaGiamGia() {
+        return maGiamGia;
     }
 
-    public void setMaKM(String maKM) {
-        this.maKM = maKM;
+    public void setMaGiamGia(MaGiamGia maGiamGia) {
+        this.maGiamGia = maGiamGia;
     }
 
     public Date getNgayBan() {
@@ -90,5 +96,27 @@ public class HoaDon {
 
     public void setTienKhuyenMai(double tienKhuyenMai) {
         this.tienKhuyenMai = tienKhuyenMai;
+    }
+
+    public ArrayList<ChiTietHoaDon> getListChiTietHoaDon() {
+        return listChiTietHoaDon;
+    }
+
+    public void setListChiTietHoaDon(ArrayList<ChiTietHoaDon> listChiTietHoaDon) {
+        this.listChiTietHoaDon = listChiTietHoaDon;
+    }
+
+    public void themChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
+        this.listChiTietHoaDon.add(chiTietHoaDon);
+    }
+
+    public void xoaChiTietHoaDon(ChiTietHoaDon chiTietHoaDon) {
+        this.listChiTietHoaDon.remove(chiTietHoaDon);
+    }
+
+    public void xoaChiTietHoaDonTheoIndex(int index) {
+        if (index >= 0 && index < this.listChiTietHoaDon.size()) {
+            this.listChiTietHoaDon.remove(index);
+        }
     }
 }

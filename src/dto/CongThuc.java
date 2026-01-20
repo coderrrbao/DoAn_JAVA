@@ -1,17 +1,20 @@
 package dto;
 
+import java.util.ArrayList;
+
 public class CongThuc {
 
     private String maCT;
-    private String maSP;
+    private ArrayList<ChiTietCongThuc> listChiTietCongThuc;
     private boolean trangThai;
 
+
     public CongThuc() {
+        listChiTietCongThuc = new ArrayList<>();
     }
 
-    public CongThuc(String maCT, String maSP) {
+    public CongThuc(String maCT) {
         this.maCT = maCT;
-        this.maSP = maSP;
     }
 
     public void setTrangThai(boolean trangThai) {
@@ -29,12 +32,11 @@ public class CongThuc {
     public void setMaCT(String maCT) {
         this.maCT = maCT;
     }
-
-    public String getMaSP() {
-        return maSP;
+    public ArrayList<ChiTietCongThuc> getListChiTietCongThuc() {
+        return listChiTietCongThuc;
+    }
+    public void setListChiTietCongThuc(ArrayList<ChiTietCongThuc> listChiTietCongThuc) {
+        this.listChiTietCongThuc = listChiTietCongThuc;
     }
 
-    public void setMaSP(String maSP) {
-        this.maSP = maSP;
-    }
 }

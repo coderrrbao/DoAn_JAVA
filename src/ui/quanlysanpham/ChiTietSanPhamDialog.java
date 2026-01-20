@@ -5,28 +5,32 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import bus.QuanLySanPhamBUS;
 import dto.SanPham;
 import util.TaoUI;
 
 public class ChiTietSanPhamDialog extends JDialog {
 
-    private JTextField tfMaSanPham, tfTenSanPham, tfLoaiNuoc, tfNhaCungCap,
+    private JTextField tfMaSanPham, tfTenSanPham, tfCanhBao, tfNhaCungCap,
             tfGiaNhap, tfGiaBan, tfSoLuongTon, tfDungTich;
     private JTable tblSize;
     private DefaultTableModel modelSize;
-    private JButton btnChonAnh, btnLuuThayDoi, btnSua;
+    private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCt;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
+    private JComboBox cbLoaiNuoc, cbDanhMuc;
+    private SanPham sanPham;
 
     public ChiTietSanPhamDialog(SanPham sanPham) {
         super((JFrame) null, "Chi tiết sản phẩm", true);
-
-        this.setSize(400, 650);
+        this.sanPham = sanPham;
+        this.setSize(400, 680);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -46,9 +50,9 @@ public class ChiTietSanPhamDialog extends JDialog {
         thongTin1.add(TaoUI.taoFieldText("Tên sản phẩm", 80, 100, 30, 5, tfTenSanPham));
 
         JPanel thongTin2 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        tfLoaiNuoc = new JTextField();
+        tfCanhBao = new JTextField();
         tfNhaCungCap = new JTextField();
-        thongTin2.add(TaoUI.taoFieldText("Loại nước", 80, 80, 30, 5, tfLoaiNuoc));
+        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 80, 80, 30, 5, tfCanhBao));
         thongTin2.add(Box.createHorizontalGlue());
         thongTin2.add(TaoUI.taoFieldText("Nhà cung cấp", 80, 100, 30, 5, tfNhaCungCap));
 
@@ -66,9 +70,31 @@ public class ChiTietSanPhamDialog extends JDialog {
         thongTin4.add(Box.createHorizontalGlue());
         thongTin4.add(TaoUI.taoFieldText("Dung tích (ml)", 80, 100, 30, 5, tfDungTich));
 
+        JPanel thongTin5 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
+
+        QuanLySanPhamBUS quanLySanPhamBUS = new QuanLySanPhamBUS();
+        ArrayList<String> luaChonDanhMuc = quanLySanPhamBUS.layLuaChonDanhMuc();
+        ArrayList<String> luaChonLoaiNuoc = new ArrayList<>();
+        luaChonLoaiNuoc.add("Có sẵn");
+        luaChonLoaiNuoc.add("Pha chế");
+        cbDanhMuc = new JComboBox<>(luaChonDanhMuc.toArray());
+        cbLoaiNuoc = new JComboBox<>(luaChonLoaiNuoc.toArray());
+        thongTin5.add(new JLabel("Loại nước"));
+        thongTin5.add(Box.createRigidArea(new Dimension(10, 0)));
+        thongTin5.add(cbLoaiNuoc);
+        thongTin5.add(Box.createHorizontalGlue());
+        thongTin5.add(new JLabel("Danh mục"));
+        thongTin5.add(Box.createRigidArea(new Dimension(15, 0)));
+        thongTin5.add(cbDanhMuc);
+
         JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
-        JPanel titleThongTin6 = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
+        btnXemCt = new JButton("Xem công thức");
+        thongTin6.add(btnXemCt);
         titleThongTin6.add(new JLabel("Bảng size"));
+        titleThongTin6.add(Box.createHorizontalGlue());
+        titleThongTin6.add(btnXemCt);
+
         thongTin6.add(titleThongTin6, BorderLayout.NORTH);
 
         modelSize = new DefaultTableModel();
@@ -81,8 +107,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         modelSize.addRow(new Object[] { "L", "Large (Lớn)", 20, 25 });
         modelSize.addRow(new Object[] { "XL", "Extra Large", 35, 40 });
 
-        tblSize = new JTable(modelSize);
-        JScrollPane scrollPane = new JScrollPane(tblSize);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(modelSize);
         thongTin6.add(scrollPane, BorderLayout.CENTER);
 
         JPanel pnlFooter = TaoUI.taoPanelCanGiua(400, 50);
@@ -104,8 +129,9 @@ public class ChiTietSanPhamDialog extends JDialog {
         chitietPanel.add(thongTin2);
         chitietPanel.add(thongTin3);
         chitietPanel.add(thongTin4);
-        chitietPanel.add(thongTin6);
+        chitietPanel.add(thongTin5);
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        chitietPanel.add(thongTin6);
         chitietPanel.add(Box.createVerticalGlue());
         chitietPanel.add(pnlFooter);
 
@@ -122,10 +148,10 @@ public class ChiTietSanPhamDialog extends JDialog {
         if (sanPham == null) {
             return;
         }
-        lblAnh.setIcon(TaoUI.taoImageIcon(sanPham.getAnh(), 200,200));
+        lblAnh.setIcon(TaoUI.taoImageIcon(sanPham.getAnh(), 200, 200));
         tfMaSanPham.setText(sanPham.getMaSP());
         tfTenSanPham.setText(sanPham.getTenSP());
-        tfLoaiNuoc.setText(sanPham.getLoaiNuoc());
+        tfCanhBao.setText(sanPham.getLoaiNuoc());
         tfNhaCungCap.setText(sanPham.getNhaCungCap().getTenNCC());
         tfGiaNhap.setText(String.valueOf(sanPham.getGiaNhap()));
         tfGiaBan.setText(String.valueOf(sanPham.getGiaBan()));
@@ -144,6 +170,9 @@ public class ChiTietSanPhamDialog extends JDialog {
                 ImageIcon icon = new ImageIcon(fileAnh.getAbsolutePath());
                 lblAnh.setIcon(icon);
             }
+        });
+        btnXemCt.addActionListener(e -> {
+            JDialog xemChiTietCt = new XemCongThucDialog(this,sanPham);
         });
     }
 }

@@ -13,6 +13,7 @@ import ui.xuatkho.XuatKhoUI;
 import ui.banhang.BanHangUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
+import ui.khuyenmai.KhuyenMaiUI;
 import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
 import ui.nhapkho.NhapKhoUI;
@@ -32,6 +33,7 @@ public class ContentPaner extends JPanel {
     private TaiKhoanUI taiKhoanUI;
     private XuatKhoUI xuatKhoUI;
     private TonKhoUI tonKhoUI;
+    private KhuyenMaiUI khuyenMaiUI;
 
     private CardLayout cardLayout;
 
@@ -51,6 +53,7 @@ public class ContentPaner extends JPanel {
         taiKhoanUI = new TaiKhoanUI();
         xuatKhoUI = new XuatKhoUI();
         tonKhoUI = new TonKhoUI();
+        khuyenMaiUI  = new KhuyenMaiUI();
 
         add(quanLySanPhamUI, "Quản lý sản phẩm");
         add(nhaCungCapUI, "Nhà cung cấp");
@@ -63,6 +66,7 @@ public class ContentPaner extends JPanel {
         add(taiKhoanUI, "Tài khoản");
         add(xuatKhoUI, "Xuất kho");
         add(tonKhoUI, "Tồn kho");
+        add(khuyenMaiUI,"Khuyến mãi");
     }
 
     public void switchPage(String name) {
@@ -113,8 +117,8 @@ public class ContentPaner extends JPanel {
     public TonKhoUI getTonKhoUI() {
         return tonKhoUI;
     }
-
     public void loadAll() {
 
     }
+
 }

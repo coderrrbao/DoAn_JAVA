@@ -20,7 +20,7 @@ import ui.thongtinuser.ThongTinDialog;
 public class MenuPanel extends JPanel {
     private List<MenuPanelItem> menuItems;
 
-    public MenuPanel(CardLayout cardLayout, JPanel cardPanel,JFrame frame) {
+    public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame) {
         menuItems = new ArrayList<>();
 
         setPreferredSize(new Dimension(200, 700));
@@ -43,11 +43,11 @@ public class MenuPanel extends JPanel {
         addMenuItem("Nhân viên", cardLayout, cardPanel);
         addMenuItem("Tài khoản", cardLayout, cardPanel);
         addMenuItem("Thống kê", cardLayout, cardPanel);
-        addMenuItem("Thông tin", ()->{
+        addMenuItem("Khuyến mãi", cardLayout, cardPanel);
+        addMenuItem("Thông tin", () -> {
 
-            NhanVien nv = new NhanVien(
-        );
-            JDialog thongTin = new ThongTinDialog(null,nv);
+            NhanVien nv = new NhanVien();
+            JDialog thongTin = new ThongTinDialog(null, nv);
             thongTin.setVisible(true);
         });
 

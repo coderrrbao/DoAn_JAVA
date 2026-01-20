@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.ArrayList;
+
 public class SanPham {
     private String maSP;
     private String tenSP;
@@ -13,6 +15,8 @@ public class SanPham {
     private int theTich;
     private int mucCanhBao;
     private boolean trangThai;
+    private ArrayList<Size> listSize;
+    private CongThuc congThuc;
 
     public SanPham() {
     }
@@ -32,6 +36,26 @@ public class SanPham {
         this.theTich = theTich;
         this.mucCanhBao = mucCanhBao;
         this.trangThai = trangThai;
+        listSize = new ArrayList<>();
+    }
+
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
+            NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
+            int theTich, int mucCanhBao, CongThuc congThuc, boolean trangThai) {
+        this.maSP = maSP;
+        this.tenSP = tenSP;
+        this.danhMuc = danhMuc;
+        this.giaNhap = giaNhap;
+        this.giaBan = giaBan;
+        this.nhaCungCap = nhaCungCap;
+        this.soLuongTon = soLuongTon;
+        this.loaiNuoc = loaiNuoc;
+        this.anh = anh;
+        this.theTich = theTich;
+        this.mucCanhBao = mucCanhBao;
+        this.trangThai = trangThai;
+        this.congThuc = congThuc;
+        listSize = new ArrayList<>();
     }
 
     public int getTheTich() {
@@ -82,6 +106,10 @@ public class SanPham {
         return trangThai;
     }
 
+    public ArrayList<Size> getListSize() {
+        return listSize;
+    }
+
     public void setAnh(String anh) {
         this.anh = anh;
     }
@@ -128,5 +156,43 @@ public class SanPham {
 
     public void setMucCanhBao(int mucCanhBao) {
         this.mucCanhBao = mucCanhBao;
+    }
+
+    public void setListSize(ArrayList<Size> listSize) {
+        this.listSize = listSize;
+    }
+
+    // Thêm size vào list
+    public void addSize(Size size) {
+        if (size != null) {
+            listSize.add(size);
+        }
+    }
+
+    // Xóa size khỏi list
+    public void removeSize(Size size) {
+        if (size != null) {
+            listSize.remove(size);
+        }
+    }
+
+    // Xóa size theo index
+    public void removeSizeAt(int index) {
+        if (index >= 0 && index < listSize.size()) {
+            listSize.remove(index);
+        }
+    }
+
+    // Xóa size theo mã size
+    public void removeSizeByMaSize(String maSize) {
+        listSize.removeIf(size -> size.getMaSize().equals(maSize));
+    }
+
+    public CongThuc getCongThuc() {
+        return congThuc;
+    }
+
+    public void setCongThuc(CongThuc congThuc) {
+        this.congThuc = congThuc;
     }
 }

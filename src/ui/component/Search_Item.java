@@ -1,9 +1,11 @@
 package ui.component;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
 
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
@@ -17,6 +19,8 @@ public class Search_Item extends JPanel {
     };
 
     public Search_Item(int width, int height) {
+        setBackground(Color.white);
+
         setLayout(new BorderLayout(0, 0));
         TaoUI.suaBorderChoPanel(this, 3, 3, 0, 3);
         searchText = new JTextField();
@@ -30,6 +34,8 @@ public class Search_Item extends JPanel {
         searchButton.addActionListener(e -> {
             sukien();
         });
+        setBorder(BorderFactory.createLineBorder(null, 1));
+        searchText.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0)));
     }
 
     public String getTextSearch() {
@@ -39,6 +45,7 @@ public class Search_Item extends JPanel {
     private void sukien() {
         event.run();
     }
+
     public void setEvent(Runnable event) {
         this.event = event;
     }

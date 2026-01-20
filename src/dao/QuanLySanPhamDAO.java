@@ -5,16 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import bus.NhaCungCapBus;
+import bus.DanhMucBUS;
+import bus.NhaCungCapBUS;
+import dao.conection.DBConnection;
+import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
 
 public class QuanLySanPhamDAO {
     public ArrayList<SanPham> layListSanPham() {
         ArrayList<SanPham> listSanPham = new ArrayList<>();
-
-        String sql = "SELECT MaSP, TenSP, Anh, GiaNhap, GiaBan, SoLuongTon, " +
-                "TrangThai, MaNCC, LoaiNuoc, MaDM, TheTich, MucCanhBao FROM SanPham";
+        String sql = "SELECT *, dm.TenDM, ncc.TenNCC FROM SanPham sp INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM INNER JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC WHERE sp.TrangThai = 1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -32,8 +33,11 @@ public class QuanLySanPhamDAO {
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
-                NhaCungCapBus nhaCungCapBus = new NhaCungCapBus();
-                NhaCungCap ncc = nhaCungCapBus.timNhaCungCap(rs.getString("MaNCC"));
+
+                NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
+                        rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+                DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
+                sp.setDanhMuc(danhMuc);
                 sp.setNhaCungCap(ncc);
                 listSanPham.add(sp);
             }
@@ -63,4 +67,69 @@ public class QuanLySanPhamDAO {
         return list;
     }
 
+    public boolean themSanPham(SanPham sanPham) {
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, sanPham.getMaSP());
+            pst.setString(2, sanPham.getTenSP());
+            pst.setString(3, sanPham.getDanhMuc().getMaDM());
+            pst.setDouble(4, sanPham.getGiaNhap());
+            pst.setDouble(5, sanPham.getGiaBan());
+            pst.setString(6, sanPham.getMaSP());
+            pst.setInt(7, sanPham.getSoLuongTon());
+            pst.setString(8, sanPham.getLoaiNuoc());
+            pst.setString(9, sanPham.getAnh());
+            pst.setDouble(10, sanPham.getTheTich());
+            pst.setInt(11, sanPham.getMucCanhBao());
+            pst.setInt(12, sanPham.getTrangThai() ? 1 : 0);
+            int rowAffected = pst.executeUpdate();
+            return rowAffected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi khi thêm sản phẩm: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public SanPham timSanPham(String ma) {
+        String sql = "SELECT * FROM SanPham";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                if (rs.getString("MaSP").equals(ma)) {
+                    SanPham sp = new SanPham();
+                    sp.setMaSP(rs.getString("MaSP"));
+                    sp.setTenSP(rs.getNString("TenSP"));
+                    sp.setAnh(rs.getString("Anh"));
+                    sp.setGiaNhap(rs.getLong("GiaNhap"));
+                    sp.setGiaBan(rs.getLong("GiaBan"));
+                    sp.setSoLuongTon(rs.getInt("SoLuongTon"));
+                    sp.setTrangThai(rs.getBoolean("TrangThai"));
+                    sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
+                    sp.setTheTich(rs.getInt("TheTich"));
+                    sp.setMucCanhBao(rs.getInt("MucCanhBao"));
+                    DanhMucBUS danhMucBUS = new DanhMucBUS();
+                    NhaCungCapBUS nhaCungCapBus = new NhaCungCapBUS();
+                    NhaCungCap ncc = nhaCungCapBus.timNhaCungCap(rs.getString("MaNCC"));
+                    DanhMuc danhMuc = danhMucBUS.timDanhMuc(rs.getString("MaDM"));
+                    sp.setDanhMuc(danhMuc);
+                    sp.setNhaCungCap(ncc);
+                    return sp;
+                }
+
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return null;
+    }
 }

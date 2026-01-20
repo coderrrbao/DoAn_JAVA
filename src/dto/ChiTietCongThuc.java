@@ -2,17 +2,22 @@ package dto;
 
 public class ChiTietCongThuc {
 
-    private String maCT;
-    private String maNL;
+    private String maCTCT;
+    private NguyenLieu nguyenLieu;
     private double soLuong;
     private boolean trangThai;
 
     public ChiTietCongThuc() {
     }
 
-    public ChiTietCongThuc(String maCT, String maNL, double soLuong) {
-        this.maCT = maCT;
-        this.maNL = maNL;
+    public ChiTietCongThuc(String maCT, NguyenLieu nguyenLieu, double soLuong) {
+        this.maCTCT = maCT;
+        this.nguyenLieu = nguyenLieu;
+        this.soLuong = soLuong;
+    }
+
+    public ChiTietCongThuc(String maCT, double soLuong) {
+        this.maCTCT = maCT;
         this.soLuong = soLuong;
     }
 
@@ -24,20 +29,20 @@ public class ChiTietCongThuc {
         return trangThai;
     }
 
-    public String getMaCT() {
-        return maCT;
+    public String getMaCTCT() {
+        return maCTCT;
     }
 
-    public void setMaCT(String maCT) {
-        this.maCT = maCT;
+    public void setMaCTCT(String maCT) {
+        this.maCTCT = maCT;
     }
 
-    public String getMaNL() {
-        return maNL;
+    public void setNguyenLieu(NguyenLieu nguyenLieu) {
+        this.nguyenLieu = nguyenLieu;
     }
 
-    public void setMaNL(String maNL) {
-        this.maNL = maNL;
+    public NguyenLieu getNguyenLieu() {
+        return nguyenLieu;
     }
 
     public double getSoLuong() {

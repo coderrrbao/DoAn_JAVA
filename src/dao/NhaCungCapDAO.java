@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 
+import dao.conection.DBConnection;
 import dto.NhaCungCap;
 
 public class NhaCungCapDAO {
@@ -21,7 +22,6 @@ public class NhaCungCapDAO {
                     nhaCungCap.setMaNCC(rs.getString("MaNCC"));
                     nhaCungCap.setTenNCC(rs.getString("TenNCC"));
                     nhaCungCap.setSoDienThoai(rs.getString("SoDienThoai"));
-                    nhaCungCap.setTrangThai(rs.getBoolean("TrangThai"));
                     nhaCungCap.setDiaChi(rs.getString("DiaChi"));
                     break;
                 }

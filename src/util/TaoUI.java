@@ -17,6 +17,7 @@ import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.util.HashSet;
 
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -63,7 +64,7 @@ public class TaoUI {
         return lb;
     }
 
-    public static ImageIcon taoImageIcon(String src,int rong,int dai) {
+    public static ImageIcon taoImageIcon(String src, int rong, int dai) {
         ImageIcon icon1 = new ImageIcon(TaoUI.class.getResource(src));
         Image img1 = icon1.getImage().getScaledInstance(rong, dai, Image.SCALE_SMOOTH);
         ImageIcon avata = new ImageIcon(img1);
@@ -535,13 +536,49 @@ public class TaoUI {
         return scrollPane;
     }
 
+    public static JScrollPane taoTableScroll(DefaultTableModel model, HashSet<Integer> set) {
+        // 1. Khởi tạo JTable
+        JTable table = new JTable(model);
+
+        // 2. Cấu hình giao diện bảng (Sử dụng Segoe UI cho hiện đại)
+        table.setRowHeight(30);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+        table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        table.setShowGrid(true);
+        table.setGridColor(new Color(230, 230, 230));
+        table.setFillsViewportHeight(true); // Luôn lấp đầy vùng nhìn thấy
+
+        // 3. Tùy chỉnh Tiêu đề cột (Header)
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        table.getTableHeader().setPreferredSize(new Dimension(0, 35));
+        table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
+
+        // 4. Căn giữa dữ liệu cho tất cả các cộtaa
+        DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+        centerRenderer.setHorizontalAlignment(JLabel.CENTER);
+        for (int i = 0; i < table.getColumnCount(); i++) {
+            if (set.contains(i)) {
+                continue;
+            }
+            table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
+        }
+
+        // 5. Bọc bảng vào JScrollPane bằng hàm taoScrollPane CÓ SẴN trong package util
+        JScrollPane scrollPane = TaoUI.taoScrollPane(table);
+
+        // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
+        scrollPane.setPreferredSize(new Dimension(800, 400));
+        return scrollPane;
+    }
+
     public static void setHeightButton(JButton button, int height) {
         // Lấy chiều rộng lý tưởng dựa trên nội dung (text, icon, margin)
         int preferredWidth = button.getPreferredSize().width;
 
         // Thiết lập kích thước mới với chiều cao tùy chỉnh
-        button.setPreferredSize(new Dimension(preferredWidth + 30, height));
-        button.setMaximumSize(new Dimension(preferredWidth + 30, height));
+        button.setPreferredSize(new Dimension(preferredWidth, height));
+        button.setMaximumSize(new Dimension(preferredWidth, height));
+        button.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
         // Đảm bảo layout manager cập nhật lại giao diện
         button.revalidate();
     }

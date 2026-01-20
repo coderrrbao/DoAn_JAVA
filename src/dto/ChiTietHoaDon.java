@@ -2,9 +2,10 @@ package dto;
 
 public class ChiTietHoaDon {
 
+    private String maCT;
     private String maHD;
-    private String maSP;
-    private String maSize;
+    private SanPham sanPham;
+    private Size size;
     private int soLuong;
     private double gia;
     private boolean trangThai;
@@ -12,12 +13,15 @@ public class ChiTietHoaDon {
     public ChiTietHoaDon() {
     }
 
-    public ChiTietHoaDon(String maHD, String maSP, String maSize, int soLuong, double gia) {
+    public ChiTietHoaDon(String maCT, String maHD, SanPham sanPham, Size size, int soLuong, double gia,
+            boolean trangThai) {
+        this.maCT = maCT;
         this.maHD = maHD;
-        this.maSP = maSP;
-        this.maSize = maSize;
+        this.sanPham = sanPham;
+        this.size = size;
         this.soLuong = soLuong;
         this.gia = gia;
+        this.trangThai = trangThai;
     }
 
     public void setTrangThai(boolean trangThai) {
@@ -36,20 +40,28 @@ public class ChiTietHoaDon {
         this.maHD = maHD;
     }
 
-    public String getMaSP() {
-        return maSP;
+    public String getMaCT() {
+        return maCT;
     }
 
-    public void setMaSP(String maSP) {
-        this.maSP = maSP;
+    public void setMaCT(String maCT) {
+        this.maCT = maCT;
     }
 
-    public String getMaSize() {
-        return maSize;
+    public SanPham getSanPham() {
+        return sanPham;
     }
 
-    public void setMaSize(String maSize) {
-        this.maSize = maSize;
+    public void setSanPham(SanPham sanPham) {
+        this.sanPham = sanPham;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setSize(Size size) {
+        this.size = size;
     }
 
     public int getSoLuong() {

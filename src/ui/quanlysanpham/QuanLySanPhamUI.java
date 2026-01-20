@@ -2,27 +2,32 @@ package ui.quanlysanpham;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
 
 import bus.QuanLySanPhamBUS;
-import dto.NhaCungCap;
 import dto.SanPham;
+import ui.component.NutSuKien;
+import ui.component.NutHienThi;
 import ui.component.Search_Item;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-
-    private JButton themSpBtn, xuaFileBtn, chuyenPageTraiBtn, chuyenPagePhaibtn;
+    private JButton themSpBtn, xuaFileBtn, nhapFileBtn;
     private Search_Item search_Item;
-    private JComboBox<String> cbLoaiNuoc, cbNhaCungCap;
-    private JPanel danhSachSp;
+    private JComboBox<String> cbLoaiNuoc, cbNhaCungCap, cbDanhMuc;
     private JFrame owner;
     private ArrayList<SanPham> listSanPham;
     private ArrayList<SanPham> listSanPhamLoc;
-    private JLabel numberPage;
+    private int stt = 0;
+    private DefaultTableModel model;
+    private JScrollPane scrollPane;
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
     private String[] ncc = new String[0];
+    private String[] danhmuc = new String[0];
 
     private QuanLySanPhamBUS quanLySanPhamBUS;
 
@@ -47,14 +52,17 @@ public class QuanLySanPhamUI extends JPanel {
         top.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 
         cbLoaiNuoc = new JComboBox<>(loai);
-        cbLoaiNuoc.setMaximumSize(new Dimension(130, 32));
+        cbLoaiNuoc.setMaximumSize(new Dimension(100, 32));
 
         cbNhaCungCap = new JComboBox<>(ncc);
-        cbNhaCungCap.setMaximumSize(new Dimension(150, 32));
+        cbNhaCungCap.setMaximumSize(new Dimension(100, 32));
 
-        search_Item = new Search_Item(300, 32);
+        cbDanhMuc = new JComboBox<>(danhmuc);
+        cbDanhMuc.setMaximumSize(new Dimension(100, 32));
 
-        themSpBtn = new JButton("Thêm sản phẩm");
+        search_Item = new Search_Item(280, 32);
+
+        themSpBtn = new JButton("Thêm");
         themSpBtn.setBackground(new Color(40, 167, 69));
         themSpBtn.setForeground(Color.WHITE);
         TaoUI.setHeightButton(themSpBtn, 32);
@@ -62,39 +70,99 @@ public class QuanLySanPhamUI extends JPanel {
         xuaFileBtn = new JButton("Xuất Excel");
         TaoUI.setHeightButton(xuaFileBtn, 32);
 
+        nhapFileBtn = new JButton("Nhập Excel");
+        TaoUI.setHeightButton(nhapFileBtn, 32);
+
         top.add(cbLoaiNuoc);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(cbNhaCungCap);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(cbDanhMuc);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(themSpBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(xuaFileBtn);
+        top.add(Box.createRigidArea(new Dimension(5, 0)));
+        top.add(nhapFileBtn);
+        nhapFileBtn.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
     }
 
     private void initMainContent() {
-        danhSachSp = TaoUI.taoPanelFlowLayout(450, 850, 10, 10);
-        danhSachSp.setBackground(new Color(242, 242, 242));
         JPanel content = new JPanel(new BorderLayout());
-
-        content.add(taoThanhPhanTrang(), BorderLayout.SOUTH);
-        content.add(danhSachSp, BorderLayout.CENTER);
-        JScrollPane scrollPane = TaoUI.taoScrollPane(content);
-        add(scrollPane, BorderLayout.CENTER);
+        scrollPane = taoTable();
+        content.add(scrollPane, BorderLayout.CENTER);
+        add(content, BorderLayout.CENTER);
+        JTable table = (JTable) scrollPane.getViewport().getView();
+        table.setRowHeight(70);
+        setKichThuocCot();
     }
 
-    public JPanel taoThanhPhanTrang() {
-        JPanel thanhPTPanel = TaoUI.taoPanelCanGiua(450, 30);
-        for (int i = 1; i < 10; i++) {
-            JButton btn = new JButton(String.valueOf(i));
-            TaoUI.addItem(thanhPTPanel, btn, 10, true);
-        }
-        return thanhPTPanel;
+    private JScrollPane taoTable() {
+        String[] cots = { "STT", "Ảnh", "Mã SP", "Tên sản phẩm", "Loại", "Danh mục", "Giá bán", "Giá nhập",
+                "Số lượng", "" };
+
+        model = new DefaultTableModel(null, cots) {
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 1)
+                    return Icon.class;
+                if (columnIndex == 0 || columnIndex == 6)
+                    return Integer.class;
+                if (columnIndex == 9)
+                    return JButton.class;
+                return Object.class;
+            }
+
+            public boolean isCellEditable(int row, int column) {
+                return column == 9;
+            }
+        };
+
+        HashSet <Integer> set = new HashSet<>();
+        set.add(1);
+        set.add(9);
+        JScrollPane sc = TaoUI.taoTableScroll(model, set);
+        JTable table = (JTable)sc.getViewport().getView();
+        
+
+
+        NutSuKien nutSuKien = new NutSuKien(new JCheckBox());
+        table.getColumnModel().getColumn(9).setCellRenderer(new NutHienThi());
+        table.getColumnModel().getColumn(9).setCellEditor(nutSuKien);
+
+
+        return sc;
     }
+
+
+
+    private void setKichThuocCot() {
+        JTable table = (JTable) scrollPane.getViewport().getView();
+        TableColumnModel columnModel = table.getColumnModel();
+        columnModel.getColumn(0).setPreferredWidth(50); // STT
+        columnModel.getColumn(2).setPreferredWidth(80); // Mã SP
+        columnModel.getColumn(3).setPreferredWidth(200); // Tên sản phẩm (Cần rộng nhất)
+        columnModel.getColumn(4).setPreferredWidth(100); // Loại
+        columnModel.getColumn(5).setPreferredWidth(100); // Danh mục
+        columnModel.getColumn(6).setPreferredWidth(90); // Giá bán
+        columnModel.getColumn(7).setPreferredWidth(90); // Giá nhập
+        columnModel.getColumn(8).setPreferredWidth(80); // Số lượng
+        columnModel.getColumn(9).setPreferredWidth(40); // Số lượng
+    }
+
+    private void themSanPhamVaoTable(SanPham sanPham) {
+        ImageIcon icon = TaoUI.taoImageIcon(sanPham.getAnh(), 70, 70);
+        JButton btn  = new JButton();
+        model.addRow(new Object[] { stt++, icon, sanPham.getMaSP(), sanPham.getTenSP(), sanPham.getLoaiNuoc(),
+                sanPham.getDanhMuc().getTenDM(), sanPham.getGiaBan(), sanPham.getGiaNhap(), sanPham.getSoLuongTon(),
+                btn });
+    }
+
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
@@ -103,7 +171,12 @@ public class QuanLySanPhamUI extends JPanel {
 
         cbLoaiNuoc.addActionListener(e -> locSanPham());
         cbNhaCungCap.addActionListener(e -> locSanPham());
+        cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
+
+        xuaFileBtn.addActionListener(e -> {
+            quanLySanPhamBUS.xuatFileExcel();
+        });
     }
 
     public void loadDataFromDatabase() {
@@ -112,6 +185,13 @@ public class QuanLySanPhamUI extends JPanel {
         luaChonNCC.add(0, "Nhà cung cấp");
         ncc = luaChonNCC.toArray(new String[0]);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(ncc);
+
+        ArrayList<String> luaChonDM = quanLySanPhamBUS.layLuaChonDanhMuc();
+        luaChonDM.add(0, "Danh mục");
+        danhmuc = luaChonDM.toArray(new String[0]);
+        DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>(danhmuc);
+
+        cbDanhMuc.setModel(model1);
         cbNhaCungCap.setModel(model);
         veLaiDanhSach(listSanPham);
     }
@@ -120,9 +200,11 @@ public class QuanLySanPhamUI extends JPanel {
         listSanPhamLoc.clear();
         String luaChonLoaiNuoc = cbLoaiNuoc.getSelectedItem().toString();
         String luaChonNCC = cbNhaCungCap.getSelectedItem().toString();
+        String luaChonDM = cbDanhMuc.getSelectedItem().toString();
         for (SanPham sanPham : listSanPham) {
             if ((sanPham.getNhaCungCap().getTenNCC().equals(luaChonNCC) || luaChonNCC.equals("Nhà cung cấp")) &&
-                    (sanPham.getLoaiNuoc().equals(luaChonLoaiNuoc) || luaChonLoaiNuoc.equals("Loại nước"))
+                    (sanPham.getLoaiNuoc().equals(luaChonLoaiNuoc) || luaChonLoaiNuoc.equals("Loại nước")) &&
+                    (sanPham.getDanhMuc().getTenDM().equals(luaChonDM) || luaChonDM.equals("Danh mục"))
                     && sanPham.getTrangThai()
                     && sanPham.getTenSP().toUpperCase().contains(search_Item.getTextSearch().trim().toUpperCase())) {
                 listSanPhamLoc.add(sanPham);
@@ -132,11 +214,10 @@ public class QuanLySanPhamUI extends JPanel {
     }
 
     private void veLaiDanhSach(ArrayList<SanPham> list) {
-        danhSachSp.removeAll();
-        for (SanPham sp : list) {
-            danhSachSp.add(new SanPhamItem(sp));
+        stt = 1;
+        model.setRowCount(0);
+        for (SanPham sanPham : list) {
+            themSanPhamVaoTable(sanPham);
         }
-        danhSachSp.revalidate();
-        danhSachSp.repaint();
     }
 }

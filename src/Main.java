@@ -1,4 +1,4 @@
-import dao.DatabaseInit;
+import dao.conection.DatabaseInit;
 import ui.main.MainFrame;
 
 public class Main {
