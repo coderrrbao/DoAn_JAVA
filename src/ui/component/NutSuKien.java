@@ -2,7 +2,7 @@ package ui.component;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
-import bus.QuanLySanPhamBUS;
+import bus.SanPhamBUS;
 import dto.SanPham;
 import ui.quanlysanpham.ChiTietSanPhamDialog;
 import util.TaoUI;
@@ -32,7 +32,7 @@ public class NutSuKien extends DefaultCellEditor {
         button.addActionListener(e -> {
             fireEditingStopped();
 
-            QuanLySanPhamBUS quanLySanPhamBUS = new QuanLySanPhamBUS();
+            SanPhamBUS quanLySanPhamBUS = new SanPhamBUS();
             SanPham sanPham = quanLySanPhamBUS
                     .timSanPham(String.valueOf(currentTable.getModel().getValueAt(currentRow, 2)));
             if (sanPham != null) {

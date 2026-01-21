@@ -8,7 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
-import bus.QuanLySanPhamBUS;
+import bus.SanPhamBUS;
 import dto.SanPham;
 import ui.component.NutSuKien;
 import ui.component.NutHienThi;
@@ -29,13 +29,13 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] ncc = new String[0];
     private String[] danhmuc = new String[0];
 
-    private QuanLySanPhamBUS quanLySanPhamBUS;
+    private SanPhamBUS quanLySanPhamBUS;
 
     public QuanLySanPhamUI(JFrame owner) {
         this.owner = owner;
         this.listSanPham = new ArrayList<>();
         this.listSanPhamLoc = new ArrayList<>();
-        quanLySanPhamBUS = new QuanLySanPhamBUS();
+        quanLySanPhamBUS = new SanPhamBUS();
 
         setLayout(new BorderLayout());
 

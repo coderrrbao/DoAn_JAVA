@@ -11,7 +11,7 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
-import bus.QuanLySanPhamBUS;
+import bus.SanPhamBUS;
 import dto.SanPham;
 import util.TaoUI;
 
@@ -72,7 +72,7 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         JPanel thongTin5 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
 
-        QuanLySanPhamBUS quanLySanPhamBUS = new QuanLySanPhamBUS();
+        SanPhamBUS quanLySanPhamBUS = new SanPhamBUS();
         ArrayList<String> luaChonDanhMuc = quanLySanPhamBUS.layLuaChonDanhMuc();
         ArrayList<String> luaChonLoaiNuoc = new ArrayList<>();
         luaChonLoaiNuoc.add("Có sẵn");

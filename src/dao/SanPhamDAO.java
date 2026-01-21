@@ -12,7 +12,7 @@ import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
 
-public class QuanLySanPhamDAO {
+public class SanPhamDAO {
     public ArrayList<SanPham> layListSanPham() {
         ArrayList<SanPham> listSanPham = new ArrayList<>();
         String sql = "SELECT *, dm.TenDM, ncc.TenNCC FROM SanPham sp INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM INNER JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC WHERE sp.TrangThai = 1";

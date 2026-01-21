@@ -1,5 +1,6 @@
 package util;
 
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -25,6 +26,7 @@ public class Xulypdf {
             parameters.put("tenNV", hoaDon.getNhanVien().getTenNV());
             parameters.put("tongTien", String.valueOf(hoaDon.getTongTien()));
             parameters.put("thanhToan", String.valueOf(hoaDon.getTongTien()));
+            parameters.put("image", System.getProperty("user.dir")+"/src/report/");
 
             for (ChiTietHoaDon ct : hoaDon.getListChiTietHoaDon()) {
                 String gia = String.valueOf(ct.getSanPham().getGiaBan());
