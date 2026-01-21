@@ -3,10 +3,8 @@ package ui.main;
 import java.awt.CardLayout;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -37,11 +35,13 @@ public class MenuPanel extends JPanel {
         addMenuItem("Nhập kho", cardLayout, cardPanel);
         addMenuItem("Tồn kho", cardLayout, cardPanel);
         addMenuItem("Xuất kho", cardLayout, cardPanel);
+        addMenuItem("Kiểm kê", cardLayout, cardPanel);
         addMenuItem("Bán hàng", cardLayout, cardPanel);
         addMenuItem("Hóa đơn", cardLayout, cardPanel);
         addMenuItem("Khách hàng", cardLayout, cardPanel);
         addMenuItem("Nhân viên", cardLayout, cardPanel);
         addMenuItem("Tài khoản", cardLayout, cardPanel);
+        addMenuItem("Phân quyền", cardLayout, cardPanel);
         addMenuItem("Thống kê", cardLayout, cardPanel);
         addMenuItem("Khuyến mãi", cardLayout, cardPanel);
         addMenuItem("Thông tin", () -> {

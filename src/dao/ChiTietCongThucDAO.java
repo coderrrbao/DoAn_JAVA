@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
+import dto.NguyenLieu;
 
 public class ChiTietCongThucDAO {
     public ArrayList<ChiTietCongThuc> laylistChiTietCongThuc(String maCT) {
@@ -20,7 +21,7 @@ public class ChiTietCongThucDAO {
 
             while (rs.next()) {
                 if (rs.getString("MaCT").equals(maCT)) {
-                    ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(rs.getString("MaCTCT"),Integer.parseInt(rs.getString("SoLuong")));
+                    ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(rs.getString("MaCTCT"),new NguyenLieu(rs.getString("MaNL"), "", null, 0, "", 0, false),Double.parseDouble(rs.getString("SoLuong")));
                     listChiTietCongThuc.add(chiTietCongThuc);
                     break;
                 }

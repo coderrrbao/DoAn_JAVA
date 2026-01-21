@@ -29,7 +29,7 @@ public class ListSanPhamPanel extends JPanel {
     }
 
     private void taoListSpPanel() {
-        JPanel listSanPhamPanel = TaoUI.taoPanelFlowLayout(530, 530, 5, 5);
+        JPanel listSanPhamPanel = TaoUI.taoPanelFlowLayout(530, 550, 10, 10);
         TaoUI.suaBorderChoPanel(listSanPhamPanel, 0, 5, 0, 10);
         JScrollPane scrollPaneListSp = TaoUI.taoScrollPane(listSanPhamPanel);
         for (int i = 0; i < 21; i++) {
@@ -45,7 +45,6 @@ public class ListSanPhamPanel extends JPanel {
             listSanPhamPanel.add(new SanPhamBhItemPanel(sp, "Mặc định"));
         }
         add(scrollPaneListSp, BorderLayout.CENTER);
-        listSanPhamPanel.setBackground(Color.red);
     }
 
     private void taoThanhChuyenPage() {

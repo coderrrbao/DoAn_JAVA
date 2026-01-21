@@ -24,10 +24,10 @@ public class XuatKhoSanPhamPanel extends JPanel {
         top.setBackground(Color.WHITE);
 
         search_Item = new Search_Item(300, 30);
-        
+
         btnXuatKho = new JButton("Xuất kho");
         TaoUI.setHeightButton(btnXuatKho, 27);
-        
+
         btnXemChiTiet = new JButton("Xem chi tiết");
         TaoUI.setHeightButton(btnXemChiTiet, 27);
 
@@ -66,12 +66,9 @@ public class XuatKhoSanPhamPanel extends JPanel {
         tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
 
         JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
-        
+
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
-
-        add(tableContainer, BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
     }
 }

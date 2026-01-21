@@ -28,14 +28,14 @@ public class ThongKeSanPhamPanel extends JPanel {
         JPanel thongKeSp = new JPanel();
         thongKeSp.setLayout(new BoxLayout(thongKeSp, BoxLayout.Y_AXIS));
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(870, 100);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(1070, 100);
         top.add(new ThongKeChungSpPanel());
         thongKeSp.add(top);
 
-        JPanel mid = TaoUI.taoPanelBoxLayoutNgang(870, 380);
+        JPanel mid = TaoUI.taoPanelBoxLayoutNgang(1070, 380);
         mid.setBackground(Color.red);
         thongKeSp.add(mid);
-        JPanel ctnMid = TaoUI.taoPanelBorderLayout(870, 380);
+        JPanel ctnMid = TaoUI.taoPanelBorderLayout(1070, 380);
         ctnMid.setBackground(Color.yellow);
         mid.add(ctnMid);
         JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(400, 380);
@@ -61,7 +61,7 @@ public class ThongKeSanPhamPanel extends JPanel {
 
         bieuDoTron.add(TaoUI.taoBieuDoTron("TỶ TRỌNG DOANH THU", pieDataset), BorderLayout.CENTER);
 
-        JPanel bottom = TaoUI.taoPanelBorderLayout(870, 200);
+        JPanel bottom = TaoUI.taoPanelBorderLayout(1070, 200);
         bottom.setBackground(Color.cyan);
         thongKeSp.add(bottom);
 

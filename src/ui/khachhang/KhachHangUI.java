@@ -31,13 +31,13 @@ public class KhachHangUI extends JPanel {
         cbHangThanhVien.setMaximumSize(new Dimension(120, 30));
 
         search_Item = new Search_Item(300, 30);
-        
+
         btnTao = new JButton("Thêm");
         TaoUI.setHeightButton(btnTao, 27);
-        
+
         btnSua = new JButton("Sửa");
         TaoUI.setHeightButton(btnSua, 27);
-        
+
         btnXoa = new JButton("Xóa");
         TaoUI.setHeightButton(btnXoa, 27);
 
@@ -85,20 +85,37 @@ public class KhachHangUI extends JPanel {
         tableUI.getColumnModel().getColumn(5).setPreferredWidth(120);
 
         JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
-        
+
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
-        tableContainer.add(scrollPane, BorderLayout.CENTER);
-
-        add(tableContainer, BorderLayout.CENTER);
+        add(scrollPane,BorderLayout.CENTER);
     }
 
-    public JButton getBtnTao() { return btnTao; }
-    public JButton getBtnSua() { return btnSua; }
-    public JButton getBtnXoa() { return btnXoa; }
-    public JComboBox<String> getCbHangThanhVien() { return cbHangThanhVien; }
-    public Search_Item getSearch_Item() { return search_Item; }
-    public JTable getTableUI() { return tableUI; }
-    public DefaultTableModel getModel() { return model; }
+    public JButton getBtnTao() {
+        return btnTao;
+    }
+
+    public JButton getBtnSua() {
+        return btnSua;
+    }
+
+    public JButton getBtnXoa() {
+        return btnXoa;
+    }
+
+    public JComboBox<String> getCbHangThanhVien() {
+        return cbHangThanhVien;
+    }
+
+    public Search_Item getSearch_Item() {
+        return search_Item;
+    }
+
+    public JTable getTableUI() {
+        return tableUI;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
 }

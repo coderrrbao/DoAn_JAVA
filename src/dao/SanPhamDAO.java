@@ -97,33 +97,36 @@ public class SanPhamDAO {
     }
 
     public SanPham timSanPham(String ma) {
-        String sql = "SELECT * FROM SanPham";
+        String sql = "SELECT sp.*, dm.TenDM, ncc.TenNCC, ncc.SoDienThoai, ncc.DiaChi "
+                + "FROM SanPham sp "
+                + "INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM "
+                + "INNER JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC "
+                + "WHERE sp.MaSP = ? AND sp.TrangThai = 1";
+
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
 
+            pst.setString(1, ma);
             ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                if (rs.getString("MaSP").equals(ma)) {
-                    SanPham sp = new SanPham();
-                    sp.setMaSP(rs.getString("MaSP"));
-                    sp.setTenSP(rs.getNString("TenSP"));
-                    sp.setAnh(rs.getString("Anh"));
-                    sp.setGiaNhap(rs.getLong("GiaNhap"));
-                    sp.setGiaBan(rs.getLong("GiaBan"));
-                    sp.setSoLuongTon(rs.getInt("SoLuongTon"));
-                    sp.setTrangThai(rs.getBoolean("TrangThai"));
-                    sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
-                    sp.setTheTich(rs.getInt("TheTich"));
-                    sp.setMucCanhBao(rs.getInt("MucCanhBao"));
-                    DanhMucBUS danhMucBUS = new DanhMucBUS();
-                    NhaCungCapBUS nhaCungCapBus = new NhaCungCapBUS();
-                    NhaCungCap ncc = nhaCungCapBus.timNhaCungCap(rs.getString("MaNCC"));
-                    DanhMuc danhMuc = danhMucBUS.timDanhMuc(rs.getString("MaDM"));
-                    sp.setDanhMuc(danhMuc);
-                    sp.setNhaCungCap(ncc);
-                    return sp;
-                }
+            if (rs.next()) {
+                SanPham sp = new SanPham();
+                sp.setMaSP(rs.getString("MaSP"));
+                sp.setTenSP(rs.getNString("TenSP"));
+                sp.setAnh(rs.getString("Anh"));
+                sp.setGiaNhap(rs.getLong("GiaNhap"));
+                sp.setGiaBan(rs.getLong("GiaBan"));
+                sp.setSoLuongTon(rs.getInt("SoLuongTon"));
+                sp.setTrangThai(rs.getBoolean("TrangThai"));
+                sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
+                sp.setTheTich(rs.getInt("TheTich"));
+                sp.setMucCanhBao(rs.getInt("MucCanhBao"));
 
+                NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
+                        rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+                DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
+                sp.setDanhMuc(danhMuc);
+                sp.setNhaCungCap(ncc);
+                return sp;
             }
 
         } catch (Exception e) {

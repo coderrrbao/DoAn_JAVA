@@ -14,9 +14,11 @@ public class SanPhamBUS {
 
     public ArrayList<SanPham> layListSanPham() {
         ArrayList<SanPham> listSanPham = quanLySanPhamDAO.layListSanPham();
+
         for (SanPham sanPham : listSanPham) {
-            if (sanPham.getLoaiNuoc() == "PHACHE") {
+            if (sanPham.getLoaiNuoc().equals("Pha chế")) {
                 sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
+
                 sanPham.setCongThuc(congThucBUS.timCongThucChoSP(sanPham.getMaSP()));
             }
         }
@@ -38,7 +40,12 @@ public class SanPhamBUS {
     }
 
     public SanPham timSanPham(String ma) {
-        return quanLySanPhamDAO.timSanPham(ma);
+        SanPham sanPham = quanLySanPhamDAO.timSanPham(ma);
+        if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+            sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
+            sanPham.setCongThuc(congThucBUS.timCongThucChoSP(sanPham.getMaSP()));
+        }
+        return sanPham;
     }
 
 }

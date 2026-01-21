@@ -14,9 +14,11 @@ import ui.banhang.BanHangUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
 import ui.khuyenmai.KhuyenMaiUI;
+import ui.kiemke.KiemKeUI;
 import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
 import ui.nhapkho.NhapKhoUI;
+import ui.phanquyen.PhanQuyenUI;
 import ui.quanlysanpham.QuanLySanPhamUI;
 import ui.taikhoan.TaiKhoanUI;
 
@@ -34,6 +36,8 @@ public class ContentPaner extends JPanel {
     private XuatKhoUI xuatKhoUI;
     private TonKhoUI tonKhoUI;
     private KhuyenMaiUI khuyenMaiUI;
+    private KiemKeUI kiemKeUI;
+    private PhanQuyenUI phanQuyenUI;
 
     private CardLayout cardLayout;
 
@@ -53,7 +57,9 @@ public class ContentPaner extends JPanel {
         taiKhoanUI = new TaiKhoanUI();
         xuatKhoUI = new XuatKhoUI();
         tonKhoUI = new TonKhoUI();
-        khuyenMaiUI  = new KhuyenMaiUI();
+        khuyenMaiUI = new KhuyenMaiUI();
+        phanQuyenUI = new PhanQuyenUI();
+        kiemKeUI = new KiemKeUI();
 
         add(quanLySanPhamUI, "Quản lý sản phẩm");
         add(nhaCungCapUI, "Nhà cung cấp");
@@ -66,7 +72,9 @@ public class ContentPaner extends JPanel {
         add(taiKhoanUI, "Tài khoản");
         add(xuatKhoUI, "Xuất kho");
         add(tonKhoUI, "Tồn kho");
-        add(khuyenMaiUI,"Khuyến mãi");
+        add(khuyenMaiUI, "Khuyến mãi");
+        add(phanQuyenUI, "Phân quyền");
+        add(kiemKeUI, "Kiểm kê");
     }
 
     public void switchPage(String name) {
@@ -109,7 +117,6 @@ public class ContentPaner extends JPanel {
         return taiKhoanUI;
     }
 
-
     public XuatKhoUI getXuatKhoUI() {
         return xuatKhoUI;
     }
@@ -117,6 +124,7 @@ public class ContentPaner extends JPanel {
     public TonKhoUI getTonKhoUI() {
         return tonKhoUI;
     }
+
     public void loadAll() {
 
     }

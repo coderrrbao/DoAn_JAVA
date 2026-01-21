@@ -16,7 +16,7 @@ import util.TaoUI;
 public class ThanhToanPanel extends JPanel {
     private JLabel tongHoaDonText, tienKMText, tongThanhToanText;
     private JTextField txtMaGiamGia;
-    private JButton btnXacNhan, thanhToanButton, huyButton;
+    private JButton btnMGG, thanhToanButton, huyButton;
 
     public ThanhToanPanel() {
         // Layout tổng của ThanhToanPanel là dọc
@@ -38,12 +38,12 @@ public class ThanhToanPanel extends JPanel {
 
         txtMaGiamGia = new JTextField(15);
         txtMaGiamGia.setPreferredSize(new Dimension(180, 30));
-        btnXacNhan = new JButton("Xác nhận");
-        TaoUI.setFixSize(btnXacNhan, 150, 30);
+        btnMGG = new JButton("Xác nhận");
+        TaoUI.setFixSize(btnMGG, 150, 30);
 
         TaoUI.addItem(rightPanel, lblMa, 3, false);
         TaoUI.addItem(rightPanel, txtMaGiamGia, 3, false);
-        TaoUI.addItem(rightPanel, btnXacNhan, 3, false);
+        TaoUI.addItem(rightPanel, btnMGG, 3, false);
 
         mainGridPanel.add(leftPanel);
         mainGridPanel.add(rightPanel);
@@ -59,9 +59,10 @@ public class ThanhToanPanel extends JPanel {
         TaoUI.addItem(buttonsPanel, thanhToanButton, 5, true);
         TaoUI.addItem(buttonsPanel, huyButton, 5, true);
         add(buttonsPanel);
+
+        ganSuKien();
     }
 
-    // Hàm phụ trợ để tạo dòng tiền nhanh
     private JLabel addDongTien(JPanel parent, String title, String value, Color color, int fontSize) {
         JPanel p = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         JLabel lblTitle = new JLabel(title);
@@ -75,5 +76,17 @@ public class ThanhToanPanel extends JPanel {
         p.add(lblValue);
         parent.add(p);
         return lblValue;
+    }
+
+    private void ganSuKien() {
+        btnMGG.addActionListener(e -> {
+            if (btnMGG.getText().equals("Xác nhận")) {
+                // viết logic ở đây babe
+                btnMGG.setText("Hủy");
+            } else if (btnMGG.getText().equals("Hủy")) {
+                // xóa tiền khuyến mãi ,cập nhập....
+                btnMGG.setText("Xác nhận");
+            }
+        });
     }
 }

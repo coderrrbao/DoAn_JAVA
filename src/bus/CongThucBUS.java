@@ -20,14 +20,8 @@ public class CongThucBUS {
         if (congThuc == null) {
             return null;
         }
-        ArrayList<ChiTietCongThuc> listChiTietCongThuc = chiTietCongThucBUS.laylistChiTietCongThuc(ma);
+        ArrayList<ChiTietCongThuc> listChiTietCongThuc = chiTietCongThucBUS.laylistCTCTbangMaCT(congThuc.getMaCT());
         congThuc.setListChiTietCongThuc(listChiTietCongThuc);
-
-        for (ChiTietCongThuc chiTietCongThuc : listChiTietCongThuc) {
-            NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(chiTietCongThuc.getMaCTCT());
-            chiTietCongThuc.setNguyenLieu(nguyenLieu);
-        }
-        
         return congThuc;
     }
 }

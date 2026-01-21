@@ -24,7 +24,6 @@ public class HoaDonUI extends JPanel {
 
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
         top.setBackground(Color.WHITE);
-        top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
         locNgay = new LocNgay_Item(350, 27);
         search_Item = new Search_Item(300, 30);
@@ -77,7 +76,6 @@ public class HoaDonUI extends JPanel {
         
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);

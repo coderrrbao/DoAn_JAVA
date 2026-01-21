@@ -10,8 +10,6 @@ import javax.swing.table.TableColumnModel;
 
 import bus.SanPhamBUS;
 import dto.SanPham;
-import ui.component.NutSuKien;
-import ui.component.NutHienThi;
 import ui.component.Search_Item;
 import util.TaoUI;
 
@@ -131,8 +129,8 @@ public class QuanLySanPhamUI extends JPanel {
         
 
 
-        NutSuKien nutSuKien = new NutSuKien(new JCheckBox());
-        table.getColumnModel().getColumn(9).setCellRenderer(new NutHienThi());
+        NutSuKienSP nutSuKien = new NutSuKienSP(new JCheckBox());
+        table.getColumnModel().getColumn(9).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
         table.getColumnModel().getColumn(9).setCellEditor(nutSuKien);
 
 

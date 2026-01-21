@@ -96,7 +96,6 @@ public class NhanVienUI extends JPanel {
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);

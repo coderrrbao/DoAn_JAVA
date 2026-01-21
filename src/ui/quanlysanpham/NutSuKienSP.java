@@ -1,10 +1,9 @@
-package ui.component;
+package ui.quanlysanpham;
 
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import bus.SanPhamBUS;
 import dto.SanPham;
-import ui.quanlysanpham.ChiTietSanPhamDialog;
 import util.TaoUI;
 
 import java.awt.Component;
@@ -16,12 +15,12 @@ import javax.swing.JCheckBox;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-public class NutSuKien extends DefaultCellEditor {
+public class NutSuKienSP extends DefaultCellEditor {
     protected JButton button;
     private int currentRow;
     private JTable currentTable;
 
-    public NutSuKien(JCheckBox checkBox) {
+    public NutSuKienSP(JCheckBox checkBox) {
         super(checkBox);
         button = new JButton();
 

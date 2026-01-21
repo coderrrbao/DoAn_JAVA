@@ -1,15 +1,18 @@
 package dto;
 
+import java.util.ArrayList;
+
 public class NhomQuyen {
     private String maNQ;
-    private String tenPhanQuyen;
+    private String tenNhomQuyen;
+    private ArrayList<Quyen> listQuyen = new ArrayList<>();
 
     public NhomQuyen() {
     }
 
     public NhomQuyen(String maNQ, String tenPhanQuyen) {
         this.maNQ = maNQ;
-        this.tenPhanQuyen = tenPhanQuyen;
+        this.tenNhomQuyen = tenPhanQuyen;
     }
 
     public String getMaNQ() {
@@ -20,11 +23,19 @@ public class NhomQuyen {
         this.maNQ = maNQ;
     }
 
-    public String getTenPhanQuyen() {
-        return tenPhanQuyen;
+    public String getTenNhomQuyen() {
+        return tenNhomQuyen;
     }
 
-    public void setTenPhanQuyen(String tenPhanQuyen) {
-        this.tenPhanQuyen = tenPhanQuyen;
+    public void setTenNhomQuyen(String tenPhanQuyen) {
+        this.tenNhomQuyen = tenPhanQuyen;
+    }
+
+    public ArrayList<Quyen> getListQuyen() {
+        return listQuyen;
+    }
+
+    public void setListQuyen(ArrayList<Quyen> listQuyen) {
+        this.listQuyen = listQuyen;
     }
 }

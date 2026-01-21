@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+
 public class MenuPanelItem extends JPanel {
     private final Color normalBg = Color.WHITE;
     private final Color hoverBg = new Color(220, 220, 220);
@@ -14,13 +15,17 @@ public class MenuPanelItem extends JPanel {
 
     public MenuPanelItem(String text, Runnable customAction) {
         initUI(text);
-        
+
         addMouseListener(new MouseAdapter() {
             @Override
-            public void mouseEntered(MouseEvent e) { setBackground(hoverBg); }
+            public void mouseEntered(MouseEvent e) {
+                setBackground(hoverBg);
+            }
 
             @Override
-            public void mouseExited(MouseEvent e) { setBackground(normalBg); }
+            public void mouseExited(MouseEvent e) {
+                setBackground(normalBg);
+            }
 
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -32,7 +37,7 @@ public class MenuPanelItem extends JPanel {
     }
 
     private void initUI(String text) {
-        Dimension size = new Dimension(200, 36);
+        Dimension size = new Dimension(200, 37);
         setPreferredSize(size);
         setMaximumSize(size);
         setMinimumSize(size);

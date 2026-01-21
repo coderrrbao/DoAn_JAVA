@@ -1,9 +1,7 @@
 package ui.quanlysanpham;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -13,6 +11,7 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.SanPhamBUS;
 import dto.SanPham;
+import dto.Size;
 import util.TaoUI;
 
 public class ChiTietSanPhamDialog extends JDialog {
@@ -86,38 +85,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         thongTin5.add(new JLabel("Danh mục"));
         thongTin5.add(Box.createRigidArea(new Dimension(15, 0)));
         thongTin5.add(cbDanhMuc);
-
-        JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
-        JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
-        btnXemCongThuc = new JButton("Xem công thức");
-        thongTin6.add(btnXemCongThuc);
-        titleThongTin6.add(new JLabel("Bảng size"));
-        titleThongTin6.add(Box.createHorizontalGlue());
-        btnXoaSize = new JButton("Xóa");
-        btnThemSize = new JButton("Thêm");
-        btnSuaSize = new JButton("Sửa");
-
-        titleThongTin6.add(btnThemSize);
-        titleThongTin6.add(btnXoaSize);
-        titleThongTin6.add(btnSuaSize);
-        titleThongTin6.add(btnXemCongThuc);
-
-        thongTin6.add(titleThongTin6, BorderLayout.NORTH);
-
-        modelSize = new DefaultTableModel();
-        modelSize.addColumn("Mã Size");
-        modelSize.addColumn("Tên size");
-        modelSize.addColumn("Giá thêm(%)");
-        modelSize.addColumn("Nguyên liệu thêm(%)");
-        modelSize.addRow(new Object[] { "S", "Small (Nhỏ)", 0, 0 });
-        modelSize.addRow(new Object[] { "M", "Medium (Vừa)", 10, 15 });
-        modelSize.addRow(new Object[] { "L", "Large (Lớn)", 20, 25 });
-        modelSize.addRow(new Object[] { "XL", "Extra Large", 35, 40 });
-
-        JScrollPane scrollPane = TaoUI.taoTableScroll(modelSize);
-        thongTin6.add(scrollPane, BorderLayout.CENTER);
-
-        JPanel pnlFooter = TaoUI.taoPanelCanGiua(400, 50);
+        JPanel pnlFooter = TaoUI.taoPanelCanGiua(400, 30);
 
         btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(100, 35));
@@ -137,8 +105,47 @@ public class ChiTietSanPhamDialog extends JDialog {
         chitietPanel.add(thongTin3);
         chitietPanel.add(thongTin4);
         chitietPanel.add(thongTin5);
+        chitietPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+            JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
+            JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
+            btnXemCongThuc = new JButton("Xem công thức");
+            btnXemCongThuc.addActionListener(e -> {
+                new XemCongThucDialog(this, sanPham);
+            });
+            thongTin6.add(btnXemCongThuc);
+            titleThongTin6.add(new JLabel("Bảng size"));
+            titleThongTin6.add(Box.createHorizontalGlue());
+            btnXoaSize = new JButton("Xóa");
+            btnThemSize = new JButton("Thêm");
+            btnSuaSize = new JButton("Sửa");
+
+            titleThongTin6.add(btnThemSize);
+            titleThongTin6.add(btnXoaSize);
+            titleThongTin6.add(btnSuaSize);
+            titleThongTin6.add(btnXemCongThuc);
+
+            thongTin6.add(titleThongTin6, BorderLayout.NORTH);
+
+            modelSize = new DefaultTableModel();
+            modelSize.addColumn("Mã Size");
+            modelSize.addColumn("Tên size");
+            modelSize.addColumn("Giá thêm(%)");
+            modelSize.addColumn("Nguyên liệu thêm(%)");
+            if (sanPham.getListSize() != null) {
+                for (Size size : sanPham.getListSize()) {
+                    modelSize.addRow(
+                            new Object[] { size.getMaSize(), size.getTenSize(), size.getPhanTramGia(),
+                                    size.getPhanTramNL() });
+                }
+            }
+
+            JScrollPane scrollPane = TaoUI.taoTableScroll(modelSize);
+            thongTin6.add(scrollPane, BorderLayout.CENTER);
+            chitietPanel.add(thongTin6);
+        }
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 30)));
-        chitietPanel.add(thongTin6);
+
         chitietPanel.add(Box.createVerticalGlue());
         chitietPanel.add(pnlFooter);
 
@@ -178,8 +185,6 @@ public class ChiTietSanPhamDialog extends JDialog {
                 lblAnh.setIcon(icon);
             }
         });
-        btnXemCongThuc.addActionListener(e -> {
-            JDialog xemChiTietCt = new XemCongThucDialog(this, sanPham);
-        });
+
     }
 }

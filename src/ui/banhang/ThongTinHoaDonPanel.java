@@ -1,13 +1,18 @@
 package ui.banhang;
 
 import java.awt.Color;
+import java.util.HashSet;
 
+import javax.swing.Icon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import ui.quanlysanpham.NutHienThiSP;
 import util.TaoUI;
 
 public class ThongTinHoaDonPanel extends JPanel {
@@ -21,7 +26,13 @@ public class ThongTinHoaDonPanel extends JPanel {
         DefaultTableModel model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 4 || column == 5;
+            }
+
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 4 || columnIndex == 3)
+                    return JButton.class;
+                return Object.class;
             }
         };
 
@@ -32,20 +43,27 @@ public class ThongTinHoaDonPanel extends JPanel {
         model.addColumn("");
         model.addColumn("");
 
-        model.addRow(new Object[] { "Cocacola", 10000, 2, 20000, "+", "-" });
-        model.addRow(new Object[] { "Pepsi", 10000, 2, 20000, "+", "-" });
+        model.addRow(new Object[] { "Cocacola", 10000, 2, 20000, new JButton(), new JButton() });
+        model.addRow(new Object[] { "Pepsi", 10000, 2, 20000, new JButton(), new JButton() });
 
-        JTable table = new JTable(model);
+        HashSet<Integer> set = new HashSet<>();
+        set.add(5);
+        set.add(4);
+        NutSuKienBanHang nutTru = new NutSuKienBanHang(new JCheckBox());
+        nutTru.setLoaiNut("../assets/icon/tru.svg", 1);
+        NutSuKienBanHang nutCong = new NutSuKienBanHang(new JCheckBox());
+        nutCong.setLoaiNut("../assets/icon/cong.svg", 2);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
+        JTable table = (JTable) scrollPane.getViewport().getView();
+        table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg"));
+        table.getColumnModel().getColumn(4).setCellEditor(nutTru);
+        table.getColumnModel().getColumn(4).setPreferredWidth(15);
 
-        table.getColumnModel().getColumn(0).setPreferredWidth(200); 
-        table.getColumnModel().getColumn(1).setPreferredWidth(80); 
-        table.getColumnModel().getColumn(2).setPreferredWidth(40); 
-        table.getColumnModel().getColumn(3).setPreferredWidth(100); 
-        table.getColumnModel().getColumn(4).setPreferredWidth(20); 
-        table.getColumnModel().getColumn(5).setPreferredWidth(20); 
-        JScrollPane scrollPane = TaoUI.taoScrollPane(table);
+        table.getColumnModel().getColumn(5).setCellRenderer(new NutHienThiBanHang("../assets/icon/cong.svg"));
+        table.getColumnModel().getColumn(5).setCellEditor(nutCong);
+        table.getColumnModel().getColumn(5).setPreferredWidth(15);
         add(scrollPane);
-        TaoUI.suaBorderChoPanel(this,0,0,0,10);
+        TaoUI.suaBorderChoPanel(this, 0, 0, 0, 10);
     }
 
 }
