@@ -21,7 +21,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             tfGiaNhap, tfGiaBan, tfSoLuongTon, tfDungTich;
     private JTable tblSize;
     private DefaultTableModel modelSize;
-    private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCt;
+    private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCongThuc, btnXoaSize, btnThemSize, btnSuaSize;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
     private JComboBox cbLoaiNuoc, cbDanhMuc;
@@ -38,7 +38,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         chitietPanel = TaoUI.suaBorderChoPanel(chitietPanel, 0, 10, 10, 10);
         lblAnh = TaoUI.taoJlabelAnh(null, 200, 200);
         lblAnh.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel buttons = TaoUI.taoPanelCanGiua(400, 40);
+        JPanel buttons = TaoUI.taoPanelCanGiua(400, 25);
         btnChonAnh = new JButton("Chọn ảnh");
         buttons.add(btnChonAnh);
 
@@ -89,11 +89,18 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
         JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
-        btnXemCt = new JButton("Xem công thức");
-        thongTin6.add(btnXemCt);
+        btnXemCongThuc = new JButton("Xem công thức");
+        thongTin6.add(btnXemCongThuc);
         titleThongTin6.add(new JLabel("Bảng size"));
         titleThongTin6.add(Box.createHorizontalGlue());
-        titleThongTin6.add(btnXemCt);
+        btnXoaSize = new JButton("Xóa");
+        btnThemSize = new JButton("Thêm");
+        btnSuaSize = new JButton("Sửa");
+
+        titleThongTin6.add(btnThemSize);
+        titleThongTin6.add(btnXoaSize);
+        titleThongTin6.add(btnSuaSize);
+        titleThongTin6.add(btnXemCongThuc);
 
         thongTin6.add(titleThongTin6, BorderLayout.NORTH);
 
@@ -124,13 +131,13 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         chitietPanel.add(lblAnh);
         chitietPanel.add(buttons);
-        chitietPanel.add(Box.createRigidArea(new Dimension(0, 20)));
+        chitietPanel.add(Box.createRigidArea(new Dimension(0, 10)));
         chitietPanel.add(thongTin1);
         chitietPanel.add(thongTin2);
         chitietPanel.add(thongTin3);
         chitietPanel.add(thongTin4);
         chitietPanel.add(thongTin5);
-        chitietPanel.add(Box.createRigidArea(new Dimension(0, 10)));
+        chitietPanel.add(Box.createRigidArea(new Dimension(0, 30)));
         chitietPanel.add(thongTin6);
         chitietPanel.add(Box.createVerticalGlue());
         chitietPanel.add(pnlFooter);
@@ -171,8 +178,8 @@ public class ChiTietSanPhamDialog extends JDialog {
                 lblAnh.setIcon(icon);
             }
         });
-        btnXemCt.addActionListener(e -> {
-            JDialog xemChiTietCt = new XemCongThucDialog(this,sanPham);
+        btnXemCongThuc.addActionListener(e -> {
+            JDialog xemChiTietCt = new XemCongThucDialog(this, sanPham);
         });
     }
 }
