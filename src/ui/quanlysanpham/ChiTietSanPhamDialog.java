@@ -2,6 +2,7 @@ package ui.quanlysanpham;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 
@@ -119,10 +120,26 @@ public class ChiTietSanPhamDialog extends JDialog {
             btnXoaSize = new JButton("Xóa");
             btnThemSize = new JButton("Thêm");
             btnSuaSize = new JButton("Sửa");
+            TaoUI.setFixSize(btnSuaSize, 45, 20);
+            TaoUI.setFixSize(btnXoaSize, 45, 20);
+            TaoUI.setFixSize(btnThemSize, 45, 20);
+            TaoUI.setFixSize(btnXemCongThuc, 100, 20);
+            Font commonFont = new Font("Segoe UI", Font.BOLD, 12);
+            btnThemSize.setFont(commonFont);
+            btnSuaSize.setFont(commonFont);
+            btnXoaSize.setFont(commonFont);
+            btnXemCongThuc.setFont(commonFont);
+            btnSuaSize.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+            btnXoaSize.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+            btnThemSize.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
+            btnXemCongThuc.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
 
             titleThongTin6.add(btnThemSize);
+            titleThongTin6.add(Box.createRigidArea(new Dimension(3, 0)));
             titleThongTin6.add(btnXoaSize);
+            titleThongTin6.add(Box.createRigidArea(new Dimension(3, 0)));
             titleThongTin6.add(btnSuaSize);
+            titleThongTin6.add(Box.createRigidArea(new Dimension(3, 0)));
             titleThongTin6.add(btnXemCongThuc);
 
             thongTin6.add(titleThongTin6, BorderLayout.NORTH);

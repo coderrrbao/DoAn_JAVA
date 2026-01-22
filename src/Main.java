@@ -6,6 +6,5 @@ public class Main {
         DatabaseInit.initDatabase();
         MainFrame main = new MainFrame();
         main.loadDuLieu();
-        
     }
 }

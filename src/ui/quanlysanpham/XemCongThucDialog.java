@@ -1,7 +1,10 @@
 package ui.quanlysanpham;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -48,21 +51,21 @@ public class XemCongThucDialog extends JDialog {
         add(scrollPane, BorderLayout.CENTER);
     }
 
-
     private JPanel taoTopPanel() {
-        JPanel titlePanel = TaoUI.taoPanelCanGiua(600, 30);
-        titlePanel.add(new JLabel("Công thức pha chế"));
-        JPanel top = TaoUI.taoPanelBorderLayout(600, 60);
-        top.add(titlePanel, BorderLayout.CENTER);
-
-        JPanel buttons = TaoUI.taoPanelBoxLayoutNgang(600, 30);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(600, 30);
+        JLabel lbTable = new JLabel("   Bảng công thức");
+        lbTable.setFont(new Font(null, Font.BOLD, 18));
+        top.add(lbTable);
+        top.add(Box.createHorizontalGlue());
         btnSua = new JButton("Sửa");
         btnThem = new JButton("Thêm");
         btnXoa = new JButton("Xóa");
-        buttons.add(btnThem);
-        buttons.add(btnSua);
-        buttons.add(btnXoa);
-        top.add(buttons, BorderLayout.NORTH);
+        top.add(btnThem);
+        top.add(Box.createRigidArea(new Dimension(3, 0)));
+        top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(3, 0)));
+        top.add(btnSua);
+        top.add(Box.createRigidArea(new Dimension(3, 0)));
         return top;
     }
 }

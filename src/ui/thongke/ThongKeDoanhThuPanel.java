@@ -11,14 +11,15 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import ui.component.LocNgay_Item;
 import util.TaoUI;
 
 public class ThongKeDoanhThuPanel extends JPanel {
     private DefaultCategoryDataset dataset;
     private JLabel lbTongDoanhThu;
 
-    JButton btntuNgay, btnDenNgay, btnThongKe;
-
+    JButton btnThongKe;
+    LocNgay_Item locNgay;
     public ThongKeDoanhThuPanel() {
         setLayout(new BorderLayout());
         initGUI();
@@ -32,11 +33,10 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     private JPanel topButtonPanel() {
         JPanel top = TaoUI.taoPanelCanGiua(880, 50);
-        btntuNgay = new JButton("Từ ngày : ");
-        btnDenNgay = new JButton("Đến ngày : ");
+        
         btnThongKe = new JButton("Thống kê");
-        top.add(btntuNgay);
-        top.add(btnDenNgay);
+        locNgay = new LocNgay_Item(350, 30);
+        top.add(locNgay);
         top.add(btnThongKe);
         return top;
     }

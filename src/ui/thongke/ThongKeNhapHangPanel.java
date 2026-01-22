@@ -8,42 +8,48 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
-import ui.component.Search_Item;
+import ui.component.LocNgay_Item;
 import ui.thongke.thongkechung.ThongKeChungNhapPanel;
 import util.TaoUI;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
 
 public class ThongKeNhapHangPanel extends JPanel {
     private ThongKeChungNhapPanel thongKeChungNH;
-    private JButton locBtn,xuatExbtn;
+    private JButton xuatExbtn;
+    private LocNgay_Item locNgay;
+
     public ThongKeNhapHangPanel() {
         setLayout(new BorderLayout());
 
         initGUI();
 
     }
-    private JPanel buttonPanel(){
-        JPanel buttonPanel = TaoUI.taoPanelBoxLayoutNgang( 880,30);
-        locBtn = new JButton("Lọc ngày");
+
+    private JPanel buttonPanel() {
+        JPanel buttonPanel = TaoUI.taoPanelBoxLayoutNgang(880, 30);
+        locNgay = new LocNgay_Item(350, 30);
         xuatExbtn = new JButton("Xuất exel");
-        buttonPanel.add(locBtn);
+        buttonPanel.add(locNgay);
+        buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         buttonPanel.add(xuatExbtn);
         return buttonPanel;
     }
+
     private void initGUI() {
         JPanel thongKeNHPanel = new JPanel();
         thongKeNHPanel.setLayout(new BoxLayout(thongKeNHPanel, BoxLayout.Y_AXIS));
         thongKeChungNH = new ThongKeChungNhapPanel();
         thongKeNHPanel.add(thongKeChungNH);
         JPanel top = new JPanel(new BorderLayout());
-        top.add(thongKeNHPanel,BorderLayout.NORTH);
-        top.add(buttonPanel(),BorderLayout.CENTER);
+        top.add(thongKeNHPanel, BorderLayout.NORTH);
+        top.add(buttonPanel(), BorderLayout.CENTER);
 
-        JPanel tablePanel = new JPanel(new GridLayout(0, 2,10,10));
+        JPanel tablePanel = new JPanel(new GridLayout(0, 2, 10, 10));
         TaoUI.setFixSize(tablePanel, 880, 600);
         tablePanel.add(thongKeSpPanel());
         tablePanel.add(thongKeNguyenLieu());
@@ -107,16 +113,16 @@ public class ThongKeNhapHangPanel extends JPanel {
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
 
         Object[][] data = {
-            { "PNNL01", "10/01/2026", "Nguyễn Văn A", "Nhập đường tinh luyện", "Công ty Biên Hòa" },
-            { "PNNL02", "11/01/2026", "Trần Thị B", "Nhập sữa tươi", "Vinamilk Việt Nam" },
-            { "PNNL03", "11/01/2026", "Lê Văn C", "Bột mì bổ sung", "Công ty Meizan" },
-            { "PNNL04", "12/01/2026", "Nguyễn Văn A", "Nhập trà đen", "Phúc Long Tea" },
-            { "PNNL05", "12/01/2026", "Trần Thị B", "Hạt cà phê Robusta", "Trung Nguyên Coffee" },
-            { "PNNL06", "13/01/2026", "Lê Văn C", "Syrup các loại", "Monin Việt Nam" },
-            { "PNNL07", "13/01/2026", "Nguyễn Văn A", "Kem béo thực vật", "Rich's Products" },
-            { "PNNL08", "14/01/2026", "Trần Thị B", "Trân châu đen", "Gia Thịnh Phát" },
-            { "PNNL09", "14/01/2026", "Lê Văn C", "Hương liệu thực phẩm", "Công ty Nestle" },
-            { "PNNL10", "15/01/2026", "Nguyễn Văn A", "Nhập bổ sung khẩn cấp", "Nông sản Việt" }
+                { "PNNL01", "10/01/2026", "Nguyễn Văn A", "Nhập đường tinh luyện", "Công ty Biên Hòa" },
+                { "PNNL02", "11/01/2026", "Trần Thị B", "Nhập sữa tươi", "Vinamilk Việt Nam" },
+                { "PNNL03", "11/01/2026", "Lê Văn C", "Bột mì bổ sung", "Công ty Meizan" },
+                { "PNNL04", "12/01/2026", "Nguyễn Văn A", "Nhập trà đen", "Phúc Long Tea" },
+                { "PNNL05", "12/01/2026", "Trần Thị B", "Hạt cà phê Robusta", "Trung Nguyên Coffee" },
+                { "PNNL06", "13/01/2026", "Lê Văn C", "Syrup các loại", "Monin Việt Nam" },
+                { "PNNL07", "13/01/2026", "Nguyễn Văn A", "Kem béo thực vật", "Rich's Products" },
+                { "PNNL08", "14/01/2026", "Trần Thị B", "Trân châu đen", "Gia Thịnh Phát" },
+                { "PNNL09", "14/01/2026", "Lê Văn C", "Hương liệu thực phẩm", "Công ty Nestle" },
+                { "PNNL10", "15/01/2026", "Nguyễn Văn A", "Nhập bổ sung khẩn cấp", "Nông sản Việt" }
         };
 
         DefaultTableModel model = new DefaultTableModel(data, columns);
@@ -155,7 +161,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         tongChungPanel.add(tongTienNhapTitle);
         tongChungPanel.add(tongTienNhap);
         tongChungPanel.add(javax.swing.Box.createHorizontalStrut(10));
-        
+
         return tongChungPanel;
     }
 }

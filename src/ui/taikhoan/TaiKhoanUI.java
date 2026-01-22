@@ -1,4 +1,6 @@
 package ui.taikhoan;
+import bus.TaiKhoanBUS;
+import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -24,20 +26,22 @@ public class TaiKhoanUI extends JPanel {
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
-
-        String[] quyen = { "Tất cả nhóm quyền", "Quản lý", "Nhân viên bán hàng", "Nhân viên kho" };
+        
+        String[] quyen = {"Quản lý", "Nhân viên bán hàng"};
         cbNhomQuyen = new JComboBox<>(quyen);
         cbNhomQuyen.setPreferredSize(new Dimension(150, 30));
         cbNhomQuyen.setMaximumSize(new Dimension(150, 30));
 
         search_Item = new Search_Item(300, 30);
-
+        
         btnTao = new JButton("Thêm");
+        btnTao.addActionListener(e -> openThemTaiKhoanDialog());
         TaoUI.setHeightButton(btnTao, 27);
+        
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
         TaoUI.setHeightButton(btnResetMatKhau, 27);
-
+        
         btnXoa = new JButton("Xóa");
         TaoUI.setHeightButton(btnXoa, 27);
 
@@ -80,36 +84,28 @@ public class TaiKhoanUI extends JPanel {
         tableUI.getColumnModel().getColumn(3).setPreferredWidth(120);
 
         JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
-
+        
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        add(scrollPane,BorderLayout.CENTER);
+        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+
+        add(tableContainer, BorderLayout.CENTER);
     }
-    public JButton getBtnTao() {
-        return btnTao;
+    //open them tai khoan dialog
+    private void openThemTaiKhoanDialog(){
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame);
+        dia.setVisible(true);
     }
 
-    public JButton getBtnXoa() {
-        return btnXoa;
-    }
+    //
 
-    public JButton getBtnResetMatKhau() {
-        return btnResetMatKhau;
-    }
-
-    public JComboBox<String> getCbNhomQuyen() {
-        return cbNhomQuyen;
-    }
-
-    public Search_Item getSearch_Item() {
-        return search_Item;
-    }
-
-    public JTable getTableUI() {
-        return tableUI;
-    }
-
-    public DefaultTableModel getModel() {
-        return model;
-    }
+    public JButton getBtnTao() { return btnTao; }
+    public JButton getBtnXoa() { return btnXoa; }
+    public JButton getBtnResetMatKhau() { return btnResetMatKhau; }
+    public JComboBox<String> getCbNhomQuyen() { return cbNhomQuyen; }
+    public Search_Item getSearch_Item() { return search_Item; }
+    public JTable getTableUI() { return tableUI; }
+    public DefaultTableModel getModel() { return model; }
 }
