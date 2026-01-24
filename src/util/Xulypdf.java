@@ -76,7 +76,7 @@ public class Xulypdf {
 
             // Khởi tạo Sản phẩm
             SanPham sp = new SanPham(maSP, tenSP, null, giaBan - 5000, giaBan, null, 100, "Ly", "img.png", 500, 10,
-                    true);
+                    "Đã xử lý",true);
 
             // Tạo Chi tiết hóa đơn cho sản phẩm này
             // Constructor: maCT, maHD, sanPham, size, soLuong, gia, trangThai

@@ -13,12 +13,15 @@ import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
 import dto.ChiTietCongThuc;
+import dto.CongThuc;
 import dto.SanPham;
 import util.TaoUI;
 
 public class XemCongThucDialog extends JDialog {
     private JButton btnXoa, btnThem, btnSua;
     private SanPham sanPham;
+
+    private CongThuc congThuc;
 
     public XemCongThucDialog(JDialog ouner, SanPham sanPham) {
         super(ouner, "Xem chi tiết");
@@ -27,7 +30,6 @@ public class XemCongThucDialog extends JDialog {
         setLocationRelativeTo(ouner);
         setLayout(new BorderLayout());
         initGUI();
-        setVisible(true);
     }
 
     private void initGUI() {
@@ -67,5 +69,11 @@ public class XemCongThucDialog extends JDialog {
         top.add(btnSua);
         top.add(Box.createRigidArea(new Dimension(3, 0)));
         return top;
+    }
+    public CongThuc dongGoiCongThuc(){
+        return new CongThuc();
+    }
+    public CongThuc getCongThuc() {
+        return congThuc;
     }
 }

@@ -41,4 +41,19 @@ public class DanhMucDao {
         }
         return null;
     }
+    public DanhMuc timDanhMucTheoTen(String ten){
+         String sql = "SELECT * FROM DanhMuc WHERE TrangThai=1 AND TenDM=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, ten);
+            ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    return new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
+                }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return null;
+    }
 }

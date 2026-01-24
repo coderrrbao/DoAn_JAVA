@@ -17,13 +17,14 @@ public class SanPham {
     private boolean trangThai;
     private ArrayList<Size> listSize;
     private CongThuc congThuc;
+    private String trangThaiXuLy;
 
     public SanPham() {
     }
 
     public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
             NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
-            int theTich, int mucCanhBao, boolean trangThai) {
+            int theTich, int mucCanhBao, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
@@ -36,12 +37,13 @@ public class SanPham {
         this.theTich = theTich;
         this.mucCanhBao = mucCanhBao;
         this.trangThai = trangThai;
+        this.trangThaiXuLy = trangThaiXuLi;
         listSize = new ArrayList<>();
     }
 
     public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
             NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
-            int theTich, int mucCanhBao, CongThuc congThuc, boolean trangThai) {
+            int theTich, int mucCanhBao, CongThuc congThuc, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
@@ -55,6 +57,7 @@ public class SanPham {
         this.mucCanhBao = mucCanhBao;
         this.trangThai = trangThai;
         this.congThuc = congThuc;
+        this.trangThaiXuLy = trangThaiXuLi;
         listSize = new ArrayList<>();
     }
 
@@ -194,5 +197,13 @@ public class SanPham {
 
     public void setCongThuc(CongThuc congThuc) {
         this.congThuc = congThuc;
+    }
+
+    public String getTrangThaiXuLy() {
+        return trangThaiXuLy;
+    }
+
+    public void setTrangThaiXuLy(String trangThaiXuLi) {
+        this.trangThaiXuLy = trangThaiXuLi;
     }
 }

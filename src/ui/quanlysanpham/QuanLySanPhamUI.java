@@ -17,6 +17,7 @@ public class QuanLySanPhamUI extends JPanel {
     private JButton themSpBtn, xuaFileBtn, nhapFileBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbNhaCungCap, cbDanhMuc;
+    private JComboBox<String> cbTrangThai;
     private JFrame owner;
     private ArrayList<SanPham> listSanPham;
     private ArrayList<SanPham> listSanPhamLoc;
@@ -26,6 +27,7 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
     private String[] ncc = new String[0];
     private String[] danhmuc = new String[0];
+    private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
 
     private SanPhamBUS quanLySanPhamBUS;
 
@@ -71,6 +73,9 @@ public class QuanLySanPhamUI extends JPanel {
         nhapFileBtn = new JButton("Nhập Excel");
         TaoUI.setHeightButton(nhapFileBtn, 32);
 
+        cbTrangThai = new JComboBox<>(trangThaiOptions);
+        cbTrangThai.setMaximumSize(new Dimension(160, 32));
+
         top.add(cbLoaiNuoc);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(cbNhaCungCap);
@@ -84,6 +89,8 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(xuaFileBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(nhapFileBtn);
+        top.add(Box.createRigidArea(new Dimension(5, 0)));
+        top.add(cbTrangThai);
         nhapFileBtn.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         top.add(Box.createHorizontalGlue());
 
@@ -102,7 +109,7 @@ public class QuanLySanPhamUI extends JPanel {
 
     private JScrollPane taoTable() {
         String[] cots = { "STT", "Ảnh", "Mã SP", "Tên sản phẩm", "Loại", "Danh mục", "Giá bán", "Giá nhập",
-                "Số lượng", "" };
+                "Số lượng", "Trạng thái", "" };
 
         model = new DefaultTableModel(null, cots) {
             @Override
@@ -112,32 +119,29 @@ public class QuanLySanPhamUI extends JPanel {
                 if (columnIndex == 0 || columnIndex == 6)
                     return Integer.class;
                 if (columnIndex == 9)
-                    return JButton.class;
+                    return Boolean.class; // Trạng thái hiển thị checkbox
+                if (columnIndex == 10)
+                    return JButton.class; // nút ở cột cuối cùng
                 return Object.class;
             }
 
             public boolean isCellEditable(int row, int column) {
-                return column == 9;
+                return column == 10; // chỉ cho phép edit (click) ở cột nút
             }
         };
 
-        HashSet <Integer> set = new HashSet<>();
+        HashSet<Integer> set = new HashSet<>();
         set.add(1);
-        set.add(9);
+        set.add(10);
         JScrollPane sc = TaoUI.taoTableScroll(model, set);
-        JTable table = (JTable)sc.getViewport().getView();
-        
-
+        JTable table = (JTable) sc.getViewport().getView();
 
         NutSuKienSP nutSuKien = new NutSuKienSP(new JCheckBox());
-        table.getColumnModel().getColumn(9).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
-        table.getColumnModel().getColumn(9).setCellEditor(nutSuKien);
-
+        table.getColumnModel().getColumn(10).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
+        table.getColumnModel().getColumn(10).setCellEditor(nutSuKien);
 
         return sc;
     }
-
-
 
     private void setKichThuocCot() {
         JTable table = (JTable) scrollPane.getViewport().getView();
@@ -150,22 +154,24 @@ public class QuanLySanPhamUI extends JPanel {
         columnModel.getColumn(6).setPreferredWidth(90); // Giá bán
         columnModel.getColumn(7).setPreferredWidth(90); // Giá nhập
         columnModel.getColumn(8).setPreferredWidth(80); // Số lượng
-        columnModel.getColumn(9).setPreferredWidth(40); // Số lượng
+        columnModel.getColumn(9).setPreferredWidth(80); // Trạng thái
+        columnModel.getColumn(10).setPreferredWidth(40); // Nút hành động
     }
 
     private void themSanPhamVaoTable(SanPham sanPham) {
         ImageIcon icon = TaoUI.taoImageIcon(sanPham.getAnh(), 70, 70);
-        JButton btn  = new JButton();
+        JButton btn = new JButton();
         model.addRow(new Object[] { stt++, icon, sanPham.getMaSP(), sanPham.getTenSP(), sanPham.getLoaiNuoc(),
                 sanPham.getDanhMuc().getTenDM(), sanPham.getGiaBan(), sanPham.getGiaNhap(), sanPham.getSoLuongTon(),
-                btn });
+                sanPham.getTrangThaiXuLy(), btn });
     }
-
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
-            JDialog ctSpDialog = new ChiTietSanPhamDialog(null);
+            new ChiTietSanPhamDialog(null,this);
         });
+
+        cbTrangThai.addActionListener(e -> locSanPham());
 
         cbLoaiNuoc.addActionListener(e -> locSanPham());
         cbNhaCungCap.addActionListener(e -> locSanPham());
@@ -199,12 +205,20 @@ public class QuanLySanPhamUI extends JPanel {
         String luaChonLoaiNuoc = cbLoaiNuoc.getSelectedItem().toString();
         String luaChonNCC = cbNhaCungCap.getSelectedItem().toString();
         String luaChonDM = cbDanhMuc.getSelectedItem().toString();
+        String luaChonTrangThai = cbTrangThai.getSelectedItem().toString();
         for (SanPham sanPham : listSanPham) {
-            if ((sanPham.getNhaCungCap().getTenNCC().equals(luaChonNCC) || luaChonNCC.equals("Nhà cung cấp")) &&
-                    (sanPham.getLoaiNuoc().equals(luaChonLoaiNuoc) || luaChonLoaiNuoc.equals("Loại nước")) &&
-                    (sanPham.getDanhMuc().getTenDM().equals(luaChonDM) || luaChonDM.equals("Danh mục"))
-                    && sanPham.getTrangThai()
-                    && sanPham.getTenSP().toUpperCase().contains(search_Item.getTextSearch().trim().toUpperCase())) {
+            boolean matchNCC = sanPham.getNhaCungCap().getTenNCC().equals(luaChonNCC)
+                    || luaChonNCC.equals("Nhà cung cấp");
+            boolean matchLoai = sanPham.getLoaiNuoc().equals(luaChonLoaiNuoc) || luaChonLoaiNuoc.equals("Loại nước");
+            boolean matchDM = sanPham.getDanhMuc().getTenDM().equals(luaChonDM) || luaChonDM.equals("Danh mục");
+            boolean matchSearch = sanPham.getTenSP().toUpperCase()
+                    .contains(search_Item.getTextSearch().trim().toUpperCase());
+            boolean matchTrangThai = false;
+            if (luaChonTrangThai.equals("Trạng thái") || sanPham.getTrangThaiXuLy().equals(luaChonTrangThai)) {
+                matchTrangThai = true;
+            }
+
+            if (matchNCC && matchLoai && matchDM && matchTrangThai && matchSearch) {
                 listSanPhamLoc.add(sanPham);
             }
         }

@@ -35,7 +35,7 @@ public class NutSuKienSP extends DefaultCellEditor {
             SanPham sanPham = quanLySanPhamBUS
                     .timSanPham(String.valueOf(currentTable.getModel().getValueAt(currentRow, 2)));
             if (sanPham != null) {
-                new ChiTietSanPhamDialog(sanPham);
+                new ChiTietSanPhamDialog(sanPham,null);
             } else {
                 JOptionPane.showMessageDialog(null, "Bruhh");
             }
