@@ -11,7 +11,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
 import bus.DanhMucBUS;
-import bus.NhaCungCapBUS;
+import bus.NhaCungCapBus;
 import bus.SanPhamBUS;
 import bus.SizeBUS;
 import dto.DanhMuc;
@@ -34,7 +34,7 @@ public class ChiTietSanPhamDialog extends JDialog {
     private SanPham sanPham;
 
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
-    private NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+    private NhaCungCapBus nhaCungCapBUS = new NhaCungCapBus();
 
     private XemCongThucDialog xemCongThucDialog = new XemCongThucDialog(null, sanPham);
     private QuanLySanPhamUI quanLySanPhamUI;
