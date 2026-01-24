@@ -69,7 +69,7 @@ public class SanPhamDAO {
 
     public boolean themSanPham(SanPham sanPham) {
         String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy,TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -79,7 +79,7 @@ public class SanPhamDAO {
             pst.setString(3, sanPham.getDanhMuc().getMaDM());
             pst.setDouble(4, sanPham.getGiaNhap());
             pst.setDouble(5, sanPham.getGiaBan());
-            pst.setString(6, sanPham.getMaSP());
+            pst.setString(6, sanPham.getNhaCungCap().getMaNCC());
             pst.setInt(7, sanPham.getSoLuongTon());
             pst.setString(8, sanPham.getLoaiNuoc());
             pst.setString(9, sanPham.getAnh());

@@ -1,5 +1,7 @@
 package ui.banhang;
 
+import bus.ThongtinKhachHangBUS;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
@@ -18,6 +20,39 @@ public class BanHangUI extends JPanel {
 
         ThongTinKhachHangPanel thongTinKhachHangPanel = new ThongTinKhachHangPanel();
         leftPanel.add(thongTinKhachHangPanel, BorderLayout.NORTH);
+
+        ThongtinKhachHangBUS khachHangBUS = new ThongtinKhachHangBUS();
+
+        thongTinKhachHangPanel.getTxtSdt().getDocument().addDocumentListener(
+                new javax.swing.event.DocumentListener() {
+
+                    private void xuLy() {
+                        String sdt = thongTinKhachHangPanel.getTxtSdt().getText().trim();
+
+                        var kh = khachHangBUS.timTheoSDT(sdt);
+
+                        if (kh != null) {
+                            thongTinKhachHangPanel.getTxtTenKh().setText(kh.getTenKH());
+                            thongTinKhachHangPanel.getTxtTenKh().setEditable(false);
+                        } else {
+                            thongTinKhachHangPanel.getTxtTenKh().setText("");
+                            thongTinKhachHangPanel.getTxtTenKh().setEditable(true);
+                        }
+                    }
+
+                    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+
+                    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+
+                    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+                }
+        );
 
         ThanhToanPanel thanhToanPanel = new ThanhToanPanel();
         leftPanel.add(thanhToanPanel, BorderLayout.SOUTH);
