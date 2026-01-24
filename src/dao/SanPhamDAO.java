@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import bus.DanhMucBUS;
-import bus.NhaCungCapBUS;
+import bus.NhaCungCapBus;
 import dao.conection.DBConnection;
 import dto.DanhMuc;
 import dto.NhaCungCap;
