@@ -10,7 +10,12 @@ import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 
+import bus.DanhMucBUS;
+import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
+import bus.SizeBUS;
+import dto.DanhMuc;
+import dto.NhaCungCap;
 import dto.SanPham;
 import dto.Size;
 import util.TaoUI;
@@ -21,16 +26,24 @@ public class ChiTietSanPhamDialog extends JDialog {
             tfGiaNhap, tfGiaBan, tfSoLuongTon, tfDungTich;
     private JTable tblSize;
     private DefaultTableModel modelSize;
-    private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCongThuc, btnXoaSize, btnThemSize, btnSuaSize;
+    private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCongThuc, btnXoaSize, btnThemSize, btnSuaSize, btnThemSp,
+            btnLamMoi;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
-    private JComboBox cbLoaiNuoc, cbDanhMuc;
+    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy;
     private SanPham sanPham;
 
-    public ChiTietSanPhamDialog(SanPham sanPham) {
+    private DanhMucBUS danhMucBUS = new DanhMucBUS();
+    private NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+
+    private XemCongThucDialog xemCongThucDialog = new XemCongThucDialog(null, sanPham);
+    private QuanLySanPhamUI quanLySanPhamUI;
+
+    public ChiTietSanPhamDialog(SanPham sanPham,QuanLySanPhamUI quanLySanPhamUI) {
         super((JFrame) null, "Chi tiết sản phẩm", true);
+        this.quanLySanPhamUI = quanLySanPhamUI;
         this.sanPham = sanPham;
-        this.setSize(400, 680);
+        this.setSize(400, 700);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
@@ -74,11 +87,16 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         SanPhamBUS quanLySanPhamBUS = new SanPhamBUS();
         ArrayList<String> luaChonDanhMuc = quanLySanPhamBUS.layLuaChonDanhMuc();
+        luaChonDanhMuc.add(0, "-- Danh mục --");
         ArrayList<String> luaChonLoaiNuoc = new ArrayList<>();
+        luaChonLoaiNuoc.add("-- Loại nước --");
         luaChonLoaiNuoc.add("Có sẵn");
         luaChonLoaiNuoc.add("Pha chế");
         cbDanhMuc = new JComboBox<>(luaChonDanhMuc.toArray());
+        cbDanhMuc.setFont(cbDanhMuc.getFont().deriveFont(11.0f));
+        TaoUI.setFixSize(cbDanhMuc, 100, 35);
         cbLoaiNuoc = new JComboBox<>(luaChonLoaiNuoc.toArray());
+        cbLoaiNuoc.setFont(cbLoaiNuoc.getFont().deriveFont(11.0f));
         thongTin5.add(new JLabel("Loại nước"));
         thongTin5.add(Box.createRigidArea(new Dimension(10, 0)));
         thongTin5.add(cbLoaiNuoc);
@@ -86,6 +104,20 @@ public class ChiTietSanPhamDialog extends JDialog {
         thongTin5.add(new JLabel("Danh mục"));
         thongTin5.add(Box.createRigidArea(new Dimension(15, 0)));
         thongTin5.add(cbDanhMuc);
+
+        JPanel thongTin5_1 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
+        ArrayList<String> luaChonTrangThaiXuLy = new ArrayList<>();
+        luaChonTrangThaiXuLy.add("-- Tất cả --");
+        luaChonTrangThaiXuLy.add("Đã xác nhận");
+        luaChonTrangThaiXuLy.add("Đang xử lý");
+        luaChonTrangThaiXuLy.add("Ẩn");
+        cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray());
+        cbTrangThaiXuLy.setFont(cbTrangThaiXuLy.getFont().deriveFont(11.0f));
+        thongTin5_1.add(new JLabel("Trạng thái"));
+        thongTin5_1.add(Box.createRigidArea(new Dimension(10, 0)));
+        thongTin5_1.add(cbTrangThaiXuLy);
+        thongTin5_1.add(Box.createHorizontalGlue());
+
         JPanel pnlFooter = TaoUI.taoPanelCanGiua(400, 30);
 
         btnSua = new JButton("Sửa");
@@ -98,6 +130,15 @@ public class ChiTietSanPhamDialog extends JDialog {
         pnlFooter.add(btnSua);
         pnlFooter.add(btnLuuThayDoi);
 
+        JPanel taoSanPhamPanel = TaoUI.taoPanelCanGiua(400, 30);
+        btnThemSp = new JButton("Thêm");
+        btnLamMoi = new JButton("Làm mới");
+        btnLamMoi.setPreferredSize(new Dimension(150, 35));
+        btnThemSp.setPreferredSize(new Dimension(150, 35));
+
+        taoSanPhamPanel.add(btnThemSp);
+        taoSanPhamPanel.add(btnLamMoi);
+
         chitietPanel.add(lblAnh);
         chitietPanel.add(buttons);
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 10)));
@@ -105,14 +146,20 @@ public class ChiTietSanPhamDialog extends JDialog {
         chitietPanel.add(thongTin2);
         chitietPanel.add(thongTin3);
         chitietPanel.add(thongTin4);
+        chitietPanel.add(Box.createRigidArea(new Dimension(0, 3)));
         chitietPanel.add(thongTin5);
+        chitietPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        if (sanPham != null) {
+            chitietPanel.add(thongTin5_1);
+        }
+
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 20)));
-        if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+        if (sanPham == null || sanPham.getLoaiNuoc().equals("Pha chế")) {
             JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
             JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
             btnXemCongThuc = new JButton("Xem công thức");
             btnXemCongThuc.addActionListener(e -> {
-                new XemCongThucDialog(this, sanPham);
+                xemCongThucDialog.setVisible(true);
             });
             thongTin6.add(btnXemCongThuc);
             titleThongTin6.add(new JLabel("Bảng size"));
@@ -149,22 +196,18 @@ public class ChiTietSanPhamDialog extends JDialog {
             modelSize.addColumn("Tên size");
             modelSize.addColumn("Giá thêm(%)");
             modelSize.addColumn("Nguyên liệu thêm(%)");
-            if (sanPham.getListSize() != null) {
-                for (Size size : sanPham.getListSize()) {
-                    modelSize.addRow(
-                            new Object[] { size.getMaSize(), size.getTenSize(), size.getPhanTramGia(),
-                                    size.getPhanTramNL() });
-                }
-            }
 
-            JScrollPane scrollPane = TaoUI.taoTableScroll(modelSize);
-            thongTin6.add(scrollPane, BorderLayout.CENTER);
+            JScrollPane scrollPaneSize = TaoUI.taoTableScroll(modelSize);
+            thongTin6.add(scrollPaneSize, BorderLayout.CENTER);
             chitietPanel.add(thongTin6);
         }
-        chitietPanel.add(Box.createRigidArea(new Dimension(0, 30)));
 
         chitietPanel.add(Box.createVerticalGlue());
-        chitietPanel.add(pnlFooter);
+        if (sanPham != null) {
+            chitietPanel.add(pnlFooter);
+        } else {
+            chitietPanel.add(taoSanPhamPanel);
+        }
 
         this.add(chitietPanel);
 
@@ -177,6 +220,16 @@ public class ChiTietSanPhamDialog extends JDialog {
 
     private void capNhapDuLieu(SanPham sanPham) {
         if (sanPham == null) {
+            tfMaSanPham.setText("");
+            tfTenSanPham.setText("");
+            tfCanhBao.setText("");
+            tfNhaCungCap.setText("");
+            tfGiaNhap.setText("");
+            tfGiaBan.setText("");
+            tfSoLuongTon.setText("");
+            tfDungTich.setText("");
+            lblAnh.setIcon(TaoUI.taoImageIcon("../assets/img/douongmd.png", 200, 200));
+            modelSize.setRowCount(0);
             return;
         }
         lblAnh.setIcon(TaoUI.taoImageIcon(sanPham.getAnh(), 200, 200));
@@ -188,6 +241,15 @@ public class ChiTietSanPhamDialog extends JDialog {
         tfGiaBan.setText(String.valueOf(sanPham.getGiaBan()));
         tfSoLuongTon.setText(String.valueOf(sanPham.getSoLuongTon()));
         tfDungTich.setText(String.valueOf(sanPham.getTheTich()));
+
+        if (sanPham.getListSize() != null) {
+            for (Size size : sanPham.getListSize()) {
+                modelSize.addRow(
+                        new Object[] { size.getMaSize(), size.getTenSize(), size.getPhanTramGia(),
+                                size.getPhanTramNL() });
+            }
+        }
+
     }
 
     private void ganSuKien() {
@@ -203,5 +265,207 @@ public class ChiTietSanPhamDialog extends JDialog {
             }
         });
 
+
+        btnLamMoi.addActionListener(e -> {
+            capNhapDuLieu(null);
+            this.repaint();
+        });
+
+        btnSua.addActionListener(e -> {
+            tfMaSanPham.setEditable(false);
+            tfTenSanPham.setEditable(true);
+            tfCanhBao.setEditable(true);
+            tfNhaCungCap.setEditable(true);
+            tfGiaNhap.setEditable(true);
+            tfGiaBan.setEditable(true);
+            tfSoLuongTon.setEditable(true);
+            tfDungTich.setEditable(true);
+            cbDanhMuc.setEnabled(true);
+            cbLoaiNuoc.setEnabled(true);
+            btnLuuThayDoi.setEnabled(true);
+            btnSua.setEnabled(false);
+            btnChonAnh.setEnabled(true);
+        });
+
+        btnLuuThayDoi.addActionListener(e -> {
+            if (kiemTraDuLieu()) {
+                dongGoiSanPham();
+                SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                if (sanPhamBUS.capNhapSanPham(sanPham)) {
+                    JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    tfMaSanPham.setEditable(false);
+                    tfTenSanPham.setEditable(false);
+                    tfCanhBao.setEditable(false);
+                    tfNhaCungCap.setEditable(false);
+                    tfGiaNhap.setEditable(false);
+                    tfGiaBan.setEditable(false);
+                    tfSoLuongTon.setEditable(false);
+                    tfDungTich.setEditable(false);
+                    cbDanhMuc.setEnabled(false);
+                    cbLoaiNuoc.setEnabled(false);
+                    btnLuuThayDoi.setEnabled(false);
+                    btnSua.setEnabled(true);
+                    btnChonAnh.setEnabled(false);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnThemSp.addActionListener(e -> {
+            if (kiemTraDuLieu()) {
+                SanPham sanPham = dongGoiSanPham();
+                SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                if (sanPhamBUS.themSanPham(sanPham)) {
+                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    capNhapDuLieu(null);
+                    this.repaint();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnThemSize.addActionListener(e -> {
+            if (sanPham != null) {
+                // new ThemSizeDialog(this, sanPham);
+                capNhapDuLieu(sanPham);
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng lưu sản phẩm trước khi thêm size!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnSuaSize.addActionListener(e -> {
+            int row = tblSize.getSelectedRow();
+            if (row >= 0) {
+                String maSize = (String) modelSize.getValueAt(row, 0);
+                if (sanPham.getListSize() != null) {
+                    for (Size size : sanPham.getListSize()) {
+                        if (size.getMaSize().equals(maSize)) {
+                            // new SuaSizeDialog(this, size, sanPham);
+                            capNhapDuLieu(sanPham);
+                            break;
+                        }
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn size để sửa!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        btnXoaSize.addActionListener(e -> {
+            int row = tblSize.getSelectedRow();
+            if (row >= 0) {
+                String maSize = (String) modelSize.getValueAt(row, 0);
+                if (sanPham.getListSize() != null) {
+                    for (Size size : sanPham.getListSize()) {
+                        if (size.getMaSize().equals(maSize)) {
+                            SizeBUS sizeBUS = new SizeBUS();
+                            // if (sizeBUS.XoaSanPham(maSize)) {
+                            //     sanPham.getListSize().remove(size);
+                            //     modelSize.removeRow(row);
+                            //     JOptionPane.showMessageDialog(this, "Xóa size thành công!", "Thành công",
+                            //             JOptionPane.INFORMATION_MESSAGE);
+                            // } else {
+                            //     JOptionPane.showMessageDialog(this, "Xóa size thất bại!", "Thất bại",
+                            //             JOptionPane.ERROR_MESSAGE);
+                            // }
+                            // break;
+                        }
+                    }
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn size để xóa!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
+            }
+        });
+
+        if (sanPham != null) {
+            tfMaSanPham.setEditable(false);
+            tfTenSanPham.setEditable(false);
+            tfCanhBao.setEditable(false);
+            tfNhaCungCap.setEditable(false);
+            tfGiaNhap.setEditable(false);
+            tfGiaBan.setEditable(false);
+            tfSoLuongTon.setEditable(false);
+            tfDungTich.setEditable(false);
+            cbDanhMuc.setEnabled(false);
+            cbLoaiNuoc.setEnabled(false);
+            btnChonAnh.setEnabled(false);
+            tblSize = new JTable(modelSize);
+        }
+    }
+
+    private boolean kiemTraDuLieu() {
+        if (tfTenSanPham.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cbDanhMuc.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cbLoaiNuoc.getSelectedIndex() == 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        try {
+            Long.parseLong(tfGiaNhap.getText());
+            Long.parseLong(tfGiaBan.getText());
+            Long.parseLong(tfDungTich.getText());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là số!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        return true;
+    }
+
+    public SanPham dongGoiSanPham() {
+        xemCongThucDialog.dongGoiCongThuc();
+        SanPham sp = new SanPham();
+        sp.setMaSP(tfMaSanPham.getText());
+        sp.setTenSP(tfTenSanPham.getText());
+        sp.setLoaiNuoc((String) cbLoaiNuoc.getSelectedItem());
+        DanhMuc danhMuc = danhMucBUS.timDanhMuc((String) cbDanhMuc.getSelectedItem());
+        sp.setDanhMuc(danhMuc);
+        sp.setGiaBan(Long.parseLong(tfGiaBan.getText()));
+        sp.setGiaNhap(Long.parseLong(tfGiaNhap.getText()));
+        sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
+        sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
+        NhaCungCap ncc = nhaCungCapBUS.timNhaCungCapTheoTen((String) tfNhaCungCap.getText());
+        sp.setNhaCungCap(ncc);
+        sp.setCongThuc(xemCongThucDialog.getCongThuc());
+        sp.setListSize(dongGoiListSize());
+        sp.setTrangThaiXuLy("Chờ xử lý");
+
+        if (lblAnh.getIcon() != null) {
+            luuAnh();
+            sp.setAnh(tfMaSanPham.getText() + ".png");
+        }
+
+        this.sanPham = sp;
+        return sanPham;
+    }
+
+    private ArrayList<Size> dongGoiListSize() {
+        ArrayList<Size> listSize = new ArrayList<>();
+        for (int i = 0; i < modelSize.getRowCount(); i++) {
+            Size size = new Size(modelSize.getValueAt(i, 0).toString(), modelSize.getValueAt(i, 1).toString(),
+                    modelSize.getValueAt(i, 2).toString(),
+                    Integer.parseInt(modelSize.getValueAt(i, 3).toString()),
+                    Integer.parseInt(modelSize.getValueAt(i, 5).toString()));
+            listSize.add(size);
+        }
+        return listSize;
+    }
+
+    private void luuAnh() {
     }
 }

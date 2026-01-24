@@ -13,5 +13,7 @@ public class NhaCungCapBus {
 
     public NhaCungCap timNhaCungCap(String ma) {
         return nhaCungCapDAO.timNhaCungCap(ma);
+    }public NhaCungCap timNhaCungCapTheoTen(String ten) {
+        return nhaCungCapDAO.timNhaCungCapTheoTen(ten);
     }
 }

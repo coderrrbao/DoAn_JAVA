@@ -8,4 +8,7 @@ public class DanhMucBUS {
     public DanhMuc timDanhMuc(String ma){
         return danhMucDao.timDanhMuc(ma);
     }
+    public DanhMuc timDanhMucTheoTen(String ten){
+        return danhMucDao.timDanhMucTheoTen(ten);
+    }
 }

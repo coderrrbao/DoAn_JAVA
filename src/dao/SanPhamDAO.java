@@ -33,7 +33,7 @@ public class SanPhamDAO {
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
-
+                sp.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
                 NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
                         rs.getString("SoDienThoai"), rs.getString("DiaChi"));
                 DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
@@ -68,7 +68,7 @@ public class SanPhamDAO {
     }
 
     public boolean themSanPham(SanPham sanPham) {
-        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThai) "
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy,TrangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
@@ -85,7 +85,9 @@ public class SanPhamDAO {
             pst.setString(9, sanPham.getAnh());
             pst.setDouble(10, sanPham.getTheTich());
             pst.setInt(11, sanPham.getMucCanhBao());
-            pst.setInt(12, sanPham.getTrangThai() ? 1 : 0);
+            pst.setString(12, sanPham.getTrangThaiXuLy());
+            pst.setInt(13, sanPham.getTrangThai() ? 1 : 0);
+
             int rowAffected = pst.executeUpdate();
             return rowAffected > 0;
 
@@ -120,7 +122,8 @@ public class SanPhamDAO {
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
-
+                sp.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
+                
                 NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
                         rs.getString("SoDienThoai"), rs.getString("DiaChi"));
                 DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));

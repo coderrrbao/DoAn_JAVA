@@ -47,5 +47,13 @@ public class SanPhamBUS {
         }
         return sanPham;
     }
-
+    public Boolean themSanPham(SanPham  sanPham){
+        return true;
+    }
+    public Boolean XoaSanPham(SanPham sanPham){
+        return true;
+    }
+    public boolean capNhapSanPham(SanPham sanPham){
+        return true;
+    }
 }
