@@ -12,65 +12,125 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
+import bus.SanPhamBUS;
+import dto.DanhMuc;
 import util.TaoUI;
 
 public class BoLocPanel extends JPanel {
-    private JTextField searchTextField;
+
+    private JTextField txtTenSanPham;
+    private JComboBox<String> cbLoaiSanPham;
+    private JComboBox<DanhMuc> cbDanhMuc;
+    private SanPhamBUS sanPhamBUS;
+
+
+    private JButton btnApDung;
+    private JButton btnLamMoi;
 
     public BoLocPanel() {
-        searchTextField = new JTextField();
+
         TaoUI.taoPanelBoxLayoutDoc(this, Integer.MAX_VALUE, 140);
         TaoUI.suaBorderChoPanel(this, 0, 0, 0, 0);
+
+
         JPanel titleMain = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
-        titleMain.add(new JLabel("Bộ lọc"));
         titleMain.setBackground(new Color(225, 235, 245));
+        titleMain.add(new JLabel("Bộ lọc"));
         add(titleMain);
+
 
         JPanel topPanel = TaoUI.taoPanelFlowLayout(Integer.MAX_VALUE, 60, 5, 0);
 
-        JPanel inputSearch = TaoUI.taoPanelBoxLayoutDoc(200, Integer.MAX_VALUE);
-        JLabel titleSearch = new JLabel("Tên sản phẩm");
-        JPanel titlePanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
-        titlePanel.add(titleSearch);
-        inputSearch.add(titlePanel);
 
+        JPanel pnTenSP = TaoUI.taoPanelBoxLayoutDoc(200, Integer.MAX_VALUE);
+
+        JPanel titleTenSP = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
+        titleTenSP.add(new JLabel("Tên sản phẩm"));
+        pnTenSP.add(titleTenSP);
+
+        txtTenSanPham = new JTextField();
         JPanel searchArea = TaoUI.taoPanelBorderLayout(200, 25);
-        searchArea.add(searchTextField, BorderLayout.CENTER);
+        searchArea.add(txtTenSanPham, BorderLayout.CENTER);
+        pnTenSP.add(searchArea);
 
-        inputSearch.add(searchArea);
-        topPanel.add(inputSearch);
+        topPanel.add(pnTenSP);
+
+
+        JPanel pnLoaiSP = TaoUI.taoPanelBoxLayoutDoc(100, Integer.MAX_VALUE);
+
+        JPanel titleLoai = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
+        titleLoai.add(new JLabel("Loại sản phẩm"));
+        pnLoaiSP.add(titleLoai);
+
+        String[] loai = { "Có sẵn", "Pha chế" };
+        cbLoaiSanPham = new JComboBox<>(loai);
+        sanPhamBUS = new SanPhamBUS();
+
+
+        cbLoaiSanPham.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+        cbLoaiSanPham.setFont(new Font("Arial", Font.PLAIN, 10));
+        pnLoaiSP.add(cbLoaiSanPham);
+
+        topPanel.add(pnLoaiSP);
+
+
+        JPanel pnDanhMuc = TaoUI.taoPanelBoxLayoutDoc(100, Integer.MAX_VALUE);
+
+        JPanel titleDanhMuc = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 30);
+        titleDanhMuc.add(new JLabel("Danh mục"));
+        pnDanhMuc.add(titleDanhMuc);
+
+        cbDanhMuc = new JComboBox<>();
+        cbDanhMuc.addItem(new DanhMuc("ALL", "Tất cả"));
+
+        for (DanhMuc dm : sanPhamBUS.layDanhMucDangHoatDong()) {
+            cbDanhMuc.addItem(dm);
+        }
+
+        cbDanhMuc.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+        cbDanhMuc.setFont(new Font("Arial", Font.PLAIN, 10));
+        pnDanhMuc.add(cbDanhMuc);
+
+        cbDanhMuc.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
+        cbDanhMuc.setFont(new Font("Arial", Font.PLAIN, 10));
+        pnDanhMuc.add(cbDanhMuc);
+
+        topPanel.add(pnDanhMuc);
+
+        add(topPanel);
+
+
+        btnApDung = new JButton("Áp dụng");
+        btnLamMoi = new JButton("Làm mới");
 
         JPanel buttonsPanel = TaoUI.taoPanelBoxLayoutNgang(Integer.MAX_VALUE, 30);
         buttonsPanel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
-        buttonsPanel.add(new JButton("Áp dụng"));
-        buttonsPanel.add(new JButton("Làm mới"));
-        add(topPanel);
+        buttonsPanel.add(btnLamMoi);
+        buttonsPanel.add(btnApDung);
+
         add(buttonsPanel);
+        ganSuKien();
+    }
 
-        JPanel loaiSanPhamPanel = TaoUI.taoPanelBoxLayoutDoc(100, Integer.MAX_VALUE);
-        JPanel titleLoaiSp = TaoUI.taoPanelBoxLayoutNgang(Integer.MAX_VALUE, 30);
-        titleLoaiSp.add(new JLabel("Loại sản phẩm"));
-        loaiSanPhamPanel.add(titleLoaiSp);
-        String[] loai = { "Nguyễn Hoài Bảo", "Bảo 123", "BẢO" };
-        JComboBox<String> loaiSpComboBox = new JComboBox<>(loai);
-        loaiSpComboBox.setPreferredSize(new Dimension(Integer.MAX_VALUE, 20));
-        loaiSpComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
-        loaiSanPhamPanel.add(loaiSpComboBox);
-        loaiSpComboBox.setFont(new Font("Arial",Font.PLAIN,10));
+    private void ganSuKien() {
 
+        btnApDung.addActionListener(e -> {
+            String ten = txtTenSanPham.getText().trim();
+            String loai = cbLoaiSanPham.getSelectedItem().toString();
+            DanhMuc dm = (DanhMuc) cbDanhMuc.getSelectedItem();
 
-        JPanel nhaCungCapPanel = TaoUI.taoPanelBoxLayoutDoc(100, Integer.MAX_VALUE);
-        JPanel titleDanhmuc = TaoUI.taoPanelBoxLayoutNgang(Integer.MAX_VALUE, 30);
-        titleDanhmuc.add(new JLabel("Danh mục"));
-        nhaCungCapPanel.add(titleDanhmuc);
-        JComboBox<String> nhaCCComboBox = new JComboBox<>(loai);
-        nhaCCComboBox.setPreferredSize(new Dimension(Integer.MAX_VALUE, 20));
-        nhaCCComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
-        nhaCungCapPanel.add(nhaCCComboBox);
-        nhaCCComboBox.setFont(new Font("Arial",Font.PLAIN,10));
+            System.out.println("Áp dụng bộ lọc:");
+            System.out.println("Tên: " + ten);
+            System.out.println("Loại: " + loai);
+            System.out.println("Danh mục: " + dm.getMaDM());
+        });
 
-        topPanel.add(loaiSanPhamPanel);
-        topPanel.add(nhaCungCapPanel);
+        btnLamMoi.addActionListener(e -> {
+            txtTenSanPham.setText("");
+            cbLoaiSanPham.setSelectedIndex(0);
+            cbDanhMuc.setSelectedIndex(0);
+
+            System.out.println("Đã làm mới bộ lọc");
+        });
     }
 }

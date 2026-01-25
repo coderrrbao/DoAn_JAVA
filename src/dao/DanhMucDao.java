@@ -45,7 +45,6 @@ public class DanhMucDao {
          String sql = "SELECT * FROM DanhMuc WHERE TrangThai=1 AND TenDM=?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, ten);
             ResultSet rs = pst.executeQuery();
                 if (rs.next()) {
                     return new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
@@ -56,4 +55,26 @@ public class DanhMucDao {
         }
         return null;
     }
+    public ArrayList<DanhMuc> layDanhMucDangHoatDong() {
+        ArrayList<DanhMuc> list = new ArrayList<>();
+
+        String sql = "SELECT MaDM, TenDM FROM DanhMuc WHERE TrangThai = 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                list.add(new DanhMuc(
+                        rs.getString("MaDM"),
+                        rs.getString("TenDM")
+                ));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
 }

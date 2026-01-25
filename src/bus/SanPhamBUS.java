@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
+import dto.DanhMuc;
 import dto.SanPham;
 import util.XuLyExcel;
 
@@ -58,6 +59,12 @@ public class SanPhamBUS {
         return danhMucDao.layLuaChonDanhMuc();
     }
 
+    public ArrayList<DanhMuc> layDanhMucDangHoatDong() {
+        DanhMucDao danhMucDao = new DanhMucDao();
+        return danhMucDao.layDanhMucDangHoatDong();
+    }
+
+
     public boolean xuatFileExcel() {
         return XuLyExcel.xuatFile(layListSanPham());
     }
@@ -70,6 +77,21 @@ public class SanPhamBUS {
         }
         return sanPham;
     }
+
+    public ArrayList<SanPham> locSanPham(String loai, String maDM) {
+        ArrayList<SanPham> list = SanPhamDAO.locSanPham(loai, maDM);
+
+        // nếu là pha chế thì gắn size + công thức
+        for (SanPham sp : list) {
+            if ("Pha chế".equals(sp.getLoaiNuoc())) {
+                sp.setListSize(sizeBUS.laySizeChoSP(sp.getMaSP()));
+                sp.setCongThuc(congThucBUS.timCongThucChoSP(sp.getMaSP()));
+            }
+        }
+        return list;
+    }
+
+
     public Boolean themSanPham(SanPham  sanPham){
         return true;
     }
