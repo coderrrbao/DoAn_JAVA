@@ -1,7 +1,7 @@
 package dao;
 import java.sql.Connection;
-import java.sql.ConnectionBuilder;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 import dao.conection.DBConnection;
 import dto.TaiKhoan;
@@ -47,5 +47,22 @@ public class TaiKhoanDao {
             e.printStackTrace();
             return false;
         }
+    }
+    //dang nhap tai khoan 
+    public boolean dangNhap_DAO(String tenDangNhap, String matKhau){
+        String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";
+        try (Connection conn = DBConnection.getConnection(); 
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, tenDangNhap);
+            ps.setString(2, matKhau);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next(); 
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

@@ -13,15 +13,21 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import bus.TaiKhoanBUS;
+import dao.conection.DatabaseInit;
+import dto.TaiKhoan;
+import ui.main.MainFrame;
 import util.TaoUI;
 
 public class loginUI extends JFrame {
     private JTextField txtuser;
     private JPasswordField txtpass;
+    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
 
     public loginUI() {
         setSize(700, 400);
@@ -75,7 +81,9 @@ public class loginUI extends JFrame {
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
         JButton btnThem = new JButton("Đăng nhập");
+        btnThem.addActionListener(e -> xuLyDangNhap());
         JButton btnHuy = new JButton("Thoát");
+        btnHuy.addActionListener(e -> System.exit(0));
 
         TaoUI.addItem(buttonPanel, btnThem, 10, true);
         TaoUI.addItem(buttonPanel, btnHuy, 10, true);
@@ -104,8 +112,35 @@ public class loginUI extends JFrame {
         passJPanel.setOpaque(false);
         quenMKPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
-    }
 
+        
+    }
+    //logic dang nhap
+    public void xuLyDangNhap(){
+        String user = txtuser.getText().trim();
+        String pass = new String(txtpass.getPassword()).trim();
+
+        //kiem tra du lieu lay tu form
+        if(user.isEmpty()){
+            JOptionPane.showMessageDialog(this, "tài khoản không được rỗng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if(pass.isEmpty()){
+            JOptionPane.showMessageDialog(this, "Mật khẩu không được rỗng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        // xu ly dang nhap
+        if(taiKhoanBUS.dangNhap_BUS(user, pass)){
+            JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
+            //hien thi giao dien
+            DatabaseInit.initDatabase();
+            new MainFrame();
+            this.dispose();
+        }
+        else{
+            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        }
+    }
     public static void main(String[] args) {
         JFrame login = new loginUI();
 

@@ -46,5 +46,9 @@ public class TaiKhoanBUS {
         }
         return dao.suaMatKhau_DAO(tenDangNhap, matKhauMoi);
     }
+    //dang nhap 
+    public boolean dangNhap_BUS(String tenDangNhap, String MatKhau){
+        return dao.dangNhap_DAO(tenDangNhap, MatKhau);
+    }
 }
 
