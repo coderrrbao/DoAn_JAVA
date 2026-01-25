@@ -11,18 +11,41 @@ public class SanPhamBUS {
     SanPhamDAO quanLySanPhamDAO = new SanPhamDAO();
     SizeBUS sizeBUS = new SizeBUS();
     CongThucBUS congThucBUS = new CongThucBUS();
+    ArrayList<SanPham> listSanPham;
 
-    public ArrayList<SanPham> layListSanPham() {
-        ArrayList<SanPham> listSanPham = quanLySanPhamDAO.layListSanPham();
+    public SanPhamBUS() {
+        reload();
+    }
 
+    public void reload() {
+        listSanPham = quanLySanPhamDAO.layListSanPham();
         for (SanPham sanPham : listSanPham) {
             if (sanPham.getLoaiNuoc().equals("Pha chế")) {
                 sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
-
                 sanPham.setCongThuc(congThucBUS.timCongThucChoSP(sanPham.getMaSP()));
             }
         }
+    }
+
+    public ArrayList<SanPham> layListSanPham() {
         return listSanPham;
+    }
+
+    public int getTongSoTrang(int pageSize) {
+        return (int) Math.ceil((double) listSanPham.size() / pageSize);
+    }
+
+    public ArrayList<SanPham> layTrang(int page, int pageSize) {
+        ArrayList<SanPham> kq = new ArrayList<>();
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, listSanPham.size());
+
+        if (start >= listSanPham.size()) return kq;
+
+        for (int i = start; i < end; i++) {
+            kq.add(listSanPham.get(i));
+        }
+        return kq;
     }
 
     public ArrayList<String> layLuaChonNCC() {

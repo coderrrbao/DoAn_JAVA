@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import dao.NhaCungCapDAO;
 import dto.NhaCungCap;
 
-public class NhaCungCapBUS {
+public class NhaCungCapBus {
     private NhaCungCapDAO nhaCungCapDAO = new NhaCungCapDAO();
 
     public NhaCungCap timNhaCungCap(String ma) {

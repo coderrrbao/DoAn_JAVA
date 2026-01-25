@@ -1,20 +1,25 @@
 package ui.banhang;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import dto.SanPham;
+import ui.component.SanPhamClickListener;
 import util.TaoUI;
 
 public class SanPhamBhItemPanel extends JPanel {
-    public SanPhamBhItemPanel(SanPham sanPham, String size) {
+
+
+    private SanPhamClickListener listener;
+    private SanPham sanPham;
+
+
+    public SanPhamBhItemPanel(SanPham sanPham, String size, SanPhamClickListener listener) {
         TaoUI.taoPanelBoxLayoutDoc(120, 170);
         TaoUI.setFixSize(this, 120, 170);
         JPanel anhPanel = TaoUI.taoPanelCanGiua(100, 70);
@@ -48,11 +53,25 @@ public class SanPhamBhItemPanel extends JPanel {
         add(giaSpPanel);
         add(sizeSanPhamPanel);
         add(tonKhoPanel);
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (Component c : getComponents()) {
             if (c instanceof JPanel) {
                 ((JPanel) c).setOpaque(false);
             }
         }
         setBackground(Color.white);
+
+        this.sanPham = sanPham;
+        this.listener = listener;
+
+
+        this.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                if (listener != null) {
+                    listener.onSanPhamClicked(SanPhamBhItemPanel.this.sanPham);
+                }
+            }
+        });
     }
 }

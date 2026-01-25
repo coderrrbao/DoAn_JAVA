@@ -61,9 +61,9 @@ public class BoLocPanel extends JPanel {
 
 
         JPanel nhaCungCapPanel = TaoUI.taoPanelBoxLayoutDoc(100, Integer.MAX_VALUE);
-        JPanel titleNCC = TaoUI.taoPanelBoxLayoutNgang(Integer.MAX_VALUE, 30);
-        titleNCC.add(new JLabel("Nhà cung cấp"));
-        nhaCungCapPanel.add(titleNCC);
+        JPanel titleDanhmuc = TaoUI.taoPanelBoxLayoutNgang(Integer.MAX_VALUE, 30);
+        titleDanhmuc.add(new JLabel("Danh mục"));
+        nhaCungCapPanel.add(titleDanhmuc);
         JComboBox<String> nhaCCComboBox = new JComboBox<>(loai);
         nhaCCComboBox.setPreferredSize(new Dimension(Integer.MAX_VALUE, 20));
         nhaCCComboBox.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));

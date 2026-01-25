@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
-import bus.DanhMucBUS;
-import bus.NhaCungCapBUS;
 import dao.conection.DBConnection;
 import dto.DanhMuc;
 import dto.NhaCungCap;
@@ -66,8 +63,9 @@ public class SanPhamDAO {
     }
 
     public boolean themSanPham(SanPham sanPham) {
-        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, MaNCC, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy,TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -75,14 +73,16 @@ public class SanPhamDAO {
             pst.setString(1, sanPham.getMaSP());
             pst.setString(2, sanPham.getTenSP());
             pst.setString(3, sanPham.getDanhMuc().getMaDM());
-            pst.setDouble(4, sanPham.getGiaBan());
-            pst.setString(5, sanPham.getMaSP());
-            pst.setString(6, sanPham.getLoaiNuoc());
-            pst.setString(7, sanPham.getAnh());
-            pst.setDouble(8, sanPham.getTheTich());
-            pst.setInt(9, sanPham.getMucCanhBao());
-            pst.setString(10, sanPham.getTrangThaiXuLy());
-            pst.setInt(11, sanPham.getTrangThai() ? 1 : 0);
+            pst.setDouble(4, sanPham.getGiaNhap());
+            pst.setDouble(5, sanPham.getGiaBan());
+            pst.setString(6, sanPham.getNhaCungCap().getMaNCC());
+            pst.setInt(7, sanPham.getSoLuongTon());
+            pst.setString(8, sanPham.getLoaiNuoc());
+            pst.setString(9, sanPham.getAnh());
+            pst.setDouble(10, sanPham.getTheTich());
+            pst.setInt(11, sanPham.getMucCanhBao());
+            pst.setString(12, sanPham.getTrangThaiXuLy());
+            pst.setInt(13, sanPham.getTrangThai() ? 1 : 0);
 
             int rowAffected = pst.executeUpdate();
             return rowAffected > 0;
