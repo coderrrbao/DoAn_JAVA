@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import dao.conection.DBConnection;
 import dto.NguyenLieu;
@@ -41,4 +42,38 @@ public class NguyenLieuDAO {
 
         return nguyenLieu;
     }
+     public ArrayList<NguyenLieu> layListNguyenLieu() {
+       ArrayList<NguyenLieu> listNguyenLieu  = new ArrayList<>();
+        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao, TrangThai FROM NguyenLieu";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+
+            while  (rs.next()) {
+                NguyenLieu nguyenLieu = new NguyenLieu();
+                NhaCungCap nhaCungCap = new NhaCungCap();
+                nhaCungCap.setMaNCC(rs.getString("MaNCC"));
+                nguyenLieu = new NguyenLieu();
+                nguyenLieu.setMaNL(rs.getString("MaNL"));
+                nguyenLieu.setTenNL(rs.getNString("TenNL"));
+                nguyenLieu.setNhaCungCap(nhaCungCap);
+                nguyenLieu.setGia(rs.getDouble("Gia"));
+                nguyenLieu.setDonVi(rs.getString("DonVi"));
+                nguyenLieu.setMucCanhBao(rs.getInt("MucCanhBao"));
+                nguyenLieu.setTrangThai(rs.getBoolean("TrangThai"));
+                listNguyenLieu.add(nguyenLieu);
+                
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi tìm nguyên liệu theo mã: " + e.getMessage());
+        }
+
+        return listNguyenLieu;
+    }
+
+
+
 }

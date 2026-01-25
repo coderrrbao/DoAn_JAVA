@@ -35,6 +35,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.JTextComponent;
 
 import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
@@ -637,5 +638,15 @@ public class TaoUI {
         chartPanel.setBackground(Color.WHITE);
 
         return chartPanel;
+    }
+
+    public static void setDisabled(JComponent comp) {
+        comp.setEnabled(false);
+
+        comp.setBackground(Color.WHITE);
+        if (comp instanceof javax.swing.text.JTextComponent) {
+            JTextComponent textComp = (javax.swing.text.JTextComponent) comp;
+            textComp.setDisabledTextColor(Color.BLACK); // Giữ chữ màu đen thay vì xám mờ
+        }
     }
 }

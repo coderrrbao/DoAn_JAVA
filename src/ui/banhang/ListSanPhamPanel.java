@@ -33,7 +33,7 @@ public class ListSanPhamPanel extends JPanel {
         TaoUI.suaBorderChoPanel(listSanPhamPanel, 0, 5, 0, 10);
         JScrollPane scrollPaneListSp = TaoUI.taoScrollPane(listSanPhamPanel);
         for (int i = 0; i < 21; i++) {
-            NhaCungCap ncc = new NhaCungCap("NCC01", "PepsiCo", "0123456789","VN");
+            NhaCungCap ncc = new NhaCungCap("NCC01", "PepsiCo", "0123456789", "VN");
 
             SanPham sp = new SanPham();
             sp.setMaSP("SP" + System.currentTimeMillis() % 1000);
@@ -41,7 +41,6 @@ public class ListSanPhamPanel extends JPanel {
             sp.setGiaBan(11000);
             sp.setLoaiNuoc("Có sẵn");
             sp.setNhaCungCap(ncc);
-            sp.setSoLuongTon(100);
             listSanPhamPanel.add(new SanPhamBhItemPanel(sp, "Mặc định"));
         }
         add(scrollPaneListSp, BorderLayout.CENTER);

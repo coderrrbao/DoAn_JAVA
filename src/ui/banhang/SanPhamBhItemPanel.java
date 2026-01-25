@@ -34,8 +34,8 @@ public class SanPhamBhItemPanel extends JPanel {
 
         JPanel tonKhoPanel = TaoUI.taoPanelBoxLayoutNgang(100, 15);
         tonKhoPanel.add(Box.createHorizontalGlue());
-        JLabel titleTon = new JLabel("Tồn : ");
-        JLabel tonNumber = new JLabel(String.valueOf(sanPham.getSoLuongTon()));
+        JLabel titleTon = new JLabel("Giá Bán : ");
+        JLabel tonNumber = new JLabel(String.valueOf(sanPham.getGiaBan()));
         Font fontNho = new Font(null, Font.BOLD, 10);
         titleTon.setFont(fontNho);
         tonNumber.setFont(fontNho);

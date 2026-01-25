@@ -173,93 +173,93 @@ END;
 /* =============================================
    7. BẢNG SẢN PHẨM (Products - 50 Records)
    ============================================= */
-IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'SanPham')
+IF NOT EXISTS (SELECT *
+FROM sys.tables
+WHERE name = 'SanPham')
 BEGIN
     CREATE TABLE SanPham
     (
         MaSP VARCHAR(50) NOT NULL PRIMARY KEY,
         TenSP NVARCHAR(255),
         MaDM VARCHAR(50),
-        GiaNhap DECIMAL(18, 2),
         GiaBan DECIMAL(18, 2),
         MaNCC VARCHAR(50),
-        SoLuongTon INT,
         LoaiNuoc NVARCHAR(50),
         Anh NVARCHAR(MAX),
         TheTich INT,
         MucCanhBao INT,
-        TrangThaiXuLy NVARCHAR(50), 
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
 
     INSERT INTO SanPham
-        (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThai, TrangThaiXuLy)
+        (MaSP, TenSP, MaDM, GiaBan, MaNCC, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThai, TrangThaiXuLy)
     VALUES
         -- DM03: Nước Ngọt
-        ('SP01', N'Pepsi Lon', 'DM03', 8000, 15000, 'NCC01', 100, N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
-        ('SP26', N'Coca Cola', 'DM03', 8000, 15000, 'NCC04', 120, N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
-        ('SP27', N'7Up', 'DM03', 8000, 15000, 'NCC01', 80, N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
-        ('SP28', N'Sting Dâu', 'DM03', 9000, 18000, 'NCC01', 90, N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
-        ('SP29', N'Redbull Thái', 'DM03', 10000, 20000, 'NCC06', 50, N'Có sẵn', '/assets/img/pepsi.png', 250, 10, 1, N'Đã xác nhận'),
-        ('SP30', N'Nước Suối Dasani', 'DM03', 4000, 10000, 'NCC04', 150, N'Có sẵn', '/assets/img/pepsi.png', 500, 20, 1, N'Đã xác nhận'),
-        ('SP31', N'Soda Schweppes', 'DM03', 9000, 18000, 'NCC04', 40, N'Có sẵn', '/assets/img/pepsi.png', 330, 5, 1, N'Đã xác nhận'),
+        ('SP01', N'Pepsi Lon', 'DM03', 15000, 'NCC01', N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
+        ('SP26', N'Coca Cola', 'DM03', 15000, 'NCC04', N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
+        ('SP27', N'7Up', 'DM03', 15000, 'NCC01', N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
+        ('SP28', N'Sting Dâu', 'DM03', 18000, 'NCC01', N'Có sẵn', '/assets/img/pepsi.png', 330, 10, 1, N'Đã xác nhận'),
+        ('SP29', N'Redbull Thái', 'DM03', 20000, 'NCC06', N'Có sẵn', '/assets/img/pepsi.png', 250, 10, 1, N'Đã xác nhận'),
+        ('SP30', N'Nước Suối Dasani', 'DM03', 10000, 'NCC04', N'Có sẵn', '/assets/img/pepsi.png', 500, 20, 1, N'Đã xác nhận'),
+        ('SP31', N'Soda Schweppes', 'DM03', 18000, 'NCC04', N'Có sẵn', '/assets/img/pepsi.png', 330, 5, 1, N'Đã xác nhận'),
 
         -- DM01: Cà Phê
-        ('SP02', N'Cà Phê Đen Đá', 'DM01', 12000, 25000, 'NCC02', 50, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP03', N'Cà Phê Sữa Đá', 'DM01', 15000, 30000, 'NCC02', 45, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP05', N'Bạc Xỉu', 'DM01', 16000, 32000, 'NCC02', 40, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP06', N'Cà Phê Muối', 'DM01', 18000, 35000, 'NCC02', 35, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP07', N'Americano Đá', 'DM01', 14000, 28000, 'NCC02', 40, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP08', N'Cappuccino Nóng', 'DM01', 20000, 45000, 'NCC02', 30, N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
-        ('SP09', N'Latte Đá', 'DM01', 22000, 45000, 'NCC02', 30, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP10', N'Espresso', 'DM01', 12000, 25000, 'NCC02', 40, N'Pha chế', '/assets/img/pepsi.png', 50, 10, 1, N'Đã xác nhận'),
-        ('SP11', N'Mocha', 'DM01', 25000, 50000, 'NCC02', 25, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP02', N'Cà Phê Đen Đá', 'DM01', 25000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP03', N'Cà Phê Sữa Đá', 'DM01', 30000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP05', N'Bạc Xỉu', 'DM01', 32000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP06', N'Cà Phê Muối', 'DM01', 35000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP07', N'Americano Đá', 'DM01', 28000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP08', N'Cappuccino Nóng', 'DM01', 45000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
+        ('SP09', N'Latte Đá', 'DM01', 45000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP10', N'Espresso', 'DM01', 25000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 50, 10, 1, N'Đã xác nhận'),
+        ('SP11', N'Mocha', 'DM01', 50000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
 
         -- DM02: Trà Sữa
-        ('SP04', N'Trà Sữa Truyền Thống', 'DM02', 18000, 35000, 'NCC08', 60, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP12', N'Trà Sữa Thái Xanh', 'DM02', 18000, 35000, 'NCC08', 55, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP13', N'Trà Sữa Thái Đỏ', 'DM02', 18000, 35000, 'NCC08', 55, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP14', N'Trà Sữa Oolong', 'DM02', 20000, 40000, 'NCC08', 50, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP15', N'Trà Sữa Khoai Môn', 'DM02', 22000, 42000, 'NCC08', 45, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP16', N'Trà Sữa Matcha', 'DM02', 25000, 45000, 'NCC08', 40, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP17', N'Trà Sữa Socola', 'DM02', 25000, 45000, 'NCC08', 40, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP18', N'Sữa Tươi Trân Châu Đường Đen', 'DM02', 25000, 45000, 'NCC03', 60, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
-        ('SP19', N'Hồng Trà Macchiato', 'DM02', 20000, 38000, 'NCC08', 45, N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP04', N'Trà Sữa Truyền Thống', 'DM02', 35000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP12', N'Trà Sữa Thái Xanh', 'DM02', 35000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP13', N'Trà Sữa Thái Đỏ', 'DM02', 35000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP14', N'Trà Sữa Oolong', 'DM02', 40000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP15', N'Trà Sữa Khoai Môn', 'DM02', 42000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP16', N'Trà Sữa Matcha', 'DM02', 45000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP17', N'Trà Sữa Socola', 'DM02', 45000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP18', N'Sữa Tươi Trân Châu Đường Đen', 'DM02', 45000, 'NCC03', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP19', N'Hồng Trà Macchiato', 'DM02', 38000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 10, 1, N'Đã xác nhận'),
 
         -- DM07: Trà Trái Cây
-        ('SP20', N'Trà Đào Cam Sả', 'DM07', 20000, 45000, 'NCC05', 50, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
-        ('SP21', N'Trà Vải Hoa Hồng', 'DM07', 20000, 45000, 'NCC05', 45, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
-        ('SP22', N'Trà Ổi Hồng', 'DM07', 18000, 40000, 'NCC05', 40, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
-        ('SP23', N'Trà Tắc Xí Muội', 'DM07', 15000, 30000, 'NCC05', 55, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
-        ('SP24', N'Trà Dâu Tây', 'DM07', 22000, 48000, 'NCC05', 35, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
-        ('SP25', N'Lục Trà Chanh Mật Ong', 'DM07', 18000, 35000, 'NCC05', 50, N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP20', N'Trà Đào Cam Sả', 'DM07', 45000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP21', N'Trà Vải Hoa Hồng', 'DM07', 45000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP22', N'Trà Ổi Hồng', 'DM07', 40000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP23', N'Trà Tắc Xí Muội', 'DM07', 30000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP24', N'Trà Dâu Tây', 'DM07', 48000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP25', N'Lục Trà Chanh Mật Ong', 'DM07', 35000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 700, 10, 1, N'Đã xác nhận'),
 
         -- DM05: Sinh Tố & Nước Ép
-        ('SP32', N'Sinh Tố Bơ', 'DM05', 25000, 50000, 'NCC05', 20, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
-        ('SP33', N'Sinh Tố Xoài', 'DM05', 20000, 45000, 'NCC05', 25, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
-        ('SP34', N'Sinh Tố Dâu', 'DM05', 25000, 50000, 'NCC05', 20, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
-        ('SP35', N'Nước Ép Cam', 'DM05', 20000, 40000, 'NCC05', 30, N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
-        ('SP36', N'Nước Ép Táo', 'DM05', 22000, 45000, 'NCC05', 25, N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
-        ('SP37', N'Nước Ép Dưa Hấu', 'DM05', 15000, 35000, 'NCC05', 40, N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
-        ('SP38', N'Nước Ép Cà Rốt', 'DM05', 15000, 35000, 'NCC05', 30, N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
+        ('SP32', N'Sinh Tố Bơ', 'DM05', 50000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP33', N'Sinh Tố Xoài', 'DM05', 45000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP34', N'Sinh Tố Dâu', 'DM05', 50000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP35', N'Nước Ép Cam', 'DM05', 40000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
+        ('SP36', N'Nước Ép Táo', 'DM05', 45000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
+        ('SP37', N'Nước Ép Dưa Hấu', 'DM05', 35000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
+        ('SP38', N'Nước Ép Cà Rốt', 'DM05', 35000, 'NCC05', N'Pha chế', '/assets/img/pepsi.png', 350, 10, 1, N'Đã xác nhận'),
 
         -- DM06: Đá Xay
-        ('SP39', N'Matcha Đá Xay', 'DM06', 28000, 55000, 'NCC08', 20, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
-        ('SP40', N'Cookie Đá Xay', 'DM06', 28000, 55000, 'NCC08', 20, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
-        ('SP41', N'Cà Phê Đá Xay', 'DM06', 28000, 55000, 'NCC02', 20, N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP39', N'Matcha Đá Xay', 'DM06', 55000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP40', N'Cookie Đá Xay', 'DM06', 55000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP41', N'Cà Phê Đá Xay', 'DM06', 55000, 'NCC02', N'Pha chế', '/assets/img/pepsi.png', 500, 5, 1, N'Đã xác nhận'),
 
         -- DM04: Đồ Ăn Nhẹ & DM09: Bánh Ngọt
-        ('SP42', N'Bánh Mì Que', 'DM04', 8000, 15000, 'NCC10', 50, N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận'),
-        ('SP43', N'Khô Gà Lá Chanh', 'DM04', 25000, 50000, 'NCC06', 40, N'Có sẵn', '/assets/img/pepsi.png', 200, 10, 1, N'Đã xác nhận'),
-        ('SP44', N'Hạt Hướng Dương', 'DM04', 10000, 25000, 'NCC06', 100, N'Có sẵn', '/assets/img/pepsi.png', 150, 20, 1, N'Đã xác nhận'),
-        ('SP45', N'Tiramisu', 'DM09', 25000, 45000, 'NCC11', 15, N'Có sẵn', '/assets/img/pepsi.png', 150, 5, 1, N'Đã xác nhận'),
-        ('SP46', N'Mousse Chanh Dây', 'DM09', 25000, 45000, 'NCC11', 15, N'Có sẵn', '/assets/img/pepsi.png', 150, 5, 1, N'Đã xác nhận'),
-        ('SP47', N'Bánh Croissant', 'DM09', 15000, 30000, 'NCC11', 20, N'Có sẵn', '/assets/img/pepsi.png', 100, 5, 1, N'Đã xác nhận'),
-        ('SP48', N'Bánh Flan', 'DM09', 10000, 20000, 'NCC11', 30, N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận'),
+        ('SP42', N'Bánh Mì Que', 'DM04', 15000, 'NCC10', N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận'),
+        ('SP43', N'Khô Gà Lá Chanh', 'DM04', 50000, 'NCC06', N'Có sẵn', '/assets/img/pepsi.png', 200, 10, 1, N'Đã xác nhận'),
+        ('SP44', N'Hạt Hướng Dương', 'DM04', 25000, 'NCC06', N'Có sẵn', '/assets/img/pepsi.png', 150, 20, 1, N'Đã xác nhận'),
+        ('SP45', N'Tiramisu', 'DM09', 45000, 'NCC11', N'Có sẵn', '/assets/img/pepsi.png', 150, 5, 1, N'Đã xác nhận'),
+        ('SP46', N'Mousse Chanh Dây', 'DM09', 45000, 'NCC11', N'Có sẵn', '/assets/img/pepsi.png', 150, 5, 1, N'Đã xác nhận'),
+        ('SP47', N'Bánh Croissant', 'DM09', 30000, 'NCC11', N'Có sẵn', '/assets/img/pepsi.png', 100, 5, 1, N'Đã xác nhận'),
+        ('SP48', N'Bánh Flan', 'DM09', 20000, 'NCC11', N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận'),
 
         -- DM08: Sữa Chua
-        ('SP49', N'Sữa Chua Trân Châu', 'DM08', 20000, 35000, 'NCC03', 30, N'Pha chế', '/assets/img/pepsi.png', 300, 10, 1, N'Đã xác nhận'),
-        ('SP50', N'Sữa Chua Dẻo', 'DM08', 15000, 30000, 'NCC03', 35, N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận')
+        ('SP49', N'Sữa Chua Trân Châu', 'DM08', 35000, 'NCC03', N'Pha chế', '/assets/img/pepsi.png', 300, 10, 1, N'Đã xác nhận'),
+        ('SP50', N'Sữa Chua Dẻo', 'DM08', 30000, 'NCC03', N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận')
 END;
 
 /* =============================================
@@ -612,16 +612,17 @@ BEGIN
         MaNV VARCHAR(50),
         TongTien DECIMAL(18, 2),
         MaNCC VARCHAR(50),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO PhieuNhapSanPham
-        (MaLoSP, NgayNhap, MaNV, TongTien, MaNCC, TrangThai)
+        (MaLoSP, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', 1),
-        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', 1),
-        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', 1),
-        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', 1),
-        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', 1)
+        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', 1),
+        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', 1),
+        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', 1),
+        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', 1),
+        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -668,15 +669,16 @@ BEGIN
         MaNV VARCHAR(50),
         TongTien DECIMAL(18, 2),
         MaNCC VARCHAR(50),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO PhieuNhapNguyenLieu
-        (MaLoNL, NgayNhap, MaNV, TongTien, MaNCC, TrangThai)
+        (MaLoNL, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', 1),
-        ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', 1),
-        ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC08', 1),
-        ('PNNL04', '2024-02-01', 'NV12', 2000000, 'NCC05', 1)
+        ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', 1),
+        ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', N'Đã xác nhận', 1),
+        ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC08', N'Đã xác nhận', 1),
+        ('PNNL04', '2024-02-01', 'NV12', 2000000, 'NCC05', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -727,14 +729,15 @@ BEGIN
         MaNV VARCHAR(50),
         LyDo NVARCHAR(MAX),
         TongGiaTri DECIMAL(18, 2),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT,
         PRIMARY KEY (MaPH, MaLo)
     )
     INSERT INTO PhieuHuySanPham
-        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThai)
+        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHSP01', 'LOSP01', '2024-02-01', 'NV01', N'Lon bị móp méo do vận chuyển', 80000, 1),
-        ('PHSP02', 'LOSP03', '2024-01-21', 'NV01', N'Hết hạn sử dụng', 50000, 1)
+        ('PHSP01', 'LOSP01', '2024-02-01', 'NV01', N'Lon bị móp méo do vận chuyển', 80000, N'Chờ duyệt', 1),
+        ('PHSP02', 'LOSP03', '2024-01-21', 'NV01', N'Hết hạn sử dụng', 50000, N'Đã duyệt', 1)
 END;
 
 /* =============================================
@@ -752,13 +755,14 @@ BEGIN
         MaNV VARCHAR(50),
         LyDo NVARCHAR(MAX),
         TongTien DECIMAL(18, 2),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT,
         PRIMARY KEY (MaPH, MaLo)
     )
     INSERT INTO PhieuHuyNguyenLieu
-        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongTien, TrangThai)
+        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHNL01', 'LONL04', '2024-03-16', 'NV01', N'Trân châu bị hỏng do ẩm mốc', 200000, 1)
+        ('PHNL01', 'LONL04', '2024-03-16', 'NV01', N'Trân châu bị hỏng do ẩm mốc', 200000, N'Đã duyệt', 1)
 END;
 
 /* =============================================

@@ -75,7 +75,7 @@ public class Xulypdf {
             int soLuongMua = (i % 3) + 1; // Số lượng ngẫu nhiên từ 1 đến 3
 
             // Khởi tạo Sản phẩm
-            SanPham sp = new SanPham(maSP, tenSP, null, giaBan - 5000, giaBan, null, 100, "Ly", "img.png", 500, 10,
+            SanPham sp = new SanPham(maSP, tenSP, null, giaBan, null, "Ly", "img.png", 500, 10,
                     "Đã xử lý",true);
 
             // Tạo Chi tiết hóa đơn cho sản phẩm này

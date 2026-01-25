@@ -6,10 +6,8 @@ public class SanPham {
     private String maSP;
     private String tenSP;
     private DanhMuc danhMuc;
-    private long giaNhap;
     private long giaBan;
     private NhaCungCap nhaCungCap;
-    private int soLuongTon;
     private String loaiNuoc;
     private String anh;
     private int theTich;
@@ -22,16 +20,14 @@ public class SanPham {
     public SanPham() {
     }
 
-    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
-            NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan,
+            NhaCungCap nhaCungCap, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
-        this.giaNhap = giaNhap;
         this.giaBan = giaBan;
         this.nhaCungCap = nhaCungCap;
-        this.soLuongTon = soLuongTon;
         this.loaiNuoc = loaiNuoc;
         this.anh = anh;
         this.theTich = theTich;
@@ -41,16 +37,14 @@ public class SanPham {
         listSize = new ArrayList<>();
     }
 
-    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaNhap, long giaBan,
-            NhaCungCap nhaCungCap, int soLuongTon, String loaiNuoc, String anh,
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan,
+            NhaCungCap nhaCungCap, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, CongThuc congThuc, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
-        this.giaNhap = giaNhap;
         this.giaBan = giaBan;
         this.nhaCungCap = nhaCungCap;
-        this.soLuongTon = soLuongTon;
         this.loaiNuoc = loaiNuoc;
         this.anh = anh;
         this.theTich = theTich;
@@ -73,10 +67,6 @@ public class SanPham {
         return giaBan;
     }
 
-    public long getGiaNhap() {
-        return giaNhap;
-    }
-
     public int getMucCanhBao() {
         return mucCanhBao;
     }
@@ -95,10 +85,6 @@ public class SanPham {
 
     public NhaCungCap getNhaCungCap() {
         return nhaCungCap;
-    }
-
-    public int getSoLuongTon() {
-        return soLuongTon;
     }
 
     public String getTenSP() {
@@ -121,10 +107,6 @@ public class SanPham {
         this.giaBan = giaBan;
     }
 
-    public void setGiaNhap(long giaNhap) {
-        this.giaNhap = giaNhap;
-    }
-
     public void setLoaiNuoc(String loaiNuoc) {
         this.loaiNuoc = loaiNuoc;
     }
@@ -139,10 +121,6 @@ public class SanPham {
 
     public void setNhaCungCap(NhaCungCap nhaCungCap) {
         this.nhaCungCap = nhaCungCap;
-    }
-
-    public void setSoLuongTon(int soLuongTon) {
-        this.soLuongTon = soLuongTon;
     }
 
     public void setTenSP(String tenSP) {
