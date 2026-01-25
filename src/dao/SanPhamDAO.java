@@ -4,9 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
-
-import bus.DanhMucBUS;
-import bus.NhaCungCapBus;
 import dao.conection.DBConnection;
 import dto.DanhMuc;
 import dto.NhaCungCap;

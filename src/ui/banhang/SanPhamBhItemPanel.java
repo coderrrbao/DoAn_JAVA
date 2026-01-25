@@ -1,10 +1,6 @@
 package ui.banhang;
 
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
+import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -57,6 +53,7 @@ public class SanPhamBhItemPanel extends JPanel {
         add(giaSpPanel);
         add(sizeSanPhamPanel);
         add(tonKhoPanel);
+        setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (Component c : getComponents()) {
             if (c instanceof JPanel) {
                 ((JPanel) c).setOpaque(false);
