@@ -10,11 +10,17 @@ public class NhaCungCapBUS {
 
     public NhaCungCap timNhaCungCap(String ma) {
         return nhaCungCapDAO.timNhaCungCap(ma);
-    }public NhaCungCap timNhaCungCapTheoTen(String ten) {
+    }
+
+    public NhaCungCap timNhaCungCapTheoTen(String ten) {
         return nhaCungCapDAO.timNhaCungCapTheoTen(ten);
     }
 
-    public ArrayList<NhaCungCap> laylistNhaCungCap(){
+    public ArrayList<NhaCungCap> laylistNhaCungCap() {
         return nhaCungCapDAO.layListNhaCungCap();
+    }
+
+    public ArrayList<String> layLuaChonNCC() {
+        return nhaCungCapDAO.layLuaChonNCC();
     }
 }

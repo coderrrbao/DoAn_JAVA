@@ -45,42 +45,28 @@ public class SanPhamDAO {
         return listSanPham;
     }
 
-    public ArrayList<String> layLuaChonNCC() {
-        ArrayList<String> list = new ArrayList<>();
-        String sql = "SELECT TenNCC FROM NhaCungCap";
-
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                list.add(rs.getString("TenNCC"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
-        }
-        return list;
-    }
-
     public boolean themSanPham(SanPham sanPham) {
 
-        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy,TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, MaNCC, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
 
+            if (sanPham.getMaSP() == null || sanPham.getMaSP().trim().isEmpty()) {
+                sanPham.setMaSP(layMaSanPhamKhaDung());
+            }
             pst.setString(1, sanPham.getMaSP());
             pst.setString(2, sanPham.getTenSP());
-            pst.setString(3, sanPham.getDanhMuc().getMaDM());
-            pst.setDouble(5, sanPham.getGiaBan());
-            pst.setString(6, sanPham.getNhaCungCap().getMaNCC());
-            pst.setString(8, sanPham.getLoaiNuoc());
-            pst.setString(9, sanPham.getAnh());
-            pst.setDouble(10, sanPham.getTheTich());
-            pst.setInt(11, sanPham.getMucCanhBao());
-            pst.setString(12, sanPham.getTrangThaiXuLy());
-            pst.setInt(13, sanPham.getTrangThai() ? 1 : 0);
+            pst.setString(3, sanPham.getDanhMuc() != null ? sanPham.getDanhMuc().getMaDM() : null);
+            pst.setDouble(4, sanPham.getGiaBan());
+            pst.setString(5, sanPham.getNhaCungCap() != null ? sanPham.getNhaCungCap().getMaNCC() : null);
+            pst.setString(6, sanPham.getLoaiNuoc());
+            pst.setString(7, sanPham.getAnh());
+            pst.setInt(8, sanPham.getTheTich());
+            pst.setInt(9, sanPham.getMucCanhBao());
+            pst.setString(10, sanPham.getTrangThaiXuLy());
+            pst.setInt(11, sanPham.getTrangThai() ? 1 : 0);
 
             int rowAffected = pst.executeUpdate();
             return rowAffected > 0;
@@ -90,6 +76,26 @@ public class SanPhamDAO {
             System.out.println("Lỗi khi thêm sản phẩm: " + e.getMessage());
             return false;
         }
+    }
+
+    public String layMaSanPhamKhaDung() {
+        String sql = "SELECT COUNT(*) FROM SanPham";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int soSp = rs.getInt(1) + 1;
+                String ma = String.format("%02d", soSp);
+                return "SP" + ma;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return "";
     }
 
     public SanPham timSanPham(String ma) {

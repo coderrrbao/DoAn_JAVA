@@ -59,7 +59,7 @@ public class NhaCungCapDAO {
     }
 
     public ArrayList<NhaCungCap> layListNhaCungCap() {
-        ArrayList<NhaCungCap> listNhaCungCap =  new ArrayList<>();
+        ArrayList<NhaCungCap> listNhaCungCap = new ArrayList<>();
 
         String sql = "SELECT * FROM NhaCungCap";
 
@@ -81,5 +81,61 @@ public class NhaCungCapDAO {
             System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
         }
         return listNhaCungCap;
+    }
+
+    public ArrayList<String> layLuaChonNCC() {
+        ArrayList<String> list = new ArrayList<>();
+        String sql = "SELECT TenNCC FROM NhaCungCap";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getString("TenNCC"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return list;
+    }
+
+    public String layMaNhaCungCapKhaDung() {
+        String sql = "SELECT COUNT(*) FROM NhaCungCap";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int so = rs.getInt(1) + 1;
+                String ma = String.format("%02d", so);
+                return "NCC" + ma;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn NCC: " + e.getMessage());
+        }
+        return "";
+    }
+
+    public boolean themNhaCungCap(NhaCungCap ncc) {
+        String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi, TrangThai) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            if (ncc.getMaNCC() == null || ncc.getMaNCC().trim().isEmpty()) {
+                ncc.setMaNCC(layMaNhaCungCapKhaDung());
+            }
+            pst.setString(1, ncc.getMaNCC());
+            pst.setString(2, ncc.getTenNCC());
+            pst.setString(3, ncc.getSoDienThoai());
+            pst.setString(4, ncc.getDiaChi());
+            pst.setInt(5, 1);
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi thêm NhaCungCap: " + e.getMessage());
+            return false;
+        }
     }
 }

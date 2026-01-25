@@ -48,7 +48,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
         xemCongThucDialog = new XemCongThucDialog(this, sanPham);
-
         lblAnh = TaoUI.taoJlabelAnh(null, 200, 200);
         lblAnh.setAlignmentX(CENTER_ALIGNMENT);
 
@@ -78,10 +77,9 @@ public class ChiTietSanPhamDialog extends JDialog {
         fileChooser = new JFileChooser();
 
         initGUI();
-        capNhapDuLieu(sanPham);
         ganSuKien();
-        this.repaint();
-        this.setVisible(true);
+        capNhapDuLieu(sanPham);
+        setVisible(true);
 
     }
 
@@ -107,8 +105,8 @@ public class ChiTietSanPhamDialog extends JDialog {
         NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
         ArrayList<NhaCungCap> dsNCC = nhaCungCapBUS.laylistNhaCungCap();
         String[] listNCC = new String[dsNCC.size() + 1];
-        for (int i = 1; i < dsNCC.size(); i++) {
-            listNCC[i] = dsNCC.get(i).getTenNCC();
+        for (int i = 0; i < dsNCC.size(); i++) {
+            listNCC[i+1] = dsNCC.get(i).getTenNCC();
         }
         listNCC[0] = "--Nhà cung cấp --";
         cbNhaCungCap = new JComboBox<>(listNCC);
@@ -304,6 +302,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             cbLoaiNuoc.setEnabled(true);
             btnLuuThayDoi.setEnabled(true);
             cbTrangThaiXuLy.setEnabled(true);
+            cbNhaCungCap.setEnabled(true);
             btnSua.setEnabled(false);
             btnChonAnh.setEnabled(true);
         });
@@ -323,6 +322,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                     tfDungTich.setEditable(false);
                     cbDanhMuc.setEnabled(false);
                     cbLoaiNuoc.setEnabled(false);
+                    cbNhaCungCap.setEditable(false);
                     btnLuuThayDoi.setEnabled(false);
                     btnSua.setEnabled(true);
                     btnChonAnh.setEnabled(false);
@@ -426,7 +426,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             cbTrangThaiXuLy.setEnabled(false);
 
             cbLoaiNuoc.setEnabled(false);
-
+            cbNhaCungCap.setEnabled(false);
             btnChonAnh.setEnabled(false);
         }
     }
@@ -495,41 +495,47 @@ public class ChiTietSanPhamDialog extends JDialog {
 
     private boolean kiemTraDuLieu() {
         // if (tfTenSanPham.getText().isEmpty()) {
-        //     JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        //     return false;
+        // JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi",
+        // JOptionPane.ERROR_MESSAGE);
+        // return false;
         // }
         // if (cbDanhMuc.getSelectedIndex() == 0) {
-        //     JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        //     return false;
+        // JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi",
+        // JOptionPane.ERROR_MESSAGE);
+        // return false;
         // }
         // if (cbLoaiNuoc.getSelectedIndex() == 0) {
-        //     JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        //     return false;
+        // JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi",
+        // JOptionPane.ERROR_MESSAGE);
+        // return false;
         // }
         // try {
-        //     Long.parseLong(tfGiaBan.getText());
-        //     Long.parseLong(tfDungTich.getText());
+        // Long.parseLong(tfGiaBan.getText());
+        // Long.parseLong(tfDungTich.getText());
         // } catch (NumberFormatException ex) {
-        //     JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là số!", "Lỗi",
-        //             JOptionPane.ERROR_MESSAGE);
-        //     return false;
+        // JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là
+        // số!", "Lỗi",
+        // JOptionPane.ERROR_MESSAGE);
+        // return false;
         // }
         return true;
     }
 
     public SanPham dongGoiSanPham() {
-        xemCongThucDialog.dongGoiCongThuc();
+        if (xemCongThucDialog != null) {
+            xemCongThucDialog.dongGoiCongThuc();
+        }
         SanPham sp = new SanPham();
         sp.setTenSP(tfTenSanPham.getText());
         sp.setLoaiNuoc((String) cbLoaiNuoc.getSelectedItem());
-        DanhMuc danhMuc = danhMucBUS.timDanhMuc((String) cbDanhMuc.getSelectedItem());
+        DanhMuc danhMuc = danhMucBUS.timDanhMucTheoTen((String) cbDanhMuc.getSelectedItem());
         sp.setDanhMuc(danhMuc);
         sp.setGiaBan(Long.parseLong(tfGiaBan.getText()));
         sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
         sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
         NhaCungCap ncc = nhaCungCapBUS.timNhaCungCapTheoTen((String) cbNhaCungCap.getSelectedItem());
         sp.setNhaCungCap(ncc);
-        sp.setCongThuc(xemCongThucDialog.getCongThuc());
+        sp.setCongThuc(xemCongThucDialog != null ? xemCongThucDialog.dongGoiCongThuc() : null);
         sp.setListSize(dongGoiListSize());
         sp.setTrangThaiXuLy("Chờ xử lý");
 

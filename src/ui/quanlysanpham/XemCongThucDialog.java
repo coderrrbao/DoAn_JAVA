@@ -3,6 +3,7 @@ package ui.quanlysanpham;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -12,6 +13,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import bus.NguyenLieuBUS;
 import dto.ChiTietCongThuc;
 import dto.CongThuc;
 import dto.NguyenLieu;
@@ -89,7 +91,14 @@ public class XemCongThucDialog extends JDialog {
     }
 
     public CongThuc dongGoiCongThuc() {
-        return new CongThuc();
+        ArrayList <ChiTietCongThuc> listChiTietCongThuc  =  new ArrayList<>();
+        for (int i=0;i<model.getRowCount();i++){
+            NguyenLieuBUS  nguyenLieuBUS =  new NguyenLieuBUS();
+            NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(model.getValueAt(i, 0).toString());
+            ChiTietCongThuc chiTietCongThuc  = new ChiTietCongThuc("","", nguyenLieu,Integer.parseInt(model.getValueAt(i, 2).toString()));
+            listChiTietCongThuc.add(chiTietCongThuc);
+        }
+        return new CongThuc("",listChiTietCongThuc);
     }
 
     public CongThuc getCongThuc() {

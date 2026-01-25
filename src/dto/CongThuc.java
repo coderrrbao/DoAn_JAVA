@@ -8,13 +8,18 @@ public class CongThuc {
     private ArrayList<ChiTietCongThuc> listChiTietCongThuc;
     private boolean trangThai;
 
-
     public CongThuc() {
         listChiTietCongThuc = new ArrayList<>();
     }
 
+    public CongThuc(String maCT, ArrayList<ChiTietCongThuc> listChiTietCongThuc) {
+        this.maCT = maCT;
+        this.listChiTietCongThuc = listChiTietCongThuc;
+    }
+
     public CongThuc(String maCT) {
         this.maCT = maCT;
+        listChiTietCongThuc = new ArrayList<>();
     }
 
     public void setTrangThai(boolean trangThai) {
@@ -32,9 +37,11 @@ public class CongThuc {
     public void setMaCT(String maCT) {
         this.maCT = maCT;
     }
+
     public ArrayList<ChiTietCongThuc> getListChiTietCongThuc() {
         return listChiTietCongThuc;
     }
+
     public void setListChiTietCongThuc(ArrayList<ChiTietCongThuc> listChiTietCongThuc) {
         this.listChiTietCongThuc = listChiTietCongThuc;
     }

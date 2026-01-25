@@ -14,7 +14,7 @@ public class KhachHangDAO {
         String sql = "SELECT * FROM KhachHang WHERE TrangThai = 1 AND SDT = ?";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, sdt);
             ResultSet rs = pst.executeQuery();
@@ -26,8 +26,7 @@ public class KhachHangDAO {
                         rs.getString("SDT"),
                         rs.getDouble("TenDaMua"),
                         rs.getString("MaHang"),
-                        rs.getBoolean("TrangThai")
-                );
+                        rs.getBoolean("TrangThai"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,6 +35,45 @@ public class KhachHangDAO {
         return kh;
     }
 
+    public String layMaKhachHangKhaDung() {
+        String sql = "SELECT COUNT(*) FROM KhachHang";
 
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int so = rs.getInt(1) + 1;
+                String ma = String.format("%03d", so);
+                return "KH" + ma;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn Khách hàng: " + e.getMessage());
+        }
+        return "";
+    }
+
+    public boolean themKhachHang(KhachHang kh) {
+        String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, SDT, TenDaMua, MaHang, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            if (kh.getMaKH() == null || kh.getMaKH().trim().isEmpty()) {
+                kh.setMaKH(layMaKhachHangKhaDung());
+            }
+            pst.setString(1, kh.getMaKH());
+            pst.setString(2, kh.getTenKH());
+            pst.setString(3, kh.getGioiTinh());
+            pst.setString(4, kh.getSdt());
+            pst.setDouble(5, kh.getTenDaMua());
+            pst.setString(6, kh.getMaHang());
+            pst.setInt(7, kh.getTrangThai() ? 1 : 0);
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi thêm KhachHang: " + e.getMessage());
+            return false;
+        }
+    }
 
 }

@@ -3,6 +3,7 @@ package dto;
 public class ChiTietCongThuc {
 
     private String maCTCT;
+    private String maCT;
     private NguyenLieu nguyenLieu;
     private double soLuong;
     private boolean trangThai;
@@ -10,10 +11,11 @@ public class ChiTietCongThuc {
     public ChiTietCongThuc() {
     }
 
-    public ChiTietCongThuc(String maCT, NguyenLieu nguyenLieu, double soLuong) {
-        this.maCTCT = maCT;
+    public ChiTietCongThuc(String maCTCT, String maCT, NguyenLieu nguyenLieu, double soLuong) {
+        this.maCTCT = maCTCT;
         this.nguyenLieu = nguyenLieu;
         this.soLuong = soLuong;
+        this.maCT = maCT;
     }
 
     public ChiTietCongThuc(String maCT, double soLuong) {
@@ -51,5 +53,13 @@ public class ChiTietCongThuc {
 
     public void setSoLuong(double soLuong) {
         this.soLuong = soLuong;
+    }
+
+    public String getMaCT() {
+        return maCT;
+    }
+
+    public void setMaCT(String maCT) {
+        this.maCT = maCT;
     }
 }

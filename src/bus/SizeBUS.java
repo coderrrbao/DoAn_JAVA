@@ -10,4 +10,7 @@ public class SizeBUS {
     public ArrayList<Size>  laySizeChoSP(String ma){
         return sizeDAO.layListSizeChoSP(ma);
     }
+    public Boolean themSize(Size size){
+        return sizeDAO.themSize(size);
+    }
 }

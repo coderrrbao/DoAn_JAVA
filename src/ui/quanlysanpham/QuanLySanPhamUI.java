@@ -8,7 +8,9 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
+import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
+import dto.NhaCungCap;
 import dto.SanPham;
 import ui.component.Search_Item;
 import util.TaoUI;
@@ -186,7 +188,8 @@ public class QuanLySanPhamUI extends JPanel {
 
     public void loadDataFromDatabase() {
         listSanPham = quanLySanPhamBUS.layListSanPham();
-        ArrayList<String> luaChonNCC = quanLySanPhamBUS.layLuaChonNCC();
+        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+        ArrayList<String> luaChonNCC = nhaCungCapBUS.layLuaChonNCC();
         luaChonNCC.add(0, "Nhà cung cấp");
         ncc = luaChonNCC.toArray(new String[0]);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(ncc);

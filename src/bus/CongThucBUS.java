@@ -24,4 +24,8 @@ public class CongThucBUS {
         congThuc.setListChiTietCongThuc(listChiTietCongThuc);
         return congThuc;
     }
+
+    public Boolean themCongThuc(CongThuc congThuc) {
+        return congThucDAO.themCongThuc(congThuc);
+    }
 }

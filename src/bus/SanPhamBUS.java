@@ -5,20 +5,21 @@ import java.util.ArrayList;
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
 import dto.SanPham;
+import dto.Size;
 import util.XuLyExcel;
 
 public class SanPhamBUS {
-    SanPhamDAO quanLySanPhamDAO = new SanPhamDAO();
+    SanPhamDAO sanPhamDAO = new SanPhamDAO();
     SizeBUS sizeBUS = new SizeBUS();
     CongThucBUS congThucBUS = new CongThucBUS();
     ArrayList<SanPham> listSanPham;
 
     public SanPhamBUS() {
-        reload();
+        khoitao();
     }
 
-    public void reload() {
-        listSanPham = quanLySanPhamDAO.layListSanPham();
+    public void khoitao() {
+        listSanPham = sanPhamDAO.layListSanPham();
         for (SanPham sanPham : listSanPham) {
             if (sanPham.getLoaiNuoc().equals("Pha chế")) {
                 sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
@@ -48,10 +49,7 @@ public class SanPhamBUS {
         return kq;
     }
 
-    public ArrayList<String> layLuaChonNCC() {
-        ArrayList<String> list = quanLySanPhamDAO.layLuaChonNCC();
-        return list;
-    }
+
 
     public ArrayList<String> layLuaChonDanhMuc() {
         DanhMucDao danhMucDao = new DanhMucDao();
@@ -63,7 +61,8 @@ public class SanPhamBUS {
     }
 
     public SanPham timSanPham(String ma) {
-        SanPham sanPham = quanLySanPhamDAO.timSanPham(ma);
+        SanPham sanPham = sanPhamDAO.timSanPham(ma);
+        if (sanPham == null) return null;
         if (sanPham.getLoaiNuoc().equals("Pha chế")) {
             sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
             sanPham.setCongThuc(congThucBUS.timCongThucChoSP(sanPham.getMaSP()));
@@ -71,7 +70,14 @@ public class SanPhamBUS {
         return sanPham;
     }
     public Boolean themSanPham(SanPham  sanPham){
-        return true;
+        CongThucBUS congThucBUS = new CongThucBUS();
+        SizeBUS sizeBUS  = new SizeBUS();
+
+        congThucBUS.themCongThuc(sanPham.getCongThuc());
+        for (Size size  :  sanPham.getListSize()){
+            sizeBUS.themSize(size);
+        }
+        return sanPhamDAO.themSanPham(sanPham);
     }
     public Boolean XoaSanPham(SanPham sanPham){
         return true;
