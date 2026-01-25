@@ -73,10 +73,8 @@ public class SanPhamDAO {
             pst.setString(1, sanPham.getMaSP());
             pst.setString(2, sanPham.getTenSP());
             pst.setString(3, sanPham.getDanhMuc().getMaDM());
-            pst.setDouble(4, sanPham.getGiaNhap());
             pst.setDouble(5, sanPham.getGiaBan());
             pst.setString(6, sanPham.getNhaCungCap().getMaNCC());
-            pst.setInt(7, sanPham.getSoLuongTon());
             pst.setString(8, sanPham.getLoaiNuoc());
             pst.setString(9, sanPham.getAnh());
             pst.setDouble(10, sanPham.getTheTich());

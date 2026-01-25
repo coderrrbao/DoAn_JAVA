@@ -9,7 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 
 import bus.DanhMucBUS;
-import bus.NhaCungCapBus;
+import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import bus.SizeBUS;
 import dto.ChiTietCongThuc;
@@ -33,7 +33,7 @@ public class ChiTietSanPhamDialog extends JDialog {
     private SanPham sanPham;
 
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
-    private NhaCungCapBus nhaCungCapBUS = new NhaCungCapBus();
+    private NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
 
     private XemCongThucDialog xemCongThucDialog;
     private QuanLySanPhamUI quanLySanPhamUI;
