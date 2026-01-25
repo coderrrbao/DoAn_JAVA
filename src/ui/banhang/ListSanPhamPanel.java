@@ -12,12 +12,18 @@ import javax.swing.JScrollPane;
 
 import dto.NhaCungCap;
 import dto.SanPham;
+import ui.component.SanPhamClickListener;
 import util.TaoUI;
 
 public class ListSanPhamPanel extends JPanel {
 
+    private SanPhamClickListener listener;
+
     public ListSanPhamPanel() {
         TaoUI.taoPanelBorderLayout(this, 0, 0);
+        this.listener = sanPham -> {
+            System.out.println("Đã click sản phẩm: " + sanPham.getTenSP());
+        };
         initGUI();
     }
 
@@ -42,7 +48,7 @@ public class ListSanPhamPanel extends JPanel {
             sp.setLoaiNuoc("Có sẵn");
             sp.setNhaCungCap(ncc);
             sp.setSoLuongTon(100);
-            listSanPhamPanel.add(new SanPhamBhItemPanel(sp, "Mặc định"));
+            listSanPhamPanel.add(new SanPhamBhItemPanel(sp, "Mặc định", listener));
         }
         add(scrollPaneListSp, BorderLayout.CENTER);
     }
