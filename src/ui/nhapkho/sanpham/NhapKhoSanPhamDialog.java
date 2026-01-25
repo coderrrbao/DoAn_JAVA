@@ -283,11 +283,13 @@ public class NhapKhoSanPhamDialog extends JDialog {
         txtMaSp.setEditable(false);
         txtMaPN.setEditable(false);
 
-        addEvents();
+
+        txtMaSp.setText("Hi  hi 123");
+        ganSuKien();
     }
 
 
-    private void addEvents() {
+    private void ganSuKien() {
     // Lấy model quản lý việc chọn lựa của bảng Kho Hàng
     tblKhoHang.getSelectionModel().addListSelectionListener(e -> {
         // Kiểm tra nếu sự kiện đang trong quá trình thay đổi (để tránh chạy 2 lần)

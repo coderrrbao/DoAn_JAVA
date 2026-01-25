@@ -14,13 +14,14 @@ import javax.swing.table.DefaultTableModel;
 
 import dto.ChiTietCongThuc;
 import dto.CongThuc;
+import dto.NguyenLieu;
 import dto.SanPham;
 import util.TaoUI;
 
 public class XemCongThucDialog extends JDialog {
     private JButton btnXoa, btnThem, btnSua;
     private SanPham sanPham;
-
+    DefaultTableModel model;
     private CongThuc congThuc;
 
     public XemCongThucDialog(JDialog ouner, SanPham sanPham) {
@@ -30,27 +31,33 @@ public class XemCongThucDialog extends JDialog {
         setLocationRelativeTo(ouner);
         setLayout(new BorderLayout());
         initGUI();
+        capNhapDuLieu();
+        ganSuKien();
     }
 
     private void initGUI() {
-        DefaultTableModel model = new DefaultTableModel();
-        model.addColumn("STT");
+        model = new DefaultTableModel();
+        model.addColumn("Mã nguyên liệu");
         model.addColumn("Tên nguyên liệu");
         model.addColumn("Định lượng");
         model.addColumn("Đơn vị");
 
-        if (sanPham == null) {
-            return;
-        }
-        int stt = 1;
-        for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
-            model.addRow(new Object[] { stt++, chiTietCongThuc.getNguyenLieu().getTenNL(), chiTietCongThuc.getSoLuong(),
-                    chiTietCongThuc.getNguyenLieu().getDonVi() });
-        }
-
         add(taoTopPanel(), BorderLayout.NORTH);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         add(scrollPane, BorderLayout.CENTER);
+    }
+
+    private void capNhapDuLieu() {
+        if (sanPham == null) {
+            return;
+        }
+        if (sanPham.getCongThuc() != null) {
+            for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
+                model.addRow(
+                        new Object[] { chiTietCongThuc.getNguyenLieu().getMaNL(),chiTietCongThuc.getNguyenLieu().getTenNL(), chiTietCongThuc.getSoLuong(),
+                                chiTietCongThuc.getNguyenLieu().getDonVi() });
+            }
+        }
     }
 
     private JPanel taoTopPanel() {
@@ -70,9 +77,21 @@ public class XemCongThucDialog extends JDialog {
         top.add(Box.createRigidArea(new Dimension(3, 0)));
         return top;
     }
-    public CongThuc dongGoiCongThuc(){
+
+    public void themNLVaoBang(NguyenLieu nguyenLieu,int  dinhLuong){
+        model.addRow(new Object[]{nguyenLieu.getMaNL(),nguyenLieu.getTenNL(),dinhLuong,nguyenLieu.getDonVi()});
+    }
+
+    private void ganSuKien() {
+        btnThem.addActionListener(e -> {
+            new ThemNLDialog(this);
+        });
+    }
+
+    public CongThuc dongGoiCongThuc() {
         return new CongThuc();
     }
+
     public CongThuc getCongThuc() {
         return congThuc;
     }

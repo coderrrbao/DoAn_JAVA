@@ -23,9 +23,7 @@ public class SanPhamDAO {
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getNString("TenSP"));
                 sp.setAnh(rs.getString("Anh"));
-                sp.setGiaNhap(rs.getLong("GiaNhap"));
                 sp.setGiaBan(rs.getLong("GiaBan"));
-                sp.setSoLuongTon(rs.getInt("SoLuongTon"));
                 sp.setTrangThai(rs.getBoolean("TrangThai"));
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
@@ -65,6 +63,7 @@ public class SanPhamDAO {
     }
 
     public boolean themSanPham(SanPham sanPham) {
+
         String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaNhap, GiaBan, MaNCC, SoLuongTon, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy,TrangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
@@ -112,15 +111,11 @@ public class SanPhamDAO {
                 sp.setMaSP(rs.getString("MaSP"));
                 sp.setTenSP(rs.getNString("TenSP"));
                 sp.setAnh(rs.getString("Anh"));
-                sp.setGiaNhap(rs.getLong("GiaNhap"));
                 sp.setGiaBan(rs.getLong("GiaBan"));
-                sp.setSoLuongTon(rs.getInt("SoLuongTon"));
-                sp.setTrangThai(rs.getBoolean("TrangThai"));
-                sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
                 sp.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
-                
+                sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
                         rs.getString("SoDienThoai"), rs.getString("DiaChi"));
                 DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));

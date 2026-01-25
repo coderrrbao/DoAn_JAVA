@@ -14,7 +14,7 @@ import ui.component.Search_Item;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-    private JButton themSpBtn, xuaFileBtn, nhapFileBtn;
+    private JButton themSpBtn, xuaFileBtn, nhapFileBtn,xoaBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbNhaCungCap, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
@@ -52,13 +52,13 @@ public class QuanLySanPhamUI extends JPanel {
         top.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));
 
         cbLoaiNuoc = new JComboBox<>(loai);
-        cbLoaiNuoc.setMaximumSize(new Dimension(100, 32));
+        cbLoaiNuoc.setMaximumSize(new Dimension(90, 32));
 
         cbNhaCungCap = new JComboBox<>(ncc);
-        cbNhaCungCap.setMaximumSize(new Dimension(100, 32));
+        cbNhaCungCap.setMaximumSize(new Dimension(90, 32));
 
         cbDanhMuc = new JComboBox<>(danhmuc);
-        cbDanhMuc.setMaximumSize(new Dimension(100, 32));
+        cbDanhMuc.setMaximumSize(new Dimension(90, 32));
 
         search_Item = new Search_Item(280, 32);
 
@@ -67,11 +67,14 @@ public class QuanLySanPhamUI extends JPanel {
         themSpBtn.setForeground(Color.WHITE);
         TaoUI.setHeightButton(themSpBtn, 32);
 
-        xuaFileBtn = new JButton("Xuất Excel");
-        TaoUI.setHeightButton(xuaFileBtn, 32);
+        xoaBtn  = new JButton("Xóa");
+        TaoUI.setHeightButton(xoaBtn, 32);
 
-        nhapFileBtn = new JButton("Nhập Excel");
-        TaoUI.setHeightButton(nhapFileBtn, 32);
+        xuaFileBtn = new JButton("Xuất Exc");
+        TaoUI.setFixSize(xuaFileBtn,65, 32);
+        xuaFileBtn.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        nhapFileBtn = new JButton("Nhập Exc");
+        TaoUI.setFixSize(nhapFileBtn,65, 32);
 
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
@@ -85,6 +88,8 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(themSpBtn);
+        top.add(Box.createRigidArea(new Dimension(5, 0)));
+        top.add(xoaBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(xuaFileBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
@@ -108,8 +113,7 @@ public class QuanLySanPhamUI extends JPanel {
     }
 
     private JScrollPane taoTable() {
-        String[] cots = { "STT", "Ảnh", "Mã SP", "Tên sản phẩm", "Loại", "Danh mục", "Giá bán", "Giá nhập",
-                "Số lượng", "Trạng thái", "" };
+        String[] cots = { "STT", "Ảnh", "Mã SP", "Tên sản phẩm", "Loại", "Danh mục", "Giá bán", "Trạng thái", "" };
 
         model = new DefaultTableModel(null, cots) {
             @Override
@@ -118,27 +122,27 @@ public class QuanLySanPhamUI extends JPanel {
                     return Icon.class;
                 if (columnIndex == 0 || columnIndex == 6)
                     return Integer.class;
-                if (columnIndex == 9)
-                    return Boolean.class; // Trạng thái hiển thị checkbox
-                if (columnIndex == 10)
-                    return JButton.class; // nút ở cột cuối cùng
+                if (columnIndex == 7)
+                    return Boolean.class; 
+                if (columnIndex == 8)
+                    return JButton.class; 
                 return Object.class;
             }
 
             public boolean isCellEditable(int row, int column) {
-                return column == 10; // chỉ cho phép edit (click) ở cột nút
+                return column == 8; 
             }
         };
 
         HashSet<Integer> set = new HashSet<>();
         set.add(1);
-        set.add(10);
+        set.add(8);
         JScrollPane sc = TaoUI.taoTableScroll(model, set);
         JTable table = (JTable) sc.getViewport().getView();
 
         NutSuKienSP nutSuKien = new NutSuKienSP(new JCheckBox());
-        table.getColumnModel().getColumn(10).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
-        table.getColumnModel().getColumn(10).setCellEditor(nutSuKien);
+        table.getColumnModel().getColumn(8).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
+        table.getColumnModel().getColumn(8).setCellEditor(nutSuKien);
 
         return sc;
     }
@@ -153,22 +157,19 @@ public class QuanLySanPhamUI extends JPanel {
         columnModel.getColumn(5).setPreferredWidth(100); // Danh mục
         columnModel.getColumn(6).setPreferredWidth(90); // Giá bán
         columnModel.getColumn(7).setPreferredWidth(90); // Giá nhập
-        columnModel.getColumn(8).setPreferredWidth(80); // Số lượng
-        columnModel.getColumn(9).setPreferredWidth(80); // Trạng thái
-        columnModel.getColumn(10).setPreferredWidth(40); // Nút hành động
+        columnModel.getColumn(8).setPreferredWidth(40); // Số lượng
     }
 
     private void themSanPhamVaoTable(SanPham sanPham) {
         ImageIcon icon = TaoUI.taoImageIcon(sanPham.getAnh(), 70, 70);
         JButton btn = new JButton();
         model.addRow(new Object[] { stt++, icon, sanPham.getMaSP(), sanPham.getTenSP(), sanPham.getLoaiNuoc(),
-                sanPham.getDanhMuc().getTenDM(), sanPham.getGiaBan(), sanPham.getGiaNhap(), sanPham.getSoLuongTon(),
-                sanPham.getTrangThaiXuLy(), btn });
+                sanPham.getDanhMuc().getTenDM(), sanPham.getGiaBan(), sanPham.getTrangThaiXuLy(), btn });
     }
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
-            new ChiTietSanPhamDialog(null,this);
+            new ChiTietSanPhamDialog(null, this);
         });
 
         cbTrangThai.addActionListener(e -> locSanPham());

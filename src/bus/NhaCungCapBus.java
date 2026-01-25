@@ -1,11 +1,8 @@
 package bus;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import dao.NhaCungCapDAO;
-import dao.conection.DBConnection;
 import dto.NhaCungCap;
 
 public class NhaCungCapBus {
@@ -15,5 +12,9 @@ public class NhaCungCapBus {
         return nhaCungCapDAO.timNhaCungCap(ma);
     }public NhaCungCap timNhaCungCapTheoTen(String ten) {
         return nhaCungCapDAO.timNhaCungCapTheoTen(ten);
+    }
+
+    public ArrayList<NhaCungCap> laylistNhaCungCap(){
+        return nhaCungCapDAO.layListNhaCungCap();
     }
 }

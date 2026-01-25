@@ -63,6 +63,8 @@ public class ListSanPhamPanel extends JPanel {
         TaoUI.suaBorderChoPanel(listSanPhamPanel, 0, 5, 0, 10);
 
         JScrollPane scrollPaneListSp = TaoUI.taoScrollPane(listSanPhamPanel);
+
+       
         add(scrollPaneListSp, BorderLayout.CENTER);
 
         renderTrang();

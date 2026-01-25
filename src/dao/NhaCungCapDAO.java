@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import dao.conection.DBConnection;
 import dto.NhaCungCap;
@@ -55,5 +56,30 @@ public class NhaCungCapDAO {
             System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
         }
         return nhaCungCap;
+    }
+
+    public ArrayList<NhaCungCap> layListNhaCungCap() {
+        ArrayList<NhaCungCap> listNhaCungCap =  new ArrayList<>();
+
+        String sql = "SELECT * FROM NhaCungCap";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                NhaCungCap nhaCungCap = new NhaCungCap();
+                nhaCungCap.setMaNCC(rs.getString("MaNCC"));
+                nhaCungCap.setTenNCC(rs.getString("TenNCC"));
+                nhaCungCap.setSoDienThoai(rs.getString("SoDienThoai"));
+                nhaCungCap.setDiaChi(rs.getString("DiaChi"));
+                listNhaCungCap.add(nhaCungCap);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return listNhaCungCap;
     }
 }

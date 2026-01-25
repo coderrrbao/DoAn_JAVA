@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -34,6 +35,13 @@ public class Search_Item extends JPanel {
         searchButton.addActionListener(e -> {
             sukien();
         });
+        searchText.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sukien();
+            }
+        });
+
         setBorder(BorderFactory.createLineBorder(null, 1));
         searchText.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0)));
     }

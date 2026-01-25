@@ -27,9 +27,10 @@ public class XuLyExcel {
                 Sheet sheet = workbook.createSheet("Sản Phẩm");
 
                 // 1. Tạo Header
-                String[] headers = {"Mã SP", "Tên Sản Phẩm", "Danh Mục", "Nhà Cung Cấp", "Giá Nhập", "Giá Bán", "Số Lượng Tồn", "Loại Nước", "Thể Tích", "Trạng Thái"};
+                String[] headers = { "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Nhà Cung Cấp", "Giá Bán", "Loại Nước",
+                        "Thể Tích", "Trạng Thái" };
                 Row headerRow = sheet.createRow(0);
-                
+
                 // Định dạng Header (In đậm)
                 CellStyle headerStyle = workbook.createCellStyle();
                 Font font = workbook.createFont();
@@ -46,17 +47,15 @@ public class XuLyExcel {
                 int rowNum = 1;
                 for (SanPham sp : list) {
                     Row row = sheet.createRow(rowNum++);
-                    
+
                     row.createCell(0).setCellValue(sp.getMaSP());
                     row.createCell(1).setCellValue(sp.getTenSP());
                     row.createCell(2).setCellValue(sp.getDanhMuc().getTenDM()); // Giả sử DanhMuc có hàm getTenDM
                     row.createCell(3).setCellValue(sp.getNhaCungCap().getTenNCC()); // Giả sử NCC có hàm getTenNCC
-                    row.createCell(4).setCellValue(sp.getGiaNhap());
-                    row.createCell(5).setCellValue(sp.getGiaBan());
-                    row.createCell(6).setCellValue(sp.getSoLuongTon());
-                    row.createCell(7).setCellValue(sp.getLoaiNuoc());
-                    row.createCell(8).setCellValue(sp.getTheTich() + " ml");
-                    row.createCell(9).setCellValue(sp.getTrangThai()? "Tồn tại" : "Đã xóa");
+                    row.createCell(4).setCellValue(sp.getGiaBan());
+                    row.createCell(5).setCellValue(sp.getLoaiNuoc());
+                    row.createCell(6).setCellValue(sp.getTheTich() + " ml");
+                    row.createCell(7).setCellValue(sp.getTrangThai() ? "Tồn tại" : "Đã xóa");
                 }
 
                 // Tự động căn chỉnh độ rộng cột

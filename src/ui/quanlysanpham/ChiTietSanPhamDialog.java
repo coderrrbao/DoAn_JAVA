@@ -1,19 +1,19 @@
 package ui.quanlysanpham;
 
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import java.awt.*;
 
 import bus.DanhMucBUS;
 import bus.NhaCungCapBus;
 import bus.SanPhamBUS;
 import bus.SizeBUS;
+import dto.ChiTietCongThuc;
+import dto.CongThuc;
 import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
@@ -22,66 +22,103 @@ import util.TaoUI;
 
 public class ChiTietSanPhamDialog extends JDialog {
 
-    private JTextField tfMaSanPham, tfTenSanPham, tfCanhBao, tfNhaCungCap,
-            tfGiaNhap, tfGiaBan, tfSoLuongTon, tfDungTich;
+    private JTextField tfMaSanPham, tfTenSanPham, tfCanhBao, tfGiaBan, tfDungTich;
     private JTable tblSize;
     private DefaultTableModel modelSize;
     private JButton btnChonAnh, btnLuuThayDoi, btnSua, btnXemCongThuc, btnXoaSize, btnThemSize, btnSuaSize, btnThemSp,
             btnLamMoi;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
-    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy;
+    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy, cbNhaCungCap;
     private SanPham sanPham;
 
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
     private NhaCungCapBus nhaCungCapBUS = new NhaCungCapBus();
 
-    private XemCongThucDialog xemCongThucDialog = new XemCongThucDialog(null, sanPham);
+    private XemCongThucDialog xemCongThucDialog;
     private QuanLySanPhamUI quanLySanPhamUI;
 
-    public ChiTietSanPhamDialog(SanPham sanPham,QuanLySanPhamUI quanLySanPhamUI) {
+    public ChiTietSanPhamDialog(SanPham sanPham, QuanLySanPhamUI quanLySanPhamUI) {
         super((JFrame) null, "Chi tiết sản phẩm", true);
         this.quanLySanPhamUI = quanLySanPhamUI;
         this.sanPham = sanPham;
+
         this.setSize(400, 700);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        JPanel chitietPanel = TaoUI.taoPanelBoxLayoutDoc(400, 750);
-        chitietPanel = TaoUI.suaBorderChoPanel(chitietPanel, 0, 10, 10, 10);
+        xemCongThucDialog = new XemCongThucDialog(this, sanPham);
+
         lblAnh = TaoUI.taoJlabelAnh(null, 200, 200);
         lblAnh.setAlignmentX(CENTER_ALIGNMENT);
-        JPanel buttons = TaoUI.taoPanelCanGiua(400, 25);
+
         btnChonAnh = new JButton("Chọn ảnh");
+
+        tfMaSanPham = new JTextField();
+        tfTenSanPham = new JTextField();
+        tfCanhBao = new JTextField();
+        tfDungTich = new JTextField();
+        tfGiaBan = new JTextField();
+
+        cbLoaiNuoc = new JComboBox<>();
+        cbDanhMuc = new JComboBox<>();
+        cbTrangThaiXuLy = new JComboBox<>();
+
+        btnLuuThayDoi = new JButton("Lưu");
+        btnSua = new JButton("Sửa");
+        btnXemCongThuc = new JButton("Xem công thức");
+        btnXoaSize = new JButton("Xóa");
+        btnThemSize = new JButton("Thêm");
+        btnSuaSize = new JButton("Sửa");
+        btnThemSp = new JButton("Thêm");
+        btnLamMoi = new JButton("Làm mới");
+
+        modelSize = new DefaultTableModel();
+        tblSize = new JTable(modelSize);
+        fileChooser = new JFileChooser();
+
+        initGUI();
+        capNhapDuLieu(sanPham);
+        ganSuKien();
+        this.repaint();
+        this.setVisible(true);
+
+    }
+
+    private void initGUI() {
+        JPanel chitietPanel = TaoUI.taoPanelBoxLayoutDoc(400, 750);
+        chitietPanel = TaoUI.suaBorderChoPanel(chitietPanel, 0, 10, 10, 10);
+
+        JPanel buttons = TaoUI.taoPanelCanGiua(400, 25);
         buttons.add(btnChonAnh);
 
         JPanel thongTin1 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        tfMaSanPham = new JTextField();
-        tfTenSanPham = new JTextField();
-        thongTin1.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
+
+        if (sanPham != null) {
+            thongTin1.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
+
+        }
         thongTin1.add(Box.createHorizontalGlue());
         thongTin1.add(TaoUI.taoFieldText("Tên sản phẩm", 80, 100, 30, 5, tfTenSanPham));
 
         JPanel thongTin2 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        tfCanhBao = new JTextField();
-        tfNhaCungCap = new JTextField();
         thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 80, 80, 30, 5, tfCanhBao));
         thongTin2.add(Box.createHorizontalGlue());
-        thongTin2.add(TaoUI.taoFieldText("Nhà cung cấp", 80, 100, 30, 5, tfNhaCungCap));
+        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+        ArrayList<NhaCungCap> dsNCC = nhaCungCapBUS.laylistNhaCungCap();
+        String[] listNCC = new String[dsNCC.size() + 1];
+        for (int i = 1; i < dsNCC.size(); i++) {
+            listNCC[i] = dsNCC.get(i).getTenNCC();
+        }
+        listNCC[0] = "--Nhà cung cấp --";
+        cbNhaCungCap = new JComboBox<>(listNCC);
+        TaoUI.setFixSize(cbNhaCungCap, 180, 30);
+        thongTin2.add(cbNhaCungCap);
 
         JPanel thongTin3 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        tfGiaNhap = new JTextField();
-        tfGiaBan = new JTextField();
-        thongTin3.add(TaoUI.taoFieldText("Giá nhập", 80, 80, 30, 5, tfGiaNhap));
+        thongTin3.add(TaoUI.taoFieldText("Dung tích(ml)", 80, 80, 30, 5, tfDungTich));
         thongTin3.add(Box.createHorizontalGlue());
         thongTin3.add(TaoUI.taoFieldText("Giá bán", 80, 100, 30, 5, tfGiaBan));
-
-        JPanel thongTin4 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        tfSoLuongTon = new JTextField();
-        tfDungTich = new JTextField();
-        thongTin4.add(TaoUI.taoFieldText("Số lượng tồn", 80, 80, 30, 5, tfSoLuongTon));
-        thongTin4.add(Box.createHorizontalGlue());
-        thongTin4.add(TaoUI.taoFieldText("Dung tích (ml)", 80, 100, 30, 5, tfDungTich));
 
         JPanel thongTin5 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
 
@@ -120,10 +157,8 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         JPanel pnlFooter = TaoUI.taoPanelCanGiua(400, 30);
 
-        btnSua = new JButton("Sửa");
         btnSua.setPreferredSize(new Dimension(100, 35));
 
-        btnLuuThayDoi = new JButton("Lưu thay đổi");
         btnLuuThayDoi.setPreferredSize(new Dimension(150, 35));
         btnLuuThayDoi.setEnabled(false);
 
@@ -131,8 +166,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         pnlFooter.add(btnLuuThayDoi);
 
         JPanel taoSanPhamPanel = TaoUI.taoPanelCanGiua(400, 30);
-        btnThemSp = new JButton("Thêm");
-        btnLamMoi = new JButton("Làm mới");
         btnLamMoi.setPreferredSize(new Dimension(150, 35));
         btnThemSp.setPreferredSize(new Dimension(150, 35));
 
@@ -145,7 +178,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         chitietPanel.add(thongTin1);
         chitietPanel.add(thongTin2);
         chitietPanel.add(thongTin3);
-        chitietPanel.add(thongTin4);
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 3)));
         chitietPanel.add(thongTin5);
         chitietPanel.add(Box.createRigidArea(new Dimension(0, 5)));
@@ -157,16 +189,10 @@ public class ChiTietSanPhamDialog extends JDialog {
         if (sanPham == null || sanPham.getLoaiNuoc().equals("Pha chế")) {
             JPanel thongTin6 = TaoUI.taoPanelBorderLayout(400, 150);
             JPanel titleThongTin6 = TaoUI.taoPanelBoxLayoutNgang(400, 25);
-            btnXemCongThuc = new JButton("Xem công thức");
-            btnXemCongThuc.addActionListener(e -> {
-                xemCongThucDialog.setVisible(true);
-            });
             thongTin6.add(btnXemCongThuc);
             titleThongTin6.add(new JLabel("Bảng size"));
             titleThongTin6.add(Box.createHorizontalGlue());
-            btnXoaSize = new JButton("Xóa");
-            btnThemSize = new JButton("Thêm");
-            btnSuaSize = new JButton("Sửa");
+
             TaoUI.setFixSize(btnSuaSize, 45, 20);
             TaoUI.setFixSize(btnXoaSize, 45, 20);
             TaoUI.setFixSize(btnThemSize, 45, 20);
@@ -191,8 +217,9 @@ public class ChiTietSanPhamDialog extends JDialog {
 
             thongTin6.add(titleThongTin6, BorderLayout.NORTH);
 
-            modelSize = new DefaultTableModel();
-            modelSize.addColumn("Mã Size");
+            if (sanPham != null) {
+                modelSize.addColumn("Mã Size");
+            }
             modelSize.addColumn("Tên size");
             modelSize.addColumn("Giá thêm(%)");
             modelSize.addColumn("Nguyên liệu thêm(%)");
@@ -210,12 +237,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
 
         this.add(chitietPanel);
-
-        capNhapDuLieu(sanPham);
-        ganSuKien();
-        this.repaint();
-        this.setVisible(true);
-
     }
 
     private void capNhapDuLieu(SanPham sanPham) {
@@ -223,10 +244,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             tfMaSanPham.setText("");
             tfTenSanPham.setText("");
             tfCanhBao.setText("");
-            tfNhaCungCap.setText("");
-            tfGiaNhap.setText("");
             tfGiaBan.setText("");
-            tfSoLuongTon.setText("");
             tfDungTich.setText("");
             lblAnh.setIcon(TaoUI.taoImageIcon("../assets/img/douongmd.png", 200, 200));
             modelSize.setRowCount(0);
@@ -235,12 +253,13 @@ public class ChiTietSanPhamDialog extends JDialog {
         lblAnh.setIcon(TaoUI.taoImageIcon(sanPham.getAnh(), 200, 200));
         tfMaSanPham.setText(sanPham.getMaSP());
         tfTenSanPham.setText(sanPham.getTenSP());
-        tfCanhBao.setText(sanPham.getLoaiNuoc());
-        tfNhaCungCap.setText(sanPham.getNhaCungCap().getTenNCC());
-        tfGiaNhap.setText(String.valueOf(sanPham.getGiaNhap()));
+        tfCanhBao.setText(String.valueOf(sanPham.getMucCanhBao()));
+        cbNhaCungCap.setSelectedItem(sanPham.getNhaCungCap().getTenNCC());
         tfGiaBan.setText(String.valueOf(sanPham.getGiaBan()));
-        tfSoLuongTon.setText(String.valueOf(sanPham.getSoLuongTon()));
         tfDungTich.setText(String.valueOf(sanPham.getTheTich()));
+        cbDanhMuc.setSelectedItem(sanPham.getDanhMuc().getTenDM());
+        cbLoaiNuoc.setSelectedItem(sanPham.getLoaiNuoc());
+        cbTrangThaiXuLy.setSelectedItem(sanPham.getTrangThaiXuLy());
 
         if (sanPham.getListSize() != null) {
             for (Size size : sanPham.getListSize()) {
@@ -250,6 +269,10 @@ public class ChiTietSanPhamDialog extends JDialog {
             }
         }
 
+    }
+
+    public void themSizeVaoBang(Size size) {
+        modelSize.addRow(new Object[] { size.getTenSize(), size.getPhanTramGia(), size.getPhanTramNL() });
     }
 
     private void ganSuKien() {
@@ -265,7 +288,6 @@ public class ChiTietSanPhamDialog extends JDialog {
             }
         });
 
-
         btnLamMoi.addActionListener(e -> {
             capNhapDuLieu(null);
             this.repaint();
@@ -275,14 +297,13 @@ public class ChiTietSanPhamDialog extends JDialog {
             tfMaSanPham.setEditable(false);
             tfTenSanPham.setEditable(true);
             tfCanhBao.setEditable(true);
-            tfNhaCungCap.setEditable(true);
-            tfGiaNhap.setEditable(true);
+            cbNhaCungCap.setEnabled(true);
             tfGiaBan.setEditable(true);
-            tfSoLuongTon.setEditable(true);
             tfDungTich.setEditable(true);
             cbDanhMuc.setEnabled(true);
             cbLoaiNuoc.setEnabled(true);
             btnLuuThayDoi.setEnabled(true);
+            cbTrangThaiXuLy.setEnabled(true);
             btnSua.setEnabled(false);
             btnChonAnh.setEnabled(true);
         });
@@ -297,10 +318,8 @@ public class ChiTietSanPhamDialog extends JDialog {
                     tfMaSanPham.setEditable(false);
                     tfTenSanPham.setEditable(false);
                     tfCanhBao.setEditable(false);
-                    tfNhaCungCap.setEditable(false);
-                    tfGiaNhap.setEditable(false);
+                    cbNhaCungCap.setEnabled(false);
                     tfGiaBan.setEditable(false);
-                    tfSoLuongTon.setEditable(false);
                     tfDungTich.setEditable(false);
                     cbDanhMuc.setEnabled(false);
                     cbLoaiNuoc.setEnabled(false);
@@ -317,27 +336,25 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSp.addActionListener(e -> {
             if (kiemTraDuLieu()) {
                 SanPham sanPham = dongGoiSanPham();
-                SanPhamBUS sanPhamBUS = new SanPhamBUS();
-                if (sanPhamBUS.themSanPham(sanPham)) {
-                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    capNhapDuLieu(null);
-                    this.repaint();
-                } else {
-                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
-                            JOptionPane.ERROR_MESSAGE);
-                }
+
+                inThongTinSanPham(sanPham);
+
+                // SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                // if (sanPhamBUS.themSanPham(sanPham)) {
+                // JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành
+                // công",
+                // JOptionPane.INFORMATION_MESSAGE);
+                // capNhapDuLieu(null);
+                // this.repaint();
+                // } else {
+                // JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
+                // JOptionPane.ERROR_MESSAGE);
+                // }
             }
         });
 
         btnThemSize.addActionListener(e -> {
-            if (sanPham != null) {
-                // new ThemSizeDialog(this, sanPham);
-                capNhapDuLieu(sanPham);
-            } else {
-                JOptionPane.showMessageDialog(this, "Vui lòng lưu sản phẩm trước khi thêm size!", "Thông báo",
-                        JOptionPane.WARNING_MESSAGE);
-            }
+            new ThemSizeDialog(this);
         });
 
         btnSuaSize.addActionListener(e -> {
@@ -368,13 +385,13 @@ public class ChiTietSanPhamDialog extends JDialog {
                         if (size.getMaSize().equals(maSize)) {
                             SizeBUS sizeBUS = new SizeBUS();
                             // if (sizeBUS.XoaSanPham(maSize)) {
-                            //     sanPham.getListSize().remove(size);
-                            //     modelSize.removeRow(row);
-                            //     JOptionPane.showMessageDialog(this, "Xóa size thành công!", "Thành công",
-                            //             JOptionPane.INFORMATION_MESSAGE);
+                            // sanPham.getListSize().remove(size);
+                            // modelSize.removeRow(row);
+                            // JOptionPane.showMessageDialog(this, "Xóa size thành công!", "Thành công",
+                            // JOptionPane.INFORMATION_MESSAGE);
                             // } else {
-                            //     JOptionPane.showMessageDialog(this, "Xóa size thất bại!", "Thất bại",
-                            //             JOptionPane.ERROR_MESSAGE);
+                            // JOptionPane.showMessageDialog(this, "Xóa size thất bại!", "Thất bại",
+                            // JOptionPane.ERROR_MESSAGE);
                             // }
                             // break;
                         }
@@ -384,62 +401,133 @@ public class ChiTietSanPhamDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn size để xóa!", "Thông báo",
                         JOptionPane.WARNING_MESSAGE);
             }
+
+        });
+        btnXemCongThuc.addActionListener(e -> {
+            xemCongThucDialog.setVisible(true);
         });
 
         if (sanPham != null) {
             tfMaSanPham.setEditable(false);
+            tfMaSanPham.setBackground(java.awt.Color.white);
+
             tfTenSanPham.setEditable(false);
+            tfTenSanPham.setBackground(java.awt.Color.WHITE);
+
             tfCanhBao.setEditable(false);
-            tfNhaCungCap.setEditable(false);
-            tfGiaNhap.setEditable(false);
+            tfCanhBao.setBackground(java.awt.Color.WHITE);
+
             tfGiaBan.setEditable(false);
-            tfSoLuongTon.setEditable(false);
+            tfGiaBan.setBackground(java.awt.Color.WHITE);
+
             tfDungTich.setEditable(false);
+            tfDungTich.setBackground(java.awt.Color.WHITE);
             cbDanhMuc.setEnabled(false);
+            cbTrangThaiXuLy.setEnabled(false);
+
             cbLoaiNuoc.setEnabled(false);
+
             btnChonAnh.setEnabled(false);
-            tblSize = new JTable(modelSize);
         }
     }
 
+    public void inThongTinSanPham(SanPham sp) {
+        if (sp == null) {
+            System.out.println(">> LỖI: Đối tượng Sản phẩm là NULL.");
+            return;
+        }
+
+        System.out.println("\n==================== THÔNG TIN SẢN PHẨM ====================");
+        // 1. In thông tin cơ bản
+        System.out.println("Mã SP          : " + sp.getMaSP());
+        System.out.println("Tên SP         : " + sp.getTenSP());
+
+        // Xử lý các object tham chiếu (DanhMuc, NhaCungCap) để tránh null pointer
+        String tenDM = (sp.getDanhMuc() != null) ? sp.getDanhMuc().getTenDM() : "---"; // Thay .getTenDM() bằng hàm của
+                                                                                       // bạn
+        System.out.println("Danh mục       : " + tenDM);
+
+        String tenNCC = (sp.getNhaCungCap() != null) ? sp.getNhaCungCap().getTenNCC() : "---"; // Thay .getTenNCC() bằng
+                                                                                               // hàm của bạn
+        System.out.println("Nhà cung cấp   : " + tenNCC);
+
+        System.out.printf("Giá bán        : %,d VNĐ\n", sp.getGiaBan());
+        System.out.println("Loại nước      : " + sp.getLoaiNuoc());
+        System.out.println("Dung tích      : " + sp.getTheTich() + " ml");
+        System.out.println("Cảnh báo kho   : " + sp.getMucCanhBao());
+        System.out.println("Trạng thái bán : " + (sp.getTrangThai() ? "Đang kinh doanh" : "Ngừng kinh doanh"));
+        System.out.println("Trạng thái XL  : " + sp.getTrangThaiXuLy());
+        System.out.println("Ảnh            : " + sp.getAnh());
+
+        // 2. In danh sách Size
+        System.out.println("\n-------------------- DANH SÁCH SIZE --------------------");
+        if (sp.getListSize() != null && !sp.getListSize().isEmpty()) {
+            System.out.printf("%-10s | %-15s | %-15s | %-15s\n", "Mã Size", "Tên Size", "% Giá thêm", "% NL thêm");
+            for (Size s : sp.getListSize()) {
+                System.out.printf("%-10s | %-15s | %-15d | %-15d\n",
+                        s.getMaSize(), s.getTenSize(), s.getPhanTramGia(), s.getPhanTramNL());
+            }
+        } else {
+            System.out.println(">> Sản phẩm chưa có Size nào.");
+        }
+
+        // 3. In thông tin Công thức
+        System.out.println("\n-------------------- CÔNG THỨC PHA CHẾ --------------------");
+        CongThuc ct = sp.getCongThuc();
+        if (ct != null) {
+            System.out.println("Mã công thức: " + ct.getMaCT());
+
+            if (ct.getListChiTietCongThuc() != null && !ct.getListChiTietCongThuc().isEmpty()) {
+                System.out.printf("%-20s | %-10s\n", "Tên Nguyên Liệu", "Số Lượng");
+                for (ChiTietCongThuc ctct : ct.getListChiTietCongThuc()) {
+                    // Giả định class NguyenLieu có hàm getTenNL()
+                    String tenNL = (ctct.getNguyenLieu() != null) ? ctct.getNguyenLieu().getTenNL() : "Null NL";
+                    System.out.printf("%-20s | %-10.2f\n", tenNL, ctct.getSoLuong());
+                }
+            } else {
+                System.out.println(">> Công thức này chưa có nguyên liệu chi tiết.");
+            }
+        } else {
+            System.out.println(">> Sản phẩm chưa có công thức.");
+        }
+        System.out.println("===========================================================\n");
+    }
+
     private boolean kiemTraDuLieu() {
-        if (tfTenSanPham.getText().isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (cbDanhMuc.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        if (cbLoaiNuoc.getSelectedIndex() == 0) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-        try {
-            Long.parseLong(tfGiaNhap.getText());
-            Long.parseLong(tfGiaBan.getText());
-            Long.parseLong(tfDungTich.getText());
-        } catch (NumberFormatException ex) {
-            JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là số!", "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
+        // if (tfTenSanPham.getText().isEmpty()) {
+        //     JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        //     return false;
+        // }
+        // if (cbDanhMuc.getSelectedIndex() == 0) {
+        //     JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        //     return false;
+        // }
+        // if (cbLoaiNuoc.getSelectedIndex() == 0) {
+        //     JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        //     return false;
+        // }
+        // try {
+        //     Long.parseLong(tfGiaBan.getText());
+        //     Long.parseLong(tfDungTich.getText());
+        // } catch (NumberFormatException ex) {
+        //     JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là số!", "Lỗi",
+        //             JOptionPane.ERROR_MESSAGE);
+        //     return false;
+        // }
         return true;
     }
 
     public SanPham dongGoiSanPham() {
         xemCongThucDialog.dongGoiCongThuc();
         SanPham sp = new SanPham();
-        sp.setMaSP(tfMaSanPham.getText());
         sp.setTenSP(tfTenSanPham.getText());
         sp.setLoaiNuoc((String) cbLoaiNuoc.getSelectedItem());
         DanhMuc danhMuc = danhMucBUS.timDanhMuc((String) cbDanhMuc.getSelectedItem());
         sp.setDanhMuc(danhMuc);
         sp.setGiaBan(Long.parseLong(tfGiaBan.getText()));
-        sp.setGiaNhap(Long.parseLong(tfGiaNhap.getText()));
         sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
         sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
-        NhaCungCap ncc = nhaCungCapBUS.timNhaCungCapTheoTen((String) tfNhaCungCap.getText());
+        NhaCungCap ncc = nhaCungCapBUS.timNhaCungCapTheoTen((String) cbNhaCungCap.getSelectedItem());
         sp.setNhaCungCap(ncc);
         sp.setCongThuc(xemCongThucDialog.getCongThuc());
         sp.setListSize(dongGoiListSize());
@@ -457,10 +545,9 @@ public class ChiTietSanPhamDialog extends JDialog {
     private ArrayList<Size> dongGoiListSize() {
         ArrayList<Size> listSize = new ArrayList<>();
         for (int i = 0; i < modelSize.getRowCount(); i++) {
-            Size size = new Size(modelSize.getValueAt(i, 0).toString(), modelSize.getValueAt(i, 1).toString(),
-                    modelSize.getValueAt(i, 2).toString(),
-                    Integer.parseInt(modelSize.getValueAt(i, 3).toString()),
-                    Integer.parseInt(modelSize.getValueAt(i, 5).toString()));
+            Size size = new Size("", "", modelSize.getValueAt(i, 0).toString(),
+                    Integer.parseInt(modelSize.getValueAt(i, 1).toString()),
+                    Integer.parseInt(modelSize.getValueAt(i, 2).toString()));
             listSize.add(size);
         }
         return listSize;
