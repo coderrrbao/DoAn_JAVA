@@ -29,4 +29,8 @@ public class DanhMuc {
         this.tenDM = tenDM;
     }
 
+    @Override
+    public String toString() {
+        return tenDM; // <<< QUAN TRỌNG
+    }
 }

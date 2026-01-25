@@ -1,5 +1,7 @@
 package bus;
 
+import java.util.ArrayList;
+
 import dao.DanhMucDao;
 import dto.DanhMuc;
 
@@ -10,5 +12,8 @@ public class DanhMucBUS {
     }
     public DanhMuc timDanhMucTheoTen(String ten){
         return danhMucDao.timDanhMucTheoTen(ten);
+    }
+    public ArrayList<DanhMuc> layDanhMucDangHoatDong(){
+        return danhMucDao.layDanhMucDangHoatDong();
     }
 }
