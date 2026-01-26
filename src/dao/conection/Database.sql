@@ -5,21 +5,22 @@ BEGIN
     CREATE TABLE NhomQuyen
     (
         MaNQ VARCHAR(50) NOT NULL PRIMARY KEY,
-        TenPhanQuyen NVARCHAR(100)
+        TenNhomQuyen NVARCHAR(100),
+        TrangThai BIT
     )
     INSERT INTO NhomQuyen
-        (MaNQ, TenPhanQuyen)
+        (MaNQ, TenNhomQuyen, TrangThai)
     VALUES
-        ('NQ01', N'Quản Lý Cửa Hàng'),
-        ('NQ02', N'Nhân Viên Bán Hàng'),
-        ('NQ03', N'Nhân Viên Kho'),
-        ('NQ04', N'Nhân Viên Pha Chế'),
-        ('NQ05', N'Kế Toán'),
-        ('NQ06', N'Bảo Vệ'),
-        ('NQ07', N'Quản Lý Nhân Sự'),
-        ('NQ08', N'Giám Sát Ca'),
-        ('NQ09', N'Marketing'),
-        ('NQ10', N'Admin Hệ Thống')
+        ('NQ01', N'Quản Lý Cửa Hàng', 1),
+        ('NQ02', N'Nhân Viên Bán Hàng', 1),
+        ('NQ03', N'Nhân Viên Kho', 1),
+        ('NQ04', N'Nhân Viên Pha Chế', 1),
+        ('NQ05', N'Kế Toán', 1),
+        ('NQ06', N'Bảo Vệ', 1),
+        ('NQ07', N'Quản Lý Nhân Sự', 1),
+        ('NQ08', N'Giám Sát Ca', 1),
+        ('NQ09', N'Marketing', 1),
+        ('NQ10', N'Admin Hệ Thống', 1)
 END;
 IF NOT EXISTS (SELECT *
 FROM sys.tables
@@ -28,54 +29,26 @@ BEGIN
     CREATE TABLE Quyen
     (
         MaQuyen VARCHAR(50) NOT NULL PRIMARY KEY,
+        MaNQ VARCHAR(50) NOT NULL,
         TenQuyen NVARCHAR(100)
     )
     INSERT INTO Quyen
-        (MaQuyen, TenQuyen)
+        (MaQuyen, MaNQ, TenQuyen)
     VALUES
-        ('Q01', N'Quản lý sản phẩm'),
-        ('Q02', N'Quản lý nhân viên'),
-        ('Q03', N'Bán hàng'),
-        ('Q04', N'Nhập kho'),
-        ('Q05', N'Xem báo cáo doanh thu'),
-        ('Q06', N'Quản lý khuyến mãi'),
-        ('Q07', N'Quản lý khách hàng'),
-        ('Q08', N'Duyệt phiếu hủy'),
-        ('Q09', N'Cấu hình hệ thống'),
-        ('Q10', N'Xuất kho'),
-        ('Q11', N'Xem lịch sử giao dịch'),
-        ('Q12', N'Chỉnh sửa công thức')
+       ('Q01', 'NQ01', N'Quản lý sản phẩm'),
+        ('Q02', 'NQ01', N'Quản lý nhân viên'),
+        ('Q03', 'NQ02', N'Bán hàng'),
+        ('Q04', 'NQ03', N'Nhập kho'),
+        ('Q05', 'NQ01', N'Xem báo cáo doanh thu'),
+        ('Q06', 'NQ09', N'Quản lý khuyến mãi'),
+        ('Q07', 'NQ02', N'Quản lý khách hàng'),
+        ('Q08', 'NQ08', N'Duyệt phiếu hủy'),
+        ('Q09', 'NQ10', N'Cấu hình hệ thống'),
+        ('Q10', 'NQ03', N'Xuất kho'),
+        ('Q11', 'NQ05', N'Xem lịch sử giao dịch'),
+        ('Q12', 'NQ04', N'Chỉnh sửa công thức')
 END;
 
-IF NOT EXISTS (SELECT *
-FROM sys.tables
-WHERE name = 'PhanQuyen')
-BEGIN
-    CREATE TABLE PhanQuyen
-    (
-        MaQuyen VARCHAR(50) NOT NULL,
-        MaNQ VARCHAR(50) NOT NULL,
-        PRIMARY KEY (MaQuyen, MaNQ)
-    )
-    INSERT INTO PhanQuyen
-        (MaQuyen, MaNQ)
-    VALUES
-        ('Q01', 'NQ01'),
-        ('Q02', 'NQ01'),
-        ('Q03', 'NQ01'),
-        ('Q04', 'NQ01'),
-        ('Q05', 'NQ01'),
-        ('Q03', 'NQ02'),
-        ('Q07', 'NQ02'),
-        ('Q04', 'NQ03'),
-        ('Q10', 'NQ03'),
-        ('Q12', 'NQ04'),
-        ('Q05', 'NQ05'),
-        ('Q11', 'NQ05'),
-        ('Q09', 'NQ10'),
-        ('Q01', 'NQ10'),
-        ('Q02', 'NQ10')
-END;
 
 /* =============================================
    4. BẢNG TÀI KHOẢN (Accounts)
@@ -773,15 +746,6 @@ FROM sys.foreign_keys
 WHERE name = 'FK_TaiKhoan_NhomQuyen')
     ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhomQuyen FOREIGN KEY (maNQ) REFERENCES NhomQuyen(MaNQ);
 
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhanQuyen_Quyen')
-    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_Quyen FOREIGN KEY (MaQuyen) REFERENCES Quyen(MaQuyen);
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhanQuyen_NhomQuyen')
-    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_NhomQuyen FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
@@ -917,3 +881,8 @@ IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_PhieuHuyNL_LoNguyenLieu')
     ALTER TABLE PhieuHuyNguyenLieu ADD CONSTRAINT FK_PhieuHuyNL_LoNguyenLieu FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
+
+IF NOT EXISTS (SELECT *
+    FROM sys.foreign_keys WHERE name = 'FK_Quyen_NhomQuyen')
+    ALTER TABLE Quyen ADD CONSTRAINT FK_Quyen_NhomQuyen
+    FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
