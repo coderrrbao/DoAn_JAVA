@@ -186,5 +186,18 @@ public class SanPhamDAO {
         }
         return list;
     }
+    public Boolean xoaSanPham(String maSp){
+        String sql="UPDATE SanPham SET TrangThai=0 WHERE MaSP = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
+            pst.setString(1, maSp);
+            pst.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+            return false;
+        }
+        return true;
+    }
 }

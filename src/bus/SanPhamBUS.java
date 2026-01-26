@@ -121,8 +121,8 @@ public class SanPhamBUS {
         return sanPhamDAO.layMaSanPhamKhaDung();
     }
 
-    public Boolean XoaSanPham(SanPham sanPham) {
-        return true;
+    public Boolean XoaSanPham(String maSp) {
+        return sanPhamDAO.xoaSanPham(maSp);
     }
 
     public boolean capNhapSanPham(SanPham sanPham) {

@@ -13,6 +13,7 @@ import bus.SanPhamBUS;
 import dto.NhaCungCap;
 import dto.SanPham;
 import ui.component.Search_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
@@ -31,13 +32,10 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
 
-    private SanPhamBUS quanLySanPhamBUS;
-
     public QuanLySanPhamUI(JFrame owner) {
         this.owner = owner;
         this.listSanPham = new ArrayList<>();
         this.listSanPhamLoc = new ArrayList<>();
-        quanLySanPhamBUS = new SanPhamBUS();
 
         setLayout(new BorderLayout());
 
@@ -182,19 +180,46 @@ public class QuanLySanPhamUI extends JPanel {
         search_Item.setEvent(this::locSanPham);
 
         xuaFileBtn.addActionListener(e -> {
-            quanLySanPhamBUS.xuatFileExcel();
+            new SanPhamBUS().xuatFileExcel();
+        });
+
+        xoaBtn.addActionListener(e -> {
+
+            JTable table = (JTable) scrollPane.getViewport().getView();
+            int dong = table.getSelectedRow();
+            if (dong != -1) {
+                dong = table.convertRowIndexToModel(dong);
+                int xacNhan = JOptionPane.showConfirmDialog(null,
+                        "Bạn có muốn xóa sản phẩm " + table.getModel().getValueAt(dong, 2), "",
+                        JOptionPane.YES_NO_OPTION);
+                if (xacNhan == JOptionPane.YES_OPTION) {
+                    String maSpCanXoa = table.getModel().getValueAt(dong, 2).toString();
+                    SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                    boolean ok = sanPhamBUS.XoaSanPham(maSpCanXoa);
+                    if (ok) {
+                        TaoTinNhan.showAutoCloseMessage("Xóa thành công", "Thông báo", 1);
+                        loadDataFromDatabase();
+                    } else {
+                        TaoTinNhan.showAutoCloseMessage("Xóa thất bại", "Thông báo", 1);
+                    }
+                }
+
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn sản phẩm cần xóa", "Thông báo", 1);
+            }
         });
     }
 
     public void loadDataFromDatabase() {
-        listSanPham = quanLySanPhamBUS.layListSanPham();
+        SanPhamBUS sanPhamBUS = new SanPhamBUS();
+        listSanPham = sanPhamBUS.layListSanPham();
         NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
         ArrayList<String> luaChonNCC = nhaCungCapBUS.layLuaChonNCC();
         luaChonNCC.add(0, "Nhà cung cấp");
         ncc = luaChonNCC.toArray(new String[0]);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(ncc);
 
-        ArrayList<String> luaChonDM = quanLySanPhamBUS.layLuaChonDanhMuc();
+        ArrayList<String> luaChonDM = sanPhamBUS.layLuaChonDanhMuc();
         luaChonDM.add(0, "Danh mục");
         danhmuc = luaChonDM.toArray(new String[0]);
         DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>(danhmuc);
@@ -202,6 +227,7 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.setModel(model1);
         cbNhaCungCap.setModel(model);
         veLaiDanhSach(listSanPham);
+        locSanPham();
         this.revalidate();
         this.repaint();
     }
