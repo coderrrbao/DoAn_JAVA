@@ -24,22 +24,25 @@ import dto.TaiKhoan;
 import ui.main.MainFrame;
 import util.TaoUI;
 
-public class loginUI extends JFrame {
+public class LoginUI extends JFrame {
     private JTextField txtuser;
     private JPasswordField txtpass;
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+    private  MainFrame  mainFrame = new MainFrame();
 
-    public loginUI() {
+    public LoginUI() {
         setSize(700, 400);
         setTitle("Đăng nhập");
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        initUI();
+        initUI(mainFrame);
 
         setLocationRelativeTo(null);
         setResizable(false);
+
+        setVisible(true);
     }
 
-    private void initUI() {
+    private void initUI(JFrame  mainFrame) {
         setLayout(new BorderLayout());
 
         // CENTER
@@ -134,17 +137,12 @@ public class loginUI extends JFrame {
             JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
             //hien thi giao dien
             DatabaseInit.initDatabase();
-            new MainFrame();
             this.dispose();
+            mainFrame.setVisible(true);
+            
         }
         else{
             JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", JOptionPane.ERROR_MESSAGE);
         }
-    }
-    public static void main(String[] args) {
-        JFrame login = new loginUI();
-
-        login.setVisible(true);
-
     }
 }

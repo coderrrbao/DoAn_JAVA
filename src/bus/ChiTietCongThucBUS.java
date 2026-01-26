@@ -18,4 +18,7 @@ public class ChiTietCongThucBUS {
         }
         return listChiTietCongThuc;
     }
+    public Boolean themCTCT(ChiTietCongThuc chiTietCongThuc){
+        return chiTietCongThucDAO.themCTCT(chiTietCongThuc);
+    }
 }

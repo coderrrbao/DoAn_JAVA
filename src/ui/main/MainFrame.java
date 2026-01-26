@@ -22,6 +22,6 @@ public class MainFrame extends JFrame {
         add(menuPanel, BorderLayout.WEST);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setVisible(true);
+        setVisible(false);
     }
 }

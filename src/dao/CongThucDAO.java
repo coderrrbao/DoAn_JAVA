@@ -33,20 +33,16 @@ public class CongThucDAO {
         return congThuc;
     }
 
-    public boolean themCongThuc(CongThuc congThuc) {
-        System.out.println("Use themCongThuc(CongThuc, String maSP) with MaSP provided.");
-        return false;
-    }
 
-    public boolean themCongThuc(CongThuc congThuc, String maSP) {
+    public boolean themCongThuc(CongThuc congThuc) {
         String sql = "INSERT INTO CongThuc (MaCT, MaSP, TrangThai) VALUES (?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
             if (congThuc.getMaCT() == null || congThuc.getMaCT().trim().isEmpty()) {
                 congThuc.setMaCT(layMaCongThucKhaDung());
             }
-            pst.setString(1, congThuc.getMaCT());
-            pst.setString(2, maSP);
-            pst.setInt(3, congThuc.getTrangThai() ? 1 : 0);
+            pst.setString(1, layMaCongThucKhaDung());
+            pst.setString(2, congThuc.getMaSp());
+            pst.setInt(3, 1);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

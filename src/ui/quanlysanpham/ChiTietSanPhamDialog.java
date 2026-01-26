@@ -106,7 +106,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         ArrayList<NhaCungCap> dsNCC = nhaCungCapBUS.laylistNhaCungCap();
         String[] listNCC = new String[dsNCC.size() + 1];
         for (int i = 0; i < dsNCC.size(); i++) {
-            listNCC[i+1] = dsNCC.get(i).getTenNCC();
+            listNCC[i + 1] = dsNCC.get(i).getTenNCC();
         }
         listNCC[0] = "--Nhà cung cấp --";
         cbNhaCungCap = new JComboBox<>(listNCC);
@@ -337,20 +337,16 @@ public class ChiTietSanPhamDialog extends JDialog {
             if (kiemTraDuLieu()) {
                 SanPham sanPham = dongGoiSanPham();
 
-                inThongTinSanPham(sanPham);
-
-                // SanPhamBUS sanPhamBUS = new SanPhamBUS();
-                // if (sanPhamBUS.themSanPham(sanPham)) {
-                // JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành
-                // công",
-                // JOptionPane.INFORMATION_MESSAGE);
-                // capNhapDuLieu(null);
-                // this.repaint();
-                // } else {
-                // JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
-                // JOptionPane.ERROR_MESSAGE);
-                // }
+                SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                if (sanPhamBUS.themSanPham(sanPham)) {
+                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
+            dispose();
         });
 
         btnThemSize.addActionListener(e -> {

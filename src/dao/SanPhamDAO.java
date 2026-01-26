@@ -66,7 +66,7 @@ public class SanPhamDAO {
             pst.setInt(8, sanPham.getTheTich());
             pst.setInt(9, sanPham.getMucCanhBao());
             pst.setString(10, sanPham.getTrangThaiXuLy());
-            pst.setInt(11, sanPham.getTrangThai() ? 1 : 0);
+            pst.setInt(11, 1);
 
             int rowAffected = pst.executeUpdate();
             return rowAffected > 0;

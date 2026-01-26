@@ -68,7 +68,7 @@ public class ChiTietCongThucDAO {
             pstmt.setString(2, ctct.getMaCT());
             pstmt.setString(3, ctct.getNguyenLieu().getMaNL());
             pstmt.setDouble(4, ctct.getSoLuong());
-
+            
             int rowAffected = pstmt.executeUpdate();
             return rowAffected > 0;
 

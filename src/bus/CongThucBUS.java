@@ -26,6 +26,12 @@ public class CongThucBUS {
     }
 
     public Boolean themCongThuc(CongThuc congThuc) {
+        String  maCT = congThucDAO.layMaCongThucKhaDung();
+        ChiTietCongThucBUS  chiTietCongThucBUS = new ChiTietCongThucBUS();
+        for (ChiTietCongThuc chiTietCongThuc : congThuc.getListChiTietCongThuc()){
+            chiTietCongThuc.setMaCT(maCT);
+            chiTietCongThucBUS.themCTCT(chiTietCongThuc);
+        }
         return congThucDAO.themCongThuc(congThuc);
     }
 }
