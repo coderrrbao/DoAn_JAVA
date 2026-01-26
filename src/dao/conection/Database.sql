@@ -31,51 +31,22 @@ BEGIN
         TenQuyen NVARCHAR(100)
     )
     INSERT INTO Quyen
-        (MaQuyen, TenQuyen)
+        (MaQuyen, MaNhomQuyen, TenQuyen)
     VALUES
-        ('Q01', N'Quản lý sản phẩm'),
-        ('Q02', N'Quản lý nhân viên'),
-        ('Q03', N'Bán hàng'),
-        ('Q04', N'Nhập kho'),
-        ('Q05', N'Xem báo cáo doanh thu'),
-        ('Q06', N'Quản lý khuyến mãi'),
-        ('Q07', N'Quản lý khách hàng'),
-        ('Q08', N'Duyệt phiếu hủy'),
-        ('Q09', N'Cấu hình hệ thống'),
-        ('Q10', N'Xuất kho'),
-        ('Q11', N'Xem lịch sử giao dịch'),
-        ('Q12', N'Chỉnh sửa công thức')
+       ('Q01', 'NQ01', N'Quản lý sản phẩm'),
+        ('Q02', 'NQ01', N'Quản lý nhân viên'),
+        ('Q03', 'NQ02', N'Bán hàng'),
+        ('Q04', 'NQ03', N'Nhập kho'),
+        ('Q05', 'NQ01', N'Xem báo cáo doanh thu'),
+        ('Q06', 'NQ09', N'Quản lý khuyến mãi'),
+        ('Q07', 'NQ02', N'Quản lý khách hàng'),
+        ('Q08', 'NQ08', N'Duyệt phiếu hủy'),
+        ('Q09', 'NQ10', N'Cấu hình hệ thống'),
+        ('Q10', 'NQ03', N'Xuất kho'),
+        ('Q11', 'NQ05', N'Xem lịch sử giao dịch'),
+        ('Q12', 'NQ04', N'Chỉnh sửa công thức');
 END;
 
-IF NOT EXISTS (SELECT *
-FROM sys.tables
-WHERE name = 'PhanQuyen')
-BEGIN
-    CREATE TABLE PhanQuyen
-    (
-        MaQuyen VARCHAR(50) NOT NULL,
-        MaNQ VARCHAR(50) NOT NULL,
-        PRIMARY KEY (MaQuyen, MaNQ)
-    )
-    INSERT INTO PhanQuyen
-        (MaQuyen, MaNQ)
-    VALUES
-        ('Q01', 'NQ01'),
-        ('Q02', 'NQ01'),
-        ('Q03', 'NQ01'),
-        ('Q04', 'NQ01'),
-        ('Q05', 'NQ01'),
-        ('Q03', 'NQ02'),
-        ('Q07', 'NQ02'),
-        ('Q04', 'NQ03'),
-        ('Q10', 'NQ03'),
-        ('Q12', 'NQ04'),
-        ('Q05', 'NQ05'),
-        ('Q11', 'NQ05'),
-        ('Q09', 'NQ10'),
-        ('Q01', 'NQ10'),
-        ('Q02', 'NQ10')
-END;
 
 /* =============================================
    4. BẢNG TÀI KHOẢN (Accounts)

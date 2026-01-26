@@ -67,7 +67,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         cbJLabel.setPreferredSize(new Dimension(110,30));
         cbJLabel.setMinimumSize(new Dimension(110,30));
         cbJLabel.setMaximumSize(new Dimension(110,30));
-        JComboBox cbBox = new JComboBox<>(new String[]{"nhân viên" , "quản lí"});
+        JComboBox cbBox = new JComboBox<>(new String[]{"Nhân viên kho" , "Nhân viên bán hàng", "Quản lí", "Admin"});
         cbJPanel.add(cbJLabel);
         cbJPanel.add(cbBox);
         
