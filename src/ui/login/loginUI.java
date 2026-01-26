@@ -20,15 +20,15 @@ import javax.swing.JTextField;
 
 import bus.TaiKhoanBUS;
 import dao.conection.DatabaseInit;
-import dto.TaiKhoan;
 import ui.main.MainFrame;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class LoginUI extends JFrame {
     private JTextField txtuser;
     private JPasswordField txtpass;
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
-    private  MainFrame  mainFrame = new MainFrame();
+    private MainFrame mainFrame = new MainFrame();
 
     public LoginUI() {
         setSize(700, 400);
@@ -42,7 +42,7 @@ public class LoginUI extends JFrame {
         setVisible(true);
     }
 
-    private void initUI(JFrame  mainFrame) {
+    private void initUI(JFrame mainFrame) {
         setLayout(new BorderLayout());
 
         // CENTER
@@ -116,33 +116,31 @@ public class LoginUI extends JFrame {
         quenMKPanel.setOpaque(false);
         buttonPanel.setOpaque(false);
 
-        
     }
-    //logic dang nhap
-    public void xuLyDangNhap(){
+
+    // logic dang nhap
+    public void xuLyDangNhap() {
         String user = txtuser.getText().trim();
         String pass = new String(txtpass.getPassword()).trim();
 
-        //kiem tra du lieu lay tu form
-        if(user.isEmpty()){
+        // kiem tra du lieu lay tu form
+        if (user.isEmpty()) {
             JOptionPane.showMessageDialog(this, "tài khoản không được rỗng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        if(pass.isEmpty()){
+        if (pass.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Mật khẩu không được rỗng!", "Thông báo", JOptionPane.WARNING_MESSAGE);
             return;
         }
         // xu ly dang nhap
-        if(taiKhoanBUS.dangNhap_BUS(user, pass)){
-            JOptionPane.showMessageDialog(this, "Đăng nhập thành công");
-            //hien thi giao dien
-            DatabaseInit.initDatabase();
-            this.dispose();
+        if (taiKhoanBUS.dangNhap_BUS(user, pass)) {
+            TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
+            this.dispose();  
             mainFrame.setVisible(true);
-            
-        }
-        else{
-            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", JOptionPane.ERROR_MESSAGE);
+
+        } else {
+            JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo",
+                    JOptionPane.ERROR_MESSAGE);
         }
     }
 }

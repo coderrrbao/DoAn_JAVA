@@ -1,6 +1,13 @@
 package bus;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
 
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
@@ -71,7 +78,9 @@ public class SanPhamBUS {
     }
 
     public Boolean themSanPham(SanPham sanPham) {
-        sanPhamDAO.themSanPham(sanPham);
+        if (!sanPhamDAO.themSanPham(sanPham)) {
+            return false;
+        }
 
         CongThucBUS congThucBUS = new CongThucBUS();
         SizeBUS sizeBUS = new SizeBUS();
@@ -81,10 +90,35 @@ public class SanPhamBUS {
 
         for (Size size : sanPham.getListSize()) {
             size.setMaSP(sanPham.getMaSP());
-            sizeBUS.themSize(size);
+            if (!sizeBUS.themSize(size)) {
+                return false;
+            }
         }
-        
+
         return true;
+    }
+
+    public String luuAnh(String maSp, JFileChooser fileChooser) {
+        String duongDanMoi;
+        try {
+            File file = fileChooser.getSelectedFile();
+            if (file==null){
+                file = new File(System.getProperty("user.dir")+"/src/assets/img/douongmd.png");
+            }
+            Path path = Paths.get("src/assets/img/");
+            duongDanMoi = maSp;
+            duongDanMoi += file.getName().substring(file.getName().lastIndexOf("."));
+            Path pathDich = path.resolve(duongDanMoi);
+            Files.copy(file.toPath(), pathDich, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "/assets/img/"+duongDanMoi;
+    }
+
+    public String layMaSanPhamKhaDung(){
+        return sanPhamDAO.layMaSanPhamKhaDung();
     }
 
     public Boolean XoaSanPham(SanPham sanPham) {

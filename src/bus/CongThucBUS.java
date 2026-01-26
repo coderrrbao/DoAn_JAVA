@@ -28,10 +28,15 @@ public class CongThucBUS {
     public Boolean themCongThuc(CongThuc congThuc) {
         String  maCT = congThucDAO.layMaCongThucKhaDung();
         ChiTietCongThucBUS  chiTietCongThucBUS = new ChiTietCongThucBUS();
+        if (!congThucDAO.themCongThuc(congThuc)){
+            return  false;
+        }
         for (ChiTietCongThuc chiTietCongThuc : congThuc.getListChiTietCongThuc()){
             chiTietCongThuc.setMaCT(maCT);
-            chiTietCongThucBUS.themCTCT(chiTietCongThuc);
+             if (!chiTietCongThucBUS.themCTCT(chiTietCongThuc)){
+                return false;
+             }
         }
-        return congThucDAO.themCongThuc(congThuc);
+        return true; 
     }
 }

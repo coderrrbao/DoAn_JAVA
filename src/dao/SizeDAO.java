@@ -60,7 +60,7 @@ public class SizeDAO {
             pst.setString(3, s.getTenSize());
             pst.setInt(4, s.getPhanTramGia());
             pst.setInt(5, s.getPhanTramNL());
-            pst.setInt(6, s.getTrangThai() ? 1 : 0);
+            pst.setInt(6, 1);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

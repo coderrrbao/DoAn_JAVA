@@ -108,7 +108,7 @@ public class NguyenLieuDAO {
             pst.setDouble(5, nl.getGia());
             pst.setString(6, nl.getDonVi());
             pst.setInt(7, nl.getMucCanhBao());
-            pst.setInt(8, nl.getTrangThai() ? 1 : 0);
+            pst.setInt(8, 1);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

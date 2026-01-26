@@ -16,7 +16,7 @@ import ui.component.Search_Item;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-    private JButton themSpBtn, xuaFileBtn, nhapFileBtn,xoaBtn;
+    private JButton themSpBtn, xuaFileBtn, nhapFileBtn, xoaBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbNhaCungCap, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
@@ -69,14 +69,14 @@ public class QuanLySanPhamUI extends JPanel {
         themSpBtn.setForeground(Color.WHITE);
         TaoUI.setHeightButton(themSpBtn, 32);
 
-        xoaBtn  = new JButton("Xóa");
+        xoaBtn = new JButton("Xóa");
         TaoUI.setHeightButton(xoaBtn, 32);
 
         xuaFileBtn = new JButton("Xuất Exc");
-        TaoUI.setFixSize(xuaFileBtn,65, 32);
-        xuaFileBtn.setBorder(BorderFactory.createEmptyBorder(1,1,1,1));
+        TaoUI.setFixSize(xuaFileBtn, 65, 32);
+        xuaFileBtn.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
         nhapFileBtn = new JButton("Nhập Exc");
-        TaoUI.setFixSize(nhapFileBtn,65, 32);
+        TaoUI.setFixSize(nhapFileBtn, 65, 32);
 
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
@@ -125,14 +125,14 @@ public class QuanLySanPhamUI extends JPanel {
                 if (columnIndex == 0 || columnIndex == 6)
                     return Integer.class;
                 if (columnIndex == 7)
-                    return Boolean.class; 
+                    return Boolean.class;
                 if (columnIndex == 8)
-                    return JButton.class; 
+                    return JButton.class;
                 return Object.class;
             }
 
             public boolean isCellEditable(int row, int column) {
-                return column == 8; 
+                return column == 8;
             }
         };
 
@@ -202,6 +202,8 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.setModel(model1);
         cbNhaCungCap.setModel(model);
         veLaiDanhSach(listSanPham);
+        this.revalidate();
+        this.repaint();
     }
 
     private void locSanPham() {
