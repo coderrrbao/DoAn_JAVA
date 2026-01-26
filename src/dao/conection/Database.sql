@@ -59,28 +59,18 @@ WHERE name = 'TaiKhoan')
 BEGIN
     CREATE TABLE TaiKhoan
     (
+        TenTaiKhoan VARCHAR(50),
         TenDangNhap VARCHAR(50) NOT NULL PRIMARY KEY,
         MatKhau VARCHAR(255) NOT NULL,
         maNQ VARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO TaiKhoan
-        (TenDangNhap, MatKhau, maNQ, TrangThai)
+        (TenTaiKhoan, TenDangNhap, MatKhau, maNQ, TrangThai)
     VALUES
-        ('admin', '123456', 'NQ01', 1),
-        ('nhanvien1', '123456', 'NQ02', 1),
-        ('nhanvienkho', '123456', 'NQ03', 1),
-        ('phache01', '123456', 'NQ04', 1),
-        ('phache02', '123456', 'NQ04', 1),
-        ('ketoan01', '123456', 'NQ05', 1),
-        ('baove01', '123456', 'NQ06', 1),
-        ('quanlyns', '123456', 'NQ07', 1),
-        ('marketing01', '123456', 'NQ09', 1),
-        ('sale02', '123456', 'NQ02', 1),
-        ('sale03', '123456', 'NQ02', 1),
-        ('kho02', '123456', 'NQ03', 1),
-        ('giamsat01', '123456', 'NQ08', 1),
-        ('admin_sys', 'admin@123', 'NQ10', 1)
+        ('Le Huy Hoang','admin', '123456', 'NQ01', 1),
+        ('Nguyen Hoai Bao','NV01', '123456', 'NQ02', 1),
+        ('Pham Huu Phu Ngao','NV02', '123456', 'NQ03', 1)
 END;
 
 /* =============================================

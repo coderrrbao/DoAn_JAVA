@@ -1,4 +1,5 @@
 package ui.taikhoan;
+import bus.NhomQuyenBUS;
 import bus.TaiKhoanBUS;
 import dto.TaiKhoan;
 
@@ -69,9 +70,8 @@ public class TaiKhoanUI extends JPanel {
         model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");
 
-        model.addRow(new Object[] { "Nguyễn Văn A", "admin", "Quản lý", "Đang hoạt động" });
-        model.addRow(new Object[] { "Trần Thị B", "nv_banhang1", "Nhân viên bán hàng", "Đang hoạt động" });
-        model.addRow(new Object[] { "Lê Văn C", "nv_kho1", "Nhân viên kho", "Đang khóa" });
+        //hien thi danh sach tai khoan
+        hienThiDanhSachTaiKhoan();
 
         tableUI = new JTable(model);
         tableUI.setRowHeight(35);
@@ -97,6 +97,20 @@ public class TaiKhoanUI extends JPanel {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame);
         dia.setVisible(true);
+    }
+    //
+    private void hienThiDanhSachTaiKhoan() {
+        TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+        model.setRowCount(0);
+
+        for (TaiKhoan tk : taiKhoanBUS.layDanhSachTaiKhoan_BUS()) {
+            model.addRow(new Object[]{
+                tk.getTenTaiKhoan(),
+                tk.getTenDangNhap(),
+                tk.getMaNQ(),
+                tk.getTrangThai()
+            });
+        }
     }
 
     //

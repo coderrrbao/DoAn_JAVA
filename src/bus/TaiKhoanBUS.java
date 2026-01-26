@@ -1,5 +1,8 @@
 package bus;
+import java.util.ArrayList;
+
 import dao.TaiKhoanDao;
+import dto.NhomQuyen;
 import dto.TaiKhoan;
 
 //them tk
@@ -12,16 +15,11 @@ public class TaiKhoanBUS {
             System.out.println("tai khoan khong hop le");
             return false;
         }
-        if(tk.getTenDangNhap() == null || tk.getTenDangNhap().isEmpty()){
-            System.out.println("ten dang nhap khong duoc rong");
-            return false;
-        }
-        if(tk.getMatKhau() == null || tk.getMatKhau().isEmpty()){
-            System.out.println("mat khau khong duoc rong");
-            return false;
-        }
-        if(tk.getMaNQ() == null || tk.getMaNQ().isEmpty()){
-            System.out.println("ma nhom quyen khong duoc rong");
+        if(tk.getTenDangNhap() == null || tk.getTenDangNhap().isEmpty() ||
+            tk.getMatKhau() == null || tk.getMatKhau().isEmpty() ||
+            tk.getMaNQ() == null || tk.getMaNQ().isEmpty() ||
+            tk.getTenTaiKhoan() == null || tk.getTenDangNhap().isEmpty()){
+                
             return false;
         }
         return dao.themTaiKhoan_DAO(tk);
@@ -29,7 +27,6 @@ public class TaiKhoanBUS {
     //xoa tai khoan
     public boolean xoaTaiKhoan_BUS(String tenDangNhap){
         if(tenDangNhap == null || tenDangNhap.isEmpty()){
-            System.out.println("ten dang nhap rong");
             return false;
         }
         return dao.xoaTaiKhoan_DAO(tenDangNhap);
@@ -45,6 +42,10 @@ public class TaiKhoanBUS {
             return false;
         }
         return dao.suaMatKhau_DAO(tenDangNhap, matKhauMoi);
+    }
+    //lay danh sach tai khoan
+    public ArrayList<TaiKhoan> layDanhSachTaiKhoan_BUS(){
+        return dao.layDanhSachTaiKhoan_DAO();
     }
     //dang nhap 
     public boolean dangNhap_BUS(String tenDangNhap, String MatKhau){

@@ -1,6 +1,7 @@
 package dto;
 
 public class TaiKhoan {
+    private String tenTaiKhoan;
     private String tenDangNhap;
     private String matKhau;
     private String maNQ;
@@ -9,11 +10,20 @@ public class TaiKhoan {
     public TaiKhoan() {
     }
 
-    public TaiKhoan(String tenDangNhap, String matKhau, String maNQ, boolean trangThai) {
+    public TaiKhoan(String tenTaiKhoan,String tenDangNhap, String matKhau, String maNQ, boolean trangThai) {
+        this.tenTaiKhoan = tenTaiKhoan;
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
         this.maNQ = maNQ;
         this.trangThai = trangThai;
+    }
+
+    public String getTenTaiKhoan(){
+        return tenTaiKhoan;
+    }
+    
+    public void setTenTaiKhoan(String tenTaiKhoan){
+        this.tenTaiKhoan = tenTaiKhoan;
     }
 
     public String getTenDangNhap() {
