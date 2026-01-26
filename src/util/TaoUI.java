@@ -66,6 +66,9 @@ public class TaoUI {
     }
 
     public static ImageIcon taoImageIcon(String src, int rong, int dai) {
+        if (src == null) {
+            src = "";
+        }
         URL  url  =  TaoUI.class.getResource(src);
         if (url==null){
             url=TaoUI.class.getResource("/assets/img/douongmd.png");

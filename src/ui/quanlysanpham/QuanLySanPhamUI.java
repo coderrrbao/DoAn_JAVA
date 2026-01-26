@@ -32,6 +32,11 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
 
+    private ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(new SanPham(), this);
+    private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
+
+    
+
     public QuanLySanPhamUI(JFrame owner) {
         this.owner = owner;
         this.listSanPham = new ArrayList<>();
@@ -140,7 +145,7 @@ public class QuanLySanPhamUI extends JPanel {
         JScrollPane sc = TaoUI.taoTableScroll(model, set);
         JTable table = (JTable) sc.getViewport().getView();
 
-        NutSuKienSP nutSuKien = new NutSuKienSP(new JCheckBox());
+        NutSuKienSP nutSuKien = new NutSuKienSP(new JCheckBox(), this);
         table.getColumnModel().getColumn(8).setCellRenderer(new NutHienThiSP("../assets/icon/sua.svg"));
         table.getColumnModel().getColumn(8).setCellEditor(nutSuKien);
 
@@ -169,7 +174,7 @@ public class QuanLySanPhamUI extends JPanel {
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
-            new ChiTietSanPhamDialog(null, this);
+            themSanPhamDialog.setVisible(true);
         });
 
         cbTrangThai.addActionListener(e -> locSanPham());
@@ -264,4 +269,8 @@ public class QuanLySanPhamUI extends JPanel {
             themSanPhamVaoTable(sanPham);
         }
     }
+
+    public ChiTietSanPhamDialog layXemChiTietSanPhamDialog(){
+        return chiTietSanPhamDialog;
+     }
 }

@@ -20,7 +20,7 @@ public class NutSuKienSP extends DefaultCellEditor {
     private int currentRow;
     private JTable currentTable;
 
-    public NutSuKienSP(JCheckBox checkBox) {
+    public NutSuKienSP(JCheckBox checkBox, QuanLySanPhamUI quanLySanPhamUI) {
         super(checkBox);
         button = new JButton();
 
@@ -35,7 +35,8 @@ public class NutSuKienSP extends DefaultCellEditor {
             SanPham sanPham = quanLySanPhamBUS
                     .timSanPham(String.valueOf(currentTable.getModel().getValueAt(currentRow, 2)));
             if (sanPham != null) {
-                new ChiTietSanPhamDialog(sanPham,null);
+                quanLySanPhamUI.layXemChiTietSanPhamDialog().capNhapDuLieu(sanPham);
+                quanLySanPhamUI.layXemChiTietSanPhamDialog().setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Bruhh");
             }
