@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -15,6 +16,8 @@ import javax.swing.JTextField;
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
 import dto.DanhMuc;
+import dto.SanPham;
+import ui.component.BoLocListener;
 import util.TaoUI;
 
 public class BoLocPanel extends JPanel {
@@ -63,7 +66,7 @@ public class BoLocPanel extends JPanel {
         titleLoai.add(new JLabel("Loại sản phẩm"));
         pnLoaiSP.add(titleLoai);
 
-        String[] loai = { "Có sẵn", "Pha chế" };
+        String[] loai = { "Tất cả", "Có sẵn", "Pha chế" };
         cbLoaiSanPham = new JComboBox<>(loai);
         sanPhamBUS = new SanPhamBUS();
 
@@ -82,7 +85,7 @@ public class BoLocPanel extends JPanel {
         pnDanhMuc.add(titleDanhMuc);
 
         cbDanhMuc = new JComboBox<>();
-        cbDanhMuc.addItem(new DanhMuc("ALL", "Tất cả"));
+        cbDanhMuc.addItem(new DanhMuc(null, "Tất cả"));
 
         DanhMucBUS danhMucBUS = new DanhMucBUS();
         for (DanhMuc dm : danhMucBUS.layDanhMucDangHoatDong()) {
@@ -114,6 +117,15 @@ public class BoLocPanel extends JPanel {
         ganSuKien();
     }
 
+    private BoLocListener boLocListener;
+
+    public void setboLocListener(BoLocListener listener) {
+        this.boLocListener = listener;
+    }
+
+
+
+
     private void ganSuKien() {
 
         btnApDung.addActionListener(e -> {
@@ -121,18 +133,24 @@ public class BoLocPanel extends JPanel {
             String loai = cbLoaiSanPham.getSelectedItem().toString();
             DanhMuc dm = (DanhMuc) cbDanhMuc.getSelectedItem();
 
-            System.out.println("Áp dụng bộ lọc:");
-            System.out.println("Tên: " + ten);
-            System.out.println("Loại: " + loai);
-            System.out.println("Danh mục: " + dm.getMaDM());
+            ArrayList<SanPham> ds = sanPhamBUS.locSanPham(ten, loai, dm.getMaDM());
+            if(boLocListener != null) {
+                boLocListener.onLoc(ds);
+            }
+
         });
 
         btnLamMoi.addActionListener(e -> {
             txtTenSanPham.setText("");
             cbLoaiSanPham.setSelectedIndex(0);
             cbDanhMuc.setSelectedIndex(0);
+            if(boLocListener != null) {
+                boLocListener.onLamMoi();
+            }
 
-            System.out.println("Đã làm mới bộ lọc");
         });
     }
+
+
+
 }
