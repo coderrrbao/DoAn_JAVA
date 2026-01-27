@@ -128,4 +128,6 @@ public class SanPhamBUS {
     public boolean capNhapSanPham(SanPham sanPham) {
         return true;
     }
+
+    public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) { return SanPhamDAO.locSanPham(ten, loai, maDM);}
 }

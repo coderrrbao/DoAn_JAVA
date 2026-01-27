@@ -1,10 +1,13 @@
 package ui.banhang;
 
 import bus.ThongtinKhachHangBUS;
+import dto.SanPham;
+import ui.component.BoLocListener;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -60,10 +63,29 @@ public class BanHangUI extends JPanel {
         ThongTinHoaDonPanel thongTinHoaDonPanel = new ThongTinHoaDonPanel();
         leftPanel.add(thongTinHoaDonPanel, BorderLayout.CENTER);
 
-        BoLocPanel boLocPanel = new BoLocPanel();
-        rightPanel.add(boLocPanel, BorderLayout.NORTH);
 
         ListSanPhamPanel listSanPhamPanel = new ListSanPhamPanel();
         rightPanel.add(listSanPhamPanel, BorderLayout.CENTER);
+
+        BoLocPanel boLocPanel = new BoLocPanel();
+        boLocPanel.setboLocListener(new BoLocListener() {
+
+            @Override
+            public void onLoc(ArrayList<SanPham> ds) {
+                listSanPhamPanel.render(ds);
+            }
+
+            @Override
+            public void onLamMoi() {
+                listSanPhamPanel.reset(); // renderTrang + page = 1
+            }
+        });
+
+        rightPanel.add(boLocPanel, BorderLayout.NORTH);
+
+
+        rightPanel.add(boLocPanel, BorderLayout.NORTH);
+
+
     }
 }
