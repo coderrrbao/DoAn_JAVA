@@ -35,7 +35,7 @@ BEGIN
     INSERT INTO Quyen
         (MaQuyen, MaNQ, TenQuyen)
     VALUES
-       ('Q01', 'NQ01', N'Quản lý sản phẩm'),
+        ('Q01', 'NQ01', N'Quản lý sản phẩm'),
         ('Q02', 'NQ01', N'Quản lý nhân viên'),
         ('Q03', 'NQ02', N'Bán hàng'),
         ('Q04', 'NQ03', N'Nhập kho'),
@@ -68,9 +68,20 @@ BEGIN
     INSERT INTO TaiKhoan
         (TenTaiKhoan, TenDangNhap, MatKhau, maNQ, TrangThai)
     VALUES
-        ('Le Huy Hoang','admin', '123456', 'NQ01', 1),
-        ('Nguyen Hoai Bao','NV01', '123456', 'NQ02', 1),
-        ('Pham Huu Phu Ngao','NV02', '123456', 'NQ03', 1)
+        (N'Lê Huy Hoàng', 'admin', '123456', 'NQ01', 1),
+        (N'Nguyễn Hoài Bảo', 'NV01', '123456', 'NQ02', 1),
+        (N'Phạm Hữu Phú Ngáo', 'NV02', '123456', 'NQ03', 1),
+        (N'Trần Thị Thu Ngân', 'nhanvien1', '123456', 'NQ02', 1),
+        (N'Lê Văn Kho', 'nhanvienkho', '123456', 'NQ03', 1),
+        (N'Phạm Văn Pha Chế', 'phache01', '123456', 'NQ04', 1),
+        (N'Lý Thị Pha Chế 2', 'phache02', '123456', 'NQ04', 1),
+        (N'Ngô Văn Bảo Vệ', 'baove01', '123456', 'NQ06', 1),
+        (N'Đỗ Thị Kế Toán', 'ketoan01', '123456', 'NQ05', 1),
+        (N'Hoàng Văn Giám Sát', 'giamsat01', '123456', 'NQ08', 1),
+        (N'Vũ Thị Marketing', 'marketing01', '123456', 'NQ09', 1),
+        (N'Bùi Văn Sale 2', 'sale02', '123456', 'NQ02', 1),
+        (N'Trịnh Thị Sale 3', 'sale03', '123456', 'NQ02', 1),
+        (N'Phan Văn Kho 2', 'kho02', '123456', 'NQ03', 1)
 END;
 
 /* =============================================
@@ -394,18 +405,18 @@ BEGIN
     INSERT INTO NhanVien
         (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '0909123456', N'TP.HCM', N'Cửa hàng trưởng', 'admin', 1),
-        ('NV02', N'Trần Thị Thu Ngân', N'Nữ', '2000-05-15', '0909123457', N'Bình Dương', N'Thu ngân', 'nhanvien1', 1),
-        ('NV03', N'Lê Văn Kho', N'Nam', '1995-08-20', '0909123458', N'Đồng Nai', N'Thủ kho', 'nhanvienkho', 1),
-        ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '0909222333', N'TP.HCM', N'Pha chế', 'phache01', 1),
-        ('NV05', N'Lý Thị Pha Chế 2', N'Nữ', '1999-11-20', '0909333444', N'TP.HCM', N'Pha chế', 'phache02', 1),
-        ('NV06', N'Ngô Văn Bảo Vệ', N'Nam', '1985-06-30', '0909555666', N'Long An', N'Bảo vệ', 'baove01', 1),
-        ('NV07', N'Đỗ Thị Kế Toán', N'Nữ', '1992-09-09', '0909777888', N'TP.HCM', N'Kế toán', 'ketoan01', 1),
-        ('NV08', N'Hoàng Văn Giám Sát', N'Nam', '1991-03-03', '0909888999', N'TP.HCM', N'Giám sát', 'giamsat01', 1),
-        ('NV09', N'Vũ Thị Marketing', N'Nữ', '1997-07-07', '0909000111', N'TP.HCM', N'Marketing', 'marketing01', 1),
-        ('NV10', N'Bùi Văn Sale 2', N'Nam', '2001-12-12', '0909111222', N'Bình Dương', N'Thu ngân', 'sale02', 1),
-        ('NV11', N'Trịnh Thị Sale 3', N'Nữ', '2002-01-20', '0909333555', N'TP.HCM', N'Thu ngân', 'sale03', 1),
-        ('NV12', N'Phan Văn Kho 2', N'Nam', '1996-04-25', '0909666777', N'Đồng Nai', N'Thủ kho', 'kho02', 1)
+        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '0909123456', N'TP.HCM',     N'Cửa hàng trưởng', 'admin', 1),
+    ('NV02', N'Trần Thị Thu Ngân', N'Nữ',  '2000-05-15', '0909123457', N'Bình Dương', N'Thu ngân',       'nhanvien1', 1),
+    ('NV03', N'Lê Văn Kho',       N'Nam', '1995-08-20', '0909123458', N'Đồng Nai',   N'Thủ kho',       'nhanvienkho', 1),
+    ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '0909222333', N'TP.HCM',     N'Pha chế',       'phache01', 1),
+    ('NV05', N'Lý Thị Pha Chế 2', N'Nữ',  '1999-11-20', '0909333444', N'TP.HCM',     N'Pha chế',       'phache02', 1),
+    ('NV06', N'Ngô Văn Bảo Vệ',   N'Nam', '1985-06-30', '0909555666', N'Long An',    N'Bảo vệ',        'baove01', 1),
+    ('NV07', N'Đỗ Thị Kế Toán',   N'Nữ',  '1992-09-09', '0909777888', N'TP.HCM',     N'Kế toán',       'ketoan01', 1),
+    ('NV08', N'Hoàng Văn Giám Sát',N'Nam', '1991-03-03', '0909888999', N'TP.HCM',     N'Giám sát',      'giamsat01', 1),
+    ('NV09', N'Vũ Thị Marketing', N'Nữ',  '1997-07-07', '0909000111', N'TP.HCM',     N'Marketing',     'marketing01', 1),
+    ('NV10', N'Bùi Văn Sale 2',   N'Nam', '2001-12-12', '0909111222', N'Bình Dương', N'Thu ngân',       'sale02', 1),
+    ('NV11', N'Trịnh Thị Sale 3', N'Nữ',  '2002-01-20', '0909333555', N'TP.HCM',     N'Thu ngân',       'sale03', 1),
+    ('NV12', N'Phan Văn Kho 2',   N'Nam', '1996-04-25', '0909666777', N'Đồng Nai',   N'Thủ kho',       'kho02', 1)
 END;
 
 /* =============================================
@@ -873,6 +884,7 @@ WHERE name = 'FK_PhieuHuyNL_LoNguyenLieu')
     ALTER TABLE PhieuHuyNguyenLieu ADD CONSTRAINT FK_PhieuHuyNL_LoNguyenLieu FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
 
 IF NOT EXISTS (SELECT *
-    FROM sys.foreign_keys WHERE name = 'FK_Quyen_NhomQuyen')
+FROM sys.foreign_keys
+WHERE name = 'FK_Quyen_NhomQuyen')
     ALTER TABLE Quyen ADD CONSTRAINT FK_Quyen_NhomQuyen
     FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
