@@ -28,7 +28,7 @@ public class XuLyExcel {
 
                 // 1. Tạo Header
                 String[] headers = { "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Nhà Cung Cấp", "Giá Bán", "Loại Nước",
-                        "Thể Tích", "Trạng Thái" };
+                        "Thể Tích", "Trạng Thái Xử lí", "Số size", "Đường dẫn ảnh", "Trạng thái" };
                 Row headerRow = sheet.createRow(0);
 
                 // Định dạng Header (In đậm)
@@ -55,7 +55,10 @@ public class XuLyExcel {
                     row.createCell(4).setCellValue(sp.getGiaBan());
                     row.createCell(5).setCellValue(sp.getLoaiNuoc());
                     row.createCell(6).setCellValue(sp.getTheTich() + " ml");
-                    row.createCell(7).setCellValue(sp.getTrangThai() ? "Tồn tại" : "Đã xóa");
+                    row.createCell(7).setCellValue(sp.getTrangThaiXuLy());
+                    row.createCell(8).setCellValue(sp.getListSize() == null ? 0 : sp.getListSize().size());
+                    row.createCell(9).setCellValue(sp.getAnh());
+                    row.createCell(10).setCellValue(sp.getTrangThai());
                 }
 
                 // Tự động căn chỉnh độ rộng cột
