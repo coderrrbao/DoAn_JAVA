@@ -12,6 +12,7 @@ public class ChiTietCongThucBUS {
 
     public ArrayList<ChiTietCongThuc> laylistCTCTbangMaCT(String maCT) {
         ArrayList<ChiTietCongThuc> listChiTietCongThuc = chiTietCongThucDAO.laylistChiTietCongThuc(maCT);
+        
         for (ChiTietCongThuc chiTietCongThuc : listChiTietCongThuc) {
             NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(chiTietCongThuc.getNguyenLieu().getMaNL());
             chiTietCongThuc.setNguyenLieu(nguyenLieu);
@@ -20,5 +21,8 @@ public class ChiTietCongThucBUS {
     }
     public Boolean themCTCT(ChiTietCongThuc chiTietCongThuc){
         return chiTietCongThucDAO.themCTCT(chiTietCongThuc);
+    }
+    public Boolean xoaCTCT(ChiTietCongThuc chiTietCongThuc){
+        return chiTietCongThucDAO.xoaCTCT(chiTietCongThuc);
     }
 }

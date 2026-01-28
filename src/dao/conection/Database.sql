@@ -360,26 +360,26 @@ BEGIN
         MaCT VARCHAR(50) NOT NULL,
         MaNL VARCHAR(50) NOT NULL,
         SoLuong DECIMAL(18, 4),
-        PRIMARY KEY (MaCT, MaNL)
+        TrangThai BIT,
     )
     INSERT INTO ChiTietCongThuc
-        (MaCTCT,MaCT, MaNL, SoLuong)
+        (MaCTCT,MaCT, MaNL, SoLuong,TrangThai)
     VALUES
-        ('CTCT01', 'CT01', 'NL01', 0.02),
-        ('CTCT02', 'CT01', 'NL02', 0.03),
-        ('CTCT03', 'CT02', 'NL01', 0.025),
-        ('CTCT04', 'CT02', 'NL03', 0.01),
-        ('CTCT05', 'CT03', 'NL08', 0.01),
-        ('CTCT06', 'CT03', 'NL09', 0.03),
-        ('CTCT07', 'CT03', 'NL06', 0.05),
-        ('CTCT08', 'CT04', 'NL05', 0.01),
-        ('CTCT09', 'CT04', 'NL04', 0.1),
-        ('CTCT10', 'CT06', 'NL08', 0.01),
-        ('CTCT11', 'CT06', 'NL07', 0.03),
-        ('CTCT12', 'CT05', 'NL02', 0.02),
-        ('CTCT13', 'CT01', 'NL13', 0.2),
+        ('CTCT01', 'CT01', 'NL01', 0.02, 1),
+        ('CTCT02', 'CT01', 'NL02', 0.03, 1),
+        ('CTCT03', 'CT02', 'NL01', 0.025, 1),
+        ('CTCT04', 'CT02', 'NL03', 0.01, 1),
+        ('CTCT05', 'CT03', 'NL08', 0.01, 1),
+        ('CTCT06', 'CT03', 'NL09', 0.03, 1),
+        ('CTCT07', 'CT03', 'NL06', 0.05, 1),
+        ('CTCT08', 'CT04', 'NL05', 0.01, 1),
+        ('CTCT09', 'CT04', 'NL04', 0.1, 1),
+        ('CTCT10', 'CT06', 'NL08', 0.01, 1),
+        ('CTCT11', 'CT06', 'NL07', 0.03, 1),
+        ('CTCT12', 'CT05', 'NL02', 0.02, 1),
+        ('CTCT13', 'CT01', 'NL13', 0.2, 1),
         -- Đá bi
-        ('CTCT14', 'CT01', 'NL11', 1)
+        ('CTCT14', 'CT01', 'NL11', 1, 1)
 -- Ly
 END;
 
@@ -405,18 +405,18 @@ BEGIN
     INSERT INTO NhanVien
         (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '0909123456', N'TP.HCM',     N'Cửa hàng trưởng', 'admin', 1),
-    ('NV02', N'Trần Thị Thu Ngân', N'Nữ',  '2000-05-15', '0909123457', N'Bình Dương', N'Thu ngân',       'nhanvien1', 1),
-    ('NV03', N'Lê Văn Kho',       N'Nam', '1995-08-20', '0909123458', N'Đồng Nai',   N'Thủ kho',       'nhanvienkho', 1),
-    ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '0909222333', N'TP.HCM',     N'Pha chế',       'phache01', 1),
-    ('NV05', N'Lý Thị Pha Chế 2', N'Nữ',  '1999-11-20', '0909333444', N'TP.HCM',     N'Pha chế',       'phache02', 1),
-    ('NV06', N'Ngô Văn Bảo Vệ',   N'Nam', '1985-06-30', '0909555666', N'Long An',    N'Bảo vệ',        'baove01', 1),
-    ('NV07', N'Đỗ Thị Kế Toán',   N'Nữ',  '1992-09-09', '0909777888', N'TP.HCM',     N'Kế toán',       'ketoan01', 1),
-    ('NV08', N'Hoàng Văn Giám Sát',N'Nam', '1991-03-03', '0909888999', N'TP.HCM',     N'Giám sát',      'giamsat01', 1),
-    ('NV09', N'Vũ Thị Marketing', N'Nữ',  '1997-07-07', '0909000111', N'TP.HCM',     N'Marketing',     'marketing01', 1),
-    ('NV10', N'Bùi Văn Sale 2',   N'Nam', '2001-12-12', '0909111222', N'Bình Dương', N'Thu ngân',       'sale02', 1),
-    ('NV11', N'Trịnh Thị Sale 3', N'Nữ',  '2002-01-20', '0909333555', N'TP.HCM',     N'Thu ngân',       'sale03', 1),
-    ('NV12', N'Phan Văn Kho 2',   N'Nam', '1996-04-25', '0909666777', N'Đồng Nai',   N'Thủ kho',       'kho02', 1)
+        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '0909123456', N'TP.HCM', N'Cửa hàng trưởng', 'admin', 1),
+        ('NV02', N'Trần Thị Thu Ngân', N'Nữ', '2000-05-15', '0909123457', N'Bình Dương', N'Thu ngân', 'nhanvien1', 1),
+        ('NV03', N'Lê Văn Kho', N'Nam', '1995-08-20', '0909123458', N'Đồng Nai', N'Thủ kho', 'nhanvienkho', 1),
+        ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '0909222333', N'TP.HCM', N'Pha chế', 'phache01', 1),
+        ('NV05', N'Lý Thị Pha Chế 2', N'Nữ', '1999-11-20', '0909333444', N'TP.HCM', N'Pha chế', 'phache02', 1),
+        ('NV06', N'Ngô Văn Bảo Vệ', N'Nam', '1985-06-30', '0909555666', N'Long An', N'Bảo vệ', 'baove01', 1),
+        ('NV07', N'Đỗ Thị Kế Toán', N'Nữ', '1992-09-09', '0909777888', N'TP.HCM', N'Kế toán', 'ketoan01', 1),
+        ('NV08', N'Hoàng Văn Giám Sát', N'Nam', '1991-03-03', '0909888999', N'TP.HCM', N'Giám sát', 'giamsat01', 1),
+        ('NV09', N'Vũ Thị Marketing', N'Nữ', '1997-07-07', '0909000111', N'TP.HCM', N'Marketing', 'marketing01', 1),
+        ('NV10', N'Bùi Văn Sale 2', N'Nam', '2001-12-12', '0909111222', N'Bình Dương', N'Thu ngân', 'sale02', 1),
+        ('NV11', N'Trịnh Thị Sale 3', N'Nữ', '2002-01-20', '0909333555', N'TP.HCM', N'Thu ngân', 'sale03', 1),
+        ('NV12', N'Phan Văn Kho 2', N'Nam', '1996-04-25', '0909666777', N'Đồng Nai', N'Thủ kho', 'kho02', 1)
 END;
 
 /* =============================================

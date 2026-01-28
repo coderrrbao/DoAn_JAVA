@@ -69,4 +69,32 @@ public class SizeDAO {
         }
     }
 
+    public  boolean xoaSize(Size  size){
+        String sql =  "UPDATE Size SET TrangThai=0 WHERE MaSize=?";
+        try(Connection con = DBConnection.getConnection();PreparedStatement  pst = con.prepareStatement(sql)){
+            pst.setString(1,size.getMaSize());
+            pst.executeUpdate();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+    public  boolean capNhapSize(Size  size){
+        String sql =  "UPDATE Size SET TenSize=?,PhanTramGia=?,PhanTramNL=? WHERE MaSize=?";
+        try(Connection con = DBConnection.getConnection();PreparedStatement  pst = con.prepareStatement(sql)){
+            pst.setString(1,size.getTenSize());
+            pst.setInt(2, size.getPhanTramGia());
+            pst.setInt(3, size.getPhanTramNL());
+            pst.setString(4, size.getMaSP());
+            pst.executeUpdate();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+            return false;
+        }
+        return true;
+    }
+
 }

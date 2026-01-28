@@ -4,10 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+
+import bus.SanPhamBUS;
 import dao.conection.DBConnection;
+import dto.ChiTietCongThuc;
+import dto.CongThuc;
 import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
+import dto.Size;
+import ui.quanlysanpham.NutSuKienSP;
 
 public class SanPhamDAO {
     public ArrayList<SanPham> layListSanPham() {
@@ -139,12 +145,12 @@ public class SanPhamDAO {
         ArrayList<SanPham> list = new ArrayList<>();
 
         String sql = """
-        SELECT sp.*, dm.TenDM, ncc.TenNCC
-        FROM SanPham sp
-        LEFT JOIN DanhMuc dm ON sp.MaDM = dm.MaDM
-        LEFT JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC
-        WHERE sp.TrangThai = 1
-    """;
+                    SELECT sp.*, dm.TenDM, ncc.TenNCC
+                    FROM SanPham sp
+                    LEFT JOIN DanhMuc dm ON sp.MaDM = dm.MaDM
+                    LEFT JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC
+                    WHERE sp.TrangThai = 1
+                """;
 
         if (tenSP != null && !tenSP.isEmpty()) {
             sql += " AND LOWER(sp.TenSP) LIKE ?";
@@ -162,7 +168,7 @@ public class SanPhamDAO {
         }
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
             int index = 1;
 
@@ -189,8 +195,7 @@ public class SanPhamDAO {
 
                 sp.setDanhMuc(new DanhMuc(
                         rs.getString("MaDM"),
-                        rs.getString("TenDM")
-                ));
+                        rs.getString("TenDM")));
 
                 list.add(sp);
             }
@@ -202,10 +207,8 @@ public class SanPhamDAO {
         return list;
     }
 
-
-
-    public Boolean xoaSanPham(String maSp){
-        String sql="UPDATE SanPham SET TrangThai=0 WHERE MaSP = ?";
+    public Boolean xoaSanPham(String maSp) {
+        String sql = "UPDATE SanPham SET TrangThai=0 WHERE MaSP = ?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
 
@@ -218,4 +221,37 @@ public class SanPhamDAO {
         }
         return true;
     }
+
+    public Boolean capNhapSanPham(SanPham sanPham) {
+        String sql = "UPDATE SanPham SET TenSP = ?, MaDM = ?, GiaBan = ?, MaNCC = ?, "
+                + "LoaiNuoc = ?, Anh = ?, TheTich = ?, MucCanhBao = ?, "
+                + "TrangThaiXuLy = ?, TrangThai = ? "
+                + "WHERE MaSP = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, sanPham.getTenSP());
+            pst.setString(2, sanPham.getDanhMuc().getMaDM());
+            pst.setDouble(3, sanPham.getGiaBan());
+            pst.setString(4, sanPham.getNhaCungCap().getMaNCC());
+            pst.setString(5, sanPham.getLoaiNuoc());
+            pst.setString(6, sanPham.getAnh());
+            pst.setDouble(7, sanPham.getTheTich());
+            pst.setInt(8, sanPham.getMucCanhBao());
+            pst.setString(9, sanPham.getTrangThaiXuLy());
+            pst.setInt(10, sanPham.getTrangThai() ? 1 : 0);
+
+            pst.setString(11, sanPham.getMaSP());
+
+            int rowsAffected = pst.executeUpdate();
+            return rowsAffected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi khi cập nhật sản phẩm: " + e.getMessage());
+            return false;
+        }
+    }
+     
 }

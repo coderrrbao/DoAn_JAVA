@@ -7,6 +7,7 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import bus.SizeBUS;
 import dto.Size;
 import util.TaoUI;
 
@@ -14,8 +15,24 @@ public class SizeDialog extends JDialog {
     private JTextField tfTenSize, tfNLThem, tfGiaThem;
     private JButton themBtn, lamMoiBtn, suaBtn, luuBtn;
     ChiTietSanPhamDialog chiTietSanPhamDialog;
-
+    private int dong;
     private Size size;
+
+    public SizeDialog(JDialog ouner, Size size, int dong) {
+        super(ouner, "Thêm size");
+        this.dong = dong;
+        this.size = size;
+        chiTietSanPhamDialog = (ChiTietSanPhamDialog) ouner;
+        setSize(400, 250);
+        setLocationRelativeTo(ouner);
+        setLayout(new BorderLayout());
+        JPanel center = TaoUI.taoPanelCanGiua(400, 300);
+        initCenter(center);
+        initButtons();
+        loadDuLieu();
+        ganSuKien();
+        setVisible(true);
+    }
 
     public SizeDialog(JDialog ouner, Size size) {
         super(ouner, "Thêm size");
@@ -72,6 +89,8 @@ public class SizeDialog extends JDialog {
         } else {
             TaoUI.addItem(buttonPanel, suaBtn, 5, true);
             TaoUI.addItem(buttonPanel, luuBtn, 5, true);
+            suaBtn.setEnabled(true);
+            luuBtn.setEnabled(false);
         }
         add(buttonPanel, BorderLayout.SOUTH);
     }
@@ -83,11 +102,32 @@ public class SizeDialog extends JDialog {
             chiTietSanPhamDialog.themSizeVaoBang(size);
             dispose();
         });
+
+        lamMoiBtn.addActionListener(e -> {
+            tfGiaThem.setText("");
+            tfNLThem.setText("");
+            tfTenSize.setText("");
+        });
+
         suaBtn.addActionListener(e -> {
             tfGiaThem.setEditable(true);
             tfNLThem.setEditable(true);
             tfTenSize.setEditable(true);
+            suaBtn.setEnabled(false);
+            luuBtn.setEnabled(true);
         });
+
+        luuBtn.addActionListener(e -> {
+            size.setTenSize(tfTenSize.getText());
+            size.setPhanTramGia(Integer.parseInt(tfGiaThem.getText()));
+            size.setPhanTramNL(Integer.parseInt(tfNLThem.getText()));
+            chiTietSanPhamDialog.suaSizeTrenDong(size, dong);
+            luuBtn.setEnabled(false);
+            suaBtn.setEnabled(true);
+            dispose();
+
+        });
+
     }
 
 }

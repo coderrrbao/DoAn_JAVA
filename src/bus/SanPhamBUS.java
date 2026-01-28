@@ -6,11 +6,13 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.JFileChooser;
 
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
+import dto.ChiTietCongThuc;
 import dto.SanPham;
 import dto.Size;
 import util.XuLyExcel;
@@ -67,6 +69,7 @@ public class SanPhamBUS {
     }
 
     public SanPham timSanPham(String ma) {
+        khoitao();
         SanPham sanPham = sanPhamDAO.timSanPham(ma);
         if (sanPham == null)
             return null;
@@ -102,8 +105,8 @@ public class SanPhamBUS {
         String duongDanMoi;
         try {
             File file = fileChooser.getSelectedFile();
-            if (file==null){
-                file = new File(System.getProperty("user.dir")+"/src/assets/img/douongmd.png");
+            if (file == null) {
+                file = new File(System.getProperty("user.dir") + "/src/assets/img/douongmd.png");
             }
             Path path = Paths.get("src/assets/img/");
             duongDanMoi = maSp;
@@ -114,10 +117,10 @@ public class SanPhamBUS {
             e.printStackTrace();
             return "";
         }
-        return "/assets/img/"+duongDanMoi;
+        return "/assets/img/" + duongDanMoi;
     }
 
-    public String layMaSanPhamKhaDung(){
+    public String layMaSanPhamKhaDung() {
         return sanPhamDAO.layMaSanPhamKhaDung();
     }
 
@@ -125,9 +128,51 @@ public class SanPhamBUS {
         return sanPhamDAO.xoaSanPham(maSp);
     }
 
-    public boolean capNhapSanPham(SanPham sanPham) {
-        return true;
+    public boolean capNhapSanPham(SanPham sanPham, SanPham sanPhamMoi) {
+        if (sanPham.getCongThuc() != null && sanPham.getCongThuc().getListChiTietCongThuc() != null) {
+            ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
+            HashSet<String> set = new HashSet<>();
+            for (ChiTietCongThuc chiTietCongThuc : sanPhamMoi.getCongThuc().getListChiTietCongThuc()) {
+                if (chiTietCongThuc.getMaCTCT().equals("")) {
+                    chiTietCongThuc.setMaCT(sanPham.getCongThuc().getMaCT());
+                    chiTietCongThucBUS.themCTCT(chiTietCongThuc);
+                }
+                set.add(chiTietCongThuc.getMaCTCT());
+            }
+            for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
+                if (!set.contains(chiTietCongThuc.getMaCTCT())) {
+                    chiTietCongThucBUS.xoaCTCT(chiTietCongThuc);
+                }
+            }
+        } else {
+            CongThucBUS congThucBUS = new CongThucBUS();
+            if (sanPhamMoi.getCongThuc() != null) {
+                sanPhamMoi.getCongThuc().setMaSp(sanPham.getMaSP());
+                congThucBUS.themCongThuc(sanPhamMoi.getCongThuc());
+            }
+
+        }
+        if (sanPham.getListSize() != null) {
+            HashSet<String> set = new HashSet<>();
+            SizeBUS sizeBUS = new SizeBUS();
+            for (Size size : sanPhamMoi.getListSize()) {
+                if (size.getMaSize().equals("")) {
+                    sizeBUS.themSize(size);
+                }
+                set.add(size.getMaSize());
+            }
+
+            for (Size size : sanPham.getListSize()) {
+                if (!set.contains(size.getMaSize())) {
+                    sizeBUS.xoaSize(size);
+                }
+            }
+        }
+
+        return sanPhamDAO.capNhapSanPham(sanPhamMoi);
     }
 
-    public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) { return SanPhamDAO.locSanPham(ten, loai, maDM);}
+    public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) {
+        return SanPhamDAO.locSanPham(ten, loai, maDM);
+    }
 }
