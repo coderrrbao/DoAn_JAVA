@@ -33,22 +33,22 @@ public class ThemTaiKhoanDialog extends JDialog {
     private JComboBox<String> cbQuyen;
     private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+    private TaiKhoanUI taiKhoanUI;
     private ArrayList<NhomQuyen> dsNhomQuyen;
 
 
-    public ThemTaiKhoanDialog(JFrame PFrame) {
-        super(PFrame, "Thêm tài khoản", true);
-
+    public ThemTaiKhoanDialog(JFrame jFrame, TaiKhoanUI taiKhoanUI) {
+        super(jFrame, "Thêm tài khoản", true);
         initUI();
-
+        this.taiKhoanUI = taiKhoanUI;
         setSize(400, 300);
-        setLocationRelativeTo(PFrame);
+        setLocationRelativeTo(jFrame);
         setResizable(false);
     }
 
     private void initUI() {
         //PANEL CHÍNH
-        JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(380, 180);
+        JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 180);
         TaoUI.suaBorderChoPanel(mainPanel, 15, 15, 15, 15);
 
         //USER
@@ -145,6 +145,7 @@ public class ThemTaiKhoanDialog extends JDialog {
                 this,
                 "Thêm tài khoản thành công!"
                 );
+                taiKhoanUI.hienThiDanhSachTaiKhoan();
                 dispose();
             return;
         }

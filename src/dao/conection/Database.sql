@@ -59,8 +59,8 @@ WHERE name = 'TaiKhoan')
 BEGIN
     CREATE TABLE TaiKhoan
     (
-        TenTaiKhoan VARCHAR(50),
-        TenDangNhap VARCHAR(50) NOT NULL PRIMARY KEY,
+        TenTaiKhoan NVARCHAR(50),
+        TenDangNhap NVARCHAR(50) NOT NULL PRIMARY KEY,
         MatKhau VARCHAR(255) NOT NULL,
         maNQ VARCHAR(50),
         TrangThai BIT

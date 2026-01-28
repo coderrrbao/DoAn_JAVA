@@ -5,6 +5,7 @@ import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -20,6 +21,7 @@ public class TaiKhoanUI extends JPanel {
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
+    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
 
     public TaiKhoanUI() {
         setLayout(new BorderLayout());
@@ -44,6 +46,7 @@ public class TaiKhoanUI extends JPanel {
         TaoUI.setHeightButton(btnResetMatKhau, 27);
         
         btnXoa = new JButton("Xóa");
+        btnXoa.addActionListener(e-> XoaTaiKhoan_Ui());
         TaoUI.setHeightButton(btnXoa, 27);
 
         top.add(cbNhomQuyen);
@@ -70,10 +73,9 @@ public class TaiKhoanUI extends JPanel {
         model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");
 
-        //hien thi danh sach tai khoan
+        tableUI = new JTable(model);
         hienThiDanhSachTaiKhoan();
 
-        tableUI = new JTable(model);
         tableUI.setRowHeight(35);
         tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -92,27 +94,66 @@ public class TaiKhoanUI extends JPanel {
 
         add(tableContainer, BorderLayout.CENTER);
     }
+
     //open them tai khoan dialog
     private void openThemTaiKhoanDialog(){
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame);
+        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame,this);
         dia.setVisible(true);
     }
-    //
-    private void hienThiDanhSachTaiKhoan() {
+    // load du lieu hien thi sau khi them xoa 
+    public void hienThiDanhSachTaiKhoan() {
         TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
         model.setRowCount(0);
 
         for (TaiKhoan tk : taiKhoanBUS.layDanhSachTaiKhoan_BUS()) {
-            model.addRow(new Object[]{
-                tk.getTenTaiKhoan(),
-                tk.getTenDangNhap(),
-                tk.getMaNQ(),
-                tk.getTrangThai()
-            });
+            if(tk.getTrangThai() == true){
+                model.addRow(new Object[]{
+                    tk.getTenTaiKhoan(),
+                    tk.getTenDangNhap(),
+                    tk.getMaNQ(),
+                    tk.getTrangThai()
+                });
+            }
         }
     }
 
+    //xoa tai khoan
+    private void XoaTaiKhoan_Ui(){
+        //lay dong dang chon 
+        int chonDong = tableUI.getSelectedRow();
+        //kiem tra da chon dong hay chua
+        if(chonDong == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng để xóa", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        //lay user de xoa
+        String tenDangNhap = model.getValueAt(chonDong, 1).toString();
+        String tenHienThi = model.getValueAt(chonDong, 0).toString();
+        //xac nhan
+        int choice = JOptionPane.showConfirmDialog(
+            this, 
+            "Bạn có chắc chắn muốn xóa tài khoản:\n" + 
+            "Tên: " + tenHienThi + "\n" +
+            "Username: " + tenDangNhap + "?", 
+            "Xác nhận xóa", 
+            JOptionPane.YES_NO_OPTION, 
+            JOptionPane.WARNING_MESSAGE
+        );
+        //xu ly xoa 
+        if (choice == JOptionPane.YES_OPTION) {
+            if (taiKhoanBUS.xoaTaiKhoan_BUS(tenDangNhap)) {
+                JOptionPane.showMessageDialog(this, "Đã xóa tài khoản thành công!");
+                hienThiDanhSachTaiKhoan();
+            } 
+            else {
+                JOptionPane.showMessageDialog(this, 
+                    "Xóa thất bại! Có thể tài khoản không tồn tại hoặc lỗi kết nối.", 
+                    "Lỗi", 
+                    JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
     //
 
     public JButton getBtnTao() { return btnTao; }

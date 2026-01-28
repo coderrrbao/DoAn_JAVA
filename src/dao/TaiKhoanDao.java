@@ -28,16 +28,17 @@ public class TaiKhoanDao {
         }
     }
     // xóa tài khoản 
-    public boolean xoaTaiKhoan_DAO(String tenDangNhap){
-        String sql = "DELETE FROM TaiKhoan WHERE TenDangNhap = ?";
-        try(Connection conn = DBConnection.getConnection() ; PreparedStatement ps = conn.prepareStatement(sql) ){
-            ps.setString(1, tenDangNhap);
-            return ps.executeUpdate() > 0;
-        }catch(Exception e){
-            e.printStackTrace();
-            return false;
-        }
+public boolean xoaTaiKhoan_DAO(String tenDangNhap) {
+    String sql = "UPDATE TaiKhoan SET TrangThai = 0 WHERE TenDangNhap = ?";
+    try (Connection conn = DBConnection.getConnection(); 
+         PreparedStatement ps = conn.prepareStatement(sql)) {
+        ps.setString(1, tenDangNhap);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return false;
     }
+}
     // thay đổi mật khẩu 
     public boolean suaMatKhau_DAO(String tenDangNhap, String matKhauMoi){
         String sql = "UPDATE TaiKhoan SET MatKhau = ? Where TenDangNhap = ?";
