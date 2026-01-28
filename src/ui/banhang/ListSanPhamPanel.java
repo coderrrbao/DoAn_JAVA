@@ -21,8 +21,7 @@ public class ListSanPhamPanel extends JPanel {
     private final int PAGE_SIZE = 16;
     private int currentPage = 1;
 
-    // null = đang hiển thị toàn bộ sản phẩm
-    // != null = đang hiển thị danh sách lọc
+
     private ArrayList<SanPham> dsHienTai = null;
 
     private JPanel listSanPhamPanel;
@@ -38,7 +37,6 @@ public class ListSanPhamPanel extends JPanel {
         initGUI();
     }
 
-    /* ================= UI ================= */
 
     private void taoTopPanel() {
         JPanel titlePanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
@@ -93,7 +91,6 @@ public class ListSanPhamPanel extends JPanel {
         taoListSpPanel();
     }
 
-    /* ================= LOGIC RENDER ================= */
 
     private void renderTrang() {
         listSanPhamPanel.removeAll();
@@ -101,10 +98,8 @@ public class ListSanPhamPanel extends JPanel {
         ArrayList<SanPham> dsTrang = new ArrayList<>();
 
         if (dsHienTai == null) {
-            // Danh sách gốc
             dsTrang = sanPhamBUS.layTrang(currentPage, PAGE_SIZE);
         } else {
-            // Danh sách lọc
             if (dsHienTai.isEmpty()) {
                 lblPage.setText("0/0");
                 listSanPhamPanel.revalidate();
@@ -143,19 +138,23 @@ public class ListSanPhamPanel extends JPanel {
         return (int) Math.ceil(dsHienTai.size() * 1.0 / PAGE_SIZE);
     }
 
-    /* ================= API CHO BỘ LỌC ================= */
 
-    // Gọi khi bấm "Áp dụng"
     public void render(ArrayList<SanPham> dsLoc) {
         currentPage = 1;
         this.dsHienTai = dsLoc;
         renderTrang();
     }
 
-    // Gọi khi bấm "Làm mới"
+
     public void reset() {
         currentPage = 1;
         dsHienTai = null;
         renderTrang();
+    }
+
+
+    public void setListener(SanPhamClickListener listener) {
+        this.listener = listener;
+        render(null);
     }
 }

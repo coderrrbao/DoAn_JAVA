@@ -1,67 +1,107 @@
 package ui.banhang;
 
-import com.formdev.flatlaf.extras.FlatSVGIcon;
-import util.TaoUI;
-
 import java.awt.Component;
-import java.net.URL;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import javax.swing.DefaultCellEditor;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JOptionPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
 
 public class NutSuKienBanHang extends DefaultCellEditor {
-    protected JButton button;
-    private int currentRow;
-    private JTable currentTable;
-    private int loaiNut;
+    private JButton btn;
+    private int type;
+    private JTable table;
 
     public NutSuKienBanHang(JCheckBox checkBox) {
         super(checkBox);
+        btn = new JButton();
+        btn.setOpaque(true);
 
-        button = new JButton();
 
-        button.setBorderPainted(false);
-        button.setContentAreaFilled(false);
-        button.setFocusPainted(false);
+        btn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (table == null) return;
 
-        button.addActionListener(e -> {
-            fireEditingStopped();
-            int soLuong = Integer.parseInt(String.valueOf(currentTable.getModel().getValueAt(currentRow, 2)));
-       
-            if (loaiNut == 1) {// trừ
-                if (soLuong > 1) {
-                    soLuong--;
+
+                fireEditingStopped();
+
+                int row = table.getSelectedRow();
+
+                if (row == -1) return;
+
+                DefaultTableModel model = (DefaultTableModel) table.getModel();
+
+                int soLuong = Integer.parseInt(model.getValueAt(row, 2).toString());
+                double donGia = Double.parseDouble(model.getValueAt(row, 1).toString());
+
+
+                if (type == 1) {
+                    if (soLuong > 1) {
+                        soLuong--;
+                        capNhatHang(model, row, soLuong, donGia);
+                    } else {
+                        int confirm = JOptionPane.showConfirmDialog(
+                                null,
+                                "Bạn có chắc chắn muốn xóa sản phẩm này khỏi hóa đơn?",
+                                "Xác nhận xóa",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.WARNING_MESSAGE
+                        );
+
+                        if (confirm == JOptionPane.YES_OPTION) {
+                            model.removeRow(row);
+                        }
+                    }
+                } else if (type == 2) { // Nút Cộng
+                    soLuong++;
+                    capNhatHang(model, row, soLuong, donGia);
+                } else if(type == 3) {
+                    xacNhanXoa(model, row);
                 }
-                currentTable.getModel().setValueAt(soLuong, currentRow, 2);
-            } else { // cộng
-                soLuong++;
-                currentTable.getModel().setValueAt(soLuong, currentRow, 2);
+
             }
         });
     }
 
-    public void setLoaiNut(String url, int loai) {
-        loaiNut = loai;
-        URL urL = TaoUI.class.getResource(url);
-        FlatSVGIcon icon = new FlatSVGIcon(urL).derive(15, 15);
-        button.setIcon(icon);
+    private void capNhatHang(DefaultTableModel model, int row, int soLuongMoi, double donGia) {
+        model.setValueAt(soLuongMoi, row, 2);
+        model.setValueAt(donGia * soLuongMoi, row, 3);
+    }
+
+    private void xacNhanXoa(DefaultTableModel model, int row) {
+        int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc chắn muốn xóa sản phẩm này khỏi hóa đơn?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            model.removeRow(row);
+        }
+    }
+
+    public void setLoaiNut(String path, int type) {
+        this.type = type;
+        // Dùng getResource để lấy ảnh từ classpath an toàn hơn
+        if (getClass().getResource(path) != null) {
+            btn.setIcon(new ImageIcon(getClass().getResource(path)));
+        } else {
+            if (type == 1) btn.setText("-");
+            else if (type == 2) btn.setText("+");
+            else if (type == 3) btn.setText("X");
+        }
     }
 
     @Override
     public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-        this.currentRow = row;
-        this.currentTable = table;
-
-        button.setBackground(table.getSelectionBackground());
-        button.setOpaque(true);
-        return button;
+        this.table = table;
+        return btn;
     }
-
-    @Override
-    public Object getCellEditorValue() {
-        return "";
-    }
-
 }

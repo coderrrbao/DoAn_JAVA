@@ -13,4 +13,10 @@ public class SizeBUS {
     public Boolean themSize(Size size){
         return sizeDAO.themSize(size);
     }
+    public Boolean xoaSize(Size  size){
+        return sizeDAO.xoaSize(size);
+    }
+    public Boolean  capNhapSize(Size  size){
+        return sizeDAO.capNhapSize(size);
+    }
 }

@@ -3,6 +3,7 @@ package ui.banhang;
 import bus.ThongtinKhachHangBUS;
 import dto.SanPham;
 import ui.component.BoLocListener;
+import ui.component.SanPhamClickListener;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -65,6 +66,16 @@ public class BanHangUI extends JPanel {
 
 
         ListSanPhamPanel listSanPhamPanel = new ListSanPhamPanel();
+
+        listSanPhamPanel.setListener(new SanPhamClickListener() {
+            @Override
+            public void onSanPhamClicked(SanPham sp) {
+                thongTinHoaDonPanel.themSanPham(sp);
+            }
+        });
+        listSanPhamPanel.reset();
+
+
         rightPanel.add(listSanPhamPanel, BorderLayout.CENTER);
 
         BoLocPanel boLocPanel = new BoLocPanel();
@@ -82,10 +93,5 @@ public class BanHangUI extends JPanel {
         });
 
         rightPanel.add(boLocPanel, BorderLayout.NORTH);
-
-
-        rightPanel.add(boLocPanel, BorderLayout.NORTH);
-
-
     }
 }
