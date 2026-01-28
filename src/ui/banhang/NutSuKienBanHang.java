@@ -60,7 +60,10 @@ public class NutSuKienBanHang extends DefaultCellEditor {
                 } else if (type == 2) { // Nút Cộng
                     soLuong++;
                     capNhatHang(model, row, soLuong, donGia);
+                } else if(type == 3) {
+                    xacNhanXoa(model, row);
                 }
+
             }
         });
     }
@@ -70,13 +73,29 @@ public class NutSuKienBanHang extends DefaultCellEditor {
         model.setValueAt(donGia * soLuongMoi, row, 3);
     }
 
+    private void xacNhanXoa(DefaultTableModel model, int row) {
+        int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc chắn muốn xóa sản phẩm này khỏi hóa đơn?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE
+        );
+
+        if (confirm == JOptionPane.YES_OPTION) {
+            model.removeRow(row);
+        }
+    }
+
     public void setLoaiNut(String path, int type) {
         this.type = type;
         // Dùng getResource để lấy ảnh từ classpath an toàn hơn
         if (getClass().getResource(path) != null) {
             btn.setIcon(new ImageIcon(getClass().getResource(path)));
         } else {
-            btn.setText(type == 1 ? "-" : "+");
+            if (type == 1) btn.setText("-");
+            else if (type == 2) btn.setText("+");
+            else if (type == 3) btn.setText("X");
         }
     }
 

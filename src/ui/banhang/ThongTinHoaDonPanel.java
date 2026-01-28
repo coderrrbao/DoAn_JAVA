@@ -31,11 +31,11 @@ public class ThongTinHoaDonPanel extends JPanel {
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4 || column == 5;
+                return column == 4 || column == 5 || column == 6;
             }
 
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4 || columnIndex == 5)
+                if (columnIndex == 4 || columnIndex == 5 || columnIndex ==6)
                     return JButton.class;
                 return Object.class;
             }
@@ -49,12 +49,14 @@ public class ThongTinHoaDonPanel extends JPanel {
         model.addColumn("Tổng tiền");
         model.addColumn("");
         model.addColumn("");
+        model.addColumn("");
 
 
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(5);
         set.add(4);
+        set.add(5);
+        set.add(6);
 
 
 
@@ -63,15 +65,23 @@ public class ThongTinHoaDonPanel extends JPanel {
         NutSuKienBanHang nutCong = new NutSuKienBanHang(new JCheckBox());
         nutCong.setLoaiNut("../assets/icon/cong.svg", 2);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
+        NutSuKienBanHang nutXoa = new NutSuKienBanHang(new JCheckBox());
+        nutXoa.setLoaiNut("../assets/icon/xoa.svg", 3);
+
+
         table = (JTable) scrollPane.getViewport().getView();
 
-        table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg"));
+        table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg", 15, 15));
         table.getColumnModel().getColumn(4).setCellEditor(nutTru);
         table.getColumnModel().getColumn(4).setPreferredWidth(15);
 
-        table.getColumnModel().getColumn(5).setCellRenderer(new NutHienThiBanHang("../assets/icon/cong.svg"));
+        table.getColumnModel().getColumn(5).setCellRenderer(new NutHienThiBanHang("../assets/icon/cong.svg", 15, 15));
         table.getColumnModel().getColumn(5).setCellEditor(nutCong);
         table.getColumnModel().getColumn(5).setPreferredWidth(15);
+
+        table.getColumnModel().getColumn(6).setCellRenderer(new NutHienThiBanHang("../assets/icon/xoa.svg", 50, 50));
+        table.getColumnModel().getColumn(6).setCellEditor(nutXoa);
+        table.getColumnModel().getColumn(6).setPreferredWidth(15);
 
         add(scrollPane);
         TaoUI.suaBorderChoPanel(this, 0, 0, 0, 10);
@@ -103,6 +113,7 @@ public class ThongTinHoaDonPanel extends JPanel {
                     sp.getGiaBan(),
                     1,
                     sp.getGiaBan(),
+                    new JButton(),
                     new JButton(),
                     new JButton()
             });
