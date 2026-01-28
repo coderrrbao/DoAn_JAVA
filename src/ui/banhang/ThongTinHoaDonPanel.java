@@ -12,10 +12,15 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import dto.SanPham;
 import ui.quanlysanpham.NutHienThiSP;
 import util.TaoUI;
 
 public class ThongTinHoaDonPanel extends JPanel {
+
+    private DefaultTableModel model;
+    private JTable table;
+
     public ThongTinHoaDonPanel() {
         TaoUI.taoPanelBoxLayoutDoc(this, Integer.MAX_VALUE, Integer.MAX_VALUE);
         JPanel title = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
@@ -23,18 +28,20 @@ public class ThongTinHoaDonPanel extends JPanel {
         title.add(new JLabel("Thông tin hóa đơn"));
         add(title);
 
-        DefaultTableModel model = new DefaultTableModel() {
+        model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
                 return column == 4 || column == 5;
             }
 
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4 || columnIndex == 3)
+                if (columnIndex == 4 || columnIndex == 5)
                     return JButton.class;
                 return Object.class;
             }
         };
+
+
 
         model.addColumn("Tên");
         model.addColumn("Giá");
@@ -43,18 +50,21 @@ public class ThongTinHoaDonPanel extends JPanel {
         model.addColumn("");
         model.addColumn("");
 
-        model.addRow(new Object[] { "Cocacola", 10000, 2, 20000, new JButton(), new JButton() });
-        model.addRow(new Object[] { "Pepsi", 10000, 2, 20000, new JButton(), new JButton() });
+
 
         HashSet<Integer> set = new HashSet<>();
         set.add(5);
         set.add(4);
+
+
+
         NutSuKienBanHang nutTru = new NutSuKienBanHang(new JCheckBox());
         nutTru.setLoaiNut("../assets/icon/tru.svg", 1);
         NutSuKienBanHang nutCong = new NutSuKienBanHang(new JCheckBox());
         nutCong.setLoaiNut("../assets/icon/cong.svg", 2);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
-        JTable table = (JTable) scrollPane.getViewport().getView();
+        table = (JTable) scrollPane.getViewport().getView();
+
         table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg"));
         table.getColumnModel().getColumn(4).setCellEditor(nutTru);
         table.getColumnModel().getColumn(4).setPreferredWidth(15);
@@ -62,8 +72,46 @@ public class ThongTinHoaDonPanel extends JPanel {
         table.getColumnModel().getColumn(5).setCellRenderer(new NutHienThiBanHang("../assets/icon/cong.svg"));
         table.getColumnModel().getColumn(5).setCellEditor(nutCong);
         table.getColumnModel().getColumn(5).setPreferredWidth(15);
+
         add(scrollPane);
         TaoUI.suaBorderChoPanel(this, 0, 0, 0, 10);
+    }
+
+    public void themSanPham(SanPham sp) {
+        int rowCount = model.getRowCount();
+        boolean Daco = false;
+        int indexRow = -1;
+
+        for (int i = 0; i < rowCount; i++) {
+            if (model.getValueAt(i, 0).toString().equals(sp.getTenSP())) {
+                Daco = true;
+                indexRow = i;
+                break;
+            }
+        }
+
+        if (Daco) {
+            int slCu = Integer.parseInt(model.getValueAt(indexRow, 2).toString());
+            int slMoi = slCu + 1;
+            double donGia = Double.parseDouble(model.getValueAt(indexRow, 1).toString());
+
+            model.setValueAt(slMoi, indexRow, 2);
+            model.setValueAt(donGia * slMoi, indexRow, 3);
+        }else {
+            model.addRow(new Object[]{
+                    sp.getTenSP(),
+                    sp.getGiaBan(),
+                    1,
+                    sp.getGiaBan(),
+                    new JButton(),
+                    new JButton()
+            });
+        }
+
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
     }
 
 }
