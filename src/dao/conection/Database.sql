@@ -399,7 +399,7 @@ BEGIN
         SDT VARCHAR(20),
         DiaChi NVARCHAR(255),
         ChucVu NVARCHAR(100),
-        TaiKhoan VARCHAR(50),
+        TaiKhoan NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO NhanVien
@@ -739,9 +739,43 @@ BEGIN
         ('PHNL01', 'LONL04', '2024-03-16', 'NV01', N'Trân châu bị hỏng do ẩm mốc', 200000, N'Đã duyệt', 1)
 END;
 
+
+IF NOT EXISTS (SELECT *
+FROM sys.tables
+WHERE name = 'PhieuKiemKe')
+BEGIN
+    CREATE TABLE PhieuKiemKe
+    (
+        MaKK VARCHAR(50) NOT NULL PRIMARY KEY,
+        NgayKiem DATE NOT NULL,
+        MaLo VARCHAR(50) NOT NULL,
+        LoaiLo NVARCHAR(50),
+        SoLuongSoSach INT,
+        SoLuongThuc INT,
+        GhiChu NVARCHAR(MAX),
+        MaNV VARCHAR(50),
+        TrangThaiXuLy NVARCHAR(50),
+        TrangThai BIT DEFAULT 1
+    )
+
+    INSERT INTO PhieuKiemKe
+        (MaKK, NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai)
+    VALUES
+        ('KK001', '2024-02-01', 'LOSP01', N'Sản phẩm', 1000, 998, N'Hao hụt 2 lon do móp méo', 'NV01', N'Đã xác nhận', 1),
+        ('KK002', '2024-02-02', 'LONL01', N'Nguyên liệu', 25, 25, N'Khớp số lượng', 'NV03', N'Đã xác nhận', 1)
+END;
+
+
 /* =============================================
    KHOÁ NGOẠI (Foreign Keys) - Giữ nguyên không đổi
    ============================================= */
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhieuKiemKe_NhanVien')
+    ALTER TABLE PhieuKiemKe ADD CONSTRAINT FK_PhieuKiemKe_NhanVien 
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_TaiKhoan_NhomQuyen')

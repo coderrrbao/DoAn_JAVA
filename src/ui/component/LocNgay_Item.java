@@ -11,7 +11,6 @@ public class LocNgay_Item extends JPanel {
 
     private JDateChooser tuNgayDc;
     private JDateChooser denNgayDc;
-    private JButton locBtn;
 
     public LocNgay_Item(int width, int height) {
         TaoUI.taoPanelBoxLayoutNgang(this, width, height);
@@ -28,8 +27,6 @@ public class LocNgay_Item extends JPanel {
         denNgayDc = new JDateChooser();
         denNgayDc.setDateFormatString("dd-MM-yyyy");
 
-        locBtn = new JButton("Lọc");
-
         add(lblTuNgay);
         add(Box.createRigidArea(new Dimension(5, 0)));
         add(tuNgayDc);
@@ -37,8 +34,6 @@ public class LocNgay_Item extends JPanel {
         add(lblDenNgay);
         add(Box.createRigidArea(new Dimension(5, 0)));
         add(denNgayDc);
-        add(Box.createRigidArea(new Dimension(5, 0)));
-        add(locBtn);
     }
 
     private void layNgay() {

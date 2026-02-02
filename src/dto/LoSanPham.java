@@ -10,13 +10,14 @@ public class LoSanPham {
     private String ngaySanXuat;
     private String hanSuDung;
     private double tongTien;
-    private boolean trangThai;
 
     public LoSanPham() {
     }
 
+    // Constructor đầy đủ tham số để đồng bộ với SQL
     public LoSanPham(String maLoSP, String maPN, String maSP, int soLuong,
-            String ngayNhap, String ngaySanXuat, String hanSuDung, double tongTien) {
+            String ngayNhap, String ngaySanXuat, String hanSuDung,
+            double tongTien) {
         this.maLoSP = maLoSP;
         this.maPN = maPN;
         this.maSP = maSP;
@@ -27,14 +28,7 @@ public class LoSanPham {
         this.tongTien = tongTien;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
-    }
-
+    // Getters and Setters
     public String getMaLoSP() {
         return maLoSP;
     }
@@ -98,4 +92,5 @@ public class LoSanPham {
     public void setTongTien(double tongTien) {
         this.tongTien = tongTien;
     }
+
 }

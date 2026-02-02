@@ -293,7 +293,7 @@ public class TaoUI {
         container.repaint();
     }
 
-    public static JPanel taoFieldArea(String labelText, int width, int heightLabel, int heightArea, int gap) {
+    public static JPanel taoFieldArea(String labelText, int width, int heightLabel, int heightArea, int gap,JTextArea area) {
 
         JPanel ctn = new JPanel();
 
@@ -314,7 +314,6 @@ public class TaoUI {
         lbl.setAlignmentX(Component.LEFT_ALIGNMENT);
         lbl.setPreferredSize(new Dimension(width, heightLabel));
         lbl.setMaximumSize(new Dimension(Integer.MAX_VALUE, heightLabel));
-        JTextArea area = new JTextArea();
         area.setLineWrap(true);
         area.setWrapStyleWord(true);
         JScrollPane scrollPane = new JScrollPane(area);
