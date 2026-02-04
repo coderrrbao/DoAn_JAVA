@@ -12,6 +12,10 @@ public class Size {
     public Size() {
     }
 
+    public Size(String maSize) {
+        this.maSize = maSize;
+    }
+
     public Size(String maSize, String maSP, String tenSize, int phanTramGia, int phanTramNL) {
         this.maSize = maSize;
         this.maSP = maSP;

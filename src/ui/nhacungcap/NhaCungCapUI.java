@@ -26,13 +26,11 @@ public class NhaCungCapUI extends JPanel {
         search_Item = new Search_Item(300, 30);
 
         btnTao = new JButton("Thêm");
-        TaoUI.setHeightButton(btnTao, 27);
 
         btnSua = new JButton("Sửa");
-        TaoUI.setHeightButton(btnSua, 27);
 
         btnXoa = new JButton("Xóa");
-        TaoUI.setHeightButton(btnXoa, 27);
+   
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

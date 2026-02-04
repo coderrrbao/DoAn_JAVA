@@ -39,15 +39,12 @@ public class TaiKhoanUI extends JPanel {
         
         btnTao = new JButton("Thêm");
         btnTao.addActionListener(e -> openThemTaiKhoanDialog());
-        TaoUI.setHeightButton(btnTao, 27);
         
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
-        TaoUI.setHeightButton(btnResetMatKhau, 27);
         
         btnXoa = new JButton("Xóa");
         btnXoa.addActionListener(e-> XoaTaiKhoan_Ui());
-        TaoUI.setHeightButton(btnXoa, 27);
 
         top.add(cbNhomQuyen);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

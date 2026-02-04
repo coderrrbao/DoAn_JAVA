@@ -28,7 +28,25 @@ public class SizeDAO {
         }
         return listSize;
     }
+     public Size timSize(String maSize) {
+        Size size = null;
+        String sql = "SELECT * FROM Size WHERE TrangThai = 1 AND MaSize=?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maSize);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                size = new Size(rs.getString("MaSize"), rs.getString("MaSP"), rs.getString("TenSize"),
+                        rs.getInt("PhanTramGia"), rs.getInt("PhanTramNL"));
+            
+            }
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn : " + e.getMessage());
+        }
+        return size;
+    }
     public String layMaSizeKhaDung() {
         String sql = "SELECT COUNT(*) FROM Size";
 

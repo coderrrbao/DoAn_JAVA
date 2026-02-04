@@ -20,9 +20,7 @@ public class NhapKhoSanPhamPanel extends JPanel {
         setLayout(new BorderLayout());
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         nhapHangBtn = new JButton("Thêm");
-        TaoUI.setHeightButton(nhapHangBtn, 27);
         xemChiTietBtn = new JButton("Xem Chi tiết");
-        TaoUI.setHeightButton(xemChiTietBtn, 27);
         nhapHangBtn.addActionListener(e -> {
             JDialog dialogNhapHang = new NhapKhoSanPhamDialog(ouner);
             dialogNhapHang.setVisible(true);

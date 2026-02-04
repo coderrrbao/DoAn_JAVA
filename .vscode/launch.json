@@ -1,0 +1,19 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "QLnuoc_843ad3c1"
+        },
+        {
+            "type": "java",
+            "name": "Chạy Dự Án (Nét)",
+            "request": "launch",
+            "mainClass": "${file}",
+            "vmArgs": "--enable-native-access=ALL-UNNAMED"
+        }
+    ]
+}

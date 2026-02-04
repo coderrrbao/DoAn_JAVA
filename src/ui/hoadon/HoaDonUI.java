@@ -29,10 +29,8 @@ public class HoaDonUI extends JPanel {
         search_Item = new Search_Item(300, 30);
         
         btnXemChiTiet = new JButton("Chi tiết");
-        TaoUI.setHeightButton(btnXemChiTiet, 27);
         
         btnXoa = new JButton("Xóa");
-        TaoUI.setHeightButton(btnXoa, 27);
 
         top.add(locNgay);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

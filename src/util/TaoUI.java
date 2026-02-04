@@ -69,9 +69,9 @@ public class TaoUI {
         if (src == null) {
             src = "";
         }
-        URL  url  =  TaoUI.class.getResource(src);
-        if (url==null){
-            url=TaoUI.class.getResource("/assets/img/douongmd.png");
+        URL url = TaoUI.class.getResource(src);
+        if (url == null) {
+            url = TaoUI.class.getResource("/assets/img/douongmd.png");
         }
         ImageIcon icon1 = new ImageIcon(url);
         Image img1 = icon1.getImage().getScaledInstance(rong, dai, Image.SCALE_SMOOTH);
@@ -293,7 +293,8 @@ public class TaoUI {
         container.repaint();
     }
 
-    public static JPanel taoFieldArea(String labelText, int width, int heightLabel, int heightArea, int gap,JTextArea area) {
+    public static JPanel taoFieldArea(String labelText, int width, int heightLabel, int heightArea, int gap,
+            JTextArea area) {
 
         JPanel ctn = new JPanel();
 
@@ -417,7 +418,7 @@ public class TaoUI {
 
         Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
         Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
-        Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
+        Font fontTick = new Font("Segoe UI", Font.PLAIN, 10);
 
         chart.getTitle().setFont(fontTieuDe);
         if (chart.getLegend() != null) {
@@ -446,13 +447,18 @@ public class TaoUI {
 
         // ===== CHỐNG RĂNG CƯA =====
         chart.setAntiAlias(true);
+        chart.setTextAntiAlias(true);
 
-        // ===== ADD VÀO PANEL =====
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setRangeZoomable(false); // Không cho zoom trục Y
-        chartPanel.setDomainZoomable(false); // Không cho zoom trục X
-        chartPanel.setMouseWheelEnabled(false); // Tắt tính năng lăn chuột để zoom
+        // QUAN TRỌNG: Cấu hình ChartPanel để không bị bể
+        ChartPanel chartPanel = new ChartPanel(
+                chart,
+                800, 400, // Kích thước chuẩn (Preferred size)
+                10, 10, // Kích thước tối thiểu (Minimum size)
+                3000, 3000, // Kích thước tối đa (Maximum size) - Đặt lớn để không bị giới hạn khi scale
+                false, // useBuffer = false (Tắt bộ nhớ đệm để vẽ trực tiếp bằng vector -> KHÔNG BỊ BỂ)
+                true, true, true, true, true);
+
+        chartPanel.setMouseWheelEnabled(false);
         return chartPanel;
     }
 
@@ -576,18 +582,6 @@ public class TaoUI {
         // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
         return scrollPane;
-    }
-
-    public static void setHeightButton(JButton button, int height) {
-        // Lấy chiều rộng lý tưởng dựa trên nội dung (text, icon, margin)
-        int preferredWidth = button.getPreferredSize().width;
-
-        // Thiết lập kích thước mới với chiều cao tùy chỉnh
-        button.setPreferredSize(new Dimension(preferredWidth, height));
-        button.setMaximumSize(new Dimension(preferredWidth, height));
-        button.setBorder(BorderFactory.createEmptyBorder(3, 3, 3, 3));
-        // Đảm bảo layout manager cập nhật lại giao diện
-        button.revalidate();
     }
 
     public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,

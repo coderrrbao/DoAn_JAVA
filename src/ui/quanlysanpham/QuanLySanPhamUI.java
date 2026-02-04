@@ -70,10 +70,10 @@ public class QuanLySanPhamUI extends JPanel {
         themSpBtn = new JButton("Thêm");
         themSpBtn.setBackground(new Color(40, 167, 69));
         themSpBtn.setForeground(Color.WHITE);
-        TaoUI.setHeightButton(themSpBtn, 32);
+    
 
         xoaBtn = new JButton("Xóa");
-        TaoUI.setHeightButton(xoaBtn, 32);
+     
 
         xuaFileBtn = new JButton("Xuất Exc");
         TaoUI.setFixSize(xuaFileBtn, 65, 32);

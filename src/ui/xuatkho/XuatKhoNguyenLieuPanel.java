@@ -26,13 +26,10 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
         search_Item = new Search_Item(300, 30);
 
         btnXuatKho = new JButton("Xuất kho");
-        TaoUI.setHeightButton(btnXuatKho, 27);
 
         btnXemChiTiet = new JButton("Xem chi tiết");
-        TaoUI.setHeightButton(btnXemChiTiet, 27);
 
         btnLoc = new JButton("Lọc");
-        TaoUI.setHeightButton(btnLoc, 27);
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

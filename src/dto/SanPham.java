@@ -20,6 +20,10 @@ public class SanPham {
     public SanPham() {
     }
 
+    public SanPham(String maSp) {
+        this.maSP = maSp;
+    }
+
     public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan,
             NhaCungCap nhaCungCap, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, String trangThaiXuLi, boolean trangThai) {

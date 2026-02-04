@@ -22,10 +22,8 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         search_Item = new Search_Item(300, 30);
         
         nhapHangBtn = new JButton("Nhập nguyên liệu");
-        TaoUI.setHeightButton(nhapHangBtn, 27);
         
         xemChiTietBtn = new JButton("Xem chi tiết");
-        TaoUI.setHeightButton(xemChiTietBtn, 27);
 
         nhapHangBtn.addActionListener(e -> {
             System.out.println("Mở Dialog Nhập Nguyên Liệu");

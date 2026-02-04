@@ -2,7 +2,7 @@ package dto;
 
 public class ChiTietHoaDon {
 
-    private String maCT;
+    private String maCTHD;
     private String maHD;
     private SanPham sanPham;
     private Size size;
@@ -15,7 +15,7 @@ public class ChiTietHoaDon {
 
     public ChiTietHoaDon(String maCT, String maHD, SanPham sanPham, Size size, int soLuong, double gia,
             boolean trangThai) {
-        this.maCT = maCT;
+        this.maCTHD = maCT;
         this.maHD = maHD;
         this.sanPham = sanPham;
         this.size = size;
@@ -40,12 +40,12 @@ public class ChiTietHoaDon {
         this.maHD = maHD;
     }
 
-    public String getMaCT() {
-        return maCT;
+    public String getMaCTHD() {
+        return maCTHD;
     }
 
-    public void setMaCT(String maCT) {
-        this.maCT = maCT;
+    public void setMaCTHD(String maCT) {
+        this.maCTHD = maCT;
     }
 
     public SanPham getSanPham() {
