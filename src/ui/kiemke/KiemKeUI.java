@@ -16,6 +16,7 @@ import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import util.TaoUI;
 
 public class KiemKeUI extends JPanel {
     private JTable table;
@@ -86,15 +87,9 @@ public class KiemKeUI extends JPanel {
                 "SL thực tế", "Chênh lệch",
                 "Ghi chú", "Trạng thái" };
         model = new DefaultTableModel(columns, 0);
-        table = new JTable(model);
-        table.setRowHeight(35);
-
-        table.getColumnModel().getColumn(0).setPreferredWidth(40); // STT
-        table.getColumnModel().getColumn(1).setPreferredWidth(100); // Mã Phiếu
-        table.getColumnModel().getColumn(2).setPreferredWidth(100); // Ngày kiểm
-
-        JScrollPane scrollPaneTable = new JScrollPane(table);
-        panel.add(scrollPaneTable, BorderLayout.CENTER);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPane.getViewport().getView();
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }

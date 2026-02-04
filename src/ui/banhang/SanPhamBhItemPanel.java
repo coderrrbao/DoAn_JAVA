@@ -20,8 +20,8 @@ public class SanPhamBhItemPanel extends JPanel {
 
 
     public SanPhamBhItemPanel(SanPham sanPham, String size, SanPhamClickListener listener) {
-        TaoUI.taoPanelBoxLayoutDoc(120, 170);
-        TaoUI.setFixSize(this, 120, 170);
+        TaoUI.taoPanelBoxLayoutDoc(132, 170);
+        TaoUI.setFixSize(this, 132, 170);
         JPanel anhPanel = TaoUI.taoPanelCanGiua(100, 70);
         TaoUI.addItem(anhPanel, TaoUI.taoJlabelAnh("../assets/img/pepsi.png", 70, 70), 0, true);
 

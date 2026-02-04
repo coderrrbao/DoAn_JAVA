@@ -77,19 +77,8 @@ public class NhanVienUI extends JPanel {
         model.addRow(
                 new Object[] { "NV003", "Lê Văn Cường", "Nhân viên kho", "0333444555", "2024-02-10", "Đang làm việc" });
 
-        tableUI = new JTable(model);
-        tableUI.setRowHeight(35);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        tableUI.getColumnModel().getColumn(0).setPreferredWidth(80);
-        tableUI.getColumnModel().getColumn(1).setPreferredWidth(180);
-        tableUI.getColumnModel().getColumn(2).setPreferredWidth(130);
-        tableUI.getColumnModel().getColumn(3).setPreferredWidth(120);
-        tableUI.getColumnModel().getColumn(4).setPreferredWidth(120);
-        tableUI.getColumnModel().getColumn(5).setPreferredWidth(130);
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI  = (JTable) scrollPane.getViewport().getView();
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));

@@ -353,7 +353,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnLuuThayDoi.addActionListener(e -> {
             if (kiemTraDuLieu()) {
                 SanPham sanPhamMoi = dongGoiSanPham();
-                sanPhamMoi.setTrangThaiXuLy("Đã xác nhận");
+                sanPhamMoi.setTrangThaiXuLy(cbTrangThaiXuLy.getSelectedItem().toString());
                 if (fileChooser.getSelectedFile() == null) {
                     sanPhamMoi.setAnh(sanPham.getAnh());
                 }

@@ -5,6 +5,7 @@ import java.awt.Frame;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.Search_Item;
@@ -13,6 +14,7 @@ import util.TaoUI;
 public class NhapKhoNguyenLieuPanel extends JPanel {
     private JButton nhapHangBtn, xemChiTietBtn;
     private Search_Item search_Item;
+    private JTable table;
 
     public NhapKhoNguyenLieuPanel(Frame owner) {
         setLayout(new BorderLayout());
@@ -56,6 +58,7 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         }
 
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPane.getViewport().getView();
 
         add(scrollPane, BorderLayout.CENTER);
     }

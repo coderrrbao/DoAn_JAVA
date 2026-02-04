@@ -82,7 +82,8 @@ public class TaiKhoanUI extends JPanel {
         tableUI.getColumnModel().getColumn(2).setPreferredWidth(150);
         tableUI.getColumnModel().getColumn(3).setPreferredWidth(120);
 
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI  = (JTable) scrollPane.getViewport().getView();
         
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));

@@ -15,7 +15,7 @@ import util.TaoUI;
 public class HoaDonUI extends JPanel {
     private JButton btnXemChiTiet, btnXoa;
     private Search_Item search_Item;
-    private JTable tableUI;
+    private JTable table;
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
 
@@ -59,18 +59,8 @@ public class HoaDonUI extends JPanel {
         model.addRow(new Object[] { "HD002", "2026-01-06", "NV02", "KH02", "200.000" });
         model.addRow(new Object[] { "HD003", "2026-01-13", "NV01", "KH03", "150.000" });
 
-        tableUI = new JTable(model);
-        tableUI.setRowHeight(35);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        tableUI.getColumnModel().getColumn(0).setPreferredWidth(80);
-        tableUI.getColumnModel().getColumn(1).setPreferredWidth(150);
-        tableUI.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tableUI.getColumnModel().getColumn(3).setPreferredWidth(100);
-        tableUI.getColumnModel().getColumn(4).setPreferredWidth(120);
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPane.getViewport().getView();
         
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
@@ -82,6 +72,5 @@ public class HoaDonUI extends JPanel {
     public JButton getBtnXemChiTiet() { return btnXemChiTiet; }
     public JButton getBtnXoa() { return btnXoa; }
     public Search_Item getSearch_Item() { return search_Item; }
-    public JTable getTableUI() { return tableUI; }
     public DefaultTableModel getModel() { return model; }
 }

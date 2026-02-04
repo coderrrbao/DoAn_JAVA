@@ -12,6 +12,7 @@ import javax.swing.table.DefaultTableModel;
 
 import dto.NhomQuyen;
 import ui.component.Search_Item;
+import util.TaoUI;
 
 public class PhanQuyenUI extends JPanel {
     private JTable table;
@@ -74,15 +75,9 @@ public class PhanQuyenUI extends JPanel {
             model.addRow(row);
         }
 
-        table = new JTable(model);
-        table.setRowHeight(35);
-
-        table.getColumnModel().getColumn(0).setPreferredWidth(50);
-        table.getColumnModel().getColumn(1).setPreferredWidth(150);
-        table.getColumnModel().getColumn(2).setPreferredWidth(400);
-
-        JScrollPane scrollPaneTable = new JScrollPane(table);
-        panel.add(scrollPaneTable, BorderLayout.CENTER);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPane.getViewport().getView();
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }

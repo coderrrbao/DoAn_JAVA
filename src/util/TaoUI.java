@@ -522,7 +522,7 @@ public class TaoUI {
         JTable table = new JTable(model);
 
         // 2. Cấu hình giao diện bảng (Sử dụng Segoe UI cho hiện đại)
-        table.setRowHeight(30);
+        table.setRowHeight(35);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setShowGrid(true);
@@ -531,7 +531,7 @@ public class TaoUI {
 
         // 3. Tùy chỉnh Tiêu đề cột (Header)
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        table.getTableHeader().setPreferredSize(new Dimension(0, 35));
+        table.getTableHeader().setPreferredSize(new Dimension(0, 38));
         table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
 
         // 4. Căn giữa dữ liệu cho tất cả các cột

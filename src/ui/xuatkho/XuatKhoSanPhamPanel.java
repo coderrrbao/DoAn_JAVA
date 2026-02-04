@@ -58,12 +58,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
         model.addRow(new Object[] { "XK001", "LOT123", "Pepsi 330ml", "50", "500.000" });
         model.addRow(new Object[] { "XK002", "LOT456", "Coca Cola", "100", "1.000.000" });
 
-        tableUI = new JTable(model);
-        tableUI.setRowHeight(35);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI  = (JTable) scrollPane.getViewport().getView();
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));

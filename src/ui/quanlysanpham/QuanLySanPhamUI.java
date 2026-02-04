@@ -35,8 +35,6 @@ public class QuanLySanPhamUI extends JPanel {
     private ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(new SanPham(), this);
     private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
 
-    
-
     public QuanLySanPhamUI(JFrame owner) {
         this.owner = owner;
         this.listSanPham = new ArrayList<>();
@@ -68,19 +66,15 @@ public class QuanLySanPhamUI extends JPanel {
         search_Item = new Search_Item(280, 32);
 
         themSpBtn = new JButton("Thêm");
-        themSpBtn.setBackground(new Color(40, 167, 69));
-        themSpBtn.setForeground(Color.WHITE);
-    
+        TaoUI.setFixSize(themSpBtn, 80, 32);
 
         xoaBtn = new JButton("Xóa");
-     
+        TaoUI.setFixSize(xoaBtn, 80, 32);
 
         xuaFileBtn = new JButton("Xuất Exc");
-        TaoUI.setFixSize(xuaFileBtn, 65, 32);
-        xuaFileBtn.setBorder(BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        TaoUI.setFixSize(xuaFileBtn, 80, 32);
         nhapFileBtn = new JButton("Nhập Exc");
-        TaoUI.setFixSize(nhapFileBtn, 65, 32);
-
+        TaoUI.setFixSize(nhapFileBtn, 80, 32);
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
@@ -101,7 +95,6 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(nhapFileBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(cbTrangThai);
-        nhapFileBtn.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -270,7 +263,8 @@ public class QuanLySanPhamUI extends JPanel {
         }
     }
 
-    public ChiTietSanPhamDialog layXemChiTietSanPhamDialog(){
+    public ChiTietSanPhamDialog layXemChiTietSanPhamDialog() {
         return chiTietSanPhamDialog;
-     }
+    }
+
 }

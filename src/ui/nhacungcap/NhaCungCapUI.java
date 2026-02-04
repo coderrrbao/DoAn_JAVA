@@ -62,6 +62,7 @@ public class NhaCungCapUI extends JPanel {
         model.addRow(new Object[] { "NCC004", "Nông trại Việt", "Nguyên liệu", "0944555666", "Đà Lạt" });
 
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI  = (JTable) scrollPane.getViewport().getView();
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
         tableContainer.add(scrollPane, BorderLayout.CENTER);

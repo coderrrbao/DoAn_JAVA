@@ -83,10 +83,9 @@ public class TonKhoNguyenLieuPanel extends JPanel {
             model.addRow(row);
         }
 
-        table = new JTable(model);
-        table.setRowHeight(35);
 
-        JScrollPane scrollPaneTable = new JScrollPane(table);
+        JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPaneTable.getViewport().getView();
         panel.add(scrollPaneTable, BorderLayout.CENTER);
 
         return panel;

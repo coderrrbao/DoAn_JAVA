@@ -11,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.Search_Item;
+import util.TaoUI;
 
 public class KhuyenMaiUI extends JPanel {
     private JTable table;
@@ -74,16 +75,9 @@ public class KhuyenMaiUI extends JPanel {
             model.addRow(row);
         }
 
-        table = new JTable(model);
-        table.setRowHeight(35);
-
-        // Căn chỉnh độ rộng cột (Tùy chọn)
-        table.getColumnModel().getColumn(0).setPreferredWidth(100); // Mã KM
-        table.getColumnModel().getColumn(1).setPreferredWidth(100); // % Giảm
-        table.getColumnModel().getColumn(4).setPreferredWidth(150); // Trạng thái
-
-        JScrollPane scrollPaneTable = new JScrollPane(table);
-        panel.add(scrollPaneTable, BorderLayout.CENTER);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPane.getViewport().getView();
+        panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
     }

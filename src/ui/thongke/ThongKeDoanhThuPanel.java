@@ -20,8 +20,10 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     JButton btnThongKe;
     LocNgay_Item locNgay;
+
     public ThongKeDoanhThuPanel() {
         setLayout(new BorderLayout());
+        TaoUI.suaBorderChoPanel(this, 0, 10, 0, 10);
         initGUI();
     }
 
@@ -33,7 +35,7 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     private JPanel topButtonPanel() {
         JPanel top = TaoUI.taoPanelCanGiua(880, 50);
-        
+
         btnThongKe = new JButton("Thống kê");
         locNgay = new LocNgay_Item(350, 30);
         top.add(locNgay);

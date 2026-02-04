@@ -69,19 +69,8 @@ public class KhachHangUI extends JPanel {
         model.addRow(new Object[] { "KH003", "Lê Văn C", "Nam", "0912345678", "500.000", "Đồng" });
         model.addRow(new Object[] { "KH004", "Phạm Thị D", "Nữ", "0898765432", "10.000.000", "Vàng" });
 
-        tableUI = new JTable(model);
-        tableUI.setRowHeight(35);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        tableUI.getColumnModel().getColumn(0).setPreferredWidth(100);
-        tableUI.getColumnModel().getColumn(1).setPreferredWidth(180);
-        tableUI.getColumnModel().getColumn(2).setPreferredWidth(80);
-        tableUI.getColumnModel().getColumn(3).setPreferredWidth(120);
-        tableUI.getColumnModel().getColumn(4).setPreferredWidth(120);
-        tableUI.getColumnModel().getColumn(5).setPreferredWidth(120);
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI  = (JTable) scrollPane.getViewport().getView();
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));

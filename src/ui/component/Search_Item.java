@@ -42,7 +42,7 @@ public class Search_Item extends JPanel {
             }
         });
 
-        setBorder(BorderFactory.createLineBorder(null, 1));
+        setBorder(BorderFactory.createLineBorder(new Color(211, 211, 211), 1));
         searchText.setBorder(BorderFactory.createLineBorder(new Color(0, 0, 0, 0)));
     }
 

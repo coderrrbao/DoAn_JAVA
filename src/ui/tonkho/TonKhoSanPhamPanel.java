@@ -82,11 +82,11 @@ public class TonKhoSanPhamPanel extends JPanel {
             model.addRow(row);
         }
 
-        table = new JTable(model);
-        table.setRowHeight(35);
+
         JPanel center = new JPanel(new BorderLayout());
         center.add(topContent, BorderLayout.NORTH);
-        JScrollPane scrollPaneTable = TaoUI.taoScrollPane(table);
+        JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
+        table  = (JTable) scrollPaneTable.getViewport().getView();
         center.add(scrollPaneTable, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
 

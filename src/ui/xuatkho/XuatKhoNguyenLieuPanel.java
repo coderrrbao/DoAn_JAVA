@@ -58,15 +58,11 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
         model.addRow(new Object[] { "XKN01", "LNL01", "Hạt cà phê", "10", "2.000.000" });
         model.addRow(new Object[] { "XKN02", "LNL02", "Đường tinh luyện", "20", "400.000" });
 
-        tableUI = new JTable(model);
-        tableUI.setRowHeight(35);
-        tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
-        tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(tableUI);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        tableUI = (JTable) scrollPane.getViewport().getView();
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        add(scrollPane,BorderLayout.CENTER);
+        add(scrollPane, BorderLayout.CENTER);
     }
 }
