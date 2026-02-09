@@ -18,6 +18,11 @@ public class CongThuc {
         this.listChiTietCongThuc = listChiTietCongThuc;
     }
 
+    public CongThuc(String maCT, String maSp) {
+        this.maCT = maCT;
+        this.maSp = maSp;
+    }
+
     public CongThuc(String maCT, String maSp, ArrayList<ChiTietCongThuc> listChiTietCongThuc) {
         this.maCT = maCT;
         this.maSp = maSp;
@@ -52,9 +57,12 @@ public class CongThuc {
     public void setListChiTietCongThuc(ArrayList<ChiTietCongThuc> listChiTietCongThuc) {
         this.listChiTietCongThuc = listChiTietCongThuc;
     }
+
     public String getMaSp() {
         return maSp;
-    }public void setMaSp(String maSp) {
+    }
+
+    public void setMaSp(String maSp) {
         this.maSp = maSp;
     }
 }

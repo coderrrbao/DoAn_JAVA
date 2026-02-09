@@ -7,9 +7,10 @@ import dto.ChiTietCongThuc;
 import dto.NguyenLieu;
 
 public class ChiTietCongThucBUS {
+
     private ChiTietCongThucDAO chiTietCongThucDAO = new ChiTietCongThucDAO();
     private NguyenLieuBUS nguyenLieuBUS = new NguyenLieuBUS();
-
+    
     public ArrayList<ChiTietCongThuc> laylistCTCTbangMaCT(String maCT) {
         ArrayList<ChiTietCongThuc> listChiTietCongThuc = chiTietCongThucDAO.laylistChiTietCongThuc(maCT);
         

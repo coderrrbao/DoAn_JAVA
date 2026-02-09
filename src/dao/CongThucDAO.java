@@ -50,6 +50,23 @@ public class CongThucDAO {
         }
     }
 
+    public ArrayList<CongThuc> layListCongThuc() {
+        ArrayList<CongThuc> listCongThuc = new ArrayList<>();
+        String sql = "SELECT * FROM CongThuc WHERE TrangThai=1";
+        try (Connection con = DBConnection.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                CongThuc congThuc = new CongThuc(rs.getString("MaCT"), rs.getString("MaSP"));
+                listCongThuc.add(congThuc);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return listCongThuc;
+    }
+
     public String layMaCongThucKhaDung() {
         String sql = "SELECT COUNT(MaCT) FROM CongThuc";
 

@@ -120,8 +120,8 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         JPanel thongTin5 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
 
-        SanPhamBUS quanLySanPhamBUS = new SanPhamBUS();
-        ArrayList<String> luaChonDanhMuc = quanLySanPhamBUS.layLuaChonDanhMuc();
+        DanhMucBUS danhMucBUS = new DanhMucBUS();
+        ArrayList<String> luaChonDanhMuc = danhMucBUS.layLuaChonDanhMuc();
         luaChonDanhMuc.add(0, "-- Danh mục --");
         ArrayList<String> luaChonLoaiNuoc = new ArrayList<>();
         luaChonLoaiNuoc.add("-- Loại nước --");
@@ -357,7 +357,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                 if (fileChooser.getSelectedFile() == null) {
                     sanPhamMoi.setAnh(sanPham.getAnh());
                 }
-                SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
                 if (sanPhamBUS.capNhapSanPham(sanPham, sanPhamMoi)) {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
@@ -373,7 +373,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSp.addActionListener(e -> {
             if (kiemTraDuLieu()) {
                 SanPham sanPham = dongGoiSanPham();
-                SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
                 if (sanPhamBUS.themSanPham(sanPham)) {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
@@ -494,7 +494,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         sp.setTrangThai(true);
 
         if (lblAnh.getIcon() != null) {
-            SanPhamBUS sanPhamBUS = new SanPhamBUS();
+            SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
             sp.setAnh(sanPhamBUS.luuAnh(sanPhamBUS.layMaSanPhamKhaDung(), fileChooser));
         }
 

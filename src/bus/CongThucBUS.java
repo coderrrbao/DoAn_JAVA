@@ -1,42 +1,65 @@
 package bus;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import dao.CongThucDAO;
 import dto.ChiTietCongThuc;
 import dto.CongThuc;
-import dto.NguyenLieu;
 
 public class CongThucBUS {
-    private NguyenLieuBUS nguyenLieuBUS = new NguyenLieuBUS();
-    private CongThucDAO congThucDAO = new CongThucDAO();
-    private ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
+    private static CongThucBUS instance;
 
-    public NguyenLieu timNguyenLieu(String maNL) {
-        return nguyenLieuBUS.timNguyenLieu(maNL);
+    private final CongThucDAO congThucDAO = new CongThucDAO();
+    private final ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
+    private Map<String, CongThuc> cacheCongThuc = new HashMap<>();
+
+    private CongThucBUS() {
+        khoitao();
     }
 
-    public CongThuc timCongThucChoSP(String ma) {
-        CongThuc congThuc = congThucDAO.timCongThuc(ma);
-        if (congThuc == null) {
-            return null;
+    public static CongThucBUS getCongThucBUS() {
+        if (instance == null) {
+            instance = new CongThucBUS();
         }
-        ArrayList<ChiTietCongThuc> listChiTietCongThuc = chiTietCongThucBUS.laylistCTCTbangMaCT(congThuc.getMaCT());
-        congThuc.setListChiTietCongThuc(listChiTietCongThuc);
-        return congThuc;
+        return instance;
+    }
+
+    private void khoitao() {
+        ArrayList<CongThuc> listCongThuc = congThucDAO.layListCongThuc();
+        for (CongThuc congThuc : listCongThuc) {
+            congThuc.setListChiTietCongThuc(chiTietCongThucBUS.laylistCTCTbangMaCT(congThuc.getMaCT()));
+            cacheCongThuc.put(congThuc.getMaSp(), congThuc);
+        }
+    }
+
+    public CongThuc timCongThucChoSP(String maSP) {
+        return cacheCongThuc.get(maSP);
     }
 
     public Boolean themCongThuc(CongThuc congThuc) {
-        String  maCT = congThucDAO.layMaCongThucKhaDung();
-        ChiTietCongThucBUS  chiTietCongThucBUS = new ChiTietCongThucBUS();
-        if (!congThucDAO.themCongThuc(congThuc)){
-            return  false;
+        String maCTMoi = congThucDAO.layMaCongThucKhaDung();
+        congThuc.setMaCT(maCTMoi);
+
+        if (!congThucDAO.themCongThuc(congThuc)) {
+            return false;
         }
-        for (ChiTietCongThuc chiTietCongThuc : congThuc.getListChiTietCongThuc()){
-            chiTietCongThuc.setMaCT(maCT);
-             if (!chiTietCongThucBUS.themCTCT(chiTietCongThuc)){
-                return false;
-             }
+
+        if (congThuc.getListChiTietCongThuc() != null) {
+            for (ChiTietCongThuc ct : congThuc.getListChiTietCongThuc()) {
+                ct.setMaCT(maCTMoi);
+                if (!chiTietCongThucBUS.themCTCT(ct)) {
+                    return false;
+                }
+            }
         }
-        return true; 
+
+        cacheCongThuc.put(congThuc.getMaSp(), congThuc);
+        return true;
+    }
+
+    public void lamMoiMap() {
+        cacheCongThuc.clear();
+        khoitao();
     }
 }

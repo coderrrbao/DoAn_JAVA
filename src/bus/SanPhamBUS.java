@@ -10,7 +10,6 @@ import java.util.HashSet;
 
 import javax.swing.JFileChooser;
 
-import dao.DanhMucDao;
 import dao.SanPhamDAO;
 import dto.ChiTietCongThuc;
 import dto.SanPham;
@@ -18,9 +17,19 @@ import dto.Size;
 import util.XuLyExcel;
 
 public class SanPhamBUS {
+
+    private static SanPhamBUS sanPhamBUS = null;
+
+    public static SanPhamBUS getSanPhamBUS() {
+        if (sanPhamBUS == null) {
+            sanPhamBUS = new SanPhamBUS();
+        }
+        return sanPhamBUS;
+    }
+
     SanPhamDAO sanPhamDAO = new SanPhamDAO();
-    SizeBUS sizeBUS = new SizeBUS();
-    CongThucBUS congThucBUS = new CongThucBUS();
+    SizeBUS sizeBUS = SizeBUS.getSizeBUS();
+    CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
     ArrayList<SanPham> listSanPham;
 
     boolean canUpdate = false;
@@ -41,7 +50,7 @@ public class SanPhamBUS {
 
     public ArrayList<SanPham> layListSanPham() {
         if (canUpdate || listSanPham == null) {
-            canUpdate=false;
+            canUpdate = false;
             khoitao();
         }
         return listSanPham;
@@ -56,7 +65,7 @@ public class SanPhamBUS {
 
     public ArrayList<SanPham> layTrang(int page, int pageSize) {
         if (canUpdate || listSanPham == null) {
-            canUpdate=false;
+            canUpdate = false;
             khoitao();
         }
         ArrayList<SanPham> kq = new ArrayList<>();
@@ -72,11 +81,6 @@ public class SanPhamBUS {
         return kq;
     }
 
-    public ArrayList<String> layLuaChonDanhMuc() {//////////////////////////////////////
-        DanhMucDao danhMucDao = new DanhMucDao();
-        return danhMucDao.layLuaChonDanhMuc();
-    }
-
     public boolean xuatFileExcel() {
         return XuLyExcel.xuatFile(layListSanPham());
     }
@@ -84,7 +88,7 @@ public class SanPhamBUS {
     public SanPham timSanPham(String ma) {
         if (canUpdate || listSanPham == null) {
             khoitao();
-            canUpdate=false;
+            canUpdate = false;
         }
         SanPham sanPham = sanPhamDAO.timSanPham(ma);
         if (sanPham == null)
@@ -101,8 +105,8 @@ public class SanPhamBUS {
             return false;
         }
 
-        CongThucBUS congThucBUS = new CongThucBUS();
-        SizeBUS sizeBUS = new SizeBUS();
+        CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
+        SizeBUS sizeBUS = SizeBUS.getSizeBUS();
 
         sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
         congThucBUS.themCongThuc(sanPham.getCongThuc());
@@ -161,7 +165,7 @@ public class SanPhamBUS {
                 }
             }
         } else {
-            CongThucBUS congThucBUS = new CongThucBUS();
+            CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
             if (sanPhamMoi.getCongThuc() != null) {
                 sanPhamMoi.getCongThuc().setMaSp(sanPham.getMaSP());
                 congThucBUS.themCongThuc(sanPhamMoi.getCongThuc());
@@ -170,7 +174,7 @@ public class SanPhamBUS {
         }
         if (sanPham.getListSize() != null) {
             HashSet<String> set = new HashSet<>();
-            SizeBUS sizeBUS = new SizeBUS();
+            SizeBUS sizeBUS = SizeBUS.getSizeBUS();
             for (Size size : sanPhamMoi.getListSize()) {
                 if (size.getMaSize().equals("")) {
                     sizeBUS.themSize(size);
@@ -189,6 +193,17 @@ public class SanPhamBUS {
     }
 
     public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) {
-        return SanPhamDAO.locSanPham(ten, loai, maDM);
+        if (canUpdate || listSanPham == null) {
+            canUpdate = false;
+            khoitao();
+        }
+        ArrayList<SanPham> list = new ArrayList<>();
+        for (SanPham sanPham : listSanPham) {
+            if (sanPham.getTenSP().equals(ten) && sanPham.getLoaiNuoc().equals(loai)
+                    && sanPham.getDanhMuc().getMaDM().contains(maDM)) {
+                list.add(sanPham);
+            }
+        }
+        return list;
     }
 }

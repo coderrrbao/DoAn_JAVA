@@ -8,6 +8,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
+import bus.DanhMucBUS;
 import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import dto.NhaCungCap;
@@ -177,7 +178,7 @@ public class QuanLySanPhamUI extends JPanel {
         search_Item.setEvent(this::locSanPham);
 
         xuaFileBtn.addActionListener(e -> {
-            new SanPhamBUS().xuatFileExcel();
+            SanPhamBUS.getSanPhamBUS().xuatFileExcel();
         });
 
         xoaBtn.addActionListener(e -> {
@@ -191,7 +192,7 @@ public class QuanLySanPhamUI extends JPanel {
                         JOptionPane.YES_NO_OPTION);
                 if (xacNhan == JOptionPane.YES_OPTION) {
                     String maSpCanXoa = table.getModel().getValueAt(dong, 2).toString();
-                    SanPhamBUS sanPhamBUS = new SanPhamBUS();
+                    SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
                     boolean ok = sanPhamBUS.XoaSanPham(maSpCanXoa);
                     if (ok) {
                         TaoTinNhan.showAutoCloseMessage("Xóa thành công", "Thông báo", 1);
@@ -208,15 +209,15 @@ public class QuanLySanPhamUI extends JPanel {
     }
 
     public void loadDataFromDatabase() {
-        SanPhamBUS sanPhamBUS = new SanPhamBUS();
+        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
         listSanPham = sanPhamBUS.layListSanPham();
         NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
         ArrayList<String> luaChonNCC = nhaCungCapBUS.layLuaChonNCC();
         luaChonNCC.add(0, "Nhà cung cấp");
         ncc = luaChonNCC.toArray(new String[0]);
         DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(ncc);
-
-        ArrayList<String> luaChonDM = sanPhamBUS.layLuaChonDanhMuc();
+        DanhMucBUS danhMucBUS = new DanhMucBUS();
+        ArrayList<String> luaChonDM = danhMucBUS.layLuaChonDanhMuc();
         luaChonDM.add(0, "Danh mục");
         danhmuc = luaChonDM.toArray(new String[0]);
         DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>(danhmuc);

@@ -9,49 +9,61 @@ public class SizeBUS {
     private ArrayList<Size> listSize = null;
 
     private SizeDAO sizeDAO = new SizeDAO();
-    
+
     private boolean canUpdate = false;
 
-    public SizeBUS(){
-        listSize=sizeDAO.layListSize();
+    private static SizeBUS sizeBUS = null;
+
+    public static SizeBUS getSizeBUS() {
+        if (sizeBUS == null) {
+            sizeBUS = new SizeBUS();
+        }
+        return sizeBUS;
     }
 
-    public ArrayList<Size>  laySizeChoSP(String ma){
-        if (canUpdate || listSize==null){
-            listSize=sizeDAO.layListSize();
-            canUpdate=false;
+    public SizeBUS() {
+        listSize = sizeDAO.layListSize();
+    }
+
+    public ArrayList<Size> laySizeChoSP(String ma) {
+        if (canUpdate || listSize == null) {
+            listSize = sizeDAO.layListSize();
+            canUpdate = false;
         }
-        ArrayList<Size> list=new ArrayList<>();
-        for (Size size :listSize){
-            if (size.getMaSP().equals(ma)){
+        ArrayList<Size> list = new ArrayList<>();
+        for (Size size : listSize) {
+            if (size.getMaSP().equals(ma)) {
                 list.add(size);
             }
         }
         return list;
     }
-    public Size timSize(String maSize){
-        if (canUpdate || listSize==null){
-            listSize=sizeDAO.layListSize();
-            canUpdate=false;
+
+    public Size timSize(String maSize) {
+        if (canUpdate || listSize == null) {
+            listSize = sizeDAO.layListSize();
+            canUpdate = false;
         }
-        for (Size size : listSize){
-            if (size.getMaSize().equals(maSize)){
+        for (Size size : listSize) {
+            if (size.getMaSize().equals(maSize)) {
                 return size;
             }
         }
         return null;
     }
 
-    public Boolean themSize(Size size){
-        canUpdate=true;
+    public Boolean themSize(Size size) {
+        canUpdate = true;
         return sizeDAO.themSize(size);
     }
-    public Boolean xoaSize(Size  size){
-        canUpdate=true;
+
+    public Boolean xoaSize(Size size) {
+        canUpdate = true;
         return sizeDAO.xoaSize(size);
     }
-    public Boolean  capNhapSize(Size  size){
-        canUpdate=true;
+
+    public Boolean capNhapSize(Size size) {
+        canUpdate = true;
         return sizeDAO.capNhapSize(size);
     }
 }

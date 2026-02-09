@@ -2,14 +2,13 @@ package ui.main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Frame;
-
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import ui.thongke.ThongKeUI;
 import ui.tonkho.TonKhoUI;
 import ui.xuatkho.XuatKhoUI;
+import util.Luong;
 import ui.banhang.BanHangUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
@@ -45,36 +44,43 @@ public class ContentPaner extends JPanel {
         cardLayout = new CardLayout();
         setLayout(cardLayout);
         setBackground(Color.white);
-
         quanLySanPhamUI = new QuanLySanPhamUI(owner);
-        nhaCungCapUI = new NhaCungCapUI();
-        nhapKhoUI = new NhapKhoUI(owner);
-        thongKeUI = new ThongKeUI();
-        banHangUI = new BanHangUI();
-        khachHangUI = new KhachHangUI();
-        hoaDonUI = new HoaDonUI();
-        nhanVienUI = new NhanVienUI();
-        taiKhoanUI = new TaiKhoanUI();
-        xuatKhoUI = new XuatKhoUI();
-        tonKhoUI = new TonKhoUI();
-        khuyenMaiUI = new KhuyenMaiUI();
-        phanQuyenUI = new PhanQuyenUI();
-        kiemKeUI = new KiemKeUI();
-
         add(quanLySanPhamUI, "Quản lý sản phẩm");
-        add(nhaCungCapUI, "Nhà cung cấp");
-        add(nhapKhoUI, "Nhập kho");
-        add(thongKeUI, "Thống kê");
-        add(banHangUI, "Bán hàng");
-        add(khachHangUI, "Khách hàng");
-        add(hoaDonUI, "Hóa đơn");
-        add(nhanVienUI, "Nhân viên");
-        add(taiKhoanUI, "Tài khoản");
-        add(xuatKhoUI, "Xuất kho");
-        add(tonKhoUI, "Tồn kho");
-        add(khuyenMaiUI, "Khuyến mãi");
-        add(phanQuyenUI, "Phân quyền");
-        add(kiemKeUI, "Kiểm kê");
+        Luong.handleDatabaseTask(
+                () -> {
+
+                    nhaCungCapUI = new NhaCungCapUI();
+                    nhapKhoUI = new NhapKhoUI(owner);
+                    thongKeUI = new ThongKeUI();
+                    banHangUI = new BanHangUI();
+                    khachHangUI = new KhachHangUI();
+                    hoaDonUI = new HoaDonUI();
+                    nhanVienUI = new NhanVienUI();
+                    taiKhoanUI = new TaiKhoanUI();
+                    xuatKhoUI = new XuatKhoUI();
+                    tonKhoUI = new TonKhoUI();
+                    khuyenMaiUI = new KhuyenMaiUI();
+                    phanQuyenUI = new PhanQuyenUI();
+                    kiemKeUI = new KiemKeUI();
+                },
+                () -> {
+
+                    add(nhaCungCapUI, "Nhà cung cấp");
+                    add(nhapKhoUI, "Nhập kho");
+                    add(thongKeUI, "Thống kê");
+                    add(banHangUI, "Bán hàng");
+                    add(khachHangUI, "Khách hàng");
+                    add(hoaDonUI, "Hóa đơn");
+                    add(nhanVienUI, "Nhân viên");
+                    add(taiKhoanUI, "Tài khoản");
+                    add(xuatKhoUI, "Xuất kho");
+                    add(tonKhoUI, "Tồn kho");
+                    add(khuyenMaiUI, "Khuyến mãi");
+                    add(phanQuyenUI, "Phân quyền");
+                    add(kiemKeUI, "Kiểm kê");
+                    revalidate();
+                    repaint();
+                });
     }
 
     public void switchPage(String name) {
@@ -128,5 +134,4 @@ public class ContentPaner extends JPanel {
     public void loadAll() {
 
     }
-
 }
