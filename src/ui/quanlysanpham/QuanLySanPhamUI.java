@@ -171,7 +171,6 @@ public class QuanLySanPhamUI extends JPanel {
         });
 
         cbTrangThai.addActionListener(e -> locSanPham());
-
         cbLoaiNuoc.addActionListener(e -> locSanPham());
         cbNhaCungCap.addActionListener(e -> locSanPham());
         cbDanhMuc.addActionListener(e -> locSanPham());

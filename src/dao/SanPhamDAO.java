@@ -240,8 +240,7 @@ public class SanPhamDAO {
             pst.setDouble(7, sanPham.getTheTich());
             pst.setInt(8, sanPham.getMucCanhBao());
             pst.setString(9, sanPham.getTrangThaiXuLy());
-            pst.setInt(10, sanPham.getTrangThai() ? 1 : 0);
-
+            pst.setInt(10, 1);
             pst.setString(11, sanPham.getMaSP());
 
             int rowsAffected = pst.executeUpdate();
@@ -253,5 +252,5 @@ public class SanPhamDAO {
             return false;
         }
     }
-     
+
 }

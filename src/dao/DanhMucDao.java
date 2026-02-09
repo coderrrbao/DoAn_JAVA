@@ -43,7 +43,7 @@ public class DanhMucDao {
     }
 
     public DanhMuc timDanhMucTheoTen(String ten) {
-        String sql = "SELECT * FROM DanhMuc WHERE TrangThai=1 AND TenDM=?";
+        String sql = "SELECT MaDM,TenDM FROM DanhMuc WHERE TrangThai=1 AND TenDM=?";
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, ten);
@@ -59,7 +59,7 @@ public class DanhMucDao {
     }
 
     public String layMaDanhMucKhaDung() {
-        String sql = "SELECT COUNT(*) FROM DanhMuc";
+        String sql = "SELECT COUNT(MaDM) FROM DanhMuc";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {

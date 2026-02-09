@@ -3,7 +3,6 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.ArrayList;
 
 import dao.conection.DBConnection;
 import dto.KhachHang;
@@ -25,8 +24,8 @@ public class KhachHangDAO {
                         rs.getNString("GioiTinh"),
                         rs.getString("SDT"),
                         rs.getDouble("TenDaMua"),
-                        rs.getString("MaHang"),
-                        rs.getBoolean("TrangThai"));
+                        rs.getString("MaHang")
+                );
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -36,7 +35,7 @@ public class KhachHangDAO {
     }
 
     public String layMaKhachHangKhaDung() {
-        String sql = "SELECT COUNT(*) FROM KhachHang";
+        String sql = "SELECT COUNT(MaKH) FROM KhachHang";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -67,7 +66,7 @@ public class KhachHangDAO {
             pst.setString(4, kh.getSdt());
             pst.setDouble(5, kh.getTenDaMua());
             pst.setString(6, kh.getMaHang());
-            pst.setInt(7, kh.getTrangThai() ? 1 : 0);
+            pst.setInt(7, 1);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

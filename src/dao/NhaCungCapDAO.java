@@ -12,7 +12,7 @@ public class NhaCungCapDAO {
     public NhaCungCap timNhaCungCap(String maNCC) {
         NhaCungCap nhaCungCap = null;
 
-        String sql = "SELECT * FROM NhaCungCap";
+        String sql = "SELECT * FROM NhaCungCap WHERE TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -101,7 +101,7 @@ public class NhaCungCapDAO {
     }
 
     public String layMaNhaCungCapKhaDung() {
-        String sql = "SELECT COUNT(*) FROM NhaCungCap";
+        String sql = "SELECT COUNT(MaNCC) FROM NhaCungCap";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {

@@ -7,29 +7,19 @@ public class KhachHang {
     private String sdt;
     private double tenDaMua;
     private String maHang;
-    private boolean trangThai;
 
     public KhachHang() {
     }
 
-    public KhachHang(String maKH, String tenKH, String gioiTinh, String sdt, double tenDaMua, String maHang,
-            boolean trangThai) {
+    public KhachHang(String maKH, String tenKH, String gioiTinh, String sdt, double tenDaMua, String maHang) {
         this.maKH = maKH;
         this.tenKH = tenKH;
         this.gioiTinh = gioiTinh;
         this.sdt = sdt;
         this.tenDaMua = tenDaMua;
         this.maHang = maHang;
-        this.trangThai = trangThai;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
-    }
 
     public String getMaKH() {
         return maKH;

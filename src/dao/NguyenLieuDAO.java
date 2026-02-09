@@ -13,7 +13,7 @@ public class NguyenLieuDAO {
     public NguyenLieu timNguyenLieu(String maNL) {
         NguyenLieu nguyenLieu = null;
 
-        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao, TrangThai FROM NguyenLieu WHERE MaNL = ?";
+        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE MaNL = ? AND TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -32,7 +32,6 @@ public class NguyenLieuDAO {
                 nguyenLieu.setGia(rs.getDouble("Gia"));
                 nguyenLieu.setDonVi(rs.getString("DonVi"));
                 nguyenLieu.setMucCanhBao(rs.getInt("MucCanhBao"));
-                nguyenLieu.setTrangThai(rs.getBoolean("TrangThai"));
             }
 
         } catch (Exception e) {
@@ -45,7 +44,7 @@ public class NguyenLieuDAO {
 
     public ArrayList<NguyenLieu> layListNguyenLieu() {
         ArrayList<NguyenLieu> listNguyenLieu = new ArrayList<>();
-        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao, TrangThai FROM NguyenLieu";
+        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -76,7 +75,7 @@ public class NguyenLieuDAO {
     }
 
     public String layMaNguyenLieuKhaDung() {
-        String sql = "SELECT COUNT(*) FROM NguyenLieu";
+        String sql = "SELECT COUNT(MaNL) FROM NguyenLieu";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {

@@ -14,7 +14,7 @@ public class CongThucDAO {
     public CongThuc timCongThuc(String maSP) {
         CongThuc congThuc = null;
 
-        String sql = "SELECT * FROM CongThuc";
+        String sql = "SELECT MaSP,MaCT FROM CongThuc WHERE TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -32,7 +32,6 @@ public class CongThucDAO {
         }
         return congThuc;
     }
-
 
     public boolean themCongThuc(CongThuc congThuc) {
         String sql = "INSERT INTO CongThuc (MaCT, MaSP, TrangThai) VALUES (?, ?, ?)";
@@ -52,7 +51,7 @@ public class CongThucDAO {
     }
 
     public String layMaCongThucKhaDung() {
-        String sql = "SELECT COUNT(*) FROM CongThuc";
+        String sql = "SELECT COUNT(MaCT) FROM CongThuc";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {

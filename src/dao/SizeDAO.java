@@ -9,6 +9,26 @@ import dao.conection.DBConnection;
 import dto.Size;
 
 public class SizeDAO {
+
+    public ArrayList<Size> layListSize() {
+        ArrayList<Size> listSize = new ArrayList<>();
+        String sql = "SELECT * FROM Size WHERE TrangThai = 1";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Size size = new Size(rs.getString("MaSize"), rs.getString("MaSP"), rs.getString("TenSize"),
+                        rs.getInt("PhanTramGia"), rs.getInt("PhanTramNL"));
+                listSize.add(size);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn : " + e.getMessage());
+        }
+        return listSize;
+    }
+
     public ArrayList<Size> layListSizeChoSP(String ma) {
         ArrayList<Size> listSize = new ArrayList<>();
         String sql = "SELECT * FROM Size WHERE TrangThai = 1 AND MaSP=?";
@@ -48,7 +68,7 @@ public class SizeDAO {
         return size;
     }
     public String layMaSizeKhaDung() {
-        String sql = "SELECT COUNT(*) FROM Size";
+        String sql = "SELECT COUNT(MaSize) FROM Size";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {

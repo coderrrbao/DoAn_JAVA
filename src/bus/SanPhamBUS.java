@@ -23,6 +23,8 @@ public class SanPhamBUS {
     CongThucBUS congThucBUS = new CongThucBUS();
     ArrayList<SanPham> listSanPham;
 
+    boolean canUpdate = false;
+
     public SanPhamBUS() {
         khoitao();
     }
@@ -38,14 +40,25 @@ public class SanPhamBUS {
     }
 
     public ArrayList<SanPham> layListSanPham() {
+        if (canUpdate || listSanPham == null) {
+            canUpdate=false;
+            khoitao();
+        }
         return listSanPham;
     }
 
     public int getTongSoTrang(int pageSize) {
+        if (canUpdate || listSanPham == null) {
+            khoitao();
+        }
         return (int) Math.ceil((double) listSanPham.size() / pageSize);
     }
 
     public ArrayList<SanPham> layTrang(int page, int pageSize) {
+        if (canUpdate || listSanPham == null) {
+            canUpdate=false;
+            khoitao();
+        }
         ArrayList<SanPham> kq = new ArrayList<>();
         int start = (page - 1) * pageSize;
         int end = Math.min(start + pageSize, listSanPham.size());
@@ -59,7 +72,7 @@ public class SanPhamBUS {
         return kq;
     }
 
-    public ArrayList<String> layLuaChonDanhMuc() {
+    public ArrayList<String> layLuaChonDanhMuc() {//////////////////////////////////////
         DanhMucDao danhMucDao = new DanhMucDao();
         return danhMucDao.layLuaChonDanhMuc();
     }
@@ -69,7 +82,10 @@ public class SanPhamBUS {
     }
 
     public SanPham timSanPham(String ma) {
-        khoitao();
+        if (canUpdate || listSanPham == null) {
+            khoitao();
+            canUpdate=false;
+        }
         SanPham sanPham = sanPhamDAO.timSanPham(ma);
         if (sanPham == null)
             return null;
