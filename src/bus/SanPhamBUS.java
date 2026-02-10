@@ -192,18 +192,37 @@ public class SanPhamBUS {
         return sanPhamDAO.capNhapSanPham(sanPhamMoi);
     }
 
+    public static String xoaDau(String text) {
+        if (text == null) return "";
+        java.text.Normalizer.Form form = java.text.Normalizer.Form.NFD;
+        return java.text.Normalizer.normalize(text, form)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase();
+    }
+
     public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) {
         if (canUpdate || listSanPham == null) {
             canUpdate = false;
             khoitao();
         }
-        ArrayList<SanPham> list = new ArrayList<>();
-        for (SanPham sanPham : listSanPham) {
-            if (sanPham.getTenSP().equals(ten) && sanPham.getLoaiNuoc().equals(loai)
-                    && sanPham.getDanhMuc().getMaDM().contains(maDM)) {
-                list.add(sanPham);
+
+        ArrayList<SanPham> ketQua = new ArrayList<>();
+        String tuKhoaChuanHoa = xoaDau(ten != null ? ten.trim() : "");
+
+        for (SanPham sp : listSanPham) {
+            String tenSP = sp.getTenSP() != null ? sp.getTenSP() : "";
+            boolean khopTen = xoaDau(tenSP).contains(tuKhoaChuanHoa);
+
+            boolean khopLoai = (loai == null || loai.equals("Tất cả")) ||
+                    (sp.getLoaiNuoc() != null && sp.getLoaiNuoc().equals(loai));
+
+            boolean khopDM = (maDM == null || maDM.equals("Tất cả")) ||
+                    (sp.getDanhMuc() != null && sp.getDanhMuc().getMaDM() != null && sp.getDanhMuc().getMaDM().equals(maDM));
+
+            if (khopTen && khopLoai && khopDM) {
+                ketQua.add(sp);
             }
         }
-        return list;
+        return ketQua;
     }
 }
