@@ -34,11 +34,10 @@ public class ChiTietCongThucDAO {
         return listChiTietCongThuc;
     }
 
-    public String layMaChiTietCongThucKhaDung() {
-        String sql = "SELECT COUNT(*) FROM ChiTietCongThuc";
+    public String layMaChiTietCongThucKhaDung(Connection conn) {
+        String sql = "SELECT COUNT(MaCTCT) FROM ChiTietCongThuc";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -54,13 +53,12 @@ public class ChiTietCongThucDAO {
         return "";
     }
 
-    public boolean themCTCT(ChiTietCongThuc ctct) {
+    public boolean themCTCT(ChiTietCongThuc ctct, Connection conn) {
         String sql = "INSERT INTO ChiTietCongThuc (MaCTCT, MaCT, MaNL, SoLuong,TrangThai) VALUES (?, ?, ?, ?,?)";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pstmt = conn.prepareStatement(sql)) {
+        try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
             if (ctct.getMaCTCT() == null || ctct.getMaCTCT().trim().isEmpty()) {
-                ctct.setMaCTCT(layMaChiTietCongThucKhaDung());
+                ctct.setMaCTCT(layMaChiTietCongThucKhaDung(conn));
             }
             pstmt.setString(1, ctct.getMaCTCT());
             pstmt.setString(2, ctct.getMaCT());
@@ -76,10 +74,22 @@ public class ChiTietCongThucDAO {
         }
     }
 
-    public boolean xoaCTCT(ChiTietCongThuc chiTietCongThuc) {
+    public boolean xoaCTCT(ChiTietCongThuc chiTietCongThuc, Connection conn) {
         String sql = "UPDATE ChiTietCongThuc SET TrangThai=0 WHERE MaCTCT=?";
-        try (Connection con = DBConnection.getConnection(); PreparedStatement pst = con.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, chiTietCongThuc.getMaCTCT());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhapChiTietCongThuc(ChiTietCongThuc chiTietCongThuc, Connection conn) {
+        String sql = "UPDATE ChiTietCongThuc SET MaNL=?,SoLuong=? WHERE MaCTCT=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, chiTietCongThuc.getNguyenLieu().getMaNL());
+            pst.setDouble(2, chiTietCongThuc.getSoLuong());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

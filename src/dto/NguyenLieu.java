@@ -7,7 +7,6 @@ public class NguyenLieu {
     private double gia;
     private String donVi;
     private int mucCanhBao;
-    private boolean trangThai;
 
     public NguyenLieu() {
     }
@@ -20,7 +19,6 @@ public class NguyenLieu {
         this.gia = gia;
         this.donVi = donVi;
         this.mucCanhBao = mucCanhBao;
-        this.trangThai = trangThai;
     }
 
     public String getMaNL() {
@@ -71,11 +69,4 @@ public class NguyenLieu {
         this.mucCanhBao = mucCanhBao;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
 }

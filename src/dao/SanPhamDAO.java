@@ -51,16 +51,15 @@ public class SanPhamDAO {
         return listSanPham;
     }
 
-    public boolean themSanPham(SanPham sanPham) {
+    public boolean themSanPham(SanPham sanPham, Connection conn) {
 
         String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, MaNCC, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             if (sanPham.getMaSP() == null || sanPham.getMaSP().trim().isEmpty()) {
-                sanPham.setMaSP(layMaSanPhamKhaDung());
+                sanPham.setMaSP(layMaSanPhamKhaDung(conn));
             }
             pst.setString(1, sanPham.getMaSP());
             pst.setString(2, sanPham.getTenSP());
@@ -84,11 +83,13 @@ public class SanPhamDAO {
         }
     }
 
-    public String layMaSanPhamKhaDung() {
-        String sql = "SELECT COUNT(*) FROM SanPham";
+    public String layMaSanPhamKhaDung(Connection conn) {
+        if (conn == null) {
+            conn = DBConnection.getConnection();
+        }
+        String sql = "SELECT COUNT(MaSP) FROM SanPham";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -222,14 +223,13 @@ public class SanPhamDAO {
         return true;
     }
 
-    public Boolean capNhapSanPham(SanPham sanPham) {
+    public Boolean capNhapSanPham(SanPham sanPham, Connection conn) {
         String sql = "UPDATE SanPham SET TenSP = ?, MaDM = ?, GiaBan = ?, MaNCC = ?, "
                 + "LoaiNuoc = ?, Anh = ?, TheTich = ?, MucCanhBao = ?, "
                 + "TrangThaiXuLy = ?, TrangThai = ? "
                 + "WHERE MaSP = ?";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, sanPham.getTenSP());
             pst.setString(2, sanPham.getDanhMuc().getMaDM());

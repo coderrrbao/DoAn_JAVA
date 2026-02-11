@@ -61,7 +61,6 @@ public class NguyenLieuDAO {
                 nguyenLieu.setGia(rs.getDouble("Gia"));
                 nguyenLieu.setDonVi(rs.getString("DonVi"));
                 nguyenLieu.setMucCanhBao(rs.getInt("MucCanhBao"));
-                nguyenLieu.setTrangThai(rs.getBoolean("TrangThai"));
                 listNguyenLieu.add(nguyenLieu);
 
             }

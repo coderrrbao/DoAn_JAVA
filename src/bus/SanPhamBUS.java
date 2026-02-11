@@ -5,12 +5,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 
+import dao.CongThucDAO;
 import dao.SanPhamDAO;
+import dao.SizeDAO;
+import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.SanPham;
 import dto.Size;
@@ -90,31 +97,56 @@ public class SanPhamBUS {
             khoitao();
             canUpdate = false;
         }
-        SanPham sanPham = sanPhamDAO.timSanPham(ma);
-        if (sanPham == null)
-            return null;
-        if (sanPham.getLoaiNuoc().equals("Pha chế")) {
-            sanPham.setListSize(sizeBUS.laySizeChoSP(sanPham.getMaSP()));
-            sanPham.setCongThuc(congThucBUS.timCongThucChoSP(sanPham.getMaSP()));
+        for (SanPham sanPham : listSanPham) {
+            if (sanPham.getMaSP().equals(ma)) {
+                return sanPham;
+            }
         }
-        return sanPham;
+        return null;
     }
 
     public Boolean themSanPham(SanPham sanPham) {
-        if (!sanPhamDAO.themSanPham(sanPham)) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+
+            CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
+            SizeBUS sizeBUS = SizeBUS.getSizeBUS();
+
+            if (!sanPhamDAO.themSanPham(sanPham, conn)) {
+                throw new SQLException();
+            }
+
+            sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
+            if (!congThucBUS.themCongThuc(sanPham.getCongThuc(), conn)) {
+                throw new SQLException();
+            }
+
+            for (Size size : sanPham.getListSize()) {
+                size.setMaSP(sanPham.getMaSP());
+                if (!sizeBUS.themSize(size, conn)) {
+                    throw new SQLException();
+                }
+            }
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
             return false;
-        }
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
-        CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
-        SizeBUS sizeBUS = SizeBUS.getSizeBUS();
-
-        sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
-        congThucBUS.themCongThuc(sanPham.getCongThuc());
-
-        for (Size size : sanPham.getListSize()) {
-            size.setMaSP(sanPham.getMaSP());
-            if (!sizeBUS.themSize(size)) {
-                return false;
             }
         }
 
@@ -141,55 +173,126 @@ public class SanPhamBUS {
     }
 
     public String layMaSanPhamKhaDung() {
-        return sanPhamDAO.layMaSanPhamKhaDung();
+        return sanPhamDAO.layMaSanPhamKhaDung(null);
     }
 
     public Boolean XoaSanPham(String maSp) {
-        return sanPhamDAO.xoaSanPham(maSp);
+        if (!sanPhamDAO.xoaSanPham(maSp)) {
+            return false;
+        }
+        canUpdate = true;
+        return true;
     }
 
     public boolean capNhapSanPham(SanPham sanPham, SanPham sanPhamMoi) {
-        if (sanPham.getCongThuc() != null && sanPham.getCongThuc().getListChiTietCongThuc() != null) {
-            ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
-            HashSet<String> set = new HashSet<>();
-            for (ChiTietCongThuc chiTietCongThuc : sanPhamMoi.getCongThuc().getListChiTietCongThuc()) {
-                if (chiTietCongThuc.getMaCTCT().equals("")) {
-                    chiTietCongThuc.setMaCT(sanPham.getCongThuc().getMaCT());
-                    chiTietCongThucBUS.themCTCT(chiTietCongThuc);
+        Connection conn = DBConnection.getConnection();
+
+        try {
+            conn.setAutoCommit(false);
+            if (sanPham.getCongThuc() != null) {
+                ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
+                Map<String, ChiTietCongThuc> map = new HashMap<>();
+                for (ChiTietCongThuc chiTietCongThuc : sanPhamMoi.getCongThuc().getListChiTietCongThuc()) {
+                    if (chiTietCongThuc.getMaCTCT().equals("")) {
+                        chiTietCongThuc.setMaCT(sanPham.getCongThuc().getMaCT());
+                        if (!chiTietCongThucBUS.themCTCT(chiTietCongThuc, conn)) {
+                            throw new SQLException();
+                        }
+                    }
+                    map.put(chiTietCongThuc.getMaCTCT(), chiTietCongThuc);
                 }
-                set.add(chiTietCongThuc.getMaCTCT());
+                for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
+                    if (!map.containsKey(chiTietCongThuc.getMaCTCT())) {
+                        if (!chiTietCongThucBUS.xoaCTCT(chiTietCongThuc, conn)) {
+                            throw new SQLException();
+                        }
+                    } else {
+                        ChiTietCongThuc chiTietCongThucMoi = map.get(chiTietCongThuc.getMaCTCT());
+                        if (!chiTietCongThuc.getNguyenLieu().getMaNL().equals(chiTietCongThucMoi.getMaCTCT())
+                                || chiTietCongThuc.getSoLuong() != chiTietCongThucMoi.getSoLuong()) {
+                            chiTietCongThucBUS.capNhapChiTietCongThuc(chiTietCongThucMoi, conn);
+                            canUpdate = true;
+                        }
+                    }
+                }
+
+            } else {
+                CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
+                if (sanPhamMoi.getCongThuc() != null && sanPhamMoi.getLoaiNuoc().equals("Pha chế")) {
+
+                    sanPhamMoi.getCongThuc().setMaSp(sanPham.getMaSP());
+                    if (!congThucBUS.themCongThuc(sanPhamMoi.getCongThuc(), conn)) {
+                        throw new SQLException();
+                    }
+
+                }
+
             }
-            for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
-                if (!set.contains(chiTietCongThuc.getMaCTCT())) {
-                    chiTietCongThucBUS.xoaCTCT(chiTietCongThuc);
+            Map<String, Size> map = new HashMap<>();
+            if (sanPhamMoi.getListSize() != null) {
+
+                SizeBUS sizeBUS = SizeBUS.getSizeBUS();
+                for (Size size : sanPhamMoi.getListSize()) {
+                    if (size.getMaSize().equals("")) {
+                        if (!sizeBUS.themSize(size, conn)) {
+                            throw new SQLException();
+                        }
+                    }
+
+                    map.put(size.getMaSize(), size);
                 }
             }
-        } else {
-            CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
-            if (sanPhamMoi.getCongThuc() != null) {
-                sanPhamMoi.getCongThuc().setMaSp(sanPham.getMaSP());
-                congThucBUS.themCongThuc(sanPhamMoi.getCongThuc());
+            if (sanPham.getListSize() != null) {
+                for (Size size : sanPham.getListSize()) {
+                    if (!map.containsKey(size.getMaSize())) {
+                        if (!sizeBUS.xoaSize(size, conn)) {
+                            throw new SQLException();
+                        }
+                    } else {
+                        Size sizeMoi = map.get(size.getMaSize());
+                        if (size.getPhanTramGia() != sizeMoi.getPhanTramGia()
+                                || size.getPhanTramNL() != sizeMoi.getPhanTramNL()
+                                || !size.getTenSize().equals(sizeMoi.getTenSize())) {
+                            sizeBUS.capNhapSize(sizeMoi, conn);
+                            canUpdate = true;
+                        }
+                    }
+                }
             }
 
+            if (!sanPhamDAO.capNhapSanPham(sanPhamMoi, conn)) {
+                throw new SQLException();
+            }
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+
+            } catch (Exception ex) {
+                e.printStackTrace();
+            }
+            return false;
+
+        } finally {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+                canUpdate = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-        if (sanPham.getListSize() != null) {
-            HashSet<String> set = new HashSet<>();
-            SizeBUS sizeBUS = SizeBUS.getSizeBUS();
-            for (Size size : sanPhamMoi.getListSize()) {
-                if (size.getMaSize().equals("")) {
-                    sizeBUS.themSize(size);
-                }
-                set.add(size.getMaSize());
-            }
+        return true;
+    }
 
-            for (Size size : sanPham.getListSize()) {
-                if (!set.contains(size.getMaSize())) {
-                    sizeBUS.xoaSize(size);
-                }
-            }
-        }
-
-        return sanPhamDAO.capNhapSanPham(sanPhamMoi);
+    public static String xoaDau(String text) {
+        if (text == null)
+            return "";
+        java.text.Normalizer.Form form = java.text.Normalizer.Form.NFD;
+        return java.text.Normalizer.normalize(text, form)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase();
     }
 
     public ArrayList<SanPham> locSanPham(String ten, String loai, String maDM) {
@@ -197,13 +300,25 @@ public class SanPhamBUS {
             canUpdate = false;
             khoitao();
         }
-        ArrayList<SanPham> list = new ArrayList<>();
-        for (SanPham sanPham : listSanPham) {
-            if (sanPham.getTenSP().equals(ten) && sanPham.getLoaiNuoc().equals(loai)
-                    && sanPham.getDanhMuc().getMaDM().contains(maDM)) {
-                list.add(sanPham);
+
+        ArrayList<SanPham> ketQua = new ArrayList<>();
+        String tuKhoaChuanHoa = xoaDau(ten != null ? ten.trim() : "");
+
+        for (SanPham sp : listSanPham) {
+            String tenSP = sp.getTenSP() != null ? sp.getTenSP() : "";
+            boolean khopTen = xoaDau(tenSP).contains(tuKhoaChuanHoa);
+
+            boolean khopLoai = (loai == null || loai.equals("Tất cả")) ||
+                    (sp.getLoaiNuoc() != null && sp.getLoaiNuoc().equals(loai));
+
+            boolean khopDM = (maDM == null || maDM.equals("Tất cả")) ||
+                    (sp.getDanhMuc() != null && sp.getDanhMuc().getMaDM() != null
+                            && sp.getDanhMuc().getMaDM().equals(maDM));
+
+            if (khopTen && khopLoai && khopDM) {
+                ketQua.add(sp);
             }
         }
-        return list;
+        return ketQua;
     }
 }

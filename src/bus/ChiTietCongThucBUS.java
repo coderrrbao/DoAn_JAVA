@@ -1,5 +1,6 @@
 package bus;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 import dao.ChiTietCongThucDAO;
@@ -20,10 +21,13 @@ public class ChiTietCongThucBUS {
         }
         return listChiTietCongThuc;
     }
-    public Boolean themCTCT(ChiTietCongThuc chiTietCongThuc){
-        return chiTietCongThucDAO.themCTCT(chiTietCongThuc);
+    public Boolean themCTCT(ChiTietCongThuc chiTietCongThuc,Connection conn){
+        return chiTietCongThucDAO.themCTCT(chiTietCongThuc,conn);
     }
-    public Boolean xoaCTCT(ChiTietCongThuc chiTietCongThuc){
-        return chiTietCongThucDAO.xoaCTCT(chiTietCongThuc);
+    public Boolean xoaCTCT(ChiTietCongThuc chiTietCongThuc,Connection conn){
+        return chiTietCongThucDAO.xoaCTCT(chiTietCongThuc,conn);
+    }
+    public boolean capNhapChiTietCongThuc(ChiTietCongThuc chiTietCongThuc,Connection conn){
+        return chiTietCongThucDAO.capNhapChiTietCongThuc(chiTietCongThuc,conn);
     }
 }

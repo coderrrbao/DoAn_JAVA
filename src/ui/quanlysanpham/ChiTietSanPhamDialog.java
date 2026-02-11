@@ -276,7 +276,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                                 size.getPhanTramNL() });
             }
         }
-        
+
         xemCongThucDialog.capNhapDuLieu(sanPham);
         this.sanPham = sanPham;
         anThaotacSua();
@@ -353,6 +353,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnLuuThayDoi.addActionListener(e -> {
             if (kiemTraDuLieu()) {
                 SanPham sanPhamMoi = dongGoiSanPham();
+
                 sanPhamMoi.setTrangThaiXuLy(cbTrangThaiXuLy.getSelectedItem().toString());
                 if (fileChooser.getSelectedFile() == null) {
                     sanPhamMoi.setAnh(sanPham.getAnh());
@@ -362,6 +363,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
                     anThaotacSua();
+                    dispose();
                     quanLySanPhamUI.loadDataFromDatabase();
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
@@ -512,4 +514,5 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
         return listSize;
     }
+
 }

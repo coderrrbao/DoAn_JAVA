@@ -22,7 +22,7 @@ public class ThongKeNhapHangPanel extends JPanel {
     private ThongKeChungNhapPanel thongKeChungNH;
     private JButton xuatExbtn;
     private LocNgay_Item locNgay;
-
+    private DefaultTableModel model;
     public ThongKeNhapHangPanel() {
         setLayout(new BorderLayout());
 
@@ -59,6 +59,10 @@ public class ThongKeNhapHangPanel extends JPanel {
         add(tongChungPanel(), BorderLayout.SOUTH);
     }
 
+    public void loadDuLieu(){
+        
+    }
+
     private JPanel thongKeSpPanel() {
         JPanel thongKeLoSp = new JPanel(new BorderLayout());
 
@@ -67,20 +71,19 @@ public class ThongKeNhapHangPanel extends JPanel {
         top.setBackground(Color.green);
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
 
-        Object[][] data = {
-                { "PN001", "10/01/2026", "Nguyễn Văn A", "Nhập hàng định kỳ", "Công ty Coca-Cola" },
-                { "PN002", "11/01/2026", "Trần Thị B", "Nhập bổ sung Tết", "Suntory Pepsico" },
-                { "PN003", "11/01/2026", "Lê Văn C", "Hàng khuyến mãi", "Nhà máy Bia Sài Gòn" },
-                { "PN004", "12/01/2026", "Nguyễn Văn A", "Nhập gấp", "Công ty Tân Hiệp Phát" },
-                { "PN005", "12/01/2026", "Trần Thị B", "Kiểm kho nhập bù", "Nước khoáng Vĩnh Hảo" },
-                { "PN006", "13/01/2026", "Lê Văn C", "Nhập hàng mới", "Công ty TH True Milk" },
-                { "PN007", "13/01/2026", "Nguyễn Văn A", "Nhập nước suối", "Lavie Việt Nam" },
-                { "PN008", "14/01/2026", "Trần Thị B", "Nhập nước tăng lực", "Red Bull Việt Nam" },
-                { "PN009", "14/01/2026", "Lê Văn C", "Nhập bổ sung", "Công ty Nestle" },
-                { "PN010", "15/01/2026", "Nguyễn Văn A", "Hàng về trễ", "Công ty Masan" }
-        };
-
-        DefaultTableModel model = new DefaultTableModel(data, columns);
+            // Object[][] data = {
+            //         { "PN001", "10/01/2026", "Nguyễn Văn A", "Nhập hàng định kỳ", "Công ty Coca-Cola" },
+            //         { "PN002", "11/01/2026", "Trần Thị B", "Nhập bổ sung Tết", "Suntory Pepsico" },
+            //         { "PN003", "11/01/2026", "Lê Văn C", "Hàng khuyến mãi", "Nhà máy Bia Sài Gòn" },
+            //         { "PN004", "12/01/2026", "Nguyễn Văn A", "Nhập gấp", "Công ty Tân Hiệp Phát" },
+            //         { "PN005", "12/01/2026", "Trần Thị B", "Kiểm kho nhập bù", "Nước khoáng Vĩnh Hảo" },
+            //         { "PN006", "13/01/2026", "Lê Văn C", "Nhập hàng mới", "Công ty TH True Milk" },
+            //         { "PN007", "13/01/2026", "Nguyễn Văn A", "Nhập nước suối", "Lavie Việt Nam" },
+            //         { "PN008", "14/01/2026", "Trần Thị B", "Nhập nước tăng lực", "Red Bull Việt Nam" },
+            //         { "PN009", "14/01/2026", "Lê Văn C", "Nhập bổ sung", "Công ty Nestle" },
+            //         { "PN010", "15/01/2026", "Nguyễn Văn A", "Hàng về trễ", "Công ty Masan" }
+            // };
+        model = new DefaultTableModel();
         JScrollPane table = TaoUI.taoTableScroll(model);
 
         // --- Cập nhật Bottom ---

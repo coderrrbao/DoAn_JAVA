@@ -1,5 +1,6 @@
 package bus;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 
 import dao.SizeDAO;
@@ -52,18 +53,18 @@ public class SizeBUS {
         return null;
     }
 
-    public Boolean themSize(Size size) {
+    public Boolean themSize(Size size,Connection conn) {
         canUpdate = true;
-        return sizeDAO.themSize(size);
+        return sizeDAO.themSize(size,conn);
     }
 
-    public Boolean xoaSize(Size size) {
+    public Boolean xoaSize(Size size,Connection conn) {
         canUpdate = true;
-        return sizeDAO.xoaSize(size);
+        return sizeDAO.xoaSize(size,conn);
     }
 
-    public Boolean capNhapSize(Size size) {
+    public Boolean capNhapSize(Size size,Connection conn) {
         canUpdate = true;
-        return sizeDAO.capNhapSize(size);
+        return sizeDAO.capNhapSize(size,conn);
     }
 }

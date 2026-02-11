@@ -48,7 +48,8 @@ public class SizeDAO {
         }
         return listSize;
     }
-     public Size timSize(String maSize) {
+
+    public Size timSize(String maSize) {
         Size size = null;
         String sql = "SELECT * FROM Size WHERE TrangThai = 1 AND MaSize=?";
         try (Connection conn = DBConnection.getConnection();
@@ -58,7 +59,7 @@ public class SizeDAO {
             while (rs.next()) {
                 size = new Size(rs.getString("MaSize"), rs.getString("MaSP"), rs.getString("TenSize"),
                         rs.getInt("PhanTramGia"), rs.getInt("PhanTramNL"));
-            
+
             }
 
         } catch (Exception e) {
@@ -67,11 +68,11 @@ public class SizeDAO {
         }
         return size;
     }
-    public String layMaSizeKhaDung() {
+
+    public String layMaSizeKhaDung(Connection conn) {
         String sql = "SELECT COUNT(MaSize) FROM Size";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -87,11 +88,11 @@ public class SizeDAO {
         return "";
     }
 
-    public boolean themSize(Size s) {
+    public boolean themSize(Size s, Connection conn) {
         String sql = "INSERT INTO Size (MaSize, MaSP, TenSize, PhanTramGia, PhanTramNL, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             if (s.getMaSize() == null || s.getMaSize().trim().isEmpty()) {
-                s.setMaSize(layMaSizeKhaDung());
+                s.setMaSize(layMaSizeKhaDung(conn));
             }
             pst.setString(1, s.getMaSize());
             pst.setString(2, s.getMaSP());
@@ -107,28 +108,27 @@ public class SizeDAO {
         }
     }
 
-    public  boolean xoaSize(Size  size){
-        String sql =  "UPDATE Size SET TrangThai=0 WHERE MaSize=?";
-        try(Connection con = DBConnection.getConnection();PreparedStatement  pst = con.prepareStatement(sql)){
-            pst.setString(1,size.getMaSize());
+    public boolean xoaSize(Size size, Connection conn) {
+        String sql = "UPDATE Size SET TrangThai=0 WHERE MaSize=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, size.getMaSize());
             pst.executeUpdate();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
         return true;
     }
-    public  boolean capNhapSize(Size  size){
-        String sql =  "UPDATE Size SET TenSize=?,PhanTramGia=?,PhanTramNL=? WHERE MaSize=?";
-        try(Connection con = DBConnection.getConnection();PreparedStatement  pst = con.prepareStatement(sql)){
-            pst.setString(1,size.getTenSize());
+
+    public boolean capNhapSize(Size size,Connection conn) {
+        String sql = "UPDATE Size SET TenSize=?,PhanTramGia=?,PhanTramNL=? WHERE MaSize=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, size.getTenSize());
             pst.setInt(2, size.getPhanTramGia());
             pst.setInt(3, size.getPhanTramNL());
-            pst.setString(4, size.getMaSP());
+            pst.setString(4, size.getMaSize());
             pst.executeUpdate();
-        }
-        catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

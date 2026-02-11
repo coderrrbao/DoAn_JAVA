@@ -33,13 +33,13 @@ public class CongThucDAO {
         return congThuc;
     }
 
-    public boolean themCongThuc(CongThuc congThuc) {
+    public boolean themCongThuc(CongThuc congThuc,Connection conn) {
         String sql = "INSERT INTO CongThuc (MaCT, MaSP, TrangThai) VALUES (?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+        try ( PreparedStatement pst = conn.prepareStatement(sql)) {
             if (congThuc.getMaCT() == null || congThuc.getMaCT().trim().isEmpty()) {
-                congThuc.setMaCT(layMaCongThucKhaDung());
+                congThuc.setMaCT(layMaCongThucKhaDung(conn));
             }
-            pst.setString(1, layMaCongThucKhaDung());
+            pst.setString(1, layMaCongThucKhaDung(conn));
             pst.setString(2, congThuc.getMaSp());
             pst.setInt(3, 1);
             return pst.executeUpdate() > 0;
@@ -67,11 +67,10 @@ public class CongThucDAO {
         return listCongThuc;
     }
 
-    public String layMaCongThucKhaDung() {
+    public String layMaCongThucKhaDung(Connection conn) {
         String sql = "SELECT COUNT(MaCT) FROM CongThuc";
 
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {

@@ -1,5 +1,6 @@
 package bus;
 
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,23 +38,22 @@ public class CongThucBUS {
         return cacheCongThuc.get(maSP);
     }
 
-    public Boolean themCongThuc(CongThuc congThuc) {
-        String maCTMoi = congThucDAO.layMaCongThucKhaDung();
+    public Boolean themCongThuc(CongThuc congThuc,Connection conn) {
+        String maCTMoi = congThucDAO.layMaCongThucKhaDung(conn);
         congThuc.setMaCT(maCTMoi);
 
-        if (!congThucDAO.themCongThuc(congThuc)) {
+        if (!congThucDAO.themCongThuc(congThuc,conn)) {
             return false;
         }
 
         if (congThuc.getListChiTietCongThuc() != null) {
             for (ChiTietCongThuc ct : congThuc.getListChiTietCongThuc()) {
                 ct.setMaCT(maCTMoi);
-                if (!chiTietCongThucBUS.themCTCT(ct)) {
+                if (!chiTietCongThucBUS.themCTCT(ct,conn)) {
                     return false;
                 }
             }
         }
-
         cacheCongThuc.put(congThuc.getMaSp(), congThuc);
         return true;
     }
