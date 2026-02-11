@@ -117,7 +117,7 @@ public class SanPhamBUS {
                 return false;
             }
         }
-
+        this.canUpdate = true;
         return true;
     }
 

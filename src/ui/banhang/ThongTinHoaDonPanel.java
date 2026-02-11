@@ -121,6 +121,16 @@ public class ThongTinHoaDonPanel extends JPanel {
 
     }
 
+    public double layTongTienHang() {
+        double tong = 0;
+        for (int i = 0; i < model.getRowCount(); i++) {
+            try {
+                tong += Double.parseDouble(model.getValueAt(i, 3).toString());
+            } catch (Exception e) {}
+        }
+        return tong;
+    }
+
     public DefaultTableModel getModel() {
         return model;
     }
