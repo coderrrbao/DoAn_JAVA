@@ -3,7 +3,7 @@ package ui.banhang;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GridLayout;
-import java.awt.FlowLayout;
+import java.text.DecimalFormat;
 import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
@@ -19,19 +19,22 @@ public class ThanhToanPanel extends JPanel {
     private JButton btnMGG, thanhToanButton, huyButton;
 
     public ThanhToanPanel() {
-        // Layout tổng của ThanhToanPanel là dọc
         TaoUI.taoPanelBoxLayoutDoc(this, 0, 180);
         setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
         JPanel mainGridPanel = new JPanel(new GridLayout(1, 2, 20, 0));
         mainGridPanel.setOpaque(false);
+
         JPanel leftPanel = new JPanel();
         TaoUI.taoPanelBoxLayoutDoc(leftPanel, 0, 40);
         leftPanel.add(Box.createVerticalGlue());
 
-        tongHoaDonText = addDongTien(leftPanel, "Tổng hóa đơn     : ", "100.000", Color.BLACK, 14);
-        tienKMText = addDongTien(leftPanel, "Tiền khuyến mãi  : ", "9.000", Color.RED, 14);
-        tongThanhToanText = addDongTien(leftPanel, "Tổng thanh toán : ", "91.000", new Color(0, 128, 0), 16);
+        tongHoaDonText = addDongTien(leftPanel, "Tổng hóa đơn     : ", "0 VNĐ", Color.BLACK, 14);
+        tienKMText = addDongTien(leftPanel, "Tiền khuyến mãi  : ", "0 VNĐ", Color.RED, 14);
+        tongThanhToanText = addDongTien(leftPanel, "Tổng thanh toán : ", "0 VNĐ", new Color(0, 128, 0), 16);
+
         leftPanel.add(Box.createVerticalGlue());
+
         JPanel rightPanel = TaoUI.taoPanelCanGiua(300, 40);
         JLabel lblMa = new JLabel("Mã giảm giá:");
         lblMa.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -53,16 +56,59 @@ public class ThanhToanPanel extends JPanel {
         JPanel buttonsPanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
         thanhToanButton = new JButton("Thanh toán");
         thanhToanButton.setPreferredSize(new Dimension(120, 25));
+
         huyButton = new JButton("Hủy");
         huyButton.setPreferredSize(new Dimension(100, 25));
 
         TaoUI.addItem(buttonsPanel, thanhToanButton, 5, true);
         TaoUI.addItem(buttonsPanel, huyButton, 5, true);
         add(buttonsPanel);
-
-        ganSuKien();
     }
 
+
+    public JButton getBtnThanhToan() {
+        return thanhToanButton;
+    }
+
+    public JButton getBtnHuy() {
+        return huyButton;
+    }
+
+    public JTextField getTxtMaGiamGia() {
+        return txtMaGiamGia;
+    }
+
+    public JButton getBtnXacNhanMGG() {
+        return btnMGG;
+    }
+
+    public String getMaGiamGiaInput() {
+        return txtMaGiamGia.getText().trim();
+    }
+
+    public double getTongThanhToan() {
+        String text = tongThanhToanText.getText();
+        String soSach = text.replace(".", "").replace(",", "").replace(" VNĐ", "").trim();
+        try {
+            return Double.parseDouble(soSach);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
+    public void capNhatThongTinThanhToan(double tongTienHang, double tienGiam) {
+        DecimalFormat df = new DecimalFormat("#,###");
+
+        tongHoaDonText.setText(df.format(tongTienHang) + " VNĐ");
+        tienKMText.setText(df.format(tienGiam) + " VNĐ");
+
+        double tongThanhToan = tongTienHang - tienGiam;
+        if (tongThanhToan < 0) tongThanhToan = 0;
+
+        tongThanhToanText.setText(df.format(tongThanhToan) + " VNĐ");
+    }
+
+    // Hàm phụ trợ tạo dòng text
     private JLabel addDongTien(JPanel parent, String title, String value, Color color, int fontSize) {
         JPanel p = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         JLabel lblTitle = new JLabel(title);
@@ -76,17 +122,5 @@ public class ThanhToanPanel extends JPanel {
         p.add(lblValue);
         parent.add(p);
         return lblValue;
-    }
-
-    private void ganSuKien() {
-        btnMGG.addActionListener(e -> {
-            if (btnMGG.getText().equals("Xác nhận")) {
-                // viết logic ở đây babe
-                btnMGG.setText("Hủy");
-            } else if (btnMGG.getText().equals("Hủy")) {
-                // xóa tiền khuyến mãi ,cập nhập....
-                btnMGG.setText("Xác nhận");
-            }
-        });
     }
 }

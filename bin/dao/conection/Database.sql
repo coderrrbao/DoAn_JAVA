@@ -549,26 +549,27 @@ WHERE name = 'ChiTietHoaDon')
 BEGIN
     CREATE TABLE ChiTietHoaDon
     (
-        MaCTHD VARCHAR(50) NOT NULL,
+        MaCTHD VARCHAR(50) NOT NULL PRIMARY KEY,
         MaHD VARCHAR(50) NOT NULL,
         MaSP VARCHAR(50) NOT NULL,
-        MaSize VARCHAR(50) NOT NULL,
+        MaSize VARCHAR(50) NULL,
         SoLuong INT,
         Gia DECIMAL(18, 2),
-        PRIMARY KEY (MaHD, MaSP, MaSize)
+        FOREIGN KEY (MaHD) REFERENCES HoaDon(MaHD),
+        FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP)
     )
     INSERT INTO ChiTietHoaDon
         (MaCTHD,MaHD, MaSP, MaSize, SoLuong, Gia)
     VALUES
         ('CTHD1', 'HD001', 'SP03', 'SZ02', 1, 30000),
-        ('CTHD2', 'HD001', 'SP01', 'SZ01', 1, 15000),
+        ('CTHD2', 'HD001', 'SP01', NULL, 1, 15000),
         ('CTHD3', 'HD003', 'SP18', 'SZ13', 2, 90000),
-        ('CTHD4', 'HD003', 'SP42', 'SZ01', 1, 15000),
+        ('CTHD4', 'HD003', 'SP42', NULL, 1, 15000),
         ('CTHD5', 'HD004', 'SP20', 'SZ12', 4, 180000),
         ('CTHD6', 'HD005', 'SP20', 'SZ12', 1, 45000),
         ('CTHD7', 'HD006', 'SP04', 'SZ04', 1, 35000),
         ('CTHD8', 'HD007', 'SP39', 'SZ01', 1, 55000),
-        ('CTHD9', 'HD007', 'SP45', 'SZ01', 1, 25000)
+        ('CTHD9', 'HD007', 'SP45', NULL, 1, 25000)
 END;
 
 /* =============================================

@@ -149,7 +149,7 @@ public class SanPhamBUS {
 
             }
         }
-
+        this.canUpdate = true;
         return true;
     }
 

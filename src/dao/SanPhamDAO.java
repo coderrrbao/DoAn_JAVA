@@ -142,71 +142,7 @@ public class SanPhamDAO {
         return null;
     }
 
-    public static ArrayList<SanPham> locSanPham(String tenSP, String loaiNuoc, String maDM) {
-        ArrayList<SanPham> list = new ArrayList<>();
 
-        String sql = """
-                    SELECT sp.*, dm.TenDM, ncc.TenNCC
-                    FROM SanPham sp
-                    LEFT JOIN DanhMuc dm ON sp.MaDM = dm.MaDM
-                    LEFT JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC
-                    WHERE sp.TrangThai = 1
-                """;
-
-        if (tenSP != null && !tenSP.isEmpty()) {
-            sql += " AND LOWER(sp.TenSP) LIKE ?";
-        }
-
-        if (loaiNuoc != null && !loaiNuoc.equals("Tất cả")) {
-            sql += " AND sp.LoaiNuoc = ?";
-        }
-
-        if (maDM != null && !maDM.equals("Tất cả")) {
-            System.out.println("maDM = [" + maDM + "]");
-            System.out.println("length = " + maDM.length());
-
-            sql += " AND sp.MaDM = ?";
-        }
-
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
-
-            int index = 1;
-
-            if (tenSP != null && !tenSP.isEmpty()) {
-                pst.setString(index++, "%" + tenSP.toLowerCase() + "%");
-            }
-
-            if (loaiNuoc != null && !loaiNuoc.equals("Tất cả")) {
-                pst.setString(index++, loaiNuoc);
-            }
-
-            if (maDM != null && !maDM.equals("Tất cả")) {
-                pst.setString(index++, maDM);
-            }
-
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                SanPham sp = new SanPham();
-                sp.setMaSP(rs.getString("MaSP"));
-                sp.setTenSP(rs.getNString("TenSP"));
-                sp.setGiaBan(rs.getLong("GiaBan"));
-                sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
-                sp.setAnh(rs.getString("Anh"));
-
-                sp.setDanhMuc(new DanhMuc(
-                        rs.getString("MaDM"),
-                        rs.getString("TenDM")));
-
-                list.add(sp);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return list;
-    }
 
     public Boolean xoaSanPham(String maSp) {
         String sql = "UPDATE SanPham SET TrangThai=0 WHERE MaSP = ?";
