@@ -208,6 +208,12 @@ public class BanHangUI extends JPanel {
             }
             hd.setListChiTietHoaDon(listCT);
 
+            String loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
+
+            if (loiTonKho != null) {
+                JOptionPane.showMessageDialog(this, loiTonKho, "Cảnh báo kho hàng", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
             if (hoaDonBUS.ThanhToan(hd)) {
                 int luaChon = JOptionPane.showConfirmDialog(this,
                         "Thanh toán thành công! Bạn có muốn in hóa đơn không?",

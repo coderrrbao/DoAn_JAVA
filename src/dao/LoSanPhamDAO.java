@@ -36,4 +36,70 @@ public class LoSanPhamDAO {
         return list;
 
     }
+
+    public boolean truSoLuong(String maSP, int soLuongCanTru) {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+            try (PreparedStatement pstGet = conn.prepareStatement(
+                    "SELECT MaLoSP, SoLuong FROM LoSanPham WHERE MaSP = ? AND SoLuong > 0 ORDER BY HanSuDung ASC")) {
+                pstGet.setString(1, maSP);
+
+                try (ResultSet rs = pstGet.executeQuery()) {
+                    int conLai = soLuongCanTru;
+                    try (PreparedStatement pstUpdate = conn.prepareStatement(
+                            "UPDATE LoSanPham SET SoLuong = SoLuong - ? WHERE MaLoSP = ?")) {
+
+                        while (rs.next() && conLai > 0) {
+                            String maLo = rs.getString("MaLoSP");
+                            int slTrongLo = rs.getInt("SoLuong");
+                            int truO_LoNay = (slTrongLo >= conLai) ? conLai : slTrongLo;
+
+                            pstUpdate.setInt(1, truO_LoNay);
+                            pstUpdate.setString(2, maLo);
+                            pstUpdate.addBatch();
+
+                            conLai -= truO_LoNay;
+                        }
+
+                        if (conLai == 0) {
+                            pstUpdate.executeBatch();
+                            conn.commit();
+                            return true;
+                        } else {
+                            conn.rollback();
+                            System.out.println("Lỗi: Kho không đủ hàng (Thiếu " + conLai + ") cho mã " + maSP);
+                            return false;
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            try { if (conn != null) conn.rollback(); } catch (Exception ex) {} // Hủy nếu lỗi sập mạng/code
+            return false;
+        } finally {
+            try { if (conn != null) conn.close(); } catch (Exception e) {} // Chỉ cần đóng mỗi Conn
+        }
+    }
+
+    public boolean kiemTraDuHang(String maSP, int soLuongCan) {
+        String sql = "SELECT SUM(SoLuong) FROM LoSanPham WHERE MaSP = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, maSP);
+            ResultSet rs = pst.executeQuery();
+
+            if (rs.next()) {
+                int tongTonKho = rs.getInt(1);
+                return tongTonKho >= soLuongCan;
+            }
+            return false;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
