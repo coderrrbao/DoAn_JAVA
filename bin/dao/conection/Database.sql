@@ -581,7 +581,7 @@ WHERE name = 'PhieuNhapSanPham')
 BEGIN
     CREATE TABLE PhieuNhapSanPham
     (
-        MaLoSP VARCHAR(50) NOT NULL PRIMARY KEY,
+        MaPN VARCHAR(50)NOT NULL PRIMARY KEY,
         NgayNhap DATE,
         MaNV VARCHAR(50),
         TongTien DECIMAL(18, 2),
@@ -591,13 +591,13 @@ BEGIN
         TrangThai BIT
     )
     INSERT INTO PhieuNhapSanPham
-        (MaLoSP, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
+        (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
-        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', "NULL", 1),
-        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', "hi", 1),
-        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', "hi", 1),
-        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', "hi", 1),
-        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', "hi", 1)
+        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', 'NULL', 1),
+        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', 'hi', 1),
+        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', 'hi', 1),
+        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', 'hi', 1),
+        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', 'hi', 1)
 END;
 
 /* =============================================
@@ -639,7 +639,7 @@ WHERE name = 'PhieuNhapNguyenLieu')
 BEGIN
     CREATE TABLE PhieuNhapNguyenLieu
     (
-        MaLoNL VARCHAR(50) NOT NULL PRIMARY KEY,
+        MaPN VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayNhap DATE,
         MaNV VARCHAR(50),
         TongTien DECIMAL(18, 2),
@@ -649,7 +649,7 @@ BEGIN
         TrangThai BIT
     )
     INSERT INTO PhieuNhapNguyenLieu
-        (MaLoNL, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
+        (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
         ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', N'', 1),
         ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', N'Đã xác nhận', N'', 1),
@@ -882,7 +882,7 @@ WHERE name = 'FK_PhieuNhapNL_NCC')
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_LoSanPham_PhieuNhapSP')
-    ALTER TABLE LoSanPham ADD CONSTRAINT FK_LoSanPham_PhieuNhapSP FOREIGN KEY (MaPN) REFERENCES PhieuNhapSanPham(MaLoSP);
+    ALTER TABLE LoSanPham ADD CONSTRAINT FK_LoSanPham_PhieuNhapSP FOREIGN KEY (MaPN) REFERENCES PhieuNhapSanPham(MaPN);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
@@ -892,7 +892,7 @@ WHERE name = 'FK_LoSanPham_SanPham')
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_LoNguyenLieu_PhieuNhapNL')
-    ALTER TABLE LoNguyenLieu ADD CONSTRAINT FK_LoNguyenLieu_PhieuNhapNL FOREIGN KEY (MaPN) REFERENCES PhieuNhapNguyenLieu(MaLoNL);
+    ALTER TABLE LoNguyenLieu ADD CONSTRAINT FK_LoNguyenLieu_PhieuNhapNL FOREIGN KEY (MaPN) REFERENCES PhieuNhapNguyenLieu(MaPN);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys

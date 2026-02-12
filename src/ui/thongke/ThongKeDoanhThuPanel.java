@@ -2,8 +2,10 @@ package ui.thongke;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -11,6 +13,7 @@ import javax.swing.JPanel;
 import org.jfree.chart.ChartPanel;
 import org.jfree.data.category.DefaultCategoryDataset;
 
+import bus.HoaDonBUS;
 import ui.component.LocNgay_Item;
 import util.TaoUI;
 
@@ -23,8 +26,15 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     public ThongKeDoanhThuPanel() {
         setLayout(new BorderLayout());
+        setBackground(Color.white);
         TaoUI.suaBorderChoPanel(this, 0, 10, 0, 10);
         initGUI();
+    }
+
+
+    private void loadDuLieu(){
+        HoaDonBUS hoaDonBUS = new HoaDonBUS();
+        
     }
 
     private void initGUI() {
@@ -34,11 +44,13 @@ public class ThongKeDoanhThuPanel extends JPanel {
     }
 
     private JPanel topButtonPanel() {
-        JPanel top = TaoUI.taoPanelCanGiua(880, 50);
-
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(880, 40);
+        top.setBackground(Color.white);
         btnThongKe = new JButton("Thống kê");
-        locNgay = new LocNgay_Item(350, 30);
+        TaoUI.setFixSize(btnThongKe, 100, 28);
+        locNgay = new LocNgay_Item(400, 28);
         top.add(locNgay);
+        top.add(Box.createRigidArea(new Dimension(20, 0)));
         top.add(btnThongKe);
         return top;
     }
@@ -72,6 +84,7 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     private JPanel tongDoanhThu() {
         JPanel tongDTPanel = TaoUI.taoPanelCanGiua(880, 60);
+        tongDTPanel.setBackground(Color.white);
         JLabel titleTongDT = new JLabel("Tổng doanh thu : ");
         titleTongDT.setFont(new Font(null, Font.BOLD, 18));
         lbTongDoanhThu = new JLabel("99999999đ");
