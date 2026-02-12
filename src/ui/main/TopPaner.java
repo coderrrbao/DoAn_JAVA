@@ -15,16 +15,19 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import dto.NhanVien;
 import util.TaoUI;
 
 public class TopPaner extends JPanel {
+    private JLabel anhDaiDien;
+    private JLabel ten, chucVu;
+
     public TopPaner() {
         setBackground(Color.white);
-        setPreferredSize(new Dimension(1000, 80));
-        setMinimumSize(new Dimension(1000, 80));
-        setMaximumSize(new Dimension(new Dimension(1000, 80)));
+        TaoUI.setFixSize(this, 1000, 80);
         setBorder(BorderFactory.createEmptyBorder(0, 65, 0, 0));
         setLayout(new BorderLayout());
+
         ImageIcon icon = new ImageIcon(getClass().getResource("/assets/img/logo.png"));
         Image img = icon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
         ImageIcon anh = new ImageIcon(img);
@@ -34,26 +37,43 @@ public class TopPaner extends JPanel {
         jLabel.setIconTextGap(70);
         add(jLabel);
 
-        JPanel thongTinUser = new JPanel();
+        JPanel thongTinUser = new JPanel(new BorderLayout());
         thongTinUser.setLayout(new BoxLayout(thongTinUser, BoxLayout.X_AXIS));
 
-        ImageIcon icon1 = new ImageIcon(getClass().getResource("/assets/img/goku.png"));
-        icon1 = TaoUI.taoAnhBoTron(icon1, 50);
-        Image img1 = icon1.getImage().getScaledInstance(60, 60, Image.SCALE_SMOOTH);
-        ImageIcon avata = new ImageIcon(img1);
-        JLabel anhDaiDien = new JLabel(avata);
-        
+        anhDaiDien = new JLabel();
         anhDaiDien.setBackground(Color.white);
         anhDaiDien.setAlignmentX(Component.CENTER_ALIGNMENT);
-        thongTinUser.add(anhDaiDien);
+
+        thongTinUser.add(anhDaiDien, BorderLayout.CENTER);
         thongTinUser.setBackground(Color.white);
-        JLabel ten = new JLabel("Nguyễn Hoài Bảo");
-        thongTinUser.add(Box.createRigidArea(new Dimension(3, 0)));
+
+        JPanel tenVaChucVu = TaoUI.taoPanelCanGiua(140, 80);
+        tenVaChucVu.setBackground(Color.white);
+        ten = new JLabel();
+        chucVu = new JLabel();
+        chucVu.setFont(new Font("Arial", Font.BOLD, 13));
+        chucVu.setForeground(Color.red);
+        TaoUI.addItem(tenVaChucVu, ten, 5, false);
+        TaoUI.addItem(tenVaChucVu, chucVu, 5, false);
+        thongTinUser.add(tenVaChucVu, BorderLayout.EAST);
+
         thongTinUser.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
-        ten.setAlignmentX(Component.CENTER_ALIGNMENT);
-        ten.setFont(new Font("Arial", Font.BOLD, 15));
-        thongTinUser.add(ten);
+        ten.setFont(new Font("Arial", Font.BOLD, 14));
         add(thongTinUser, BorderLayout.EAST);
 
+        NhanVien nhanVien = new NhanVien();
+        nhanVien.setAnh("/assets/img/goku.png");
+        nhanVien.setChucVu("Admin");
+        nhanVien.setTenNV("Nguyễn Hoài Bảo");
+
+        capNhapThongTin(nhanVien);
     }
+
+    public void capNhapThongTin(NhanVien user) {
+        ImageIcon anh = TaoUI.taoImageIcon(user.getAnh(), 70, 70);
+        anhDaiDien.setIcon(anh);
+        ten.setText(user.getTenNV());
+        chucVu.setText(user.getChucVu());
+    }
+
 }

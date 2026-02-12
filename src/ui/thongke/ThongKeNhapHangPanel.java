@@ -8,6 +8,12 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import bus.NhaCungCapBUS;
+import bus.PhieuNhapNguyenLieuBUS;
+import bus.PhieuNhapSanPhamBUS;
+import dto.NhaCungCap;
+import dto.PhieuNhapNguyenLieu;
+import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
 import ui.thongke.thongkechung.ThongKeChungNhapPanel;
 import util.TaoUI;
@@ -17,23 +23,35 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.util.ArrayList;
+import java.util.Locale;
 
 public class ThongKeNhapHangPanel extends JPanel {
     private ThongKeChungNhapPanel thongKeChungNH;
     private JButton xuatExbtn;
     private LocNgay_Item locNgay;
-    private DefaultTableModel model;
+    private DefaultTableModel modelSP, modelNL;
+
+    private ArrayList<PhieuNhapNguyenLieu> listPhieuNhapNguyenLieu = null;
+    private ArrayList<PhieuNhapSanPham> listPhieuNhapSanPham = null;
+    private PhieuNhapNguyenLieuBUS phieuNhapNguyenLieuBUS = PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS();
+    private PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+    JLabel soLoSP, soLoNL, tongTienNhapNL, tongTienNhapSP, tongTienNhapChung;
+
     public ThongKeNhapHangPanel() {
         setLayout(new BorderLayout());
 
         initGUI();
-
+        loadDuLieu();
     }
 
     private JPanel buttonPanel() {
         JPanel buttonPanel = TaoUI.taoPanelBoxLayoutNgang(880, 30);
-        locNgay = new LocNgay_Item(350, 30);
+        locNgay = new LocNgay_Item(400, 30);
         xuatExbtn = new JButton("Xuất exel");
+        TaoUI.setFixSize(xuatExbtn, 100, 30);
         buttonPanel.add(locNgay);
         buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
         buttonPanel.add(xuatExbtn);
@@ -59,47 +77,65 @@ public class ThongKeNhapHangPanel extends JPanel {
         add(tongChungPanel(), BorderLayout.SOUTH);
     }
 
-    public void loadDuLieu(){
-        
+    public void loadDuLieu() {
+        listPhieuNhapNguyenLieu = phieuNhapNguyenLieuBUS.layListPhieuNhapNguyenLieu();
+        listPhieuNhapSanPham = phieuNhapSanPhamBUS.layListPhieuNhapSanPham();
+
+        double giaNhapSP = 0;
+        double giaNhapNL = 0;
+        modelNL.setRowCount(0);
+        modelSP.setRowCount(0);
+        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+        for (PhieuNhapNguyenLieu phieuNhapNguyenLieu : listPhieuNhapNguyenLieu) {
+            NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapNguyenLieu.getMaNCC());
+            modelNL.addRow(new Object[] { phieuNhapNguyenLieu.getMaPN(), phieuNhapNguyenLieu.getNgayNhap(),
+                    phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(), nhaCungCap.getTenNCC() });
+            giaNhapNL += phieuNhapNguyenLieu.getTongTien();
+        }
+        for (PhieuNhapSanPham phieuNhapSanPham : listPhieuNhapSanPham) {
+            NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapSanPham.getMaNCC());
+            modelSP.addRow(new Object[] { phieuNhapSanPham.getMaPN(), phieuNhapSanPham.getNgayNhap(),
+                    phieuNhapSanPham.getMaNV(), phieuNhapSanPham.getGhiChu(), nhaCungCap.getTenNCC() });
+            giaNhapSP += phieuNhapSanPham.getTongTien();
+        }
+        soLoNL.setText("Số lượng: " + listPhieuNhapNguyenLieu.size() + " lô");
+        soLoSP.setText("Số lượng: " + listPhieuNhapSanPham.size() + " lô");
+        tongTienNhapSP.setText(chuyenDinhDangTienTe(giaNhapSP));
+        tongTienNhapNL.setText(chuyenDinhDangTienTe(giaNhapNL));
+        tongTienNhapChung.setText(chuyenDinhDangTienTe(giaNhapNL + giaNhapSP));
+        thongKeChungNH.setLoNguyenLieu(listPhieuNhapNguyenLieu.size());
+        thongKeChungNH.setLoSanPham(listPhieuNhapSanPham.size());
+        thongKeChungNH.setTongLo(listPhieuNhapNguyenLieu.size() + listPhieuNhapSanPham.size());
+
     }
 
     private JPanel thongKeSpPanel() {
         JPanel thongKeLoSp = new JPanel(new BorderLayout());
 
         JPanel top = TaoUI.taoPanelCanGiua(880, 40);
-        top.add(new JLabel("Danh sách nhập sản phẩm"));
-        top.setBackground(Color.green);
+        JLabel jLabel = new JLabel("Danh sách nhập sản phẩm");
+        jLabel.setFont(new Font(null, Font.BOLD, 16));
+        top.add(jLabel);
+        top.setBackground(new Color(225, 235, 245));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
 
-            // Object[][] data = {
-            //         { "PN001", "10/01/2026", "Nguyễn Văn A", "Nhập hàng định kỳ", "Công ty Coca-Cola" },
-            //         { "PN002", "11/01/2026", "Trần Thị B", "Nhập bổ sung Tết", "Suntory Pepsico" },
-            //         { "PN003", "11/01/2026", "Lê Văn C", "Hàng khuyến mãi", "Nhà máy Bia Sài Gòn" },
-            //         { "PN004", "12/01/2026", "Nguyễn Văn A", "Nhập gấp", "Công ty Tân Hiệp Phát" },
-            //         { "PN005", "12/01/2026", "Trần Thị B", "Kiểm kho nhập bù", "Nước khoáng Vĩnh Hảo" },
-            //         { "PN006", "13/01/2026", "Lê Văn C", "Nhập hàng mới", "Công ty TH True Milk" },
-            //         { "PN007", "13/01/2026", "Nguyễn Văn A", "Nhập nước suối", "Lavie Việt Nam" },
-            //         { "PN008", "14/01/2026", "Trần Thị B", "Nhập nước tăng lực", "Red Bull Việt Nam" },
-            //         { "PN009", "14/01/2026", "Lê Văn C", "Nhập bổ sung", "Công ty Nestle" },
-            //         { "PN010", "15/01/2026", "Nguyễn Văn A", "Hàng về trễ", "Công ty Masan" }
-            // };
-        model = new DefaultTableModel();
-        JScrollPane table = TaoUI.taoTableScroll(model);
+        modelSP = new DefaultTableModel(columns, 0);
+        JScrollPane table = TaoUI.taoTableScroll(modelSP);
 
         // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
-        JLabel lblSl = new JLabel("Số lượng: 10 lô");
+        soLoSP = new JLabel("Số lượng: 10 lô");
         JLabel tongTienNhapTitle = new JLabel("Tiền nhập sản phẩm: ");
-        JLabel tongTienNhap = new JLabel("999.999.999đ");
-        tongTienNhap.setFont(new Font(null, Font.BOLD, 16));
-        tongTienNhap.setForeground(Color.red);
+        tongTienNhapSP = new JLabel("999.999.999đ");
+        tongTienNhapSP.setFont(new Font(null, Font.BOLD, 16));
+        tongTienNhapSP.setForeground(Color.red);
 
-        bottom.add(Box.createHorizontalStrut(10)); // Khoảng cách lề trái
-        bottom.add(lblSl);
-        bottom.add(Box.createHorizontalGlue()); // Đẩy phần tiền sang phải
+        bottom.add(Box.createHorizontalStrut(10));
+        bottom.add(soLoSP);
+        bottom.add(Box.createHorizontalGlue());
         bottom.add(tongTienNhapTitle);
-        bottom.add(tongTienNhap);
-        bottom.add(Box.createHorizontalStrut(10)); // Khoảng cách lề phải
+        bottom.add(tongTienNhapSP);
+        bottom.add(Box.createHorizontalStrut(10));
 
         thongKeLoSp.add(top, BorderLayout.NORTH);
         thongKeLoSp.add(table, BorderLayout.CENTER);
@@ -107,43 +143,45 @@ public class ThongKeNhapHangPanel extends JPanel {
         return thongKeLoSp;
     }
 
+    private String chuyenDinhDangTienTe(Double gia) {
+        if (gia == null) {
+            return "0 đ";
+        }
+
+        DecimalFormatSymbols symbols = new DecimalFormatSymbols(Locale.of("vi", "VN"));
+        symbols.setGroupingSeparator('.');
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,###", symbols);
+
+        return decimalFormat.format(gia) + " đ";
+    }
+
     private JPanel thongKeNguyenLieu() {
         JPanel thongKeLoNL = new JPanel(new BorderLayout());
 
         JPanel top = TaoUI.taoPanelCanGiua(880, 40);
-        top.add(new JLabel("Danh sách nhập nguyên liệu"));
-        top.setBackground(Color.green);
+        JLabel jLabel = new JLabel("Danh sách nhập nguyên liệu");
+        jLabel.setFont(new Font(null, Font.BOLD, 16));
+        top.add(jLabel);
+        top.setBackground(new Color(225, 235, 245));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
 
-        Object[][] data = {
-                { "PNNL01", "10/01/2026", "Nguyễn Văn A", "Nhập đường tinh luyện", "Công ty Biên Hòa" },
-                { "PNNL02", "11/01/2026", "Trần Thị B", "Nhập sữa tươi", "Vinamilk Việt Nam" },
-                { "PNNL03", "11/01/2026", "Lê Văn C", "Bột mì bổ sung", "Công ty Meizan" },
-                { "PNNL04", "12/01/2026", "Nguyễn Văn A", "Nhập trà đen", "Phúc Long Tea" },
-                { "PNNL05", "12/01/2026", "Trần Thị B", "Hạt cà phê Robusta", "Trung Nguyên Coffee" },
-                { "PNNL06", "13/01/2026", "Lê Văn C", "Syrup các loại", "Monin Việt Nam" },
-                { "PNNL07", "13/01/2026", "Nguyễn Văn A", "Kem béo thực vật", "Rich's Products" },
-                { "PNNL08", "14/01/2026", "Trần Thị B", "Trân châu đen", "Gia Thịnh Phát" },
-                { "PNNL09", "14/01/2026", "Lê Văn C", "Hương liệu thực phẩm", "Công ty Nestle" },
-                { "PNNL10", "15/01/2026", "Nguyễn Văn A", "Nhập bổ sung khẩn cấp", "Nông sản Việt" }
-        };
-
-        DefaultTableModel model = new DefaultTableModel(data, columns);
-        JScrollPane table = TaoUI.taoTableScroll(model);
+        modelNL = new DefaultTableModel(columns, 0);
+        JScrollPane table = TaoUI.taoTableScroll(modelNL);
 
         // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
-        JLabel lblSl = new JLabel("Số lượng: 10 lô");
+        soLoNL = new JLabel("Số lượng: 10 lô");
         JLabel tongTienNhapTitle = new JLabel("Tiền nhập nguyên liệu: ");
-        JLabel tongTienNhap = new JLabel("50.500.000đ");
-        tongTienNhap.setFont(new Font(null, Font.BOLD, 16));
-        tongTienNhap.setForeground(Color.red);
+        tongTienNhapNL = new JLabel("50.500.000đ");
+        tongTienNhapNL.setFont(new Font(null, Font.BOLD, 16));
+        tongTienNhapNL.setForeground(Color.red);
 
         bottom.add(javax.swing.Box.createHorizontalStrut(10));
-        bottom.add(lblSl);
+        bottom.add(soLoNL);
         bottom.add(javax.swing.Box.createHorizontalGlue());
         bottom.add(tongTienNhapTitle);
-        bottom.add(tongTienNhap);
+        bottom.add(tongTienNhapNL);
         bottom.add(javax.swing.Box.createHorizontalStrut(10));
 
         thongKeLoNL.add(top, BorderLayout.NORTH);
@@ -156,13 +194,13 @@ public class ThongKeNhapHangPanel extends JPanel {
     public JPanel tongChungPanel() {
         JPanel tongChungPanel = TaoUI.taoPanelBoxLayoutNgang(880, 40);
         JLabel tongTienNhapTitle = new JLabel("TỔNG TIỀN NHẬP CHUNG: ");
-        JLabel tongTienNhap = new JLabel("1.050.499.999đ");
-        tongTienNhap.setFont(new Font(null, Font.BOLD, 18));
-        tongTienNhap.setForeground(Color.red);
+        tongTienNhapChung = new JLabel("1.050.499.999đ");
+        tongTienNhapChung.setFont(new Font(null, Font.BOLD, 18));
+        tongTienNhapChung.setForeground(Color.red);
 
         tongChungPanel.add(javax.swing.Box.createHorizontalGlue());
         tongChungPanel.add(tongTienNhapTitle);
-        tongChungPanel.add(tongTienNhap);
+        tongChungPanel.add(tongTienNhapChung);
         tongChungPanel.add(javax.swing.Box.createHorizontalStrut(10));
 
         return tongChungPanel;

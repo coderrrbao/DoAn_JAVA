@@ -40,9 +40,9 @@ public class ThanhToanPanel extends JPanel {
         lblMa.setFont(new Font("Arial", Font.PLAIN, 14));
 
         txtMaGiamGia = new JTextField(15);
-        txtMaGiamGia.setPreferredSize(new Dimension(180, 30));
+        TaoUI.setFixSize(txtMaGiamGia, 180, 30);
         btnMGG = new JButton("Xác nhận");
-        TaoUI.setFixSize(btnMGG, 150, 30);
+        TaoUI.setFixSize(btnMGG, 165, 30);
 
         TaoUI.addItem(rightPanel, lblMa, 3, false);
         TaoUI.addItem(rightPanel, txtMaGiamGia, 3, false);
@@ -64,7 +64,6 @@ public class ThanhToanPanel extends JPanel {
         TaoUI.addItem(buttonsPanel, huyButton, 5, true);
         add(buttonsPanel);
     }
-
 
     public JButton getBtnThanhToan() {
         return thanhToanButton;
@@ -103,7 +102,8 @@ public class ThanhToanPanel extends JPanel {
         tienKMText.setText(df.format(tienGiam) + " VNĐ");
 
         double tongThanhToan = tongTienHang - tienGiam;
-        if (tongThanhToan < 0) tongThanhToan = 0;
+        if (tongThanhToan < 0)
+            tongThanhToan = 0;
 
         tongThanhToanText.setText(df.format(tongThanhToan) + " VNĐ");
     }

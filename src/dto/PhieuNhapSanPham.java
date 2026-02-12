@@ -1,41 +1,41 @@
 package dto;
 
-import java.sql.Date;
-
 public class PhieuNhapSanPham {
-    private String maLoSP;
-    private Date ngayNhap;
+    private String maPN;
+    private String ngayNhap;
     private String maNV;
     private double tongTien;
     private String maNCC;
-    private boolean trangThai;
+    private String trangThaiXuLy;
+    private String ghiChu;
 
     public PhieuNhapSanPham() {
     }
 
-    public PhieuNhapSanPham(String maLoSP, Date ngayNhap, String maNV, double tongTien, String maNCC,
-            boolean trangThai) {
-        this.maLoSP = maLoSP;
+    public PhieuNhapSanPham(String maLoSP, String ngayNhap, String maNV, double tongTien, String maNCC,
+            String trangThai, String ghiChu) {
+        this.maPN = maLoSP;
         this.ngayNhap = ngayNhap;
         this.maNV = maNV;
         this.tongTien = tongTien;
         this.maNCC = maNCC;
-        this.trangThai = trangThai;
+        this.trangThaiXuLy = trangThai;
+        this.ghiChu = ghiChu;
     }
 
-    public String getMaLoSP() {
-        return maLoSP;
+    public String getMaPN() {
+        return maPN;
     }
 
-    public void setMaLoSP(String maLoSP) {
-        this.maLoSP = maLoSP;
+    public void setMaPN(String maLoSP) {
+        this.maPN = maLoSP;
     }
 
-    public Date getNgayNhap() {
+    public String getNgayNhap() {
         return ngayNhap;
     }
 
-    public void setNgayNhap(Date ngayNhap) {
+    public void setNgayNhap(String ngayNhap) {
         this.ngayNhap = ngayNhap;
     }
 
@@ -63,11 +63,19 @@ public class PhieuNhapSanPham {
         this.maNCC = maNCC;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
+    public String getTrangThaiXuLy() {
+        return trangThaiXuLy;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
+    public void setTrangThaiXuLy(String trangThaiXuLy) {
+        this.trangThaiXuLy = trangThaiXuLy;
+    }
+
+    public String getGhiChu() {
+        return ghiChu;
+    }
+
+    public void setGhiChu(String ghiChu) {
+        this.ghiChu = ghiChu;
     }
 }

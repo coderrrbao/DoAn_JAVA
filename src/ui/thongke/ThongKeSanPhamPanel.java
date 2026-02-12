@@ -29,23 +29,19 @@ public class ThongKeSanPhamPanel extends JPanel {
 
     public ThongKeSanPhamPanel() {
         setLayout(new BorderLayout());
-
-        // Panel cha dùng BoxLayout Y
         JPanel thongKeSp = new JPanel();
         thongKeSp.setLayout(new BoxLayout(thongKeSp, BoxLayout.Y_AXIS));
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(1150, 100);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(1200, 100);
         top.add(new ThongKeChungSpPanel());
         thongKeSp.add(top);
 
-        JPanel mid = TaoUI.taoPanelBoxLayoutNgang(1150, 400);
-        mid.setBackground(Color.red);
+        JPanel mid = TaoUI.taoPanelBoxLayoutNgang(1200, 400);
         thongKeSp.add(mid);
-        JPanel ctnMid = TaoUI.taoPanelBorderLayout(1150, 400);
-        ctnMid.setBackground(Color.yellow);
+        JPanel ctnMid = TaoUI.taoPanelBorderLayout(1200, 400);
         mid.add(ctnMid);
-        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(400, 400);
-        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(470, 400);
+        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(350, 400);
+        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(800, 400);
         ctnMid.add(bieuDoTron, BorderLayout.WEST);
         ctnMid.add(bieuDoCot, BorderLayout.CENTER);
         bieuDoCot.setBackground(Color.red);
@@ -59,7 +55,7 @@ public class ThongKeSanPhamPanel extends JPanel {
 
         bieuDoTron.add(TaoUI.taoBieuDoTron("Số sản phẩm bán ra theo danh mục", datasetTron), BorderLayout.CENTER);
 
-        JPanel bottom = TaoUI.taoPanelBorderLayout(1150, 200);
+        JPanel bottom = TaoUI.taoPanelBorderLayout(1200, 200);
         bottom.setBackground(Color.cyan);
         thongKeSp.add(bottom);
 
