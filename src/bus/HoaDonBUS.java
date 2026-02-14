@@ -1,4 +1,5 @@
 package bus;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 
@@ -11,7 +12,6 @@ import dao.LoSanPhamDAO;
 import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.HoaDon;
-
 
 import javax.swing.*;
 
@@ -34,32 +34,37 @@ public class HoaDonBUS {
                 if (!loSanPhamDAO.kiemTraDuHang(maSP, soLuongMua)) {
                     return "Sản phẩm " + ct.getSanPham().getTenSP() + " không đủ hàng!";
                 }
-            }
-            else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
+            } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                 // Logic mới: Kiểm tra nguyên liệu
-                ArrayList<ChiTietCongThuc> lstNguyenLieu = congThucDAO.layCongThucPhaChe(maSP, maSize);
+                // ArrayList<ChiTietCongThuc> lstNguyenLieu =
+                // congThucDAO.layCongThucPhaChe(maSP, maSize);
 
-                if (lstNguyenLieu.isEmpty()) {
-                    System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
-                    continue;
-                }
+                // if (lstNguyenLieu.isEmpty()) {
+                // System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có
+                // công thức!");
+                // continue;
+                // }
 
-                for (ChiTietCongThuc ctct : lstNguyenLieu) {
-                    double canDung = ctct.getSoLuong() * soLuongMua;
-                    if (!loNguyenLieuDAO.kiemTraDuNguyenLieu(ctct.getNguyenLieu().getMaNL(), canDung)) {
-                        return "Nguyên liệu " + ctct.getNguyenLieu().getTenNL() + " không đủ để pha chế!";
-                    }
-                }
+                // for (ChiTietCongThuc ctct : lstNguyenLieu) {
+                // double canDung = ctct.getSoLuong() * soLuongMua;
+                // if (!loNguyenLieuDAO.kiemTraDuNguyenLieu(ctct.getNguyenLieu().getMaNL(),
+                // canDung)) {
+                // return "Nguyên liệu " + ctct.getNguyenLieu().getTenNL() + " không đủ để pha
+                // chế!";
+                // }
+                // }
             }
         }
         return null;
     }
 
     public boolean ThanhToan(HoaDon hd) {
-        if (!hoaDonDAO.themHoaDon(hd)) return false;
+        if (!hoaDonDAO.themHoaDon(hd))
+            return false;
 
         for (ChiTietHoaDon ct : hd.getListChiTietHoaDon()) {
-            if (!chiTietHoaDonDAO.themChiTietHoaDon(ct)) return false;
+            if (!chiTietHoaDonDAO.themChiTietHoaDon(ct))
+                return false;
 
             String loaiNuoc = ct.getSanPham().getLoaiNuoc();
             String maSP = ct.getSanPham().getMaSP();
@@ -67,16 +72,17 @@ public class HoaDonBUS {
             int soLuongMua = ct.getSoLuong();
 
             if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
-                if (!loSanPhamDAO.truSoLuong(maSP, soLuongMua)) return false;
-            }
-            else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
-                ArrayList<ChiTietCongThuc> lstNguyenLieu = congThucDAO.layCongThucPhaChe(maSP, maSize);
-                for (ChiTietCongThuc ctct : lstNguyenLieu) {
-                    double canTru = ctct.getSoLuong() * soLuongMua;
-                    if (!loNguyenLieuDAO.truNguyenLieu(ctct.getNguyenLieu().getMaNL(), canTru)) {
-                        return false;
-                    }
-                }
+                if (!loSanPhamDAO.truSoLuong(maSP, soLuongMua))
+                    return false;
+            } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
+                // ArrayList<ChiTietCongThuc> lstNguyenLieu =
+                // congThucDAO.layCongThucPhaChe(maSP, maSize);
+                // for (ChiTietCongThuc ctct : lstNguyenLieu) {
+                // double canTru = ctct.getSoLuong() * soLuongMua;
+                // if (!loNguyenLieuDAO.truNguyenLieu(ctct.getNguyenLieu().getMaNL(), canTru)) {
+                // return false;
+                // }
+                // }
             }
         }
         return true;

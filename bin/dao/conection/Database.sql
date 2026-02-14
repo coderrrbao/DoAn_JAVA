@@ -320,7 +320,11 @@ BEGIN
     (
         MaCT VARCHAR(50) NOT NULL PRIMARY KEY,
         MaSP VARCHAR(50),
-        TrangThai BIT
+        MaSize VARCHAR(50) NULL,
+        TrangThai BIT,
+        CONSTRAINT FK_CongThuc_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP),
+        CONSTRAINT FK_CongThuc_Size FOREIGN KEY (MaSize) REFERENCES Size(MaSize)
+
     )
     INSERT INTO CongThuc
         (MaCT, MaSP, TrangThai)

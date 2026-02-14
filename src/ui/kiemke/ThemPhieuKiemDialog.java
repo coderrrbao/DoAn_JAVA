@@ -37,20 +37,46 @@ public class ThemPhieuKiemDialog extends JDialog {
     private LocNgay_Item locNgay_Item;
     private JComboBox<String> cbLoaiLo;
     private JTextField tfMaNv, tfSoLuong;
-    private JButton btnThem, btnLamMoi;
+    private JButton btnThem, btnLamMoi, btnSua, btnLuu;
     private JTextArea textArea;
+    private JComboBox<String> cbXacNhan;
 
-    public ThemPhieuKiemDialog(KiemKeUI kiemKeUI) {
+    private PhieuKiemKe phieuKiemKe = null;
+
+    public ThemPhieuKiemDialog(KiemKeUI kiemKeUI, PhieuKiemKe pkk) {
         super((JDialog) null, true);
         setSize(500, 540);
         setLocationRelativeTo(null);
-
+        phieuKiemKe = pkk;
         this.kiemKeUI = kiemKeUI;
 
         setLayout(new BorderLayout());
         initGUI();
         ganSuKien();
         loaiDuLieu();
+
+        if (phieuKiemKe != null) {
+
+            cbLoaiLo.setSelectedItem(phieuKiemKe.getLoaiLo());
+
+            int row = layIndexLo(phieuKiemKe.getMaLo());
+            table.setRowSelectionInterval(row, row);
+            table.scrollRectToVisible(table.getCellRect(row, 0, true));
+
+            textArea.setText(phieuKiemKe.getGhiChu());
+            tfMaNv.setText(phieuKiemKe.getMaNV());
+            tfSoLuong.setText(String.valueOf(phieuKiemKe.getSoLuongThuc()));
+
+            cbXacNhan.setSelectedItem(phieuKiemKe.getTrangThaiXuLy());
+
+            btnLamMoi.setVisible(false);
+            btnThem.setVisible(false);
+            btnLuu.setEnabled(false);
+        } else {
+            btnSua.setVisible(false);
+            btnLuu.setVisible(false);
+            cbXacNhan.setVisible(false);
+        }
     }
 
     private void loaiDuLieu() {
@@ -75,16 +101,26 @@ public class ThemPhieuKiemDialog extends JDialog {
 
     }
 
+    private int layIndexLo(String maLo) {
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 0).toString().equals(maLo)) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     private void ganSuKien() {
         cbLoaiLo.addActionListener(e -> {
             loaiDuLieu();
         });
         btnThem.addActionListener(e -> {
 
-            PhieuKiemKeBUS phieuKiemKeBUS = new PhieuKiemKeBUS();
-            PhieuKiemKe phieuKiemKe = dongGoPhieuKiemKe();
+            PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
+            PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
             if (phieuKiemKeBUS.themPhieuKiemKe(phieuKiemKe)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thành công", "Thông báo", 2);
+                kiemKeUI.loaiDuLieu();
                 dispose();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thất bại", "Thông báo", 2);
@@ -93,6 +129,22 @@ public class ThemPhieuKiemDialog extends JDialog {
             kiemKeUI.loaiDuLieu();
         });
 
+        btnSua.addActionListener(e -> {
+            btnSua.setEnabled(false);
+            btnLuu.setEnabled(true);
+        });
+
+        btnLuu.addActionListener(e -> {
+            PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
+            PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
+            if (phieuKiemKeBUS.capNhapPhieuKiemKe(phieuKiemKe)) {
+                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thành công", "Thông báo", 1);
+                kiemKeUI.loaiDuLieu();
+                dispose();
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thất bại", "Thông báo", 1);
+            }
+        });
     }
 
     private void initGUI() {
@@ -130,6 +182,10 @@ public class ThemPhieuKiemDialog extends JDialog {
         tfMaNv.setText("NV01");
 
         input2.add(soLuongPanel);
+        String[] luaChoncb = { "Đã xác nhận", "Chưa xử lý" };
+        cbXacNhan = new JComboBox<>(luaChoncb);
+        input2.add(Box.createRigidArea(new Dimension(5, 0)));
+        input2.add(cbXacNhan);
 
         TaoUI.addItem(bottom, input1, 5, false);
         TaoUI.addItem(bottom, input2, 5, false);
@@ -142,8 +198,13 @@ public class ThemPhieuKiemDialog extends JDialog {
 
         btnThem = new JButton("Thêm");
         btnLamMoi = new JButton("Làm mới");
+        btnLuu = new JButton("Lưu");
+        btnSua = new JButton("Sửa");
+
         TaoUI.addItem(button, btnThem, 5, true);
         TaoUI.addItem(button, btnLamMoi, 5, true);
+        TaoUI.addItem(button, btnSua, 5, true);
+        TaoUI.addItem(button, btnLuu, 5, true);
 
         ctn.add(button, BorderLayout.SOUTH);
 
@@ -162,27 +223,40 @@ public class ThemPhieuKiemDialog extends JDialog {
         return scrollPane;
     }
 
-    private PhieuKiemKe dongGoPhieuKiemKe() {
-        PhieuKiemKe phieuKiemKe = new PhieuKiemKe();
+    private PhieuKiemKe dongGoiPhieuKiemKe() {
+        PhieuKiemKe pkk = new PhieuKiemKe();
         int row = table.getSelectedRow();
-        if (row > 0) {
-            phieuKiemKe.setNgayKiem(LocalDate.now().toString());
-            phieuKiemKe.setMaLo(model.getValueAt(row, 0).toString());
-            phieuKiemKe.setLoaiLo(model.getValueAt(row, 1).toString());
-            phieuKiemKe.setSoLuongSoSach(Integer.parseInt(model.getValueAt(row, 3).toString()));
-            phieuKiemKe.setSoLuongThuc(Integer.parseInt(tfSoLuong.getText()));
-            phieuKiemKe.setGhiChu(textArea.getText());
-            phieuKiemKe.setMaNV(tfMaNv.getText());
-            phieuKiemKe.setTrangThaiXuLy("Chưa xử lý");
+        if (row >= 0) {
+            if (phieuKiemKe != null) {
+                pkk.setMaKK(phieuKiemKe.getMaKK());
+            }
+            pkk.setNgayKiem(LocalDate.now().toString());
+            pkk.setMaLo(model.getValueAt(row, 0).toString());
+            pkk.setLoaiLo(model.getValueAt(row, 1).toString());
+            pkk.setSoLuongSoSach(Integer.parseInt(model.getValueAt(row, 3).toString()));
+            pkk.setSoLuongThuc(Integer.parseInt(tfSoLuong.getText()));
+            pkk.setGhiChu(textArea.getText());
+            pkk.setMaNV(tfMaNv.getText());
+            if (phieuKiemKe == null) {
+                pkk.setTrangThaiXuLy("Chưa xử lý");
+            } else {
+                pkk.setTrangThaiXuLy(cbXacNhan.getSelectedItem().toString());
+            }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn lô để kiểm kê", "Lỗi", JOptionPane.ERROR_MESSAGE);
         }
 
-        return phieuKiemKe;
+        return pkk;
     }
 
     public static void main(String[] args) {
-        JDialog dialog = new ThemPhieuKiemDialog(null);
-        dialog.setVisible(true);
+        PhieuKiemKe phieuKiemKe = new PhieuKiemKe();
+        phieuKiemKe.setGhiChu("Hihdqidhqihdhq");
+        phieuKiemKe.setMaNV("NV000001");
+        phieuKiemKe.setLoaiLo("Nguyên liệu");
+        phieuKiemKe.setMaLo("LONL03");
+        ThemPhieuKiemDialog themPhieuKiemDialog = new ThemPhieuKiemDialog(null, phieuKiemKe);
+        themPhieuKiemDialog.setVisible(true);
     }
+
 }
