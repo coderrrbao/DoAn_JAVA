@@ -17,6 +17,7 @@ import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class KiemKeUI extends JPanel {
@@ -24,7 +25,7 @@ public class KiemKeUI extends JPanel {
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
     private JButton btnThem;
-    private JButton btnSua;
+    private JButton btnSua, btnXoa;
     private PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
 
     public KiemKeUI() {
@@ -61,6 +62,24 @@ public class KiemKeUI extends JPanel {
             }
 
         });
+        locNgay.setEvent(() -> {
+            loaiDuLieu();
+        });
+
+        btnXoa.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            if (dongChon >= 0) {
+                if (phieuKiemKeBUS
+                        .xoaPhieuKiemKe(phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 1).toString()))) {
+                    TaoTinNhan.showAutoCloseMessage("Đã xóa phiếu kiểm kê thành thông", "Thông báo", 1);
+                    loaiDuLieu();
+                } else {
+                    TaoTinNhan.showAutoCloseMessage("Đã xóa phiếu kiểm kê thất bại", "Thông báo", 1);
+                }
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn dòng để xóa", "Thông báo", 1);
+            }
+        });
     }
 
     public void loaiDuLieu() {
@@ -69,10 +88,13 @@ public class KiemKeUI extends JPanel {
         ArrayList<PhieuKiemKe> listPhieuKiemKe = phieuKiemKeBUS.layListKiemKe();
         int stt = 1;
         for (PhieuKiemKe phieuKiemKe : listPhieuKiemKe) {
-            model.addRow(new Object[] { stt++, phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(), phieuKiemKe.getNgayKiem(),
-                    phieuKiemKe.getMaLo(), phieuKiemKe.getLoaiLo(), phieuKiemKe.getSoLuongSoSach(),
-                    phieuKiemKe.getSoLuongThuc(), phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
-                    phieuKiemKe.getTrangThaiXuLy() });
+            if (locNgay.ngayTrongKhoan(phieuKiemKe.getNgayKiem())) {
+                model.addRow(new Object[] { stt++, phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(),
+                        phieuKiemKe.getNgayKiem(),
+                        phieuKiemKe.getMaLo(), phieuKiemKe.getLoaiLo(), phieuKiemKe.getSoLuongSoSach(),
+                        phieuKiemKe.getSoLuongThuc(), phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
+                        phieuKiemKe.getTrangThaiXuLy() });
+            }
         }
     }
 
@@ -93,6 +115,9 @@ public class KiemKeUI extends JPanel {
         btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 35));
         top.add(btnSua);
 
+        btnXoa = new JButton("Xóa");
+        btnXoa.setPreferredSize(new Dimension(80, 35));
+        top.add(btnXoa);
         return top;
     }
 

@@ -43,6 +43,8 @@ public class ThemPhieuKiemDialog extends JDialog {
 
     private PhieuKiemKe phieuKiemKe = null;
 
+    private int dongDangChon;
+
     public ThemPhieuKiemDialog(KiemKeUI kiemKeUI, PhieuKiemKe pkk) {
         super((JDialog) null, true);
         setSize(500, 540);
@@ -59,9 +61,9 @@ public class ThemPhieuKiemDialog extends JDialog {
 
             cbLoaiLo.setSelectedItem(phieuKiemKe.getLoaiLo());
 
-            int row = layIndexLo(phieuKiemKe.getMaLo());
-            table.setRowSelectionInterval(row, row);
-            table.scrollRectToVisible(table.getCellRect(row, 0, true));
+            dongDangChon = layIndexLo(phieuKiemKe.getMaLo());
+            table.setRowSelectionInterval(dongDangChon, dongDangChon);
+            table.scrollRectToVisible(table.getCellRect(dongDangChon, 0, true));
 
             textArea.setText(phieuKiemKe.getGhiChu());
             tfMaNv.setText(phieuKiemKe.getMaNV());
@@ -72,6 +74,34 @@ public class ThemPhieuKiemDialog extends JDialog {
             btnLamMoi.setVisible(false);
             btnThem.setVisible(false);
             btnLuu.setEnabled(false);
+            textArea.setEditable(false);
+            tfSoLuong.setEditable(false);
+            tfMaNv.setEditable(false);
+            cbXacNhan.setEnabled(false);
+            cbLoaiLo.setEnabled(false);
+
+            table.setEnabled(false);
+
+            table.getSelectionModel().addListSelectionListener(e -> {
+                if (!e.getValueIsAdjusting()) {
+                    int dong = table.getSelectedRow();
+                    if (dong == dongDangChon) {
+                        return;
+                    }
+                    if (dong != -1) {
+                        int luaChon = JOptionPane.showConfirmDialog(null,
+                                "Bạn có muốn đổi sang lô " + model.getValueAt(dong, 0) + " không", "Xác nhận",
+                                JOptionPane.YES_NO_OPTION);
+                        if (luaChon == JOptionPane.YES_OPTION) {
+                            table.setRowSelectionInterval(dong, dong);
+                            dongDangChon = dong;
+                        } else {
+                            table.setRowSelectionInterval(dongDangChon, dongDangChon);
+                        }
+                    }
+                }
+            });
+
         } else {
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
@@ -88,14 +118,20 @@ public class ThemPhieuKiemDialog extends JDialog {
         if (loai.equals("Sản phẩm")) {
             ArrayList<LoSanPham> listLoSanPham = loSanPhamBUS.layListLoSanPham();
             for (LoSanPham loSanPham : listLoSanPham) {
-                model.addRow(new Object[] { loSanPham.getMaLoSP(), "Sản phẩm", loSanPham.getMaSP(),
-                        loSanPham.getSoLuong(), loSanPham.getNgayNhap() });
+                if (locNgay_Item.ngayTrongKhoan(loSanPham.getNgayNhap())) {
+                    model.addRow(new Object[] { loSanPham.getMaLoSP(), "Sản phẩm", loSanPham.getMaSP(),
+                            loSanPham.getSoLuong(), loSanPham.getNgayNhap() });
+                }
+
             }
         } else if (loai.equals("Nguyên liệu")) {
             ArrayList<LoNguyenLieu> listLoNguyenLieu = loNguyenLieuBUS.layListLoNguyenLieu();
             for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
-                model.addRow(new Object[] { loNguyenLieu.getMaLoNL(), "Nguyên liệu", loNguyenLieu.getMaNL(),
-                        loNguyenLieu.getSoLuong(), loNguyenLieu.getNgayNhap() });
+                if (locNgay_Item.ngayTrongKhoan(loNguyenLieu.getNgayNhap())) {
+                    model.addRow(new Object[] { loNguyenLieu.getMaLoNL(), "Nguyên liệu", loNguyenLieu.getMaNL(),
+                            loNguyenLieu.getSoLuong(), loNguyenLieu.getNgayNhap() });
+                }
+
             }
         }
 
@@ -132,6 +168,12 @@ public class ThemPhieuKiemDialog extends JDialog {
         btnSua.addActionListener(e -> {
             btnSua.setEnabled(false);
             btnLuu.setEnabled(true);
+            textArea.setEditable(true);
+            tfSoLuong.setEditable(true);
+            tfMaNv.setEditable(true);
+            cbXacNhan.setEnabled(true);
+            cbLoaiLo.setEnabled(true);
+            table.setEnabled(true);
         });
 
         btnLuu.addActionListener(e -> {
@@ -144,6 +186,11 @@ public class ThemPhieuKiemDialog extends JDialog {
             } else {
                 TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thất bại", "Thông báo", 1);
             }
+        });
+
+
+        locNgay_Item.setEvent(() -> {
+            loaiDuLieu();
         });
     }
 

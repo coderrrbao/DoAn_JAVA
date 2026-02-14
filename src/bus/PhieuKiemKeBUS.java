@@ -85,6 +85,37 @@ public class PhieuKiemKeBUS {
         return true;
     }
 
+    public boolean xoaPhieuKiemKe(PhieuKiemKe phieuKiemKe) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+
+            if (!phieuKiemKeDAO.xoaPhieuKiemKe(phieuKiemKe, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean capNhapPhieuKiemKe(PhieuKiemKe phieuKiemKe) {
         Connection conn = DBConnection.getConnection();
         try {

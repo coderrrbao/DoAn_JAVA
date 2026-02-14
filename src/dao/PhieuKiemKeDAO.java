@@ -98,4 +98,16 @@ public class PhieuKiemKeDAO {
             return false;
         }
     }
+
+    public boolean xoaPhieuKiemKe(PhieuKiemKe phieuKiemKe, Connection conn) {
+        String sql = "UPDATE PhieuKiemKe  SET TrangThai=? WHERE MaKK=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, 0);
+            pst.setString(2, phieuKiemKe.getMaKK());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
