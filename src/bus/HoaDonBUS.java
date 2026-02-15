@@ -38,7 +38,6 @@ public class HoaDonBUS {
                 }
             }
             else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
-                // Logic mới: Kiểm tra nguyên liệu
                 ArrayList<ChiTietCongThuc> lstNguyenLieu = congThucDAO.layCongThucPhaChe(maSP, maSize);
 
                 if (lstNguyenLieu.isEmpty()) {
@@ -85,7 +84,11 @@ public class HoaDonBUS {
                 }
                 else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                     ArrayList<ChiTietCongThuc> lstNguyenLieuCan = congThucDAO.layCongThucPhaChe(maSP, maSize);
-
+                    if (lstNguyenLieuCan.isEmpty()) {
+                        System.out.println("LỖI NGHIÊM TRỌNG: Món " + maSP + " (" + maSize + ") chưa được cấu hình công thức!");
+                        conn.rollback();
+                        return false;
+                    }
                     for (ChiTietCongThuc ctct : lstNguyenLieuCan) {
                         double canTru = ctct.getSoLuong() * soLuongMua;
                         String maNL = ctct.getNguyenLieu().getMaNL();

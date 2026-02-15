@@ -104,4 +104,13 @@ public class LoNguyenLieuDAO {
             if (pstUpdate != null) pstUpdate.close();
         }
     }
+
+    public boolean capNhapLoNguyenLieu(LoNguyenLieu lo, Connection conn) throws SQLException {
+        String sql = "UPDATE LoNguyenLieu SET SoLuong = ? WHERE MaLoNL = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setDouble(1, lo.getSoLuong());
+            pst.setString(2, lo.getMaLoNL());
+            return pst.executeUpdate() > 0;
+        }
+    }
 }

@@ -101,4 +101,13 @@ public class LoSanPhamDAO {
             return false;
         }
     }
+
+    public boolean capNhapLoSanPham(LoSanPham lo, Connection conn) throws SQLException {
+        String sql = "UPDATE LoSanPham SET SoLuong = ? WHERE MaLoSP = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, lo.getSoLuong());
+            pst.setString(2, lo.getMaLoSP());
+            return pst.executeUpdate() > 0;
+        }
+    }
 }
