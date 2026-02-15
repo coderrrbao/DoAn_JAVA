@@ -9,6 +9,8 @@ import bus.CongThucBUS;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.CongThuc;
+import dto.NguyenLieu;
+
 
 public class CongThucDAO {
     public CongThuc timCongThuc(String maSP) {
@@ -84,5 +86,38 @@ public class CongThucDAO {
             System.out.println("Lỗi truy vấn Công thức: " + e.getMessage());
         }
         return "";
+    }
+
+    public ArrayList<ChiTietCongThuc> layCongThucPhaChe(String maSP, String maSize) {
+        ArrayList<ChiTietCongThuc> list = new ArrayList<>();
+        // Câu lệnh này join 3 bảng: CongThuc -> ChiTietCongThuc -> NguyenLieu
+        String sql = "SELECT ct.MaNL, nl.TenNL, ct.SoLuong " +
+                "FROM CongThuc c " +
+                "JOIN ChiTietCongThuc ct ON c.MaCT = ct.MaCT " +
+                "JOIN NguyenLieu nl ON ct.MaNL = nl.MaNL " +
+                "WHERE c.MaSP = ? AND c.MaSize = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, maSP);
+            pst.setString(2, (maSize == null) ? "" : maSize);
+
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                ChiTietCongThuc ct = new ChiTietCongThuc();
+                // Tạo đối tượng Nguyên Liệu
+                NguyenLieu nl = new NguyenLieu();
+                nl.setMaNL(rs.getString("MaNL"));
+                nl.setTenNL(rs.getString("TenNL"));
+
+                ct.setNguyenLieu(nl);
+                ct.setSoLuong(rs.getDouble("SoLuong"));
+                list.add(ct);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

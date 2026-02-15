@@ -255,21 +255,63 @@ BEGIN
     INSERT INTO Size
         (MaSize, MaSP, TenSize, PhanTramGia, PhanTramNL, TrangThai)
     VALUES
-        ('SZ01', 'SP02', N'Nhỏ', 0, 100, 1),
-        ('SZ02', 'SP02', N'Vừa', 10, 120, 1),
-        ('SZ03', 'SP02', N'Lớn', 20, 150, 1),
-        ('SZ04', 'SP04', N'Vừa', 0, 100, 1),
-        ('SZ05', 'SP04', N'Lớn', 15, 130, 1),
-        ('SZ06', 'SP03', N'Nhỏ', 0, 100, 1),
-        ('SZ07', 'SP03', N'Lớn', 15, 130, 1),
-        ('SZ08', 'SP12', N'M', 0, 100, 1),
-        ('SZ09', 'SP12', N'L', 15, 140, 1),
-        ('SZ10', 'SP13', N'M', 0, 100, 1),
-        ('SZ11', 'SP13', N'L', 15, 140, 1),
-        ('SZ12', 'SP20', N'Khổng Lồ', 30, 180, 1),
-        ('SZ13', 'SP18', N'Vừa', 0, 100, 1),
-        ('SZ14', 'SP18', N'Lớn', 20, 130, 1),
-        ('SZ15', 'SP32', N'Ly Tiêu Chuẩn', 0, 100, 1)
+            -- NHÓM 1: CÀ PHÊ
+                -- SP02: Đen đá
+                ('SZ02_S', 'SP02', N'Size S', 0, 100, 1), ('SZ02_M', 'SP02', N'Size M', 15, 125, 1), ('SZ02_L', 'SP02', N'Size L', 25, 150, 1),
+                -- SP03: Sữa đá
+                ('SZ03_S', 'SP03', N'Size S', 0, 100, 1), ('SZ03_M', 'SP03', N'Size M', 15, 125, 1), ('SZ03_L', 'SP03', N'Size L', 25, 150, 1),
+                -- SP05: Bạc xỉu
+                ('SZ05_S', 'SP05', N'Size S', 0, 100, 1), ('SZ05_M', 'SP05', N'Size M', 15, 125, 1), ('SZ05_L', 'SP05', N'Size L', 25, 150, 1),
+                -- SP06: Cà phê muối
+                ('SZ06_S', 'SP06', N'Size S', 0, 100, 1), ('SZ06_M', 'SP06', N'Size M', 15, 125, 1), ('SZ06_L', 'SP06', N'Size L', 25, 150, 1),
+                -- SP07: Americano
+                ('SZ07_S', 'SP07', N'Size S', 0, 100, 1), ('SZ07_M', 'SP07', N'Size M', 15, 125, 1), ('SZ07_L', 'SP07', N'Size L', 25, 150, 1),
+                -- SP08: Cappuccino
+                ('SZ08_S', 'SP08', N'Size S', 0, 100, 1), ('SZ08_M', 'SP08', N'Size M', 15, 125, 1), ('SZ08_L', 'SP08', N'Size L', 25, 150, 1),
+                -- SP09: Latte
+                ('SZ09_S', 'SP09', N'Size S', 0, 100, 1), ('SZ09_M', 'SP09', N'Size M', 15, 125, 1), ('SZ09_L', 'SP09', N'Size L', 25, 150, 1),
+                -- SP11: Mocha
+                ('SZ11_S', 'SP11', N'Size S', 0, 100, 1), ('SZ11_M', 'SP11', N'Size M', 15, 125, 1), ('SZ11_L', 'SP11', N'Size L', 25, 150, 1),
+
+            -- NHÓM 2: TRÀ SỮA & TRÀ TRÁI CÂY
+                -- SP04: Truyền thống
+                ('SZ04_S', 'SP04', N'Size S', 0, 100, 1), ('SZ04_M', 'SP04', N'Size M', 15, 125, 1), ('SZ04_L', 'SP04', N'Size L', 25, 150, 1),
+                -- SP12: Thái Xanh
+                ('SZ12_S', 'SP12', N'Size S', 0, 100, 1), ('SZ12_M', 'SP12', N'Size M', 15, 125, 1), ('SZ12_L', 'SP12', N'Size L', 25, 150, 1),
+                -- SP13: Thái Đỏ
+                ('SZ13_S', 'SP13', N'Size S', 0, 100, 1), ('SZ13_M', 'SP13', N'Size M', 15, 125, 1), ('SZ13_L', 'SP13', N'Size L', 25, 150, 1),
+                -- SP14 -> SP19 (Các loại trà sữa khác)
+                ('SZ14_S', 'SP14', N'Size S', 0, 100, 1), ('SZ14_M', 'SP14', N'Size M', 15, 125, 1), ('SZ14_L', 'SP14', N'Size L', 25, 150, 1),
+                ('SZ15_S', 'SP15', N'Size S', 0, 100, 1), ('SZ15_M', 'SP15', N'Size M', 15, 125, 1), ('SZ15_L', 'SP15', N'Size L', 25, 150, 1),
+                ('SZ16_S', 'SP16', N'Size S', 0, 100, 1), ('SZ16_M', 'SP16', N'Size M', 15, 125, 1), ('SZ16_L', 'SP16', N'Size L', 25, 150, 1),
+                ('SZ17_S', 'SP17', N'Size S', 0, 100, 1), ('SZ17_M', 'SP17', N'Size M', 15, 125, 1), ('SZ17_L', 'SP17', N'Size L', 25, 150, 1),
+                ('SZ18_S', 'SP18', N'Size S', 0, 100, 1), ('SZ18_M', 'SP18', N'Size M', 15, 125, 1), ('SZ18_L', 'SP18', N'Size L', 25, 150, 1),
+                ('SZ19_S', 'SP19', N'Size S', 0, 100, 1), ('SZ19_M', 'SP19', N'Size M', 15, 125, 1), ('SZ19_L', 'SP19', N'Size L', 25, 150, 1),
+                -- SP20 -> SP25 (Trà trái cây)
+                ('SZ20_S', 'SP20', N'Size S', 0, 100, 1), ('SZ20_M', 'SP20', N'Size M', 15, 125, 1), ('SZ20_L', 'SP20', N'Size L', 25, 150, 1),
+                ('SZ21_S', 'SP21', N'Size S', 0, 100, 1), ('SZ21_M', 'SP21', N'Size M', 15, 125, 1), ('SZ21_L', 'SP21', N'Size L', 25, 150, 1),
+                ('SZ22_S', 'SP22', N'Size S', 0, 100, 1), ('SZ22_M', 'SP22', N'Size M', 15, 125, 1), ('SZ22_L', 'SP22', N'Size L', 25, 150, 1),
+                ('SZ23_S', 'SP23', N'Size S', 0, 100, 1), ('SZ23_M', 'SP23', N'Size M', 15, 125, 1), ('SZ23_L', 'SP23', N'Size L', 25, 150, 1),
+                ('SZ24_S', 'SP24', N'Size S', 0, 100, 1), ('SZ24_M', 'SP24', N'Size M', 15, 125, 1), ('SZ24_L', 'SP24', N'Size L', 25, 150, 1),
+                ('SZ25_S', 'SP25', N'Size S', 0, 100, 1), ('SZ25_M', 'SP25', N'Size M', 15, 125, 1), ('SZ25_L', 'SP25', N'Size L', 25, 150, 1),
+
+            -- NHÓM 3: MÓN ĐẶC THÙ (CHỈ 1 SIZE TIÊU CHUẨN)
+                -- SP10: Espresso
+                ('SZ10_STD', 'SP10', N'Tiêu chuẩn', 0, 100, 1),
+                -- SP32 -> SP38: Sinh tố / Nước ép
+                ('SZ32_STD', 'SP32', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ33_STD', 'SP33', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ34_STD', 'SP34', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ35_STD', 'SP35', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ36_STD', 'SP36', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ37_STD', 'SP37', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ38_STD', 'SP38', N'Tiêu chuẩn', 0, 100, 1),
+                -- SP39 -> SP41: Đá xay
+                ('SZ39_STD', 'SP39', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ40_STD', 'SP40', N'Tiêu chuẩn', 0, 100, 1),
+                ('SZ41_STD', 'SP41', N'Tiêu chuẩn', 0, 100, 1),
+                -- SP49: Sữa chua
+                ('SZ49_STD', 'SP49', N'Tiêu chuẩn', 0, 100, 1)
 END;
 
 /* =============================================
@@ -320,35 +362,40 @@ BEGIN
     (
         MaCT VARCHAR(50) NOT NULL PRIMARY KEY,
         MaSP VARCHAR(50),
-        MaSize VARCHAR(50) NULL
+        MaSize VARCHAR(50) NULL,
         TrangThai BIT
-        CONSTRAINT FK_CongThuc_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP),
-        CONSTRAINT FK_CongThuc_Size FOREIGN KEY (MaSize) REFERENCES Size(MaSize)
+
 
     )
     INSERT INTO CongThuc
-        (MaCT, MaSP, TrangThai)
+        (MaCT, MaSP, MaSize, TrangThai)
     VALUES
-        ('CT01', 'SP03', 1),
-        -- Cà phê sữa
-        ('CT02', 'SP02', 1),
-        -- Cà phê đen
-        ('CT03', 'SP04', 1),
-        -- Trà sữa
-        ('CT04', 'SP16', 1),
-        -- Matcha
-        ('CT05', 'SP32', 1),
-        -- Sinh tố bơ
-        ('CT06', 'SP20', 1),
-        -- Trà đào
-        ('CT07', 'SP18', 1),
-        -- Sữa tươi TCĐĐ
-        ('CT08', 'SP05', 1),
-        -- Bạc xỉu
-        ('CT09', 'SP39', 1),
-        -- Matcha đá xay
-        ('CT10', 'SP09', 1)
--- Latte
+            ('CT01', 'SP01', NULL, 1),
+        -- Cà phê
+            ('CT02', 'SP02', 'SZ02_S', 1), ('CT03', 'SP03', 'SZ03_S', 1),
+            ('CT05', 'SP05', 'SZ05_S', 1), ('CT06', 'SP06', 'SZ06_S', 1),
+            ('CT07', 'SP07', 'SZ07_S', 1), ('CT08', 'SP08', 'SZ08_S', 1),
+            ('CT09', 'SP09', 'SZ09_S', 1), ('CT11', 'SP11', 'SZ11_S', 1),
+
+            -- Trà sữa & Trà
+            ('CT04', 'SP04', 'SZ04_S', 1), ('CT12', 'SP12', 'SZ12_S', 1),
+            ('CT13', 'SP13', 'SZ13_S', 1), ('CT14', 'SP14', 'SZ14_S', 1),
+            ('CT15', 'SP15', 'SZ15_S', 1), ('CT16', 'SP16', 'SZ16_S', 1),
+            ('CT17', 'SP17', 'SZ17_S', 1), ('CT18', 'SP18', 'SZ18_S', 1),
+            ('CT19', 'SP19', 'SZ19_S', 1), ('CT20', 'SP20', 'SZ20_S', 1),
+            ('CT21', 'SP21', 'SZ21_S', 1), ('CT22', 'SP22', 'SZ22_S', 1),
+            ('CT23', 'SP23', 'SZ23_S', 1), ('CT24', 'SP24', 'SZ24_S', 1),
+            ('CT25', 'SP25', 'SZ25_S', 1),
+
+            -- Món 1 size
+            ('CT10', 'SP10', 'SZ10_STD', 1), -- Espresso
+            ('CT32', 'SP32', 'SZ32_STD', 1), -- Bơ
+            ('CT33', 'SP33', 'SZ33_STD', 1), ('CT34', 'SP34', 'SZ34_STD', 1),
+            ('CT35', 'SP35', 'SZ35_STD', 1), ('CT36', 'SP36', 'SZ36_STD', 1),
+            ('CT37', 'SP37', 'SZ37_STD', 1), ('CT38', 'SP38', 'SZ38_STD', 1),
+            ('CT39', 'SP39', 'SZ39_STD', 1), ('CT40', 'SP40', 'SZ40_STD', 1),
+            ('CT41', 'SP41', 'SZ41_STD', 1), ('CT49', 'SP49', 'SZ49_STD', 1)
+
 END;
 
 /* =============================================
@@ -364,7 +411,7 @@ BEGIN
         MaCT VARCHAR(50) NOT NULL,
         MaNL VARCHAR(50) NOT NULL,
         SoLuong DECIMAL(18, 4),
-        TrangThai BIT,
+        TrangThai BIT
     )
     INSERT INTO ChiTietCongThuc
         (MaCTCT,MaCT, MaNL, SoLuong,TrangThai)
@@ -373,8 +420,8 @@ BEGIN
         ('CTCT02', 'CT01', 'NL02', 0.03, 1),
         ('CTCT03', 'CT02', 'NL01', 0.025, 1),
         ('CTCT04', 'CT02', 'NL03', 0.01, 1),
-        ('CTCT05', 'CT03', 'NL08', 0.01, 1),
-        ('CTCT06', 'CT03', 'NL09', 0.03, 1),
+        ('CTCT05', 'CT03', 'NL01', 0.01, 1),
+        ('CTCT06', 'CT03', 'NL02', 0.03, 1),
         ('CTCT07', 'CT03', 'NL06', 0.05, 1),
         ('CTCT08', 'CT04', 'NL05', 0.01, 1),
         ('CTCT09', 'CT04', 'NL04', 0.1, 1),
@@ -565,14 +612,14 @@ BEGIN
     INSERT INTO ChiTietHoaDon
         (MaCTHD,MaHD, MaSP, MaSize, SoLuong, Gia)
     VALUES
-        ('CTHD1', 'HD001', 'SP03', 'SZ02', 1, 30000),
+        ('CTHD1', 'HD001', 'SP03', 'SZ03_M', 1, 30000),
         ('CTHD2', 'HD001', 'SP01', NULL, 1, 15000),
-        ('CTHD3', 'HD003', 'SP18', 'SZ13', 2, 90000),
+        ('CTHD3', 'HD003', 'SP18', 'SZ18_M', 2, 90000),
         ('CTHD4', 'HD003', 'SP42', NULL, 1, 15000),
-        ('CTHD5', 'HD004', 'SP20', 'SZ12', 4, 180000),
-        ('CTHD6', 'HD005', 'SP20', 'SZ12', 1, 45000),
-        ('CTHD7', 'HD006', 'SP04', 'SZ04', 1, 35000),
-        ('CTHD8', 'HD007', 'SP39', 'SZ01', 1, 55000),
+        ('CTHD5', 'HD004', 'SP20', 'SZ20_M', 4, 180000),
+        ('CTHD6', 'HD005', 'SP20', 'SZ20_M', 1, 45000),
+        ('CTHD7', 'HD006', 'SP04', 'SZ04_M', 1, 35000),
+        ('CTHD8', 'HD007', 'SP39', 'SZ39_STD', 1, 55000),
         ('CTHD9', 'HD007', 'SP45', NULL, 1, 25000)
 END;
 

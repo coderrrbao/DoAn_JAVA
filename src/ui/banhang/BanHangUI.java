@@ -198,9 +198,10 @@ public class BanHangUI extends JPanel {
                 ct.setSoLuong(soLuong);
                 ct.setGia(giaBan);
 
-
+                Size sizeMacDinh = new Size();
                 if (spGoc.getLoaiNuoc().equals("Pha chế") && spGoc.getListSize() != null && !spGoc.getListSize().isEmpty()) {
-                    ct.setSize(null);
+                    sizeMacDinh.setMaSize(spGoc.getMaSP().replace("SP", "SZ")+ "_S");
+                    ct.setSize(sizeMacDinh);
                 } else {
                     ct.setSize(null);
                 }
@@ -215,6 +216,7 @@ public class BanHangUI extends JPanel {
                 return;
             }
             if (hoaDonBUS.ThanhToan(hd)) {
+
                 int luaChon = JOptionPane.showConfirmDialog(this,
                         "Thanh toán thành công! Bạn có muốn in hóa đơn không?",
                         "Thông báo", JOptionPane.YES_NO_OPTION);
