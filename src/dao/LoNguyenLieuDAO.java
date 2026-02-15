@@ -69,12 +69,10 @@ public class LoNguyenLieuDAO {
         ResultSet rs = null;
 
         try {
-            // 1. Lấy danh sách lô hàng (Dùng conn được truyền vào)
             pstGet = conn.prepareStatement(sqlGet);
             pstGet.setString(1, maNL);
             rs = pstGet.executeQuery();
 
-            // Chuẩn bị câu lệnh Update
             pstUpdate = conn.prepareStatement(sqlUpdate);
 
             double conLai = soLuongCanTru;
@@ -83,10 +81,8 @@ public class LoNguyenLieuDAO {
                 String maLo = rs.getString("MaLoNL");
                 double slTrongLo = rs.getDouble("SoLuong");
 
-                // Tính toán lượng trừ
                 double truO_LoNay = (slTrongLo >= conLai) ? conLai : slTrongLo;
 
-                // Thêm vào Batch (Gom lệnh lại chạy 1 lần cho nhanh)
                 pstUpdate.setDouble(1, truO_LoNay);
                 pstUpdate.setString(2, maLo);
                 pstUpdate.addBatch();
@@ -94,21 +90,15 @@ public class LoNguyenLieuDAO {
                 conLai -= truO_LoNay;
             }
 
-            // 2. Kiểm tra kết quả
             if (conLai <= 0.0001) {
-                // Nếu kho đủ hàng -> Chạy lệnh Update
                 pstUpdate.executeBatch();
                 return true;
             } else {
-                // Nếu kho thiếu hàng -> Không làm gì cả, trả về false
-                // BUS sẽ nhận được false và tự Rollback toàn bộ
                 System.out.println("Kho thiếu nguyên liệu: " + maNL + " (Còn thiếu: " + conLai + ")");
                 return false;
             }
 
         } finally {
-            // QUAN TRỌNG: Chỉ đóng ResultSet và PreparedStatement
-            // TUYỆT ĐỐI KHÔNG ĐÓNG 'conn' Ở ĐÂY
             if (rs != null) rs.close();
             if (pstGet != null) pstGet.close();
             if (pstUpdate != null) pstUpdate.close();
