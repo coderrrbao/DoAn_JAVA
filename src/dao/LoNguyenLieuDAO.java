@@ -14,15 +14,15 @@ public class LoNguyenLieuDAO {
 
 
     public ArrayList<LoNguyenLieu> layListLoNguyenLieu() {
-        ArrayList<LoNguyenLieu> list = new ArrayList<>();
-        String sql = "SELECT * FROM LoNguyenLieu WHERE TrangThai = 1";
-
-        try (Connection con = DBConnection.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
-
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                LoNguyenLieu lo = new LoNguyenLieu();
+    ArrayList<LoNguyenLieu> list = new ArrayList<>();
+    String sql = "SELECT * FROM LoNguyenLieu WHERE TrangThai = 1";
+    
+    try (Connection con = DBConnection.getConnection(); 
+         PreparedStatement pst = con.prepareStatement(sql)) {
+        
+        ResultSet rs = pst.executeQuery();
+        while (rs.next()) {
+            LoNguyenLieu lo = new LoNguyenLieu();
 
                 lo.setMaLoNL(rs.getString("MaLoNL"));
                 lo.setMaPN(rs.getString("MaPN"));

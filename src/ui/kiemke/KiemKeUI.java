@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -16,15 +17,16 @@ import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class KiemKeUI extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
-    private Search_Item search_Item;
     private JButton btnThem;
-    private JButton btnSua;
+    private JButton btnSua, btnXoa;
+    private PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
 
     public KiemKeUI() {
         setLayout(new BorderLayout());
@@ -40,21 +42,59 @@ public class KiemKeUI extends JPanel {
 
     private void ganSuKien() {
         btnThem.addActionListener(e -> {
-            ThemPhieuKiemDialog them = new ThemPhieuKiemDialog(this);
+            ThemPhieuKiemDialog them = new ThemPhieuKiemDialog(this, null);
             them.setVisible(true);
+        });
+        btnSua.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row >= 0) {
+                if (model.getValueAt(row, 9).equals("Đã xác nhận")) {
+                    JOptionPane.showMessageDialog(null, "Phiểu kiểm kê đã xác nhận không thể sửa", "Thông báo",
+                            JOptionPane.ERROR_MESSAGE);
+                } else {
+                    PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(row, 1).toString());
+                    ThemPhieuKiemDialog themPhieuKiemDialog = new ThemPhieuKiemDialog(this, phieuKiemKe);
+                    themPhieuKiemDialog.setVisible(true);
+                }
+            } else {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng để sửa", "Thông báo",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+
+        });
+        locNgay.setEvent(() -> {
+            loaiDuLieu();
+        });
+
+        btnXoa.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            if (dongChon >= 0) {
+                if (phieuKiemKeBUS
+                        .xoaPhieuKiemKe(phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 1).toString()))) {
+                    TaoTinNhan.showAutoCloseMessage("Đã xóa phiếu kiểm kê thành thông", "Thông báo", 1);
+                    loaiDuLieu();
+                } else {
+                    TaoTinNhan.showAutoCloseMessage("Đã xóa phiếu kiểm kê thất bại", "Thông báo", 1);
+                }
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn dòng để xóa", "Thông báo", 1);
+            }
         });
     }
 
     public void loaiDuLieu() {
         model.setRowCount(0);
-        PhieuKiemKeBUS phieuKiemKeBUS = new PhieuKiemKeBUS();
+
         ArrayList<PhieuKiemKe> listPhieuKiemKe = phieuKiemKeBUS.layListKiemKe();
         int stt = 1;
         for (PhieuKiemKe phieuKiemKe : listPhieuKiemKe) {
-            model.addRow(new Object[] { stt++, phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(), phieuKiemKe.getNgayKiem(),
-                    phieuKiemKe.getMaLo(), phieuKiemKe.getLoaiLo(), phieuKiemKe.getSoLuongSoSach(),
-                    phieuKiemKe.getSoLuongThuc(), phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
-                    phieuKiemKe.getGhiChu(), phieuKiemKe.getTrangThaiXuLy()});
+            if (locNgay.ngayTrongKhoan(phieuKiemKe.getNgayKiem())) {
+                model.addRow(new Object[] { stt++, phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(),
+                        phieuKiemKe.getNgayKiem(),
+                        phieuKiemKe.getMaLo(), phieuKiemKe.getLoaiLo(), phieuKiemKe.getSoLuongSoSach(),
+                        phieuKiemKe.getSoLuongThuc(), phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
+                        phieuKiemKe.getTrangThaiXuLy() });
+            }
         }
     }
 
@@ -67,9 +107,6 @@ public class KiemKeUI extends JPanel {
         locNgay = new LocNgay_Item(350, 35);
         top.add(locNgay);
 
-        search_Item = new Search_Item(300, 35);
-        top.add(search_Item);
-
         btnThem = new JButton("Thêm");
         btnThem.setPreferredSize(new Dimension(80, 35));
         top.add(btnThem);
@@ -78,17 +115,19 @@ public class KiemKeUI extends JPanel {
         btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 35));
         top.add(btnSua);
 
+        btnXoa = new JButton("Xóa");
+        btnXoa.setPreferredSize(new Dimension(80, 35));
+        top.add(btnXoa);
         return top;
     }
 
     private JPanel taoPanelTable() {
         JPanel panel = new JPanel(new BorderLayout());
         String[] columns = { "STT", "Mã Phiếu Kiểm", "Mã NV", "Ngày kiểm", "Mã lô", "Loại lô", "SL sổ sách",
-                "SL thực tế", "Chênh lệch",
-                "Ghi chú", "Trạng thái" };
+                "SL thực tế", "Chênh lệch", "Trạng thái" };
         model = new DefaultTableModel(columns, 0);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
-        table  = (JTable) scrollPane.getViewport().getView();
+        table = (JTable) scrollPane.getViewport().getView();
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;

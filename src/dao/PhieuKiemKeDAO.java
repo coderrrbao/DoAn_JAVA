@@ -57,12 +57,11 @@ public class PhieuKiemKeDAO {
         return "PKK001";
     }
 
-    public Boolean themPhieuKiemKe(PhieuKiemKe pkk) {
+    public Boolean themPhieuKiemKe(PhieuKiemKe pkk, Connection conn) {
         String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai) "
                 + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
-        try (Connection con = DBConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, maPKKKhaDung());
             pst.setDate(2, Date.valueOf(pkk.getNgayKiem()));
@@ -82,4 +81,33 @@ public class PhieuKiemKeDAO {
         return false;
     }
 
+    public boolean capNhapPhieuKiemKe(PhieuKiemKe phieuKiemKe, Connection conn) {
+        String sql = "UPDATE PhieuKiemKe  SET MaLo=?,LoaiLo=?,SoLuongSoSach=?,SoLuongThuc=?,MaNV=?,GhiChu=?,TrangThaiXuLy=? WHERE MaKK=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, phieuKiemKe.getMaLo());
+            pst.setString(2, phieuKiemKe.getLoaiLo());
+            pst.setInt(3, phieuKiemKe.getSoLuongSoSach());
+            pst.setInt(4, phieuKiemKe.getSoLuongThuc());
+            pst.setString(5, phieuKiemKe.getMaNV());
+            pst.setString(6, phieuKiemKe.getGhiChu());
+            pst.setString(7, phieuKiemKe.getTrangThaiXuLy());
+            pst.setString(8, phieuKiemKe.getMaKK());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaPhieuKiemKe(PhieuKiemKe phieuKiemKe, Connection conn) {
+        String sql = "UPDATE PhieuKiemKe  SET TrangThai=? WHERE MaKK=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, 0);
+            pst.setString(2, phieuKiemKe.getMaKK());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
