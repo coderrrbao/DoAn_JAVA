@@ -42,7 +42,7 @@ public class TaiKhoanUI extends JPanel {
         
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
-        
+        btnResetMatKhau.addActionListener(e -> openDoiMatKhauDialog());
         btnXoa = new JButton("Xóa");
         btnXoa.addActionListener(e-> XoaTaiKhoan_Ui());
 
@@ -97,6 +97,18 @@ public class TaiKhoanUI extends JPanel {
     private void openThemTaiKhoanDialog(){
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame,this);
+        dia.setVisible(true);
+    }
+    //open doi mat khau dialog
+    private void openDoiMatKhauDialog(){
+        int chonDong = tableUI.getSelectedRow();
+        //kiem tra da chon dong hay chua
+        if(chonDong == -1){
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn tài khoản để đổi", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+        DoiMatKhauDialog dia = new DoiMatKhauDialog(parentFrame,this);
         dia.setVisible(true);
     }
     // load du lieu hien thi sau khi them xoa 
