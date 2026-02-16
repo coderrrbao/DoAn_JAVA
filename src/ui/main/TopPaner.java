@@ -62,11 +62,6 @@ public class TopPaner extends JPanel {
         thongTinUser.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 5));
         ten.setFont(new Font("Arial", Font.BOLD, 14));
         add(thongTinUser, BorderLayout.EAST);
-
-        NhanVien nhanVien = PhienDangNhap.getUser();
-        if(nhanVien != null){
-            capNhapThongTin(nhanVien);
-        }
     }
 
     public void capNhapThongTin(NhanVien user) {
@@ -74,6 +69,8 @@ public class TopPaner extends JPanel {
         anhDaiDien.setIcon(anh);
         ten.setText(user.getTenNV());
         chucVu.setText(user.getChucVu());
+        this.revalidate();
+        this.repaint();
     }
 
 }

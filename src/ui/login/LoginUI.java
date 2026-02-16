@@ -29,7 +29,7 @@ public class LoginUI extends JFrame {
     private JTextField txtuser;
     private JPasswordField txtpass;
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
-    private MainFrame mainFrame;
+    private MainFrame mainFrame = new MainFrame();
 
     public LoginUI() {
         setSize(700, 400);
@@ -135,24 +135,24 @@ public class LoginUI extends JFrame {
         }
         // xu ly dang nhap
         if (taiKhoanBUS.dangNhap_BUS(user, pass)) {
-            //luu phien dang nhap
+            // luu phien dang nhap
             NhanVien nv = taiKhoanBUS.layNhanVien_BUS(user);
             PhienDangNhap.setUser(nv);
             //
-            
             TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
-            this.dispose();  
-            new MainFrame().setVisible(true);
+            mainFrame.getTopPaner().capNhapThongTin(nv);
+            mainFrame.setVisible(true);
+            this.dispose();
 
         } else {
             JOptionPane.showMessageDialog(this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo",
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public static void main(String[] args) {
         LoginUI ui = new LoginUI();
         ui.setVisible(true);
-        
-        
+
     }
 }
