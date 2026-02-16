@@ -2,6 +2,7 @@ package bus;
 import java.util.ArrayList;
 
 import dao.TaiKhoanDao;
+import dto.NhanVien;
 import dto.NhomQuyen;
 import dto.TaiKhoan;
 
@@ -51,5 +52,11 @@ public class TaiKhoanBUS {
     public boolean dangNhap_BUS(String tenDangNhap, String MatKhau){
         return dao.dangNhap_DAO(tenDangNhap, MatKhau);
     }
+
+    //test nhap vao ten dang nhap lay nhan vien 
+    public NhanVien layNhanVien_BUS(String user){
+        return dao.layNhanVien_DAO(user);
+    }
+
 }
 

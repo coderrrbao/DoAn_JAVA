@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 
 import dao.conection.DBConnection;
+import dto.NhanVien;
 import dto.TaiKhoan;
 
 public class TaiKhoanDao {
@@ -75,6 +76,39 @@ public class TaiKhoanDao {
         }
         return ds;
     }
+    //test lay nhan vien 
+    public NhanVien layNhanVien_DAO(String user){
+            NhanVien nv = null;
+            String sql = """
+                    SELECT nv.*
+                    FROM NhanVien nv
+                    JOIN TaiKhoan tk ON nv.TaiKhoan = tk.TenDangNhap
+                    WHERE tk.TenDangNhap = ?
+                    """;
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)){
+                ps.setString(1, user);
+                ResultSet rs = ps.executeQuery();
+                if(rs.next()){
+                    nv = new NhanVien();
+
+                    nv.setMaNV(rs.getString("MaNV"));
+                    nv.setTenNV(rs.getString("TenNV"));
+                    nv.setGioiTinh(rs.getString("GioiTinh"));
+                    nv.setNgaySinh(rs.getDate("NgaySinh"));
+                    nv.setSdt(rs.getString("SDT"));
+                    nv.setDiaChi(rs.getString("DiaChi"));
+                    nv.setChucVu(rs.getString("ChucVu"));
+                    nv.setTaiKhoan(rs.getString("TaiKhoan"));
+                    nv.setTrangThai(rs.getBoolean("TrangThai"));
+                    // nv.setAnh(rs.getString("Anh"));
+                }
+            }catch(Exception e){
+                e.printStackTrace();
+            }
+        return nv;
+    }
+
     //dang nhap tai khoan 
     public boolean dangNhap_DAO(String tenDangNhap, String matKhau){
         String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";

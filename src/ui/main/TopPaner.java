@@ -15,7 +15,9 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
+import bus.TaiKhoanBUS;
 import dto.NhanVien;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class TopPaner extends JPanel {
@@ -47,7 +49,7 @@ public class TopPaner extends JPanel {
         thongTinUser.add(anhDaiDien, BorderLayout.CENTER);
         thongTinUser.setBackground(Color.white);
 
-        JPanel tenVaChucVu = TaoUI.taoPanelCanGiua(140, 80);
+        JPanel tenVaChucVu = TaoUI.taoPanelCanGiua(200, 80);
         tenVaChucVu.setBackground(Color.white);
         ten = new JLabel();
         chucVu = new JLabel();
@@ -61,12 +63,10 @@ public class TopPaner extends JPanel {
         ten.setFont(new Font("Arial", Font.BOLD, 14));
         add(thongTinUser, BorderLayout.EAST);
 
-        NhanVien nhanVien = new NhanVien();
-        nhanVien.setAnh("/assets/img/goku.png");
-        nhanVien.setChucVu("Admin");
-        nhanVien.setTenNV("Nguyễn Hoài Bảo");
-
-        capNhapThongTin(nhanVien);
+        NhanVien nhanVien = PhienDangNhap.getUser();
+        if(nhanVien != null){
+            capNhapThongTin(nhanVien);
+        }
     }
 
     public void capNhapThongTin(NhanVien user) {
