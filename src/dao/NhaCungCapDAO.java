@@ -100,6 +100,7 @@ public class NhaCungCapDAO {
         return list;
     }
 
+     
     public String layMaNhaCungCapKhaDung() {
         String sql = "SELECT COUNT(MaNCC) FROM NhaCungCap";
 

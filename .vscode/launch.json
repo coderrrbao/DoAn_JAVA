@@ -3,6 +3,13 @@
     "configurations": [
         {
             "type": "java",
+            "name": "NhaCungCapBUS",
+            "request": "launch",
+            "mainClass": "bus.NhaCungCapBUS",
+            "projectName": "QLnuoc_843ad3c1"
+        },
+        {
+            "type": "java",
             "name": "ThemPhieuKiemDialog",
             "request": "launch",
             "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
