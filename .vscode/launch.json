@@ -1,47 +1,54 @@
 {
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "NhaCungCapBUS",
-            "request": "launch",
-            "mainClass": "bus.NhaCungCapBUS",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "ThemPhieuKiemDialog",
-            "request": "launch",
-            "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Xulypdf",
-            "request": "launch",
-            "mainClass": "util.Xulypdf",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "QuanLySanPhamUI",
-            "request": "launch",
-            "mainClass": "ui.quanlysanpham.QuanLySanPhamUI",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Chạy Dự Án (Nét)",
-            "request": "launch",
-            "mainClass": "${file}",
-            "vmArgs": "--enable-native-access=ALL-UNNAMED"
-        }
-    ]
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_36c16d32"
+    },
+    {
+      "type": "java",
+      "name": "NhaCungCapBUS",
+      "request": "launch",
+      "mainClass": "bus.NhaCungCapBUS",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "ThemPhieuKiemDialog",
+      "request": "launch",
+      "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "Xulypdf",
+      "request": "launch",
+      "mainClass": "util.Xulypdf",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "QuanLySanPhamUI",
+      "request": "launch",
+      "mainClass": "ui.quanlysanpham.QuanLySanPhamUI",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "Chạy Dự Án (Nét)",
+      "request": "launch",
+      "mainClass": "${file}",
+      "vmArgs": "--enable-native-access=ALL-UNNAMED"
+    }
+  ]
 }
