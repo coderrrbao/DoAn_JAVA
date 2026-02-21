@@ -12,7 +12,7 @@ import dto.NhaCungCap;
 public class NguyenLieuDAO {
     public ArrayList<NguyenLieu> layListNguyenLieu(Connection conn) {
         ArrayList<NguyenLieu> listNguyenLieu = new ArrayList<>();
-        String sql = "SELECT MaNL, TenNL, MaNCC, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai = 1";
+        String sql = "SELECT MaNL, TenNL, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai = 1";
 
         try (PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
@@ -25,10 +25,6 @@ public class NguyenLieuDAO {
                 nl.setDonVi(rs.getString("DonVi"));
                 nl.setMucCanhBao(rs.getInt("MucCanhBao"));
 
-                NhaCungCap ncc = new NhaCungCap();
-                ncc.setMaNCC(rs.getString("MaNCC"));
-                nl.setNhaCungCap(ncc);
-
                 listNguyenLieu.add(nl);
             }
         } catch (SQLException e) {
@@ -40,7 +36,7 @@ public class NguyenLieuDAO {
 
   
     public boolean themNguyenLieu(NguyenLieu nl, Connection conn) {
-        String sql = "INSERT INTO NguyenLieu (MaNL, TenNL, MaNCC, TenNhaCC, Gia, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO NguyenLieu (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
         
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             if (nl.getMaNL() == null || nl.getMaNL().trim().isEmpty()) {
@@ -48,8 +44,6 @@ public class NguyenLieuDAO {
             }
             pst.setString(1, nl.getMaNL());
             pst.setString(2, nl.getTenNL());
-            pst.setString(3, nl.getNhaCungCap() != null ? nl.getNhaCungCap().getMaNCC() : null);
-            pst.setString(4, nl.getNhaCungCap() != null ? nl.getNhaCungCap().getTenNCC() : null);
             pst.setDouble(5, nl.getGia());
             pst.setString(6, nl.getDonVi());
             pst.setInt(7, nl.getMucCanhBao());
@@ -63,12 +57,10 @@ public class NguyenLieuDAO {
     }
 
     public boolean capNhatNguyenLieu(NguyenLieu nl, Connection conn) {
-        String sql = "UPDATE NguyenLieu SET TenNL = ?, MaNCC = ?, TenNhaCC = ?, Gia = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
+        String sql = "UPDATE NguyenLieu SET TenNL = ?, Gia = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
         
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, nl.getTenNL());
-            pst.setString(2, nl.getNhaCungCap() != null ? nl.getNhaCungCap().getMaNCC() : null);
-            pst.setString(3, nl.getNhaCungCap() != null ? nl.getNhaCungCap().getTenNCC() : null);
             pst.setDouble(4, nl.getGia());
             pst.setString(5, nl.getDonVi());
             pst.setInt(6, nl.getMucCanhBao());

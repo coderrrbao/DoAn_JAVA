@@ -41,17 +41,12 @@ public class NhaCungCapBUS {
                 map.put(chiTietNhaCungCap.getMaNCC(), listCTNCC);
             }
         }
-        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
-        NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
+
         for (NhaCungCap nhaCungCap : listNhaCungCap) {
             for (ChiTietNhaCungCap chiTietNhaCungCap : map.get(nhaCungCap.getMaNCC())) {
-                if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
-                    nhaCungCap.themSanPham(sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong()));
-                }
-                if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Nguyên liệu")) {
-                    nhaCungCap.themNguyenLieu(nguyenLieuBUS.timNguyenLieu(chiTietNhaCungCap.getMaDoiTuong()));
-                }
+                nhaCungCap.themChiTietNhaCungCap(chiTietNhaCungCap);
             }
+
         }
     }
 
@@ -108,7 +103,7 @@ public class NhaCungCapBUS {
         }
         ArrayList<String> list = new ArrayList<>();
         for (NhaCungCap nhaCungCap : listNhaCungCap) {
-            if (nhaCungCap.getListNguyenLieuCungCap() != null) {
+            if (nhaCungCap.getCungCapNL()) {
                 list.add(nhaCungCap.getTenNCC());
             }
 
@@ -123,7 +118,7 @@ public class NhaCungCapBUS {
         }
         ArrayList<String> list = new ArrayList<>();
         for (NhaCungCap nhaCungCap : listNhaCungCap) {
-            if (nhaCungCap.getListSanPhamCungCap() != null) {
+            if (nhaCungCap.getCungCapSP()) {
                 list.add(nhaCungCap.getTenNCC());
             }
 
@@ -133,57 +128,6 @@ public class NhaCungCapBUS {
 
     public void danhDauCanCapNhat() {
         this.canUpdate = true;
-    }
-
-    public static void main(String[] args) {
-        System.out.println("---------- KIỂM TRA DỮ LIỆU NHÀ CUNG CẤP ----------");
-
-        // 1. Khởi tạo BUS (Hàm khoitao() sẽ tự động chạy)
-        NhaCungCapBUS nccBUS = NhaCungCapBUS.getNhaCungCapBUS();
-
-        // 2. Lấy danh sách tất cả nhà cung cấp
-        ArrayList<NhaCungCap> listNCC = nccBUS.laylistNhaCungCap();
-
-        if (listNCC == null || listNCC.isEmpty()) {
-            System.out.println("Danh sách Nhà cung cấp trống hoặc lỗi kết nối!");
-            return;
-        }
-
-        // 3. Duyệt qua từng nhà cung cấp để kiểm tra khả năng cung cấp
-        for (NhaCungCap ncc : listNCC) {
-            System.out.println("\n-------------------------------------------");
-            System.out.println("Mã NCC: " + ncc.getMaNCC());
-            System.out.println("Tên NCC: " + ncc.getTenNCC());
-            System.out.println("Địa chỉ: " + ncc.getDiaChi());
-
-            // Kiểm tra danh sách Sản phẩm cung cấp
-            ArrayList<SanPham> listSP = ncc.getListSanPhamCungCap();
-            if (listSP != null && !listSP.isEmpty()) {
-                System.out.println("  => Cung cấp [" + listSP.size() + "] Sản phẩm:");
-                for (SanPham sp : listSP) {
-                    System.out.println("     + " + sp.getMaSP() + " - " + sp.getTenSP());
-                }
-            } else {
-                System.out.println("  => Không cung cấp Sản phẩm nào.");
-            }
-
-            // Kiểm tra danh sách Nguyên liệu cung cấp
-            ArrayList<NguyenLieu> listNL = ncc.getListNguyenLieuCungCap();
-            if (listNL != null && !listNL.isEmpty()) {
-                System.out.println("  => Cung cấp [" + listNL.size() + "] Nguyên liệu:");
-                for (NguyenLieu nl : listNL) {
-                    System.out.println("     + " + nl.getMaNL() + " - " + nl.getTenNL());
-                }
-            } else {
-                System.out.println("  => Không cung cấp Nguyên liệu nào.");
-            }
-        }
-
-        // 4. Test các hàm lọc ComboBox
-        System.out.println("\n===========================================");
-        System.out.println("TEST CÁC HÀM LỌC LỰA CHỌN (COMBOBOX):");
-        System.out.println("Lọc NCC Nguyên Liệu: " + nccBUS.layLuaChonNCCNguyenLieu());
-        System.out.println("Lọc NCC Sản Phẩm: " + nccBUS.layLuaChonNCCSanPham());
     }
 
 }

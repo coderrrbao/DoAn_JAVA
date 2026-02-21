@@ -5,22 +5,26 @@ public class LoNguyenLieu {
   private String maLoNL;
   private String maPN;
   private String maNL;
-  private int soLuong;
+  private Double soLuong;
   private String ngayNhap;
   private String ngaySanXuat;
   private String hanSuDung;
-  private boolean trangThai;
+  private double giaNhap;
+  private String trangThaiXuLy;
 
   public LoNguyenLieu() {}
 
+  // Constructor đầy đủ tham số để đồng bộ với SQL
   public LoNguyenLieu(
       String maLoNL,
       String maPN,
       String maNL,
-      int soLuong,
+      Double soLuong,
       String ngayNhap,
       String ngaySanXuat,
-      String hanSuDung) {
+      String hanSuDung,
+      double giaNhap,
+      String trangThaiXuLy) {
     this.maLoNL = maLoNL;
     this.maPN = maPN;
     this.maNL = maNL;
@@ -28,16 +32,11 @@ public class LoNguyenLieu {
     this.ngayNhap = ngayNhap;
     this.ngaySanXuat = ngaySanXuat;
     this.hanSuDung = hanSuDung;
+    this.giaNhap = giaNhap;
+    this.trangThaiXuLy = trangThaiXuLy;
   }
 
-  public void setTrangThai(boolean trangThai) {
-    this.trangThai = trangThai;
-  }
-
-  public boolean getTrangThai() {
-    return trangThai;
-  }
-
+  // Getters and Setters
   public String getMaLoNL() {
     return maLoNL;
   }
@@ -62,11 +61,11 @@ public class LoNguyenLieu {
     this.maNL = maNL;
   }
 
-  public int getSoLuong() {
+  public Double getSoLuong() {
     return soLuong;
   }
 
-  public void setSoLuong(int soLuong) {
+  public void setSoLuong(Double soLuong) {
     this.soLuong = soLuong;
   }
 
@@ -94,4 +93,19 @@ public class LoNguyenLieu {
     this.hanSuDung = hanSuDung;
   }
 
+  public double getGiaNhap() {
+    return giaNhap;
+  }
+
+  public void setGiaNhap(double giaNhap) {
+    this.giaNhap = giaNhap;
+  }
+
+  public String getTrangThaiXuLy() {
+    return trangThaiXuLy;
+  }
+
+  public void setTrangThaiXuLy(String trangThaiXuLy) {
+    this.trangThaiXuLy = trangThaiXuLy;
+  }
 }

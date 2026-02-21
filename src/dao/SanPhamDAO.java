@@ -5,20 +5,17 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import bus.SanPhamBUS;
 import dao.conection.DBConnection;
-import dto.ChiTietCongThuc;
-import dto.CongThuc;
+
 import dto.DanhMuc;
-import dto.NhaCungCap;
 import dto.SanPham;
-import dto.Size;
-import ui.quanlysanpham.NutSuKienSP;
+
 
 public class SanPhamDAO {
+    
     public ArrayList<SanPham> layListSanPham() {
         ArrayList<SanPham> listSanPham = new ArrayList<>();
-        String sql = "SELECT *, dm.TenDM, ncc.TenNCC FROM SanPham sp INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM INNER JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC WHERE sp.TrangThai = 1";
+        String sql = "SELECT sp.*, dm.TenDM FROM SanPham sp INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM WHERE sp.TrangThai = 1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -35,11 +32,10 @@ public class SanPhamDAO {
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
                 sp.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
-                NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
-                        rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+                
                 DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
                 sp.setDanhMuc(danhMuc);
-                sp.setNhaCungCap(ncc);
+                
                 listSanPham.add(sp);
             }
 
@@ -52,9 +48,8 @@ public class SanPhamDAO {
     }
 
     public boolean themSanPham(SanPham sanPham, Connection conn) {
-
-        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, MaNCC, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
@@ -65,13 +60,12 @@ public class SanPhamDAO {
             pst.setString(2, sanPham.getTenSP());
             pst.setString(3, sanPham.getDanhMuc() != null ? sanPham.getDanhMuc().getMaDM() : null);
             pst.setDouble(4, sanPham.getGiaBan());
-            pst.setString(5, sanPham.getNhaCungCap() != null ? sanPham.getNhaCungCap().getMaNCC() : null);
-            pst.setString(6, sanPham.getLoaiNuoc());
-            pst.setString(7, sanPham.getAnh());
-            pst.setInt(8, sanPham.getTheTich());
-            pst.setInt(9, sanPham.getMucCanhBao());
-            pst.setString(10, sanPham.getTrangThaiXuLy());
-            pst.setInt(11, 1);
+            pst.setString(5, sanPham.getLoaiNuoc());
+            pst.setString(6, sanPham.getAnh());
+            pst.setInt(7, sanPham.getTheTich());
+            pst.setInt(8, sanPham.getMucCanhBao());
+            pst.setString(9, sanPham.getTrangThaiXuLy());
+            pst.setInt(10, 1);
 
             int rowAffected = pst.executeUpdate();
             return rowAffected > 0;
@@ -106,10 +100,9 @@ public class SanPhamDAO {
     }
 
     public SanPham timSanPham(String ma) {
-        String sql = "SELECT sp.*, dm.TenDM, ncc.TenNCC, ncc.SoDienThoai, ncc.DiaChi "
+        String sql = "SELECT sp.*, dm.TenDM "
                 + "FROM SanPham sp "
                 + "INNER JOIN DanhMuc dm ON sp.MaDM = dm.MaDM "
-                + "INNER JOIN NhaCungCap ncc ON sp.MaNCC = ncc.MaNCC "
                 + "WHERE sp.MaSP = ? AND sp.TrangThai = 1";
 
         try (Connection conn = DBConnection.getConnection();
@@ -127,11 +120,10 @@ public class SanPhamDAO {
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
                 sp.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
-                NhaCungCap ncc = new NhaCungCap(rs.getString("MaNCC"), rs.getString("TenNCC"),
-                        rs.getString("SoDienThoai"), rs.getString("DiaChi"));
+                
                 DanhMuc danhMuc = new DanhMuc(rs.getString("MaDM"), rs.getString("TenDM"));
                 sp.setDanhMuc(danhMuc);
-                sp.setNhaCungCap(ncc);
+
                 return sp;
             }
 
@@ -141,8 +133,6 @@ public class SanPhamDAO {
         }
         return null;
     }
-
-
 
     public Boolean xoaSanPham(String maSp) {
         String sql = "UPDATE SanPham SET TrangThai=0 WHERE MaSP = ?";
@@ -160,7 +150,7 @@ public class SanPhamDAO {
     }
 
     public Boolean capNhapSanPham(SanPham sanPham, Connection conn) {
-        String sql = "UPDATE SanPham SET TenSP = ?, MaDM = ?, GiaBan = ?, MaNCC = ?, "
+        String sql = "UPDATE SanPham SET TenSP = ?, MaDM = ?, GiaBan = ?, "
                 + "LoaiNuoc = ?, Anh = ?, TheTich = ?, MucCanhBao = ?, "
                 + "TrangThaiXuLy = ?, TrangThai = ? "
                 + "WHERE MaSP = ?";
@@ -170,14 +160,13 @@ public class SanPhamDAO {
             pst.setString(1, sanPham.getTenSP());
             pst.setString(2, sanPham.getDanhMuc().getMaDM());
             pst.setDouble(3, sanPham.getGiaBan());
-            pst.setString(4, sanPham.getNhaCungCap().getMaNCC());
-            pst.setString(5, sanPham.getLoaiNuoc());
-            pst.setString(6, sanPham.getAnh());
-            pst.setDouble(7, sanPham.getTheTich());
-            pst.setInt(8, sanPham.getMucCanhBao());
-            pst.setString(9, sanPham.getTrangThaiXuLy());
-            pst.setInt(10, 1);
-            pst.setString(11, sanPham.getMaSP());
+            pst.setString(4, sanPham.getLoaiNuoc());
+            pst.setString(5, sanPham.getAnh());
+            pst.setInt(6, sanPham.getTheTich()); 
+            pst.setInt(7, sanPham.getMucCanhBao());
+            pst.setString(8, sanPham.getTrangThaiXuLy());
+            pst.setInt(9, 1);
+            pst.setString(10, sanPham.getMaSP());
 
             int rowsAffected = pst.executeUpdate();
             return rowsAffected > 0;
@@ -188,5 +177,4 @@ public class SanPhamDAO {
             return false;
         }
     }
-
 }

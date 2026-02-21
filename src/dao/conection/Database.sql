@@ -376,30 +376,28 @@ BEGIN
     (
         MaNL VARCHAR(50) NOT NULL PRIMARY KEY,
         TenNL NVARCHAR(255),
-        MaNCC VARCHAR(50),
-        TenNhaCC NVARCHAR(255),
         Gia DECIMAL(18, 2),
         DonVi NVARCHAR(50),
         MucCanhBao INT,
         TrangThai BIT
     )
     INSERT INTO NguyenLieu
-        (MaNL, TenNL, MaNCC, TenNhaCC, Gia, DonVi, MucCanhBao, TrangThai)
+        (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai)
     VALUES
-        ('NL01', N'Hạt Cà Phê Robusta', 'NCC02', N'Trung Nguyên Legend', 200000, 'kg', 5, 1),
-        ('NL02', N'Sữa Đặc Ngôi Sao', 'NCC03', N'Vinamilk', 25000, 'hop', 10, 1),
-        ('NL03', N'Đường Cát Trắng', 'NCC01', N'Công ty Suntory PepsiCo', 15000, 'kg', 5, 1),
-        ('NL04', N'Sữa Tươi Không Đường', 'NCC03', N'Vinamilk', 30000, 'lit', 10, 1),
-        ('NL05', N'Bột Matcha Đài Loan', 'NCC08', N'Nguyên Liệu Pha Chế Việt', 500000, 'kg', 2, 1),
-        ('NL06', N'Trân Châu Đen', 'NCC08', N'Nguyên Liệu Pha Chế Việt', 40000, 'kg', 5, 1),
-        ('NL07', N'Syrup Đào', 'NCC06', N'Thực Phẩm Ân Nam', 150000, 'chai', 3, 1),
-        ('NL08', N'Trà Đen Túi Lọc', 'NCC05', N'Nông Trại Cầu Đất Farm', 80000, 'goi', 10, 1),
-        ('NL09', N'Kem Béo Thực Vật', 'NCC11', N'Công ty TNHH Richs', 60000, 'hop', 5, 1),
-        ('NL10', N'Bột Cacao', 'NCC09', N'Nestlé Việt Nam', 120000, 'kg', 3, 1),
-        ('NL11', N'Ly Nhựa 500ml', 'NCC07', N'Bao Bì Tân Phú', 500, 'cai', 100, 1),
-        ('NL12', N'Ống Hút', 'NCC07', N'Bao Bì Tân Phú', 200, 'cai', 200, 1),
-        ('NL13', N'Đá Viên Tinh Khiết', 'NCC01', N'Công ty Suntory PepsiCo', 20000, 'bao', 2, 1),
-        ('NL14', N'Xoài Tươi', 'NCC05', N'Nông Trại Cầu Đất Farm', 40000, 'kg', 5, 1)
+        ('NL01', N'Hạt Cà Phê Robusta', 200000, 'kg', 5, 1),
+        ('NL02', N'Sữa Đặc Ngôi Sao', 25000, 'hop', 10, 1),
+        ('NL03', N'Đường Cát Trắng', 15000, 'kg', 5, 1),
+        ('NL04', N'Sữa Tươi Không Đường', 30000, 'lit', 10, 1),
+        ('NL05', N'Bột Matcha Đài Loan', 500000, 'kg', 2, 1),
+        ('NL06', N'Trân Châu Đen', 40000, 'kg', 5, 1),
+        ('NL07', N'Syrup Đào', 150000, 'chai', 3, 1),
+        ('NL08', N'Trà Đen Túi Lọc', 80000, 'goi', 10, 1),
+        ('NL09', N'Kem Béo Thực Vật', 60000, 'hop', 5, 1),
+        ('NL10', N'Bột Cacao', 120000, 'kg', 3, 1),
+        ('NL11', N'Ly Nhựa 500ml', 500, 'cai', 100, 1),
+        ('NL12', N'Ống Hút', 200, 'cai', 200, 1),
+        ('NL13', N'Đá Viên Tinh Khiết', 20000, 'bao', 2, 1),
+        ('NL14', N'Xoài Tươi', 40000, 'kg', 5, 1)
 END;
 
 /* =============================================
@@ -736,18 +734,19 @@ BEGIN
         NgayNhap DATE,
         NgaySanXuat DATE,
         HanSuDung DATE,
-        TongTien DECIMAL(18, 2),
+        GiaNhap DECIMAL(18, 2),
+        TrangThaiXuLy VARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO LoSanPham
-        (MaLoSP, MaPN, MaSP, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, TongTien, TrangThai)
+        (MaLoSP, MaPN, MaSP, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy,TrangThai)
     VALUES
-        ('LOSP01', 'PNSP01', 'SP01', 1000, '2024-01-10', '2024-01-01', '2025-01-01', 8000000, 1),
-        ('LOSP02', 'PNSP02', 'SP26', 500, '2024-01-11', '2024-01-01', '2024-12-31', 4000000, 1),
-        ('LOSP03', 'PNSP03', 'SP42', 250, '2024-01-15', '2024-01-14', '2024-01-20', 2000000, 1),
+        ('LOSP01', 'PNSP01', 'SP01', 1000, '2024-01-10', '2024-01-01', '2025-01-01', 8000000, N'Đã xác nhận', 1),
+        ('LOSP02', 'PNSP02', 'SP26', 500, '2024-01-11', '2024-01-01', '2024-12-31', 4000000, N'Đã xác nhận', 1),
+        ('LOSP03', 'PNSP03', 'SP42', 250, '2024-01-15', '2024-01-14', '2024-01-20', 2000000, N'Đã xác nhận', 1),
         -- Bánh mì que date ngắn
-        ('LOSP04', 'PNSP04', 'SP27', 1000, '2024-02-01', '2024-01-15', '2025-01-15', 8000000, 1),
-        ('LOSP05', 'PNSP05', 'SP45', 100, '2024-02-05', '2024-02-04', '2024-02-10', 1500000, 1)
+        ('LOSP04', 'PNSP04', 'SP27', 1000, '2024-02-01', '2024-01-15', '2025-01-15', 8000000, N'Đã xác nhận', 1),
+        ('LOSP05', 'PNSP05', 'SP45', 100, '2024-02-05', '2024-02-04', '2024-02-10', 1500000, N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -789,27 +788,24 @@ BEGIN
         MaLoNL VARCHAR(50) NOT NULL PRIMARY KEY,
         MaPN VARCHAR(50),
         MaNL VARCHAR(50),
-        SoLuong INT,
+        SoLuong FLOAT, 
         NgayNhap DATE,
         NgaySanXuat DATE,
         HanSuDung DATE,
+        GiaNhap DECIMAL(18, 2), 
+        TrangThaiXuLy VARCHAR(50),
         TrangThai BIT
     )
+    
     INSERT INTO LoNguyenLieu
-        (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, TrangThai)
+        (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy, TrangThai)
     VALUES
-        ('LONL01', 'PNNL01', 'NL01', 25, '2024-01-12', '2024-01-01', '2024-06-01', 1),
-        -- Cà phê
-        ('LONL02', 'PNNL02', 'NL02', 120, '2024-01-13', '2024-01-01', '2024-07-01', 1),
-        -- Sữa đặc
-        ('LONL03', 'PNNL03', 'NL05', 20, '2024-01-20', '2023-12-01', '2024-12-01', 1),
-        -- Matcha
-        ('LONL04', 'PNNL03', 'NL06', 250, '2024-01-20', '2024-01-15', '2024-03-15', 1),
-        -- Trân châu
-        ('LONL05', 'PNNL04', 'NL07', 15, '2024-02-01', '2024-01-01', '2025-01-01', 1)
--- Syrup
+        ('LONL01', 'PNNL01', 'NL01', 25.0, '2024-01-12', '2024-01-01', '2024-06-01', 150000, N'Đã xác nhận', 1), -- Cà phê
+        ('LONL02', 'PNNL02', 'NL02', 120.0, '2024-01-13', '2024-01-01', '2024-07-01', 250000, N'Đã xác nhận', 1), -- Sữa đặc
+        ('LONL03', 'PNNL03', 'NL05', 20.5, '2024-01-20', '2023-12-01', '2024-12-01', 800000, N'Đã xác nhận', 1), -- Matcha (Có số thập phân)
+        ('LONL04', 'PNNL03', 'NL06', 250.0, '2024-01-20', '2024-01-15', '2024-03-15', 300000, N'Đã xác nhận', 1), -- Trân châu
+        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1)  -- Syrup
 END;
-
 /* =============================================
    22. BẢNG PHIẾU HỦY SẢN PHẨM (Product Disposal)
    ============================================= */
@@ -977,10 +973,6 @@ FROM sys.foreign_keys
 WHERE name = 'FK_Size_SanPham')
     ALTER TABLE Size ADD CONSTRAINT FK_Size_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP);
 
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_NguyenLieu_NhaCungCap')
-    ALTER TABLE NguyenLieu ADD CONSTRAINT FK_NguyenLieu_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys

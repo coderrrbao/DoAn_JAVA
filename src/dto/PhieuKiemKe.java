@@ -7,8 +7,8 @@ public class PhieuKiemKe {
     private String ngayKiem;
     private String maLo;
     private String loaiLo;
-    private int soLuongSoSach;
-    private int soLuongThuc;
+    private Double soLuongSoSach;
+    private Double soLuongThuc;
     private String ghiChu;
     private String maNV;
     private String trangThaiXuLy;
@@ -33,11 +33,11 @@ public class PhieuKiemKe {
         return ngayKiem;
     }
 
-    public int getSoLuongSoSach() {
+    public Double getSoLuongSoSach() {
         return soLuongSoSach;
     }
 
-    public int getSoLuongThuc() {
+    public Double getSoLuongThuc() {
         return soLuongThuc;
     }
 
@@ -65,11 +65,11 @@ public class PhieuKiemKe {
         this.ngayKiem = ngayKiem;
     }
 
-    public void setSoLuongSoSach(int soLuongSoSach) {
+    public void setSoLuongSoSach(Double soLuongSoSach) {
         this.soLuongSoSach = soLuongSoSach;
     }
 
-    public void setSoLuongThuc(int soLuongThuc) {
+    public void setSoLuongThuc(Double soLuongThuc) {
         this.soLuongThuc = soLuongThuc;
     }
 

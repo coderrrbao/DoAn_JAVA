@@ -25,8 +25,8 @@ public class PhieuKiemKeDAO {
                 pkk.setNgayKiem(rs.getString("NgayKiem"));
                 pkk.setMaLo(rs.getString("MaLo"));
                 pkk.setLoaiLo(rs.getString("LoaiLo"));
-                pkk.setSoLuongSoSach(rs.getInt("SoLuongSoSach"));
-                pkk.setSoLuongThuc(rs.getInt("SoLuongThuc"));
+                pkk.setSoLuongSoSach(rs.getDouble("SoLuongSoSach"));
+                pkk.setSoLuongThuc(rs.getDouble("SoLuongThuc"));
                 pkk.setGhiChu(rs.getString("GhiChu"));
                 pkk.setMaNV(rs.getString("MaNV"));
                 pkk.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
@@ -67,8 +67,8 @@ public class PhieuKiemKeDAO {
             pst.setDate(2, Date.valueOf(pkk.getNgayKiem()));
             pst.setString(3, pkk.getMaLo());
             pst.setString(4, pkk.getLoaiLo());
-            pst.setInt(5, pkk.getSoLuongSoSach());
-            pst.setInt(6, pkk.getSoLuongThuc());
+            pst.setDouble(5, pkk.getSoLuongSoSach());
+            pst.setDouble(6, pkk.getSoLuongThuc());
             pst.setString(7, pkk.getGhiChu());
             pst.setString(8, pkk.getMaNV());
             pst.setString(9, pkk.getTrangThaiXuLy());
@@ -86,8 +86,8 @@ public class PhieuKiemKeDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuKiemKe.getMaLo());
             pst.setString(2, phieuKiemKe.getLoaiLo());
-            pst.setInt(3, phieuKiemKe.getSoLuongSoSach());
-            pst.setInt(4, phieuKiemKe.getSoLuongThuc());
+            pst.setDouble(3, phieuKiemKe.getSoLuongSoSach());
+            pst.setDouble(4, phieuKiemKe.getSoLuongThuc());
             pst.setString(5, phieuKiemKe.getMaNV());
             pst.setString(6, phieuKiemKe.getGhiChu());
             pst.setString(7, phieuKiemKe.getTrangThaiXuLy());

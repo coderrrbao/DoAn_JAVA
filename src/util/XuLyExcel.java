@@ -3,18 +3,15 @@ package util;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
-import java.util.List;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-// Giả sử model của bạn nằm trong package model
-// import model.SanPham; 
 
 import dto.SanPham;
 
 public class XuLyExcel {
-    // Truyền List<SanPham> vào làm tham số
+    
     public static boolean xuatFile(ArrayList<SanPham> list) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file");
@@ -26,8 +23,8 @@ public class XuLyExcel {
             try (Workbook workbook = new XSSFWorkbook()) {
                 Sheet sheet = workbook.createSheet("Sản Phẩm");
 
-                // 1. Tạo Header
-                String[] headers = { "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Nhà Cung Cấp", "Giá Bán", "Loại Nước",
+                // 1. Tạo Header (Đã bỏ "Nhà Cung Cấp")
+                String[] headers = { "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Giá Bán", "Loại Nước",
                         "Thể Tích", "Trạng Thái Xử lí", "Số size", "Đường dẫn ảnh", "Trạng thái" };
                 Row headerRow = sheet.createRow(0);
 
@@ -43,22 +40,28 @@ public class XuLyExcel {
                     cell.setCellStyle(headerStyle);
                 }
 
-                // 2. Đổ dữ liệu từ danh sách vào các dòng
+                // 2. Đổ dữ liệu từ danh sách vào các dòng (Đã sắp xếp lại chỉ số thứ tự cột liên tục từ 0 -> 9)
                 int rowNum = 1;
                 for (SanPham sp : list) {
                     Row row = sheet.createRow(rowNum++);
 
                     row.createCell(0).setCellValue(sp.getMaSP());
                     row.createCell(1).setCellValue(sp.getTenSP());
-                    row.createCell(2).setCellValue(sp.getDanhMuc().getTenDM()); // Giả sử DanhMuc có hàm getTenDM
-                    row.createCell(3).setCellValue(sp.getNhaCungCap().getTenNCC()); // Giả sử NCC có hàm getTenNCC
-                    row.createCell(4).setCellValue(sp.getGiaBan());
-                    row.createCell(5).setCellValue(sp.getLoaiNuoc());
-                    row.createCell(6).setCellValue(sp.getTheTich() + " ml");
-                    row.createCell(7).setCellValue(sp.getTrangThaiXuLy());
-                    row.createCell(8).setCellValue(sp.getListSize() == null ? 0 : sp.getListSize().size());
-                    row.createCell(9).setCellValue(sp.getAnh());
-                    row.createCell(10).setCellValue(sp.getTrangThai());
+                    
+                    // Thêm kiểm tra null để tránh lỗi NullPointerException khi xuất file
+                    String tenDanhMuc = (sp.getDanhMuc() != null) ? sp.getDanhMuc().getTenDM() : "Chưa có";
+                    row.createCell(2).setCellValue(tenDanhMuc); 
+                    
+                    row.createCell(3).setCellValue(sp.getGiaBan());
+                    row.createCell(4).setCellValue(sp.getLoaiNuoc());
+                    row.createCell(5).setCellValue(sp.getTheTich() + " ml");
+                    row.createCell(6).setCellValue(sp.getTrangThaiXuLy());
+                    row.createCell(7).setCellValue(sp.getListSize() == null ? 0 : sp.getListSize().size());
+                    row.createCell(8).setCellValue(sp.getAnh());
+                    
+                    // Mẹo nhỏ: Chuyển boolean thành text để file Excel nhìn thân thiện và chuyên nghiệp hơn
+                    String trangThaiStr = sp.getTrangThai() ? "Đang hoạt động" : "Đã xóa";
+                    row.createCell(9).setCellValue(trangThaiStr);
                 }
 
                 // Tự động căn chỉnh độ rộng cột

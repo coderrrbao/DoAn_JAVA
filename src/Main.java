@@ -16,7 +16,7 @@ public class Main {
         com.formdev.flatlaf.FlatLightLaf.setup();
         new LoginUI();
         // EventQueue.invokeLater(() -> {
-        // new MainFrame().setVisible(true);
+        //     new MainFrame().setVisible(true);
         // });
     }
 }
