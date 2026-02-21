@@ -57,7 +57,7 @@ public class ContentPaner extends JPanel {
           hoaDonUI = new HoaDonUI();
           nhanVienUI = new NhanVienUI();
           taiKhoanUI = new TaiKhoanUI();
-          xuatKhoUI = new XuatKhoUI();
+          xuatKhoUI = new XuatKhoUI(owner);
           tonKhoUI = new TonKhoUI();
           khuyenMaiUI = new KhuyenMaiUI();
           phanQuyenUI = new PhanQuyenUI();
