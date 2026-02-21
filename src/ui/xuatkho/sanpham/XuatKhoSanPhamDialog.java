@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class XuatKhoSanPhamDialog extends JDialog {
@@ -16,32 +17,30 @@ public class XuatKhoSanPhamDialog extends JDialog {
   private DefaultTableModel modelTonKho, modelChoXuat;
   private JTextField txtMaSP, txtSoLuongXuat, txtMaLo, txtMaNV;
   private JButton btnThem, btnXacNhan;
+  private XuatKhoSanPhamPanel parentPanel;
 
-  public XuatKhoSanPhamDialog(Frame owner) {
-    super(owner, "Hủy Sản Phẩm Theo Lô", true);
+  public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
+    super((Frame) null, "Hủy Sản Phẩm Theo Lô", true);
+    this.parentPanel = parent;
     setSize(1000, 600);
-    setLocationRelativeTo(owner);
+    setLocationRelativeTo(null);
     setLayout(new BorderLayout());
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
 
-    // BÊN TRÁI: KHO SẢN PHẨM - ĐÃ KHÓA CHỈNH SỬA Ô
+    // Tồn kho: Thêm cột Giá Nhập (ẩn hoặc hiện tùy bạn, ở đây tôi để hiện)
     JPanel left = TaoUI.taoPanelBorderLayout(450, 600);
     modelTonKho =
-        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn Sử Dụng", "Tồn"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false; // Không cho phép sửa trực tiếp trên table
-          }
-        };
+        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0);
     tblTonKho = new JTable(modelTonKho);
     left.add(new JScrollPane(tblTonKho), BorderLayout.CENTER);
 
-    // BÊN PHẢI: FORM HỦY
     JPanel right = new JPanel(new BorderLayout());
-    JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 200);
+    JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 220);
 
-    txtMaNV = new JTextField("NV001"); // Mã NV mặc định
+    String maNVHienTai = (PhienDangNhap.getUser() != null) ? PhienDangNhap.getUser().getMaNV() : "";
+    txtMaNV = new JTextField(maNVHienTai);
+    txtMaNV.setEditable(false);
     txtMaSP = new JTextField();
     TaoUI.setDisabled(txtMaSP);
     txtMaLo = new JTextField();
@@ -56,18 +55,11 @@ public class XuatKhoSanPhamDialog extends JDialog {
     form.add(txtMaLo);
     form.add(new JLabel("Số lượng hủy:"));
     form.add(txtSoLuongXuat);
-
     btnThem = new JButton("Thêm vào danh sách chờ");
     form.add(btnThem);
 
-    // BẢNG CHỜ XUẤT - ĐÃ KHÓA CHỈNH SỬA Ô
     modelChoXuat =
-        new DefaultTableModel(new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+        new DefaultTableModel(new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
     btnXacNhan = new JButton("XÁC NHẬN HỦY & TRỪ KHO");
@@ -92,7 +84,9 @@ public class XuatKhoSanPhamDialog extends JDialog {
     for (LoSanPham lo : list) {
       if (lo.getSoLuong() > 0)
         modelTonKho.addRow(
-            new Object[] {lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong()});
+            new Object[] {
+              lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+            });
     }
   }
 
@@ -113,8 +107,9 @@ public class XuatKhoSanPhamDialog extends JDialog {
           try {
             int r = tblTonKho.getSelectedRow();
             if (r == -1) return;
-            int sl = Integer.parseInt(txtSoLuongXuat.getText());
-            int ton = Integer.parseInt(modelTonKho.getValueAt(r, 3).toString());
+            double sl = Double.parseDouble(txtSoLuongXuat.getText());
+            double ton = Double.parseDouble(modelTonKho.getValueAt(r, 3).toString());
+            double gia = Double.parseDouble(modelTonKho.getValueAt(r, 4).toString());
 
             if (sl <= 0 || sl > ton) {
               JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
@@ -124,7 +119,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
             SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaSP.getText(), (sp != null ? sp.getTenSP() : "SP"), sl, txtMaLo.getText()
+                  txtMaSP.getText(), (sp != null ? sp.getTenSP() : "SP"), sl, txtMaLo.getText(), gia
                 });
             txtSoLuongXuat.setText("");
           } catch (Exception ex) {
@@ -136,16 +131,17 @@ public class XuatKhoSanPhamDialog extends JDialog {
         e -> {
           int rowCount = modelChoXuat.getRowCount();
           if (rowCount == 0) return;
-          Object[][] data = new Object[rowCount][4];
+          Object[][] data = new Object[rowCount][5];
           for (int i = 0; i < rowCount; i++) {
-            data[i][0] = modelChoXuat.getValueAt(i, 0);
-            data[i][2] = modelChoXuat.getValueAt(i, 2);
-            data[i][3] = modelChoXuat.getValueAt(i, 3);
+            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
           }
           if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS()
               .thucHienHuy(txtMaNV.getText(), "Hủy hỏng", data)) {
-            JOptionPane.showMessageDialog(this, "Đã lưu phiếu và trừ tồn kho thành công!");
+            JOptionPane.showMessageDialog(this, "Thành công!");
+            parentPanel.loadDuLieu(); // Làm mới bảng chính
             dispose();
+          } else {
+            JOptionPane.showMessageDialog(this, "Thất bại! Vui lòng kiểm tra lại Database.");
           }
         });
   }

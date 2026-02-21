@@ -1,23 +1,26 @@
 package ui.xuatkho.nguyenlieu;
 
-import java.awt.BorderLayout;
-import java.awt.Frame;
+import bus.PhieuHuyNguyenLieuBUS;
+import dto.PhieuHuyNguyenLieu;
+import java.awt.*;
+import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
 import util.TaoUI;
 
 public class XuatKhoNguyenLieuPanel extends JPanel {
-  private JButton btnXuat;
+  private JTable table;
+  private DefaultTableModel model;
 
-  public XuatKhoNguyenLieuPanel(Frame owner) {
+  public XuatKhoNguyenLieuPanel() {
     setLayout(new BorderLayout());
     JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
 
-    btnXuat = new JButton("Xuất nguyên liệu");
+    JButton btnXuat = new JButton("Xuất nguyên liệu");
     btnXuat.addActionListener(
         e -> {
-          XuatKhoNguyenLieuDialog dialog = new XuatKhoNguyenLieuDialog(owner);
+          XuatKhoNguyenLieuDialog dialog = new XuatKhoNguyenLieuDialog(this);
           dialog.setVisible(true);
         });
 
@@ -25,8 +28,29 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
     top.add(btnXuat);
     add(top, BorderLayout.NORTH);
 
-    String[] cols = {"Mã phiếu xuất", "Ngày xuất", "Nhân viên", "Ghi chú"};
-    DefaultTableModel model = new DefaultTableModel(cols, 0);
-    add(TaoUI.taoTableScroll(model), BorderLayout.CENTER);
+    model =
+        new DefaultTableModel(
+            new String[] {"Mã phiếu", "Ngày xuất", "Nhân viên", "Lý do", "Tổng tiền"}, 0);
+    JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+    table = (JTable) scrollPane.getViewport().getView();
+
+    add(scrollPane, BorderLayout.CENTER);
+    loadDuLieu();
+  }
+
+  public void loadDuLieu() {
+    model.setRowCount(0);
+    ArrayList<PhieuHuyNguyenLieu> list =
+        PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().layListPhieuHuy();
+    for (PhieuHuyNguyenLieu ph : list) {
+      model.addRow(
+          new Object[] {
+            ph.getMaPH(),
+            ph.getNgayHuy(),
+            ph.getMaNV(),
+            ph.getLyDo(),
+            String.format("%,.0f VNĐ", ph.getTongTien())
+          });
+    }
   }
 }

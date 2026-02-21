@@ -9,6 +9,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class XuatKhoNguyenLieuDialog extends JDialog {
@@ -16,32 +17,30 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
   private DefaultTableModel modelKho, modelChoXuat;
   private JTextField txtMaNL, txtTenNL, txtSoLuong, txtMaLo, txtMaNV;
   private JButton btnThem, btnXacNhan;
+  private XuatKhoNguyenLieuPanel parentPanel;
 
-  public XuatKhoNguyenLieuDialog(Frame owner) {
-    super(owner, "Hủy Kho Nguyên Liệu Theo Lô", true);
+  public XuatKhoNguyenLieuDialog(XuatKhoNguyenLieuPanel parent) {
+    super((Frame) null, "Hủy Kho Nguyên Liệu Theo Lô", true);
+    this.parentPanel = parent;
     setSize(1000, 650);
-    setLocationRelativeTo(owner);
+    setLocationRelativeTo(null);
     setLayout(new BorderLayout());
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
-
-    // BÊN TRÁI: KHO NGUYÊN LIỆU - ĐÃ KHÓA CHỈNH SỬA Ô
     JPanel left = TaoUI.taoPanelBorderLayout(450, 600);
+
+    // Thêm cột Giá Nhập vào bảng tồn kho
     modelKho =
-        new DefaultTableModel(new String[] {"Mã NL", "Mã Lô", "Hạn Sử Dụng", "Tồn"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+        new DefaultTableModel(new String[] {"Mã NL", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0);
     tblKho = new JTable(modelKho);
     left.add(new JScrollPane(tblKho), BorderLayout.CENTER);
 
-    // BÊN PHẢI: FORM HỦY
     JPanel right = new JPanel(new BorderLayout());
     JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 250);
 
-    txtMaNV = new JTextField("NV001");
+    String maNVHienTai = (PhienDangNhap.getUser() != null) ? PhienDangNhap.getUser().getMaNV() : "";
+    txtMaNV = new JTextField(maNVHienTai);
+    txtMaNV.setEditable(false);
     txtMaNL = new JTextField();
     TaoUI.setDisabled(txtMaNL);
     txtTenNL = new JTextField();
@@ -60,18 +59,12 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
     form.add(txtTenNL);
     form.add(new JLabel("Số lượng hủy:"));
     form.add(txtSoLuong);
-
     btnThem = new JButton("Thêm vào danh sách hủy");
     form.add(btnThem);
 
-    // BẢNG CHỜ XUẤT - ĐÃ KHÓA CHỈNH SỬA Ô
+    // Bảng chờ hủy thêm cột Giá Nhập
     modelChoXuat =
-        new DefaultTableModel(new String[] {"Mã NL", "Tên NL", "SL Hủy", "Mã Lô"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+        new DefaultTableModel(new String[] {"Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
     btnXacNhan = new JButton("XÁC NHẬN HỦY & TRỪ KHO");
@@ -96,7 +89,9 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
     for (LoNguyenLieu lo : listLo) {
       if (lo.getSoLuong() > 0)
         modelKho.addRow(
-            new Object[] {lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong()});
+            new Object[] {
+              lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+            });
     }
   }
 
@@ -107,10 +102,9 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
             e -> {
               int row = tblKho.getSelectedRow();
               if (row != -1) {
-                String maNL = modelKho.getValueAt(row, 0).toString();
-                txtMaNL.setText(maNL);
+                txtMaNL.setText(modelKho.getValueAt(row, 0).toString());
                 txtMaLo.setText(modelKho.getValueAt(row, 1).toString());
-                NguyenLieu nl = NguyenLieuBUS.getNguyenLieuBUS().timNguyenLieu(maNL);
+                NguyenLieu nl = NguyenLieuBUS.getNguyenLieuBUS().timNguyenLieu(txtMaNL.getText());
                 txtTenNL.setText(nl != null ? nl.getTenNL() : "N/A");
               }
             });
@@ -121,12 +115,15 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
             int r = tblKho.getSelectedRow();
             double slHuy = Double.parseDouble(txtSoLuong.getText());
             double ton = Double.parseDouble(modelKho.getValueAt(r, 3).toString());
+            double gia = Double.parseDouble(modelKho.getValueAt(r, 4).toString());
             if (slHuy <= 0 || slHuy > ton) {
               JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
               return;
             }
             modelChoXuat.addRow(
-                new Object[] {txtMaNL.getText(), txtTenNL.getText(), slHuy, txtMaLo.getText()});
+                new Object[] {
+                  txtMaNL.getText(), txtTenNL.getText(), slHuy, txtMaLo.getText(), gia
+                });
             txtSoLuong.setText("");
           } catch (Exception ex) {
             JOptionPane.showMessageDialog(this, "Nhập số lượng hợp lệ!");
@@ -137,16 +134,18 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         e -> {
           int rowCount = modelChoXuat.getRowCount();
           if (rowCount == 0) return;
-          Object[][] data = new Object[rowCount][4];
+          Object[][] data = new Object[rowCount][5];
           for (int i = 0; i < rowCount; i++) {
-            data[i][0] = modelChoXuat.getValueAt(i, 0);
-            data[i][2] = modelChoXuat.getValueAt(i, 2);
-            data[i][3] = modelChoXuat.getValueAt(i, 3);
+            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
           }
           if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS()
               .thucHienHuy(txtMaNV.getText(), "Hủy hỏng", data)) {
-            JOptionPane.showMessageDialog(this, "Đã lưu phiếu và cập nhật kho thành công!");
+            JOptionPane.showMessageDialog(this, "Thành công!");
+            parentPanel.loadDuLieu(); //
             dispose();
+          } else {
+            JOptionPane.showMessageDialog(
+                this, "Thất bại! Kiểm tra lại mã cột MaLoNL trong Database.");
           }
         });
   }

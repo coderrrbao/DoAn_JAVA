@@ -14,12 +14,12 @@ public class XuatKhoUI extends JPanel {
   public XuatKhoUI(Frame owner) {
     setLayout(new BorderLayout());
 
-    xuatKhoSanPham = new XuatKhoSanPhamPanel(owner);
-    xuatKhoNguyenLieu = new XuatKhoNguyenLieuPanel(owner);
+    xuatKhoSanPham = new XuatKhoSanPhamPanel();
+    xuatKhoNguyenLieu = new XuatKhoNguyenLieuPanel();
 
     JTabbedPane tabbedPane = new JTabbedPane();
     tabbedPane.addTab("Sản phẩm", xuatKhoSanPham);
-    tabbedPane.addTab("Nguyên liệu", xuatKhoNguyenLieu); // Thêm tab mới
+    tabbedPane.addTab("Nguyên liệu", xuatKhoNguyenLieu);
 
     add(tabbedPane, BorderLayout.CENTER);
   }
