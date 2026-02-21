@@ -9,7 +9,7 @@ public class LoNguyenLieu {
     private String ngayNhap;
     private String ngaySanXuat;
     private String hanSuDung;
-    private boolean trangThai;
+    private boolean trangThaiXuLy;
 
     public LoNguyenLieu() {
     }
@@ -25,12 +25,12 @@ public class LoNguyenLieu {
         this.hanSuDung = hanSuDung;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
+    public void setTrangThaiXuLy(boolean trangThai) {
+        this.trangThaiXuLy = trangThai;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
+    public boolean getTrangThaiXuLy() {
+        return trangThaiXuLy;
     }
 
     public String getMaLoNL() {

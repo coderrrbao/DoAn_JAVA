@@ -29,11 +29,10 @@ public class ChiTietSanPhamDialog extends JDialog {
             btnLamMoi;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
-    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy, cbNhaCungCap;
+    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy;
     private SanPham sanPham;
 
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
-    private NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
 
     private XemCongThucDialog xemCongThucDialog;
     private QuanLySanPhamUI quanLySanPhamUI;
@@ -92,26 +91,14 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         JPanel thongTin1 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
 
-        if (sanPham != null) {
-            thongTin1.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
-
-        }
-        thongTin1.add(Box.createHorizontalGlue());
-        thongTin1.add(TaoUI.taoFieldText("Tên sản phẩm", 80, 100, 30, 5, tfTenSanPham));
+        thongTin1.add(TaoUI.taoFieldText("Tên sản phẩm", 80, 280, 30, 5, tfTenSanPham));
 
         JPanel thongTin2 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
-        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 80, 80, 30, 5, tfCanhBao));
-        thongTin2.add(Box.createHorizontalGlue());
-        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
-        ArrayList<NhaCungCap> dsNCC = nhaCungCapBUS.laylistNhaCungCap();
-        String[] listNCC = new String[dsNCC.size() + 1];
-        for (int i = 0; i < dsNCC.size(); i++) {
-            listNCC[i + 1] = dsNCC.get(i).getTenNCC();
+        if (sanPham != null) {
+            thongTin2.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
         }
-        listNCC[0] = "--Nhà cung cấp --";
-        cbNhaCungCap = new JComboBox<>(listNCC);
-        TaoUI.setFixSize(cbNhaCungCap, 180, 30);
-        thongTin2.add(cbNhaCungCap);
+        thongTin2.add(Box.createHorizontalGlue());
+        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 80, 80, 30, 5, tfCanhBao));
 
         JPanel thongTin3 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
         thongTin3.add(TaoUI.taoFieldText("Dung tích(ml)", 80, 80, 30, 5, tfDungTich));
@@ -248,7 +235,6 @@ public class ChiTietSanPhamDialog extends JDialog {
             modelSize.setRowCount(0);
             cbDanhMuc.setSelectedIndex(0);
             cbLoaiNuoc.setSelectedIndex(0);
-            cbNhaCungCap.setSelectedIndex(0);
             cbTrangThaiXuLy.setSelectedIndex(0);
             formCongThuc.setVisible(false);
             repaint();
@@ -258,7 +244,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         tfMaSanPham.setText(sanPham.getMaSP());
         tfTenSanPham.setText(sanPham.getTenSP());
         tfCanhBao.setText(String.valueOf(sanPham.getMucCanhBao()));
-        cbNhaCungCap.setSelectedItem(sanPham.getNhaCungCap() != null ? sanPham.getNhaCungCap().getTenNCC() : "");
         tfGiaBan.setText(String.valueOf(sanPham.getGiaBan()));
         tfDungTich.setText(String.valueOf(sanPham.getTheTich()));
         cbDanhMuc.setSelectedItem(sanPham.getDanhMuc() != null ? sanPham.getDanhMuc().getTenDM() : "");
@@ -291,12 +276,10 @@ public class ChiTietSanPhamDialog extends JDialog {
         tfMaSanPham.setEditable(false);
         tfTenSanPham.setEditable(false);
         tfCanhBao.setEditable(false);
-        cbNhaCungCap.setEnabled(false);
         tfGiaBan.setEditable(false);
         tfDungTich.setEditable(false);
         cbDanhMuc.setEnabled(false);
         cbLoaiNuoc.setEnabled(false);
-        cbNhaCungCap.setEditable(false);
         cbTrangThaiXuLy.setEnabled(false);
         btnLuuThayDoi.setEnabled(false);
         btnSua.setEnabled(true);
@@ -312,14 +295,13 @@ public class ChiTietSanPhamDialog extends JDialog {
         tfMaSanPham.setEditable(false);
         tfTenSanPham.setEditable(true);
         tfCanhBao.setEditable(true);
-        cbNhaCungCap.setEnabled(true);
         tfGiaBan.setEditable(true);
         tfDungTich.setEditable(true);
         cbDanhMuc.setEnabled(true);
         cbLoaiNuoc.setEnabled(true);
         cbTrangThaiXuLy.setEnabled(true);
         btnLuuThayDoi.setEnabled(true);
-        cbNhaCungCap.setEnabled(true);
+
         btnSua.setEnabled(false);
         btnChonAnh.setEnabled(true);
         btnThemSize.setEnabled(true);
@@ -488,8 +470,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         sp.setGiaBan(Long.parseLong(tfGiaBan.getText()));
         sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
         sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
-        NhaCungCap ncc = nhaCungCapBUS.timNhaCungCapTheoTen((String) cbNhaCungCap.getSelectedItem());
-        sp.setNhaCungCap(ncc);
         sp.setCongThuc(xemCongThucDialog != null ? xemCongThucDialog.dongGoiCongThuc() : null);
         sp.setListSize(dongGoiListSize());
         sp.setTrangThaiXuLy("Chờ xử lý");

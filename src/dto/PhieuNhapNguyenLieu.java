@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.ArrayList;
+
 public class PhieuNhapNguyenLieu {
     private String maPN;
     private String ngayNhap;
@@ -8,6 +10,8 @@ public class PhieuNhapNguyenLieu {
     private String maNCC;
     private String trangThaiXuLy;
     private String ghiChu;
+    private ArrayList<LoNguyenLieu> listLoNguyenLieu = new ArrayList<>();
+
     private boolean trangThai;
 
     public PhieuNhapNguyenLieu() {
@@ -88,5 +92,16 @@ public class PhieuNhapNguyenLieu {
 
     public void setMaPN(String maPNNL) {
         this.maPN = maPNNL;
+    }
+
+    public boolean themLoNguyenLieu(LoNguyenLieu loNguyenLieu) {
+        if (loNguyenLieu == null) {
+            return false;
+        }
+        return listLoNguyenLieu.add(loNguyenLieu);
+    }
+
+    public ArrayList<LoNguyenLieu> getListLoNguyenLieu() {
+        return listLoNguyenLieu;
     }
 }

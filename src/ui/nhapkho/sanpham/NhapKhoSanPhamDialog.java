@@ -6,6 +6,9 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 import javax.swing.Box;
 import javax.swing.BoxLayout;
@@ -13,13 +16,27 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
+import com.toedter.calendar.JDateChooser;
+
+import bus.LoSanPhamBUS;
+import bus.NhaCungCapBUS;
+import bus.PhieuNhapSanPhamBUS;
+import bus.SanPhamBUS;
+import dto.ChiTietNhaCungCap;
+import dto.LoSanPham;
+import dto.NhaCungCap;
+import dto.PhieuNhapSanPham;
+import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhapKhoSanPhamDialog extends JDialog {
@@ -29,9 +46,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
     private JTextField txtTenSp;
     private JTextField txtGiaNhap;
     private JTextField txtSoLuong;
+    private JDateChooser txtNgaySx;
+    private JDateChooser txtHanSuDung;
 
-    private JTextField txtMaPN;
-    private JTextField txtTongSP;
     private JTextField txtNhanVien;
     private JComboBox<String> cbNhaCungCap;
 
@@ -43,16 +60,20 @@ public class NhapKhoSanPhamDialog extends JDialog {
 
     private JTable tblChiTietPhieuNhap;
     private DefaultTableModel modelChiTietPhieuNhap;
-    private JButton themSpPNHBtn;
-    public NhapKhoSanPhamDialog(Frame owner) {
-        super(owner, "Nhập Kho Sản Phẩm", true);
-        setSize(900, 680);
-        setLocationRelativeTo(owner);
+    private JButton themSpPNHBtn, xoaCTBtn;
+
+    NhapKhoSanPhamPanel nhapKhoSanPhamPanel;
+
+    public NhapKhoSanPhamDialog(NhapKhoSanPhamPanel nhapKhoSanPhamPanel) {
+        super((Frame) null, "Nhập Kho Sản Phẩm", true);
+        setSize(900, 710);
+        setLocationRelativeTo(null);
         setLayout(new BorderLayout());
 
+        this.nhapKhoSanPhamPanel = nhapKhoSanPhamPanel;
         JPanel top = new JPanel();
         TaoUI.suaBorderChoPanel(top, 0, 0, 5, 0);
-        TaoUI.setFixSize(top, 3000, 300);
+        TaoUI.setFixSize(top, 3000, 320);
         add(top, BorderLayout.NORTH);
 
         JPanel center = new JPanel();
@@ -64,21 +85,15 @@ public class NhapKhoSanPhamDialog extends JDialog {
         modelKhoHang.addColumn("Mã sp");
         modelKhoHang.addColumn("Tên sp");
         modelKhoHang.addColumn("Giá nhập");
-        modelKhoHang.addColumn("Số lượng");
-
-        Object[][] data = {
-                { "SP001", "Sting Dâu", 8500, 24 },
-                { "SP002", "Coca Cola", 9000, 50 },
-        };
-        for (Object[] row : data)
-            modelKhoHang.addRow(row);
+        modelKhoHang.addColumn("SL");
+        modelKhoHang.addColumn("Loại SP");
 
         JScrollPane scroll = TaoUI.taoTableScroll(modelKhoHang);
 
         tblKhoHang = (JTable) scroll.getViewport().getView();
 
         tblKhoHang.getColumnModel().getColumn(0).setPreferredWidth(80);
-        tblKhoHang.getColumnModel().getColumn(1).setPreferredWidth(200);
+        tblKhoHang.getColumnModel().getColumn(1).setPreferredWidth(180);
         tblKhoHang.getColumnModel().getColumn(2).setPreferredWidth(100);
         tblKhoHang.getColumnModel().getColumn(3).setPreferredWidth(70);
 
@@ -155,11 +170,40 @@ public class NhapKhoSanPhamDialog extends JDialog {
         info3.add(soLuongInput);
         chiTietSp.add(info3);
 
+        JPanel info4 = TaoUI.taoPanelBoxLayoutNgang(380, 65);
+
+        JPanel ngayInput = TaoUI.taoPanelBoxLayoutDoc(150, 65);
+        JPanel titleNgay = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        titleNgay.add(new JLabel("Ngày SX"));
+        ngayInput.add(titleNgay);
+
+        txtNgaySx = new JDateChooser();
+        txtNgaySx.setDateFormatString("yyyy-MM-dd");
+        TaoUI.setFixSize(txtNgaySx, 3000, 40);
+        ngayInput.add(txtNgaySx);
+
+        JPanel hanSDInput = TaoUI.taoPanelBoxLayoutDoc(150, 65);
+        JPanel titleHanSD = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        titleHanSD.add(new JLabel("Hạn SD"));
+        hanSDInput.add(titleHanSD);
+
+        txtHanSuDung = new JDateChooser();
+        txtHanSuDung.setDateFormatString("yyyy-MM-dd");
+        TaoUI.setFixSize(txtHanSuDung, 3000, 40);
+        hanSDInput.add(txtHanSuDung);
+
+        info4.add(ngayInput);
+        info4.add(Box.createRigidArea(new Dimension(10, 0)));
+        info4.add(hanSDInput);
+        chiTietSp.add(info3);
+        chiTietSp.add(info4);
+
         themSpPNHBtn = new JButton("Thêm vào phiếu");
+        TaoUI.setFixSize(themSpPNHBtn, 130, 35);
         JPanel ctnThemSp = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        TaoUI.suaBorderChoPanel(ctnThemSp, 0,8,0,0);
+        TaoUI.suaBorderChoPanel(ctnThemSp, 0, 3, 0, 0);
         ctnThemSp.add(themSpPNHBtn);
-        chiTietSp.add(Box.createRigidArea(new Dimension(0,20)));
+        chiTietSp.add(Box.createRigidArea(new Dimension(0, 10)));
         chiTietSp.add(ctnThemSp);
 
         JPanel chiTietPhieuNhapPanel = TaoUI.taoPanelBorderLayout(500, 3000);
@@ -169,19 +213,29 @@ public class NhapKhoSanPhamDialog extends JDialog {
         modelChiTietPhieuNhap.addColumn("Tên sp");
         modelChiTietPhieuNhap.addColumn("Giá nhập");
         modelChiTietPhieuNhap.addColumn("Số lượng");
-        modelChiTietPhieuNhap.addColumn("Loại sản phẩm");
-
-        modelChiTietPhieuNhap.addRow(new Object[] { "SP001", "Bút bi Thiên Long", 2500, 100, "Văn phòng phẩm" });
+        modelChiTietPhieuNhap.addColumn("Ngày SX");
+        modelChiTietPhieuNhap.addColumn("Hạn SD");
 
         JScrollPane scrollPaneCTPN = TaoUI.taoTableScroll(modelChiTietPhieuNhap);
         tblChiTietPhieuNhap = (JTable) scrollPaneCTPN.getViewport().getView();
+        tblChiTietPhieuNhap.getColumnModel().getColumn(0).setPreferredWidth(60);
+        tblChiTietPhieuNhap.getColumnModel().getColumn(3).setPreferredWidth(60);
 
-        JPanel titleCTPN = TaoUI.taoPanelBoxLayoutNgang(3000, 60);
+        JPanel titleCTPN = TaoUI.taoPanelBoxLayoutDoc(500, 80);
         TaoUI.suaBorderChoPanel(titleCTPN, 0, 20, 0, 0);
         JLabel titleCTPNJLabel = new JLabel("Danh sách các sản phẩm nhập");
+        JPanel titleCTPNJPanel = TaoUI.taoPanelBoxLayoutNgang(500, 50);
+        titleCTPNJPanel.add(titleCTPNJLabel);
         titleCTPNJLabel.setFont(new Font("Arial", Font.BOLD, 16));
-        titleCTPN.add(titleCTPNJLabel);
+        titleCTPN.add(Box.createVerticalGlue());
+        titleCTPN.add(titleCTPNJPanel);
+        JPanel buttonPn = TaoUI.taoPanelBoxLayoutNgang(500, 20);
+        buttonPn.add(Box.createHorizontalGlue());
+        xoaCTBtn = new JButton("Xóa");
+        buttonPn.add(xoaCTBtn);
 
+        titleCTPN.add(buttonPn);
+        titleCTPN.add(Box.createRigidArea(new Dimension(0, 3)));
         chiTietPhieuNhapPanel.add(scrollPaneCTPN, BorderLayout.CENTER);
         chiTietPhieuNhapPanel.add(titleCTPN, BorderLayout.NORTH);
 
@@ -194,31 +248,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
         TaoUI.suaBorderChoPanel(xacNhanNH, 0, 10, 0, 10);
         center.add(xacNhanNH, BorderLayout.CENTER);
 
-        JPanel infoNH1 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
-        xacNhanNH.add(infoNH1);
-        xacNhanNH.add(Box.createVerticalStrut(10));
-
-        JPanel maPNInput = TaoUI.taoPanelBoxLayoutDoc(150, 65);
-        JPanel titleMaPN = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        titleMaPN.add(new JLabel("Mã PN"));
-        maPNInput.add(titleMaPN);
-
-        txtMaPN = new JTextField();
-        TaoUI.setFixSize(txtMaPN, 150, 40);
-        maPNInput.add(txtMaPN);
-        infoNH1.add(maPNInput);
-
-        JPanel tongSPInput = TaoUI.taoPanelBoxLayoutDoc(150, 65);
-        JPanel titleTongSP = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        titleTongSP.add(new JLabel("Tổng SP"));
-        tongSPInput.add(titleTongSP);
-
-        txtTongSP = new JTextField();
-        TaoUI.setFixSize(txtTongSP, 150, 40);
-        tongSPInput.add(txtTongSP);
-
-        infoNH1.add(Box.createHorizontalGlue());
-        infoNH1.add(tongSPInput);
+        xacNhanNH.add(Box.createRigidArea(new Dimension(0, 80)));
 
         JPanel infoNH2 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
         xacNhanNH.add(infoNH2);
@@ -230,6 +260,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
         nvNhapInput.add(titleNVNhap);
 
         txtNhanVien = new JTextField();
+        txtNhanVien.setText(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
         TaoUI.setFixSize(txtNhanVien, 380 - gap, 40);
         nvNhapInput.add(txtNhanVien);
         infoNH2.add(nvNhapInput);
@@ -244,8 +275,11 @@ public class NhapKhoSanPhamDialog extends JDialog {
         nccInput.add(titleNCC);
 
         cbNhaCungCap = new JComboBox<>();
-        cbNhaCungCap.addItem("NCC A");
-        cbNhaCungCap.addItem("NCC B");
+        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+        cbNhaCungCap.addItem("Nhà cung cấp");
+        for (String tenNCC : nhaCungCapBUS.layLuaChonNCCSanPham()) {
+            cbNhaCungCap.addItem(tenNCC);
+        }
         TaoUI.setFixSize(cbNhaCungCap, 380 - gap, 40);
         nccInput.add(cbNhaCungCap);
         infoNH3.add(nccInput);
@@ -274,54 +308,154 @@ public class NhapKhoSanPhamDialog extends JDialog {
         panelBtn.add(btnNhapHang);
         infoNH4.add(panelBtn);
 
-        JTextField[] nonEditFields = { txtLoaiSp, txtTenSp, txtGiaNhap, txtTongSP, txtNhanVien };
+        JTextField[] nonEditFields = { txtLoaiSp, txtTenSp, txtGiaNhap };
 
         for (JTextField field : nonEditFields) {
             field.setEditable(false);
             field.setBackground(Color.WHITE);
         }
         txtMaSp.setEditable(false);
-        txtMaPN.setEditable(false);
-
-
-        txtMaSp.setText("Hi  hi 123");
+        txtNhanVien.setEditable(false);
         ganSuKien();
+        loadDuLieu();
     }
 
+    public void loadDuLieu() {
+        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+        modelKhoHang.setRowCount(0);
 
-    private void ganSuKien() {
-    // Lấy model quản lý việc chọn lựa của bảng Kho Hàng
-    tblKhoHang.getSelectionModel().addListSelectionListener(e -> {
-        // Kiểm tra nếu sự kiện đang trong quá trình thay đổi (để tránh chạy 2 lần)
-        if (!e.getValueIsAdjusting()) {
-            int selectedRow = tblKhoHang.getSelectedRow();
-            
-            if (selectedRow != -1) { // Nếu có dòng được chọn
-                // Lấy dữ liệu từ TableModel dựa trên chỉ số dòng
-                String maSp = modelKhoHang.getValueAt(selectedRow, 0).toString();
-                String tenSp = modelKhoHang.getValueAt(selectedRow, 1).toString();
-                String giaNhap = modelKhoHang.getValueAt(selectedRow, 2).toString();
-                
-                // Đổ dữ liệu vào các ô TextField
-                txtMaSp.setText(maSp);
-                txtTenSp.setText(tenSp);
-                txtGiaNhap.setText(giaNhap);
-                
-                // Giả định loại SP (vì trong modelKhoHang của bạn chưa có cột này)
-                txtLoaiSp.setText("Nước giải khát"); 
-                
-                // Focus vào ô số lượng để người dùng nhập ngay
-                txtSoLuong.requestFocus();
-                txtSoLuong.selectAll();
+        NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
+        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
+        LoSanPhamBUS loSanPhamBUS = new LoSanPhamBUS();
+        if (nhaCungCap != null) {
+            for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
+                if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
+                    SanPham sanPham = sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong());
+                    modelKhoHang.addRow(
+                            new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
+                                    loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()), sanPham.getLoaiNuoc() });
+                }
             }
         }
-    });
-}
+    }
 
-    // public static void main(String[] args) {
-    //     Frame frame = new Frame();
-    //     frame.setVisible(true);
-    //     Dialog dialog = new NhapKhoDialog(frame);
-    //     dialog.setVisible(true);
-    // }
+    private void lamMoi() {
+        txtGiaNhap.setText("");
+        txtMaSp.setText("");
+        txtLoaiSp.setText("");
+        txtSoLuong.setText("");
+        txtTenSp.setText("");
+        modelChiTietPhieuNhap.setRowCount(0);
+        lblTongTienHienThi.setText("0 VNĐ");
+    }
+
+    private double tinhTongTienNhap() {
+        double tong = 0;
+        for (int i = 0; i < modelChiTietPhieuNhap.getRowCount(); i++) {
+            tong += Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString())
+                    * Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString());
+        }
+        return tong;
+    }
+
+    private void ganSuKien() {
+        tblKhoHang.getSelectionModel().addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                int selectedRow = tblKhoHang.getSelectedRow();
+
+                if (selectedRow != -1) {
+                    String maSp = modelKhoHang.getValueAt(selectedRow, 0).toString();
+                    String tenSp = modelKhoHang.getValueAt(selectedRow, 1).toString();
+                    String giaNhap = modelKhoHang.getValueAt(selectedRow, 2).toString();
+                    String loaiNuoc = modelKhoHang.getValueAt(selectedRow, 4).toString();
+                    txtMaSp.setText(maSp);
+                    txtTenSp.setText(tenSp);
+                    txtGiaNhap.setText(giaNhap);
+
+                    txtLoaiSp.setText(loaiNuoc);
+
+                    txtSoLuong.requestFocus();
+                    txtSoLuong.selectAll();
+                }
+            }
+        });
+
+        cbNhaCungCap.addActionListener(e -> {
+            lamMoi();
+            loadDuLieu();
+        });
+
+        themSpPNHBtn.addActionListener(e -> {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+
+            String ngaySx = (txtNgaySx.getDate() != null) ? sdf.format(txtNgaySx.getDate()) : "";
+            String hanSD = (txtHanSuDung.getDate() != null) ? sdf.format(txtHanSuDung.getDate()) : "";
+            modelChiTietPhieuNhap.addRow(new Object[] { txtMaSp.getText(), txtTenSp.getText(), txtGiaNhap.getText(),
+                    txtSoLuong.getText(), ngaySx, hanSD });
+            lblTongTienHienThi.setText(tinhTongTienNhap() + " VNĐ");
+
+        });
+
+        xoaCTBtn.addActionListener(e -> {
+            int dongChon = tblChiTietPhieuNhap.getSelectedRow();
+            if (dongChon >= 0) {
+                modelChiTietPhieuNhap.removeRow(dongChon);
+                lblTongTienHienThi.setText(tinhTongTienNhap() + " VNĐ");
+
+            } else {
+                JOptionPane.showMessageDialog(null, "Vui lòng chọn dòng để xóa", "Thông báo",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        btnNhapHang.addActionListener(e -> {
+            PhieuNhapSanPham phieuNhapSanPham = dongGoiPhieuNhapSanPham();
+            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+
+            if (phieuNhapSanPhamBUS.themPhieuNhapSanPham(phieuNhapSanPham)) {
+                TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thành công", "Thông báo", 1);
+                nhapKhoSanPhamPanel.loadDuLieu();
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thất bại", "Thông báo", 1);
+            }
+            dispose();
+
+        });
+
+    }
+
+    private Double layTongChiPhi(String tien) {
+        try {
+            return Double.parseDouble(tien.substring(0, tien.length() - 4));
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+
+    public PhieuNhapSanPham dongGoiPhieuNhapSanPham() {
+        PhieuNhapSanPham phieuNhapSanPham = new PhieuNhapSanPham();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+
+        phieuNhapSanPham.setNgayNhap(sdf.format(new Date()));
+        phieuNhapSanPham.setMaNV(txtNhanVien.getText());
+        phieuNhapSanPham.setTongTien(layTongChiPhi(lblTongTienHienThi.getText()));
+        NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
+        phieuNhapSanPham.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
+        phieuNhapSanPham.setTrangThaiXuLy("Đang xử lí");
+
+        ArrayList<LoSanPham> listLoSanPham = new ArrayList<>();
+        for (int i = 0; i < modelChiTietPhieuNhap.getRowCount(); i++) {
+            LoSanPham loSanPham = new LoSanPham();
+            loSanPham.setMaSP(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
+            loSanPham.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
+            loSanPham.setSoLuong(Integer.parseInt(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
+            loSanPham.setNgayNhap(sdf.format(new Date()));
+            loSanPham.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
+            loSanPham.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());
+            listLoSanPham.add(loSanPham);
+        }
+        phieuNhapSanPham.setListLoSanPham(listLoSanPham);
+        return phieuNhapSanPham;
+    }
 }

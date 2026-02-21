@@ -28,7 +28,7 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
         btnXuatKho = new JButton("Xuất kho");
 
         btnXemChiTiet = new JButton("Xem chi tiết");
-
+        
         btnLoc = new JButton("Lọc");
 
         top.add(search_Item);

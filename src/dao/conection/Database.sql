@@ -736,18 +736,19 @@ BEGIN
         NgayNhap DATE,
         NgaySanXuat DATE,
         HanSuDung DATE,
-        TongTien DECIMAL(18, 2),
+        GiaNhap DECIMAL(18, 2),
+        TrangThaiXuLy VARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO LoSanPham
-        (MaLoSP, MaPN, MaSP, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, TongTien, TrangThai)
+        (MaLoSP, MaPN, MaSP, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy,TrangThai)
     VALUES
-        ('LOSP01', 'PNSP01', 'SP01', 1000, '2024-01-10', '2024-01-01', '2025-01-01', 8000000, 1),
-        ('LOSP02', 'PNSP02', 'SP26', 500, '2024-01-11', '2024-01-01', '2024-12-31', 4000000, 1),
-        ('LOSP03', 'PNSP03', 'SP42', 250, '2024-01-15', '2024-01-14', '2024-01-20', 2000000, 1),
+        ('LOSP01', 'PNSP01', 'SP01', 1000, '2024-01-10', '2024-01-01', '2025-01-01', 8000000, N'Đã xác nhận', 1),
+        ('LOSP02', 'PNSP02', 'SP26', 500, '2024-01-11', '2024-01-01', '2024-12-31', 4000000, N'Đã xác nhận', 1),
+        ('LOSP03', 'PNSP03', 'SP42', 250, '2024-01-15', '2024-01-14', '2024-01-20', 2000000, N'Đã xác nhận', 1),
         -- Bánh mì que date ngắn
-        ('LOSP04', 'PNSP04', 'SP27', 1000, '2024-02-01', '2024-01-15', '2025-01-15', 8000000, 1),
-        ('LOSP05', 'PNSP05', 'SP45', 100, '2024-02-05', '2024-02-04', '2024-02-10', 1500000, 1)
+        ('LOSP04', 'PNSP04', 'SP27', 1000, '2024-02-01', '2024-01-15', '2025-01-15', 8000000, N'Đã xác nhận', 1),
+        ('LOSP05', 'PNSP05', 'SP45', 100, '2024-02-05', '2024-02-04', '2024-02-10', 1500000, N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -793,20 +794,21 @@ BEGIN
         NgayNhap DATE,
         NgaySanXuat DATE,
         HanSuDung DATE,
+        TrangThaiXuLy VARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO LoNguyenLieu
-        (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, TrangThai)
+        (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung,TrangThaiXuLy, TrangThai)
     VALUES
-        ('LONL01', 'PNNL01', 'NL01', 25, '2024-01-12', '2024-01-01', '2024-06-01', 1),
+        ('LONL01', 'PNNL01', 'NL01', 25, '2024-01-12', '2024-01-01', '2024-06-01', N'Đã xác nhận', 1),
         -- Cà phê
-        ('LONL02', 'PNNL02', 'NL02', 120, '2024-01-13', '2024-01-01', '2024-07-01', 1),
+        ('LONL02', 'PNNL02', 'NL02', 120, '2024-01-13', '2024-01-01', '2024-07-01', N'Đã xác nhận', 1),
         -- Sữa đặc
-        ('LONL03', 'PNNL03', 'NL05', 20, '2024-01-20', '2023-12-01', '2024-12-01', 1),
+        ('LONL03', 'PNNL03', 'NL05', 20, '2024-01-20', '2023-12-01', '2024-12-01', N'Đã xác nhận', 1),
         -- Matcha
-        ('LONL04', 'PNNL03', 'NL06', 250, '2024-01-20', '2024-01-15', '2024-03-15', 1),
+        ('LONL04', 'PNNL03', 'NL06', 250, '2024-01-20', '2024-01-15', '2024-03-15', N'Đã xác nhận', 1),
         -- Trân châu
-        ('LONL05', 'PNNL04', 'NL07', 15, '2024-02-01', '2024-01-01', '2025-01-01', 1)
+        ('LONL05', 'PNNL04', 'NL07', 15, '2024-02-01', '2024-01-01', '2025-01-01', N'Đã xác nhận', 1)
 -- Syrup
 END;
 

@@ -11,8 +11,6 @@ import dto.LoNguyenLieu;
 
 public class LoNguyenLieuDAO {
 
-
-
     public ArrayList<LoNguyenLieu> layListLoNguyenLieu() {
     ArrayList<LoNguyenLieu> list = new ArrayList<>();
     String sql = "SELECT * FROM LoNguyenLieu WHERE TrangThai = 1";
@@ -31,7 +29,7 @@ public class LoNguyenLieuDAO {
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
-                lo.setTrangThai(rs.getBoolean("TrangThai"));
+                lo.setTrangThaiXuLy(rs.getBoolean("TrangThaiXuLy"));
 
                 list.add(lo);
             }
@@ -44,9 +42,9 @@ public class LoNguyenLieuDAO {
 
     public boolean kiemTraDuNguyenLieu(String maNL, double soLuongCan) {
 
-        String sql = "SELECT SUM(SoLuong) FROM LoNguyenLieu WHERE MaNL = ?";
+        String sql = "SELECT SUM(SoLuong) FROM LoNguyenLieu WHERE MaNL = ? AND TrangThai=1";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, maNL);
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -61,8 +59,8 @@ public class LoNguyenLieuDAO {
     }
 
     public boolean truNguyenLieu(Connection conn, String maNL, double soLuongCanTru) throws SQLException {
-        String sqlGet = "SELECT MaLoNL, SoLuong FROM LoNguyenLieu WHERE MaNL = ? AND SoLuong > 0 ORDER BY HanSuDung ASC";
-        String sqlUpdate = "UPDATE LoNguyenLieu SET SoLuong = SoLuong - ? WHERE MaLoNL = ?";
+        String sqlGet = "SELECT MaLoNL, SoLuong FROM LoNguyenLieu WHERE MaNL = ? AND SoLuong > 0 ORDER BY HanSuDung ASC ";
+        String sqlUpdate = "UPDATE LoNguyenLieu SET SoLuong = SoLuong - ? WHERE MaLoNL = ? AND TrangThai=1";
 
         PreparedStatement pstGet = null;
         PreparedStatement pstUpdate = null;
@@ -99,9 +97,12 @@ public class LoNguyenLieuDAO {
             }
 
         } finally {
-            if (rs != null) rs.close();
-            if (pstGet != null) pstGet.close();
-            if (pstUpdate != null) pstUpdate.close();
+            if (rs != null)
+                rs.close();
+            if (pstGet != null)
+                pstGet.close();
+            if (pstUpdate != null)
+                pstUpdate.close();
         }
     }
 

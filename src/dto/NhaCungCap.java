@@ -8,10 +8,13 @@ public class NhaCungCap {
   private String soDienThoai;
   private String diaChi;
 
-  private ArrayList<SanPham> listSanPhamCungCap = null;
-  private ArrayList<NguyenLieu> listNguyenLieuCungCap = null;
+  private boolean cungCapNL = false;
+  private boolean cungCapSP = false;
 
-  public NhaCungCap() {}
+  private ArrayList<ChiTietNhaCungCap> listChiTietNhaCungCap = new ArrayList<>();
+
+  public NhaCungCap() {
+  }
 
   public NhaCungCap(String maNCC, String tenNCC, String soDienThoai, String diaChi) {
     this.maNCC = maNCC;
@@ -52,36 +55,43 @@ public class NhaCungCap {
     this.diaChi = diaChi;
   }
 
-  public void themSanPham(SanPham sanPham) {
-    if (sanPham == null) {
-      return;
-    }
-    if (listSanPhamCungCap == null) {
-      listSanPhamCungCap = new ArrayList<>();
-    }
-    listSanPhamCungCap.add(sanPham);
+  public void setCungCapNL(boolean cungCapNL) {
+    this.cungCapNL = cungCapNL;
   }
 
-  public void themNguyenLieu(NguyenLieu nguyenLieu) {
-    if (nguyenLieu == null) {
-      return;
-    }
-    if (listNguyenLieuCungCap == null) {
-      listNguyenLieuCungCap = new ArrayList<>();
-    }
-    listNguyenLieuCungCap.add(nguyenLieu);
+  public void setCungCapSP(boolean cungCapSP) {
+    this.cungCapSP = cungCapSP;
   }
 
-  public ArrayList<NguyenLieu> getListNguyenLieuCungCap() {
-    return listNguyenLieuCungCap;
+  public boolean getCungCapNL() {
+    return cungCapNL;
   }
 
-  public ArrayList<SanPham> getListSanPhamCungCap() {
-    return listSanPhamCungCap;
+  public boolean getCungCapSP() {
+    return cungCapSP;
+  }
+
+  public boolean themChiTietNhaCungCap(ChiTietNhaCungCap chiTietNhaCungCap) {
+    if (chiTietNhaCungCap == null) {
+      return false;
+    }
+    listChiTietNhaCungCap.add(chiTietNhaCungCap);
+    if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
+      cungCapSP = true;
+    }
+    if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Nguyên liệu")) {
+      cungCapNL = true;
+    }
+    return true;
+  }
+
+  public ArrayList<ChiTietNhaCungCap> getListChiTietNhaCungCap() {
+    return listChiTietNhaCungCap;
   }
 
   @Override
   public String toString() {
     return this.tenNCC;
   }
+
 }

@@ -15,7 +15,7 @@ public class NhapKhoUI extends JPanel {
         setLayout(new BorderLayout());
         
         nhapKhoNguyenLieu = new NhapKhoNguyenLieuPanel(ouner);
-        nhapKhoSanPham = new NhapKhoSanPhamPanel(ouner);
+        nhapKhoSanPham = new NhapKhoSanPhamPanel();
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Sản phẩm", nhapKhoSanPham);

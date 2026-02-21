@@ -36,13 +36,15 @@ public class ChiTietNhaCungCapBUS {
     // ========================================================
     // HÀM LẤY LIST MÀ BẠN YÊU CẦU
     // ========================================================
-    public ArrayList<ChiTietNhaCungCap> layListChiTietNhaCungCap() {
+
+
+   public ArrayList<ChiTietNhaCungCap> layListChiTietNhaCungCap() {
         if (canUpdate || listChiTietNhaCungCap == null) {
             canUpdate = false;
             khoitao();
         }
         return listChiTietNhaCungCap;
-    }
+    } 
 
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;

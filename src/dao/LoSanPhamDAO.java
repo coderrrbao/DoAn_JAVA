@@ -16,7 +16,7 @@ public class LoSanPhamDAO {
         String sql = "SELECT * FROM LoSanPham WHERE TrangThai=1";
 
         try (Connection con = DBConnection.getConnection();
-             PreparedStatement pst = con.prepareStatement(sql)) {
+                PreparedStatement pst = con.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
@@ -28,7 +28,7 @@ public class LoSanPhamDAO {
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
-                lo.setTongTien(rs.getDouble("TongTien"));
+                lo.setGiaNhap(rs.getDouble("GiaNhap"));
 
                 list.add(lo);
             }
@@ -77,16 +77,19 @@ public class LoSanPhamDAO {
             }
 
         } finally {
-            if (rs != null) rs.close();
-            if (pstGet != null) pstGet.close();
-            if (pstUpdate != null) pstUpdate.close();
+            if (rs != null)
+                rs.close();
+            if (pstGet != null)
+                pstGet.close();
+            if (pstUpdate != null)
+                pstUpdate.close();
         }
     }
 
     public boolean kiemTraDuHang(String maSP, int soLuongCan) {
         String sql = "SELECT SUM(SoLuong) FROM LoSanPham WHERE MaSP = ?";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, maSP);
             ResultSet rs = pst.executeQuery();
@@ -108,6 +111,56 @@ public class LoSanPhamDAO {
             pst.setInt(1, lo.getSoLuong());
             pst.setString(2, lo.getMaLoSP());
             return pst.executeUpdate() > 0;
+        }
+    }
+
+    public String layMaLoSanPhamKhaDung(Connection conn) {
+        if (conn == null) {
+            conn = DBConnection.getConnection();
+        }
+        String sql = "SELECT COUNT(MaLoSP) FROM LoSanPham";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int soLoSp = rs.getInt(1) + 1;
+                String ma = String.format("%02d", soLoSp);
+                return "LOSP" + ma;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn sản phẩm: " + e.getMessage());
+        }
+        return "";
+    }
+
+    public boolean themLoSanPham(LoSanPham loSP, Connection conn) {
+
+        String sql = "INSERT INTO LoSanPham (MaLoSP, MaPN, MaSP, SoLuong, GiaNhap, NgaySanXuat, HanSuDung, NgayNhap, TrangThaiXuLy,TrangThai) VALUES (?,?, ?, ?, ?, ?, ?, ?, ?,?)";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, layMaLoSanPhamKhaDung(conn));
+            pst.setString(2, loSP.getMaPN());
+            pst.setString(3, loSP.getMaSP());
+            pst.setInt(4, loSP.getSoLuong());
+            pst.setDouble(5, loSP.getGiaNhap());
+
+            pst.setString(6, loSP.getNgaySanXuat());
+            pst.setString(7, loSP.getHanSuDung());
+            pst.setString(8, loSP.getNgayNhap());
+            pst.setString(9, loSP.getTrangThaiXuLy());
+            pst.setInt(10, 1);
+
+            int result = pst.executeUpdate();
+
+            return result > 0;
+
+        } catch (Exception e) {
+            System.out.println("Lỗi khi thêm Lô Sản Phẩm: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 }

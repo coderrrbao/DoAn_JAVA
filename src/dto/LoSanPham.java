@@ -9,7 +9,8 @@ public class LoSanPham {
     private String ngayNhap;
     private String ngaySanXuat;
     private String hanSuDung;
-    private double tongTien;
+    private double giaNhap;
+    private String trangThaiXuLy;
 
     public LoSanPham() {
     }
@@ -17,7 +18,7 @@ public class LoSanPham {
     // Constructor đầy đủ tham số để đồng bộ với SQL
     public LoSanPham(String maLoSP, String maPN, String maSP, int soLuong,
             String ngayNhap, String ngaySanXuat, String hanSuDung,
-            double tongTien) {
+            double tongTien, String trangThaiXuLy) {
         this.maLoSP = maLoSP;
         this.maPN = maPN;
         this.maSP = maSP;
@@ -25,7 +26,8 @@ public class LoSanPham {
         this.ngayNhap = ngayNhap;
         this.ngaySanXuat = ngaySanXuat;
         this.hanSuDung = hanSuDung;
-        this.tongTien = tongTien;
+        this.giaNhap = tongTien;
+        this.trangThaiXuLy = trangThaiXuLy;
     }
 
     // Getters and Setters
@@ -85,12 +87,19 @@ public class LoSanPham {
         this.hanSuDung = hanSuDung;
     }
 
-    public double getTongTien() {
-        return tongTien;
+    public double getGiaNhap() {
+        return giaNhap;
     }
 
-    public void setTongTien(double tongTien) {
-        this.tongTien = tongTien;
+    public void setGiaNhap(double tongTien) {
+        this.giaNhap = tongTien;
     }
 
+    public String getTrangThaiXuLy() {
+        return trangThaiXuLy;
+    }
+
+    public void setTrangThaiXuLy(String trangThaiXuLy) {
+        this.trangThaiXuLy = trangThaiXuLy;
+    }
 }
