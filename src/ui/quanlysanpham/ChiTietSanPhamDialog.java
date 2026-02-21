@@ -222,6 +222,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
 
         this.add(chitietPanel);
+
     }
 
     public void settupGiaoDien(SanPham sanPham) {

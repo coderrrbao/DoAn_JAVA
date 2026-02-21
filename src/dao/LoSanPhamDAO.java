@@ -24,7 +24,7 @@ public class LoSanPhamDAO {
                 lo.setMaLoSP(rs.getString("MaLoSP"));
                 lo.setMaPN(rs.getString("MaPN"));
                 lo.setMaSP(rs.getString("MaSP"));
-                lo.setSoLuong(rs.getInt("SoLuong"));
+                lo.setSoLuong(rs.getDouble("SoLuong"));
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
@@ -108,7 +108,7 @@ public class LoSanPhamDAO {
     public boolean capNhapLoSanPham(LoSanPham lo, Connection conn) throws SQLException {
         String sql = "UPDATE LoSanPham SET SoLuong = ? WHERE MaLoSP = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, lo.getSoLuong());
+            pst.setDouble(1, lo.getSoLuong());
             pst.setString(2, lo.getMaLoSP());
             return pst.executeUpdate() > 0;
         }
@@ -144,7 +144,7 @@ public class LoSanPhamDAO {
             pst.setString(1, layMaLoSanPhamKhaDung(conn));
             pst.setString(2, loSP.getMaPN());
             pst.setString(3, loSP.getMaSP());
-            pst.setInt(4, loSP.getSoLuong());
+            pst.setDouble(4, loSP.getSoLuong());
             pst.setDouble(5, loSP.getGiaNhap());
 
             pst.setString(6, loSP.getNgaySanXuat());

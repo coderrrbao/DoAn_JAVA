@@ -99,9 +99,6 @@ public class FormNguyenLieu extends JDialog {
     txtGia.setText(String.valueOf(editNL.getGia()));
     txtDonVi.setText(editNL.getDonVi());
     txtMucCanhBao.setText(String.valueOf(editNL.getMucCanhBao()));
-    if (editNL.getNhaCungCap() != null) {
-      cbNhaCungCap.setSelectedItem(editNL.getNhaCungCap().getTenNCC());
-    }
   }
 
   private void xuLyLuu(NguyenLieu editNL) {
@@ -116,10 +113,6 @@ public class FormNguyenLieu extends JDialog {
       ketQua.setGia(Double.parseDouble(txtGia.getText().trim()));
       ketQua.setDonVi(txtDonVi.getText().trim());
       ketQua.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
-
-      String tenDaChon = (String) cbNhaCungCap.getSelectedItem();
-      NhaCungCap ncc = NhaCungCapBUS.getNhaCungCapBUS().timNhaCungCapTheoTen(tenDaChon);
-      ketQua.setNhaCungCap(ncc);
 
       NhaCungCapBUS.getNhaCungCapBUS().danhDauCanCapNhat();
 

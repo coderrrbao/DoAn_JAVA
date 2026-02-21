@@ -3,7 +3,6 @@ package dto;
 public class NguyenLieu {
     private String maNL;
     private String tenNL;
-    private NhaCungCap nhaCungCap;
     private double gia;
     private String donVi;
     private int mucCanhBao;
@@ -11,11 +10,10 @@ public class NguyenLieu {
     public NguyenLieu() {
     }
 
-    public NguyenLieu(String maNL, String tenNL, NhaCungCap nhaCungCap, double gia,
+    public NguyenLieu(String maNL, String tenNL, double gia,
             String donVi, int mucCanhBao, boolean trangThai) {
         this.maNL = maNL;
         this.tenNL = tenNL;
-        this.nhaCungCap = nhaCungCap;
         this.gia = gia;
         this.donVi = donVi;
         this.mucCanhBao = mucCanhBao;
@@ -37,13 +35,6 @@ public class NguyenLieu {
         this.tenNL = tenNL;
     }
 
-    public NhaCungCap getNhaCungCap() {
-        return nhaCungCap;
-    }
-
-    public void setNhaCungCap(NhaCungCap nhaCungCap) {
-        this.nhaCungCap = nhaCungCap;
-    }
 
     public double getGia() {
         return gia;

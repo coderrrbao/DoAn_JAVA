@@ -449,7 +449,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
             LoSanPham loSanPham = new LoSanPham();
             loSanPham.setMaSP(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
             loSanPham.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
-            loSanPham.setSoLuong(Integer.parseInt(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
+            loSanPham.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
             loSanPham.setNgayNhap(sdf.format(new Date()));
             loSanPham.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
             loSanPham.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());

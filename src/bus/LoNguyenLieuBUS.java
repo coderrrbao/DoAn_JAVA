@@ -51,6 +51,16 @@ public class LoNguyenLieuBUS {
         return null;
     }
 
+    public int laySoLuongNguyenLieuTrongKho(String maNL) {
+        int tong = 0;
+        for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+            if (loNguyenLieu.getMaNL().equals(maNL)) {
+                tong += loNguyenLieu.getSoLuong();
+            }
+        }
+        return tong;
+    }
+
     public boolean capNhapLoNguyenLieu(LoNguyenLieu loNguyenLieu) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -63,23 +73,66 @@ public class LoNguyenLieuBUS {
             conn.commit();
         } catch (SQLException e) {
             try {
-                conn.rollback();
+                if (conn != null) {
+                    conn.rollback();
+                }
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
+            e.printStackTrace();
             return false;
         } finally {
             if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                    canUpdate = true;
+                    canUpdate = true; // Đánh dấu để lần lấy list sau sẽ load lại từ DB
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         }
         return true;
+    }
 
+    public boolean themLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
+        try {
+            conn.setAutoCommit(false);
+
+            if (!loNguyenLieuDAO.themLoNguyenLieu(loNguyenLieu, conn)) {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                canUpdate = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public ArrayList<LoNguyenLieu> layLoNguyenLieuChoPhieuNhap(String maPN) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<LoNguyenLieu> list = new ArrayList<>();
+        for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+            if (loNguyenLieu.getMaPN().equals(maPN)) {
+                list.add(loNguyenLieu);
+            }
+        }
+        return list;
     }
 }

@@ -104,4 +104,8 @@ public class PhieuNhapNguyenLieu {
     public ArrayList<LoNguyenLieu> getListLoNguyenLieu() {
         return listLoNguyenLieu;
     }
+
+    public void setListLoNguyenLieu(ArrayList<LoNguyenLieu> listLoNguyenLieu) {
+        this.listLoNguyenLieu = listLoNguyenLieu;
+    }
 }

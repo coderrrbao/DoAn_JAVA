@@ -29,16 +29,10 @@ public class NguyenLieuBUS {
     Connection conn = DBConnection.getConnection();
     try {
       listNguyenLieu = nguyenLieuDAO.layListNguyenLieu(conn);
-      /* tạm ẩn vì lỗi vòng lặp vô hạn do NhaCungCapBUS cũng gọi khoitao của NguyenLieuBUS
-      NhaCungCapBUS nccBUS = NhaCungCapBUS.getNhaCungCapBUS();
-      for (NguyenLieu nl : listNguyenLieu) {
-          if (nl.getNhaCungCap() != null) {
-              nl.setNhaCungCap(nccBUS.timNhaCungCap(nl.getNhaCungCap().getMaNCC()));
-          }
-      }*/
     } finally {
       try {
-        if (conn != null) conn.close();
+        if (conn != null)
+          conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
       }
