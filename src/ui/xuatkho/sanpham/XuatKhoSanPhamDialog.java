@@ -30,8 +30,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
     // Tồn kho: Thêm cột Giá Nhập (ẩn hoặc hiện tùy bạn, ở đây tôi để hiện)
     JPanel left = TaoUI.taoPanelBorderLayout(450, 600);
-    modelTonKho =
-        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0);
+    modelTonKho = new DefaultTableModel(new String[] { "Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập" }, 0);
     tblTonKho = new JTable(modelTonKho);
     left.add(new JScrollPane(tblTonKho), BorderLayout.CENTER);
 
@@ -47,19 +46,55 @@ public class XuatKhoSanPhamDialog extends JDialog {
     TaoUI.setDisabled(txtMaLo);
     txtSoLuongXuat = new JTextField();
 
-    form.add(new JLabel("Mã Nhân Viên:"));
-    form.add(txtMaNV);
-    form.add(new JLabel("Mã Sản Phẩm:"));
-    form.add(txtMaSP);
-    form.add(new JLabel("Mã Lô:"));
-    form.add(txtMaLo);
-    form.add(new JLabel("Số lượng hủy:"));
-    form.add(txtSoLuongXuat);
-    btnThem = new JButton("Thêm vào danh sách chờ");
-    form.add(btnThem);
+    // --- Dòng Label Mã Nhân Viên ---
+    JPanel title1 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title1.add(new JLabel("Mã Nhân Viên:"));
+    form.add(title1);
 
-    modelChoXuat =
-        new DefaultTableModel(new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
+    // --- Dòng TextField Mã Nhân Viên ---
+    JPanel title2 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title2.add(txtMaNV);
+    form.add(title2);
+
+    // --- Dòng Label Mã Sản Phẩm ---
+    JPanel title3 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title3.add(new JLabel("Mã Sản Phẩm:"));
+    form.add(title3);
+
+    // --- Dòng TextField Mã Sản Phẩm ---
+    JPanel title4 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title4.add(txtMaSP);
+    form.add(title4);
+
+    // --- Dòng Label Mã Lô ---
+    JPanel title5 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title5.add(new JLabel("Mã Lô:"));
+    form.add(title5);
+
+    // --- Dòng TextField Mã Lô ---
+    JPanel title6 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title6.add(txtMaLo);
+    form.add(title6);
+
+    // --- Dòng Label Số Lượng Hủy ---
+    JPanel title7 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title7.add(new JLabel("Số lượng hủy:"));
+    form.add(title7);
+
+    // --- Dòng TextField Số Lượng Hủy ---
+    JPanel title8 = TaoUI.taoPanelBoxLayoutNgang(490, 20);
+    title8.add(txtSoLuongXuat);
+    form.add(title8);
+
+    // --- Dòng Nút Bấm ---
+    JPanel title9 = TaoUI.taoPanelBoxLayoutNgang(490, 25);
+    btnThem = new JButton("Thêm vào danh sách chờ");
+    title9.add(btnThem);
+    form.add(Box.createRigidArea(new Dimension(0, 10)));
+    form.add(title9);
+    TaoUI.setFixSize(btnThem, 200, 25);
+
+    modelChoXuat = new DefaultTableModel(new String[] { "Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập" }, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
     btnXacNhan = new JButton("XÁC NHẬN HỦY & TRỪ KHO");
@@ -85,7 +120,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
       if (lo.getSoLuong() > 0)
         modelTonKho.addRow(
             new Object[] {
-              lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
             });
     }
   }
@@ -106,7 +141,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
         e -> {
           try {
             int r = tblTonKho.getSelectedRow();
-            if (r == -1) return;
+            if (r == -1)
+              return;
             double sl = Double.parseDouble(txtSoLuongXuat.getText());
             double ton = Double.parseDouble(modelTonKho.getValueAt(r, 3).toString());
             double gia = Double.parseDouble(modelTonKho.getValueAt(r, 4).toString());
@@ -119,7 +155,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
             SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaSP.getText(), (sp != null ? sp.getTenSP() : "SP"), sl, txtMaLo.getText(), gia
+                    txtMaSP.getText(), (sp != null ? sp.getTenSP() : "SP"), sl, txtMaLo.getText(), gia
                 });
             txtSoLuongXuat.setText("");
           } catch (Exception ex) {
@@ -130,10 +166,12 @@ public class XuatKhoSanPhamDialog extends JDialog {
     btnXacNhan.addActionListener(
         e -> {
           int rowCount = modelChoXuat.getRowCount();
-          if (rowCount == 0) return;
+          if (rowCount == 0)
+            return;
           Object[][] data = new Object[rowCount][5];
           for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+            for (int j = 0; j < 5; j++)
+              data[i][j] = modelChoXuat.getValueAt(i, j);
           }
           if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS()
               .thucHienHuy(txtMaNV.getText(), "Hủy hỏng", data)) {
@@ -144,5 +182,10 @@ public class XuatKhoSanPhamDialog extends JDialog {
             JOptionPane.showMessageDialog(this, "Thất bại! Vui lòng kiểm tra lại Database.");
           }
         });
+  }
+
+  public static void main(String[] args) {
+    XuatKhoSanPhamDialog xuatKhoSanPhamDialog = new XuatKhoSanPhamDialog(null);
+    xuatKhoSanPhamDialog.setVisible(true);
   }
 }

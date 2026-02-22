@@ -3,6 +3,34 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ChiTietPhieuNhapSanPhamDialog",
+      "request": "launch",
+      "mainClass": "ui.nhapkho.sanpham.ChiTietPhieuNhapSanPhamDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "ChiTietNhaCungCapDialog",
+      "request": "launch",
+      "mainClass": "ui.nhacungcap.ChiTietNhaCungCapDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "NhaCungCapDialog",
+      "request": "launch",
+      "mainClass": "ui.nhacungcap.NhaCungCapDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "XuatKhoSanPhamDialog",
+      "request": "launch",
+      "mainClass": "ui.xuatkho.sanpham.XuatKhoSanPhamDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",

@@ -711,11 +711,11 @@ BEGIN
     INSERT INTO PhieuNhapSanPham
         (MaPN, NgayNhap, MaNV, TongTien, MaNCC,GhiChu ,TrangThaiXuLy, TrangThai)
     VALUES
-        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', 'NULL', 1),
-        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', 'hi', 1),
-        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', 'hi', 1),
-        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', 'hi', 1),
-        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', 'hi', 1)
+        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -735,7 +735,7 @@ BEGIN
         NgaySanXuat DATE,
         HanSuDung DATE,
         GiaNhap DECIMAL(18, 2),
-        TrangThaiXuLy VARCHAR(50),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO LoSanPham
@@ -770,10 +770,10 @@ BEGIN
     INSERT INTO PhieuNhapNguyenLieu
         (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
-        ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', N'', 1),
-        ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', N'Đã xác nhận', N'', 1),
-        ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC08', N'Đã xác nhận', N'', 1),
-        ('PNNL04', '2024-02-01', 'NV12', 2000000, 'NCC05', N'Đã xác nhận', N'', 1)
+        ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC08', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNNL04', '2024-02-01', 'NV12', 2000000, 'NCC05', N'Đã xác nhận', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -788,23 +788,28 @@ BEGIN
         MaLoNL VARCHAR(50) NOT NULL PRIMARY KEY,
         MaPN VARCHAR(50),
         MaNL VARCHAR(50),
-        SoLuong FLOAT, 
+        SoLuong FLOAT,
         NgayNhap DATE,
         NgaySanXuat DATE,
         HanSuDung DATE,
-        GiaNhap DECIMAL(18, 2), 
+        GiaNhap DECIMAL(18, 2),
         TrangThaiXuLy VARCHAR(50),
         TrangThai BIT
     )
-    
+
     INSERT INTO LoNguyenLieu
         (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy, TrangThai)
     VALUES
-        ('LONL01', 'PNNL01', 'NL01', 25.0, '2024-01-12', '2024-01-01', '2024-06-01', 150000, N'Đã xác nhận', 1), -- Cà phê
-        ('LONL02', 'PNNL02', 'NL02', 120.0, '2024-01-13', '2024-01-01', '2024-07-01', 250000, N'Đã xác nhận', 1), -- Sữa đặc
-        ('LONL03', 'PNNL03', 'NL05', 20.5, '2024-01-20', '2023-12-01', '2024-12-01', 800000, N'Đã xác nhận', 1), -- Matcha (Có số thập phân)
-        ('LONL04', 'PNNL03', 'NL06', 250.0, '2024-01-20', '2024-01-15', '2024-03-15', 300000, N'Đã xác nhận', 1), -- Trân châu
-        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1)  -- Syrup
+        ('LONL01', 'PNNL01', 'NL01', 25.0, '2024-01-12', '2024-01-01', '2024-06-01', 150000, N'Đã xác nhận', 1),
+        -- Cà phê
+        ('LONL02', 'PNNL02', 'NL02', 120.0, '2024-01-13', '2024-01-01', '2024-07-01', 250000, N'Đã xác nhận', 1),
+        -- Sữa đặc
+        ('LONL03', 'PNNL03', 'NL05', 20.5, '2024-01-20', '2023-12-01', '2024-12-01', 800000, N'Đã xác nhận', 1),
+        -- Matcha (Có số thập phân)
+        ('LONL04', 'PNNL03', 'NL06', 250.0, '2024-01-20', '2024-01-15', '2024-03-15', 300000, N'Đã xác nhận', 1),
+        -- Trân châu
+        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1)
+-- Syrup
 END;
 /* =============================================
    22. BẢNG PHIẾU HỦY SẢN PHẨM (Product Disposal)

@@ -442,7 +442,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
         phieuNhapSanPham.setTongTien(layTongChiPhi(lblTongTienHienThi.getText()));
         NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
         phieuNhapSanPham.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
-        phieuNhapSanPham.setTrangThaiXuLy("Đang xử lí");
+        phieuNhapSanPham.setTrangThaiXuLy("Đang xử lý");
 
         ArrayList<LoSanPham> listLoSanPham = new ArrayList<>();
         for (int i = 0; i < modelChiTietPhieuNhap.getRowCount(); i++) {

@@ -71,4 +71,29 @@ public class PhieuNhapSanPhamDAO {
         }
 
     }
+
+    public boolean capNhapPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham, Connection conn) {
+        String sql = "UPDATE PhieuNhapSanPham SET GhiChu=? , TrangThaiXuLy=? WHERE MaPN=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, phieuNhapSanPham.getGhiChu());
+            pst.setString(2, phieuNhapSanPham.getTrangThaiXuLy());
+            pst.setString(3, phieuNhapSanPham.getMaPN());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham, Connection conn) {
+        String sql = "UPDATE PhieuNhapSanPham SET TrangThai=? WHERE MaPN=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, 0);
+            pst.setString(2, phieuNhapSanPham.getMaPN());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

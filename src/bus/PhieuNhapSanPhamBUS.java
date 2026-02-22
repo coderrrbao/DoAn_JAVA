@@ -56,6 +56,7 @@ public class PhieuNhapSanPhamBUS {
 
             for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
                 loSanPham.setMaPN(maPN);
+                loSanPham.setTrangThaiXuLy("Đang xử lý");
                 if (!loSanPhamBUS.themLoSanPham(loSanPham, conn)) {
                     throw new SQLException();
                 }
@@ -87,4 +88,96 @@ public class PhieuNhapSanPhamBUS {
         return true;
     }
 
+    public boolean capNhapPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!phieuNhapSanPhamDAO.capNhapPhieuNhapSanPham(phieuNhapSanPham, conn)) {
+                throw new SQLException();
+            }
+            LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
+            for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
+                if (!loSanPhamBUS.xacNhanLoSanPham(loSanPham, conn)) {
+                    throw new SQLException();
+                }
+
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
+
+
+    public boolean xoaPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!phieuNhapSanPhamDAO.xoaPhieuNhapSanPham(phieuNhapSanPham, conn)) {
+                throw new SQLException();
+            }
+            LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
+            for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
+                if (!loSanPhamBUS.xacNhanLoSanPham(loSanPham, conn)) {
+                    throw new SQLException();
+                }
+
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
+
+    public PhieuNhapSanPham timPhieuNhapSanPham(String ma) {
+        if (canUpdate || listPhieuNhapSanPham == null) {
+            khoiTao();
+        }
+        for (PhieuNhapSanPham phieuNhapSanPham : listPhieuNhapSanPham) {
+            if (phieuNhapSanPham.getMaPN().equals(ma)) {
+                return phieuNhapSanPham;
+            }
+        }
+        return null;
+    }
 }

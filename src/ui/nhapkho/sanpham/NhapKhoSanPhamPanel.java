@@ -14,12 +14,13 @@ import bus.NhaCungCapBUS;
 import bus.PhieuNhapSanPhamBUS;
 import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
-import ui.component.Search_Item;
+import ui.component.LocNgay_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhapKhoSanPhamPanel extends JPanel {
-    private JButton nhapHangBtn, xemChiTietBtn;
-    private Search_Item search_Item;
+    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn;
+    private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
 
@@ -28,14 +29,17 @@ public class NhapKhoSanPhamPanel extends JPanel {
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         nhapHangBtn = new JButton("Thêm");
         xemChiTietBtn = new JButton("Xem Chi tiết");
+        xoaBtn = new JButton("Xóa");
 
         TaoUI.setFixSize(nhapHangBtn, 100, 30);
         TaoUI.setFixSize(xemChiTietBtn, 150, 30);
+        TaoUI.setFixSize(xoaBtn, 100, 30);
 
-        search_Item = new Search_Item(300, 30);
-        top.add(search_Item);
+        locNgay_Item = new LocNgay_Item(300, 30);
+        top.add(locNgay_Item);
         top.add(nhapHangBtn);
         top.add(xemChiTietBtn);
+        top.add(xoaBtn);
 
         add(top, BorderLayout.NORTH);
 
@@ -60,6 +64,40 @@ public class NhapKhoSanPhamPanel extends JPanel {
         nhapHangBtn.addActionListener(e -> {
             JDialog dialogNhapHang = new NhapKhoSanPhamDialog(this);
             dialogNhapHang.setVisible(true);
+        });
+
+        xemChiTietBtn.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+            if (dongChon >= 0) {
+                PhieuNhapSanPham phieuNhapSanPham = phieuNhapSanPhamBUS
+                        .timPhieuNhapSanPham(model.getValueAt(dongChon, 0).toString());
+                ChiTietPhieuNhapSanPhamDialog chiTietPhieuNhapSanPhamDialog = new ChiTietPhieuNhapSanPhamDialog(null,
+                        phieuNhapSanPham, this);
+                chiTietPhieuNhapSanPhamDialog.setVisible(true);
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xem chi tiết", "Thông báo", dongChon);
+            }
+        });
+
+        xoaBtn.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+            if (dongChon >= 0) {
+                if (model.getValueAt(dongChon, 5).toString().equals("Đang xử lý")) {
+                    if (phieuNhapSanPhamBUS.xoaPhieuNhapSanPham(
+                            phieuNhapSanPhamBUS.timPhieuNhapSanPham(model.getValueAt(dongChon, 0).toString()))) {
+                        TaoTinNhan.showAutoCloseMessage("Xóa phiếu nhập sản phẩm thành công", "Thông báo",
+                                dongChon);
+                        loadDuLieu();
+                    }
+                } else {
+                    TaoTinNhan.showAutoCloseMessage("Phiếu nhập sản phẩm đã xác nhận, không thể xóa", "Thông báo",
+                            dongChon);
+                }
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", dongChon);
+            }
         });
     }
 

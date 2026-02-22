@@ -28,6 +28,7 @@ public class LoSanPhamDAO {
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
+                lo.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
                 lo.setGiaNhap(rs.getDouble("GiaNhap"));
 
                 list.add(lo);
@@ -111,6 +112,21 @@ public class LoSanPhamDAO {
             pst.setDouble(1, lo.getSoLuong());
             pst.setString(2, lo.getMaLoSP());
             return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xacNhanLoSanPham(LoSanPham lo, Connection conn) throws SQLException {
+        String sql = "UPDATE LoSanPham SET TrangThaiXuLy = ? WHERE MaLoSP = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, "Đã xác nhận");
+            pst.setString(2, lo.getMaLoSP());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 

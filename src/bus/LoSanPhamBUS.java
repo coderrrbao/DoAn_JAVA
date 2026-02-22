@@ -95,10 +95,40 @@ public class LoSanPhamBUS {
         return true;
     }
 
-    public boolean themLoSanPham(LoSanPham loSanPham, Connection conn) {
+    public boolean xacNhanLoSanPham(LoSanPham loSanPham, Connection conn) {
         try {
             conn.setAutoCommit(false);
 
+            if (!loSanPhamDAO.xacNhanLoSanPham(loSanPham, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean themLoSanPham(LoSanPham loSanPham, Connection conn) {
+        try {
+            conn.setAutoCommit(false);
             if (!loSanPhamDAO.themLoSanPham(loSanPham, conn)) {
                 throw new SQLException();
             }
