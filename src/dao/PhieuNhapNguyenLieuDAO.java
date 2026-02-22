@@ -75,4 +75,32 @@ public class PhieuNhapNguyenLieuDAO {
             return false;
         }
     }
+
+    // --- CÁC PHƯƠNG THỨC MỚI ĐƯỢC BỔ SUNG ---
+
+    public boolean capNhapPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
+        String sql = "UPDATE PhieuNhapNguyenLieu SET GhiChu=? , TrangThaiXuLy=? WHERE MaPN=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, phieuNhapNguyenLieu.getGhiChu());
+            pst.setString(2, phieuNhapNguyenLieu.getTrangThaiXuLy());
+            pst.setString(3, phieuNhapNguyenLieu.getMaPN());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
+        // Xóa mềm: Set TrangThai = 0
+        String sql = "UPDATE PhieuNhapNguyenLieu SET TrangThai=? WHERE MaPN=?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setInt(1, 0); 
+            pst.setString(2, phieuNhapNguyenLieu.getMaPN());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }

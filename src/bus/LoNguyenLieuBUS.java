@@ -135,4 +135,68 @@ public class LoNguyenLieuBUS {
         }
         return list;
     }
+
+    // ==========================================
+    // CÁC HÀM BỔ SUNG CHO TÍNH NĂNG XÁC NHẬN VÀ XÓA
+    // ==========================================
+
+    public boolean xacNhanLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
+        try {
+            // Lưu ý: conn.setAutoCommit(false) và conn.commit() đã được xử lý ở PhieuNhapBUS,
+            // nhưng mình vẫn giữ cấu trúc try-catch giống với LoSanPhamBUS của bạn để đồng bộ.
+            conn.setAutoCommit(false);
+
+            if (!loNguyenLieuDAO.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                canUpdate = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
+
+    public boolean xoaLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
+        try {
+            conn.setAutoCommit(false);
+
+            if (!loNguyenLieuDAO.xoaLoNguyenLieu(loNguyenLieu, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                canUpdate = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return true;
+    }
 }

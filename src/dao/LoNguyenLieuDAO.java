@@ -29,7 +29,7 @@ public class LoNguyenLieuDAO {
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
-                lo.setGiaNhap(rs.getDouble("GiaNhap")); // Thêm lấy giá nhập
+                lo.setGiaNhap(rs.getDouble("GiaNhap")); 
                 lo.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
 
                 list.add(lo);
@@ -115,6 +115,31 @@ public class LoNguyenLieuDAO {
         }
     }
 
+    // --- CÁC HÀM MỚI BỔ SUNG CHO LUỒNG XÁC NHẬN VÀ XÓA ---
+
+    public boolean xacNhanLoNguyenLieu(LoNguyenLieu lo, Connection conn) throws SQLException {
+        String sql = "UPDATE LoNguyenLieu SET TrangThaiXuLy = ? WHERE MaLoNL = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, "Đã xác nhận");
+            pst.setString(2, lo.getMaLoNL());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaLoNguyenLieu(LoNguyenLieu lo, Connection conn) throws SQLException {
+        String sql = "UPDATE LoNguyenLieu SET TrangThai = 0 WHERE MaLoNL = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, lo.getMaLoNL());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    // ----------------------------------------------------
 
     public String layMaLoNguyenLieuKhaDung(Connection conn) {
         if (conn == null) {

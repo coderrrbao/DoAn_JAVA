@@ -331,9 +331,13 @@ public class NhapKhoSanPhamDialog extends JDialog {
             for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
                 if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
                     SanPham sanPham = sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong());
-                    modelKhoHang.addRow(
-                            new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
-                                    loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()), sanPham.getLoaiNuoc() });
+                    if (sanPham.getTenSP().contains(search_Item.getTextSearch())) {
+                        modelKhoHang.addRow(
+                                new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
+                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()),
+                                        sanPham.getLoaiNuoc() });
+                    }
+
                 }
             }
         }
@@ -422,6 +426,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
 
         });
 
+        search_Item.setEvent(() -> {
+            loadDuLieu();
+        });
     }
 
     private Double layTongChiPhi(String tien) {

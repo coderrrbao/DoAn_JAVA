@@ -1,23 +1,23 @@
-package ui.nhapkho.sanpham;
+package ui.nhapkho.nguyenlieu;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
-import bus.PhieuNhapSanPhamBUS;
-import bus.SanPhamBUS;
-import dto.LoSanPham;
-import dto.PhieuNhapSanPham;
-import dto.SanPham;
+import bus.PhieuNhapNguyenLieuBUS;
+import bus.NguyenLieuBUS;
+import dto.LoNguyenLieu;
+import dto.PhieuNhapNguyenLieu;
+import dto.NguyenLieu;
 import util.TaoTinNhan;
 import util.TaoUI;
 
 import java.awt.*;
 
-public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
+public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
     // Các thành phần phần Top
-    private JTable tblSanPhamNhap;
-    private DefaultTableModel modelSanPham;
+    private JTable tblNguyenLieuNhap;
+    private DefaultTableModel modelNguyenLieu;
 
     // Các thành phần phần Form
     private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC;
@@ -25,33 +25,35 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     private JComboBox<String> cbTrangThai;
     private JButton btnSua, btnLuu;
 
-    private PhieuNhapSanPham phieuNhapSanPham;
-    private NhapKhoSanPhamPanel nhapKhoSanPhamPanel;
+    private PhieuNhapNguyenLieu phieuNhapNguyenLieu;
+    private NhapKhoNguyenLieuPanel nhapKhoNguyenLieuPanel;
 
-    public ChiTietPhieuNhapSanPhamDialog(Frame parent, PhieuNhapSanPham phieuNhapSanPham,
-            NhapKhoSanPhamPanel nhapKhoSanPhamPanel) {
+    public ChiTietPhieuNhapNguyenLieuDialog(Frame parent, PhieuNhapNguyenLieu phieuNhapNguyenLieu,
+            NhapKhoNguyenLieuPanel nhapKhoNguyenLieuPanel) {
         super(parent, "Quản lý Phiếu Nhập", true);
-        setSize(550, 750); // Chiều cao tăng lên 750 để đủ chỗ cho JTextArea và Table
+        setSize(550, 750); // Chiều cao 750 để đủ chỗ cho JTextArea và Table
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
-        this.phieuNhapSanPham = phieuNhapSanPham;
-        this.nhapKhoSanPhamPanel = nhapKhoSanPhamPanel;
-        // ==================== PHẦN TOP (DANH SÁCH SẢN PHẨM) ====================
+
+        this.phieuNhapNguyenLieu = phieuNhapNguyenLieu;
+        this.nhapKhoNguyenLieuPanel = nhapKhoNguyenLieuPanel;
+
+        // ==================== PHẦN TOP (DANH SÁCH NGUYÊN LIỆU) ====================
         JPanel pnTop = new JPanel(new BorderLayout(0, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
         // Tiêu đề
-        JLabel lblTitle = new JLabel("Danh sách các sản phẩm nhập", SwingConstants.CENTER);
+        JLabel lblTitle = new JLabel("Danh sách các nguyên liệu nhập", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         pnTop.add(lblTitle, BorderLayout.NORTH);
 
         // Bảng dữ liệu
         String[] columnNames = { "Mã", "Tên", "Giá", "Số lượng", "Ngày SX", "Hạn SD" };
-        modelSanPham = new DefaultTableModel(columnNames, 0);
+        modelNguyenLieu = new DefaultTableModel(columnNames, 0);
 
-        JScrollPane scrollTable = TaoUI.taoTableScroll(modelSanPham);
-        tblSanPhamNhap = (JTable) scrollTable.getViewport().getView();
-        scrollTable.setPreferredSize(new Dimension(500, 180)); // Chiều cao bảng khoảng 180px
+        JScrollPane scrollTable = TaoUI.taoTableScroll(modelNguyenLieu);
+        tblNguyenLieuNhap = (JTable) scrollTable.getViewport().getView();
+        scrollTable.setPreferredSize(new Dimension(500, 180));
         pnTop.add(scrollTable, BorderLayout.CENTER);
 
         add(pnTop, BorderLayout.NORTH);
@@ -63,7 +65,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
         // Khởi tạo các Component nhập liệu
         txtMaPN = new JTextField();
-        txtNgayNhap = new JTextField(); // Có thể đổi thành JDateChooser sau này nếu cần
+        txtNgayNhap = new JTextField();
         txtMaNV = new JTextField();
         txtTongTien = new JTextField();
         txtMaNCC = new JTextField();
@@ -92,6 +94,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         // Trạng thái xử lý (ComboBox)
         cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
         cbTrangThai.setEnabled(false);
+
         // Đưa vào Form theo cấu trúc: Label -> Input
         pnForm.add(taoDong(new JLabel("Mã Phiếu Nhập (PK):")));
         pnForm.add(taoDong(txtMaPN));
@@ -112,10 +115,11 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         pnForm.add(taoDong(cbTrangThai));
 
         pnForm.add(taoDong(new JLabel("Ghi Chú:")));
-        pnForm.add(taoDongArea(scrollGhiChu)); // Dùng hàm riêng cho TextArea
+        pnForm.add(taoDongArea(scrollGhiChu));
 
         add(pnForm, BorderLayout.CENTER);
 
+        // ==================== PHẦN BOTTOM (NÚT CHỨC NĂNG) ====================
         JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnLuu = new JButton("Lưu Phiếu Nhập");
         btnSua = new JButton("Sửa");
@@ -124,7 +128,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         pnBottom.add(btnSua);
         pnBottom.add(btnLuu);
 
-        if (!phieuNhapSanPham.getTrangThaiXuLy().equals("Đã xác nhận")) {
+        if (!phieuNhapNguyenLieu.getTrangThaiXuLy().equals("Đã xác nhận")) {
             add(pnBottom, BorderLayout.SOUTH);
         }
 
@@ -133,25 +137,31 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     }
 
     public void loadDuLieu() {
-        modelSanPham.setRowCount(0);
-        if (phieuNhapSanPham == null) {
+        modelNguyenLieu.setRowCount(0);
+        if (phieuNhapNguyenLieu == null) {
             return;
         }
-        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
-        for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
-            SanPham sanPham = sanPhamBUS.timSanPham(loSanPham.getMaSP());
-            modelSanPham.addRow(new Object[] { loSanPham.getMaLoSP(), sanPham != null ? sanPham.getTenSP() : "",
-                    loSanPham.getSoLuong(), loSanPham.getGiaNhap(), loSanPham.getNgaySanXuat(),
-                    loSanPham.getHanSuDung() });
-        }
-        txtMaNCC.setText(phieuNhapSanPham.getMaNCC());
-        txtMaNV.setText(phieuNhapSanPham.getMaNV());
-        txtMaPN.setText(phieuNhapSanPham.getMaPN());
-        txtNgayNhap.setText(phieuNhapSanPham.getMaPN());
-        txtTongTien.setText(String.valueOf(phieuNhapSanPham.getTongTien()));
-        cbTrangThai.setSelectedItem(phieuNhapSanPham.getTrangThaiXuLy());
-        txaGhiChu.setText(phieuNhapSanPham.getGhiChu());
 
+        NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
+        for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
+            NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(loNguyenLieu.getMaNL());
+            modelNguyenLieu.addRow(new Object[] {
+                    loNguyenLieu.getMaLoNL(),
+                    nguyenLieu != null ? nguyenLieu.getTenNL() : "",
+                    loNguyenLieu.getGiaNhap(),
+                    loNguyenLieu.getSoLuong(),
+                    loNguyenLieu.getNgaySanXuat(),
+                    loNguyenLieu.getHanSuDung()
+            });
+        }
+
+        txtMaNCC.setText(phieuNhapNguyenLieu.getMaNCC());
+        txtMaNV.setText(phieuNhapNguyenLieu.getMaNV());
+        txtMaPN.setText(phieuNhapNguyenLieu.getMaPN());
+        txtNgayNhap.setText(phieuNhapNguyenLieu.getNgayNhap());
+        txtTongTien.setText(String.valueOf(phieuNhapNguyenLieu.getTongTien()));
+        cbTrangThai.setSelectedItem(phieuNhapNguyenLieu.getTrangThaiXuLy());
+        txaGhiChu.setText(phieuNhapNguyenLieu.getGhiChu());
     }
 
     private JPanel taoDong(JComponent comp) {
@@ -184,33 +194,31 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         });
 
         btnLuu.addActionListener(e -> {
-            if (phieuNhapSanPham.getTrangThaiXuLy().equals("Đang xử lý")
+            if (phieuNhapNguyenLieu.getTrangThaiXuLy().equals("Đang xử lý")
                     && cbTrangThai.getSelectedItem().toString().equals("Đã xác nhận")) {
-                int luaChon = JOptionPane.showConfirmDialog(null, "Xác nhận phiếu nhập kho sản phẩm?", "Xác nhận",
+                int luaChon = JOptionPane.showConfirmDialog(null, "Xác nhận phiếu nhập kho nguyên liệu?", "Xác nhận",
                         JOptionPane.YES_NO_CANCEL_OPTION);
                 if (!(luaChon == JOptionPane.YES_OPTION)) {
                     return;
                 }
             }
-            PhieuNhapSanPham phieuNhapSanPham = dongGoiPhieuNhapSanPham();
-            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
-            if (phieuNhapSanPhamBUS.capNhapPhieuNhapSanPham(phieuNhapSanPham)) {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu nhập sản phẩm thành công", "Thông báo", 1);
-                nhapKhoSanPhamPanel.loadDuLieu();
+
+            PhieuNhapNguyenLieu phieuGoi = dongGoiPhieuNhapNguyenLieu();
+            PhieuNhapNguyenLieuBUS bus = PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS();
+
+            if (bus.capNhapPhieuNhapNguyenLieu(phieuGoi)) {
+                TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu nhập nguyên liệu thành công", "Thông báo", 1);
+                nhapKhoNguyenLieuPanel.loadDuLieu();
             } else {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu nhập sản phẩm thất bại", "Thông báo", 1);
+                TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu nhập nguyên liệu thất bại", "Thông báo", 1);
             }
             dispose();
-
         });
-
-        
-
     }
 
-    private PhieuNhapSanPham dongGoiPhieuNhapSanPham() {
-        phieuNhapSanPham.setGhiChu(txaGhiChu.getText());
-        phieuNhapSanPham.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
-        return phieuNhapSanPham;
+    private PhieuNhapNguyenLieu dongGoiPhieuNhapNguyenLieu() {
+        phieuNhapNguyenLieu.setGhiChu(txaGhiChu.getText());
+        phieuNhapNguyenLieu.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
+        return phieuNhapNguyenLieu;
     }
 }

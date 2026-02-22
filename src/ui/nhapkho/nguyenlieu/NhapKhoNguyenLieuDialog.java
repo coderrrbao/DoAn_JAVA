@@ -264,7 +264,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         cbNhaCungCap = new JComboBox<>();
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
         cbNhaCungCap.addItem("Nhà cung cấp");
-        
+
         for (String tenNCC : nhaCungCapBUS.layLuaChonNCCNguyenLieu()) {
             cbNhaCungCap.addItem(tenNCC);
         }
@@ -317,12 +317,15 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         LoNguyenLieuBUS loNguyenLieuBUS = new LoNguyenLieuBUS();
         if (nhaCungCap != null) {
             for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
-                // Kiểm tra loại đối tượng là "Nguyên liệu"
                 if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Nguyên liệu")) {
                     NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(chiTietNhaCungCap.getMaDoiTuong());
-                    modelKhoHang.addRow(
-                            new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(), chiTietNhaCungCap.getGiaNhap(),
-                                    loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) });
+                    if (nguyenLieu.getTenNL().contains(search_Item.getTextSearch())) {
+                        modelKhoHang.addRow(
+                                new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(),
+                                        chiTietNhaCungCap.getGiaNhap(),
+                                        loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) });
+                    }
+
                 }
             }
         }
@@ -355,7 +358,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
                     String maNl = modelKhoHang.getValueAt(selectedRow, 0).toString();
                     String tenNl = modelKhoHang.getValueAt(selectedRow, 1).toString();
                     String giaNhap = modelKhoHang.getValueAt(selectedRow, 2).toString();
-                    
+
                     txtMaNl.setText(maNl);
                     txtTenNl.setText(tenNl);
                     txtGiaNhap.setText(giaNhap);
@@ -405,6 +408,10 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
             }
             dispose();
         });
+
+        search_Item.setEvent(() -> {
+            loadDuLieu();
+        });
     }
 
     private Double layTongChiPhi(String tien) {
@@ -425,7 +432,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         phieuNhapNguyenLieu.setTongTien(layTongChiPhi(lblTongTienHienThi.getText()));
         NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
         phieuNhapNguyenLieu.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
-        phieuNhapNguyenLieu.setTrangThaiXuLy("Đang xử lí");
+        phieuNhapNguyenLieu.setTrangThaiXuLy("Đang xử lý");
 
         ArrayList<LoNguyenLieu> listLoNguyenLieu = new ArrayList<>();
         for (int i = 0; i < modelChiTietPhieuNhap.getRowCount(); i++) {

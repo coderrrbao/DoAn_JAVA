@@ -99,6 +99,10 @@ public class NhapKhoSanPhamPanel extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", dongChon);
             }
         });
+
+        locNgay_Item.setEvent(() -> {
+            loadDuLieu();
+        });
     }
 
     public void loadDuLieu() {
@@ -106,11 +110,13 @@ public class NhapKhoSanPhamPanel extends JPanel {
         PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
 
         for (PhieuNhapSanPham phieuNhapSanPham : phieuNhapSanPhamBUS.layListPhieuNhapSanPham()) {
-            NhaCungCap nhaCungCap = NhaCungCapBUS.getNhaCungCapBUS().timNhaCungCap(phieuNhapSanPham.getMaNCC());
-            model.addRow(new Object[] { phieuNhapSanPham.getMaPN(), phieuNhapSanPham.getNgayNhap(),
-                    phieuNhapSanPham.getMaNV(), phieuNhapSanPham.getGhiChu(),
-                    nhaCungCap != null ? nhaCungCap.getTenNCC() : "",
-                    phieuNhapSanPham.getTrangThaiXuLy() });
+            if (locNgay_Item.ngayTrongKhoan(phieuNhapSanPham.getNgayNhap())) {
+                NhaCungCap nhaCungCap = NhaCungCapBUS.getNhaCungCapBUS().timNhaCungCap(phieuNhapSanPham.getMaNCC());
+                model.addRow(new Object[] { phieuNhapSanPham.getMaPN(), phieuNhapSanPham.getNgayNhap(),
+                        phieuNhapSanPham.getMaNV(), phieuNhapSanPham.getGhiChu(),
+                        nhaCungCap != null ? nhaCungCap.getTenNCC() : "",
+                        phieuNhapSanPham.getTrangThaiXuLy() });
+            }
         }
     }
 }
