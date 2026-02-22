@@ -51,6 +51,8 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
         JScrollPane scrollTable = TaoUI.taoTableScroll(modelSanPham);
         tblSanPhamNhap = (JTable) scrollTable.getViewport().getView();
+        tblSanPhamNhap.getTableHeader()
+                .setPreferredSize(new Dimension(tblSanPhamNhap.getColumnModel().getTotalColumnWidth(), 25));
         scrollTable.setPreferredSize(new Dimension(500, 180)); // Chiều cao bảng khoảng 180px
         pnTop.add(scrollTable, BorderLayout.CENTER);
 

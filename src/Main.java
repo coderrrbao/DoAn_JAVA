@@ -14,9 +14,9 @@ public class Main {
         UIManager.put("Table.selectionBackground", new Color(184, 207, 229));
         UIManager.put("Table.selectionForeground", Color.BLACK);
         com.formdev.flatlaf.FlatLightLaf.setup();
-        new LoginUI();
-        // EventQueue.invokeLater(() -> {
-        //     new MainFrame().setVisible(true);
-        // });
+        // new LoginUI();
+        EventQueue.invokeLater(() -> {
+            new MainFrame().setVisible(true);
+        });
     }
 }

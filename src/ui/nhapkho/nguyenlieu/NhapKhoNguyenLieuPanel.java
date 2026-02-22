@@ -72,8 +72,7 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
                 PhieuNhapNguyenLieu phieuNhapNguyenLieu = phieuNhapNguyenLieuBUS
                         .timPhieuNhapNguyenLieu(model.getValueAt(dongChon, 0).toString());
 
-                // Bạn cần tạo class ChiTietPhieuNhapNguyenLieuDialog tương tự như bên Sản phẩm
-                // nhé
+        
                 ChiTietPhieuNhapNguyenLieuDialog chiTietDialog = new ChiTietPhieuNhapNguyenLieuDialog(null,
                         phieuNhapNguyenLieu, this);
                 chiTietDialog.setVisible(true);

@@ -7,11 +7,14 @@ import java.awt.Dimension;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import bus.NhaCungCapBUS;
+import dto.NhaCungCap;
 import ui.component.Search_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhaCungCapUI extends JPanel {
-    private JButton btnTao, btnXoa, btnSua;
+    private JButton btnTao, btnXoa, btnXemChiTiet;
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
@@ -27,16 +30,15 @@ public class NhaCungCapUI extends JPanel {
 
         btnTao = new JButton("Thêm");
 
-        btnSua = new JButton("Sửa");
+        btnXemChiTiet = new JButton("Xem chi tiết");
 
         btnXoa = new JButton("Xóa");
-   
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnTao);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
-        top.add(btnSua);
+        top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -56,41 +58,60 @@ public class NhaCungCapUI extends JPanel {
         model.addColumn("Số điện thoại");
         model.addColumn("Địa chỉ");
 
-        model.addRow(new Object[] { "NCC001", "Pepsi Việt Nam", "Sản phẩm", "0123456789", "TP. Hồ Chí Minh" });
-        model.addRow(new Object[] { "NCC002", "Coca-Cola", "Sản phẩm", "0987654321", "Bình Dương" });
-        model.addRow(new Object[] { "NCC003", "Lavie", "Sản phẩm", "0333444555", "Long An" });
-        model.addRow(new Object[] { "NCC004", "Nông trại Việt", "Nguyên liệu", "0944555666", "Đà Lạt" });
-
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
-        tableUI  = (JTable) scrollPane.getViewport().getView();
+        tableUI = (JTable) scrollPane.getViewport().getView();
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);
+        ganSuKien();
+        loadDuLieu();
     }
 
-    public JButton getBtnTao() {
-        return btnTao;
+    public void loadDuLieu() {
+        model.setRowCount(0);
+        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+        for (NhaCungCap nhaCungCap : nhaCungCapBUS.laylistNhaCungCap()) {
+            if (nhaCungCap.getTenNCC().contains(search_Item.getTextSearch())) {
+                String loaiCungCap = "";
+                if (nhaCungCap.getCungCapSP()) {
+                    loaiCungCap = "Sản phẩm";
+                }
+                if (nhaCungCap.getCungCapNL()) {
+                    if (!loaiCungCap.equals("")) {
+                        loaiCungCap += " & ";
+                    }
+                    loaiCungCap += "Nguyên liệu";
+                }
+                if (loaiCungCap.equals("")) {
+                    loaiCungCap = "Không có";
+                }
+                model.addRow(new Object[] { nhaCungCap.getMaNCC(), nhaCungCap.getTenNCC(), nhaCungCap.getCungCapNL(),
+                        loaiCungCap, nhaCungCap.getSoDienThoai(), nhaCungCap.getDiaChi() });
+            }
+        }
     }
 
-    public JButton getBtnXoa() {
-        return btnXoa;
-    }
+    public void ganSuKien() {
+        search_Item.setEvent(() -> {
+            loadDuLieu();
+        });
+        btnTao.addActionListener(e -> {
+            ChiTietNhaCungCapDialog chiTietNhaCungCapDialog = new ChiTietNhaCungCapDialog(null, null, this);
+            chiTietNhaCungCapDialog.setVisible(true);
 
-    public JButton getBtnSua() {
-        return btnSua;
-    }
-
-    public Search_Item getSearch_Item() {
-        return search_Item;
-    }
-
-    public JTable getTableUI() {
-        return tableUI;
-    }
-
-    public DefaultTableModel getModel() {
-        return model;
+        });
+        btnXemChiTiet.addActionListener(e -> {
+            int dongChon = tableUI.getSelectedRow();
+            if (dongChon >= 0) {
+                NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+                NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(model.getValueAt(dongChon, 0).toString());
+                ChiTietNhaCungCapDialog chiTietNhaCungCapDialog = new ChiTietNhaCungCapDialog(null, nhaCungCap, this);
+                chiTietNhaCungCapDialog.setVisible(true);
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhà cung cấp để xem chi tiết", "Thông báo", 1);
+            }
+        });
     }
 }

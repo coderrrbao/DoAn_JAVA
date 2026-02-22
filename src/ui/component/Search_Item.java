@@ -13,7 +13,8 @@ import util.TaoUI;
 public class Search_Item extends JPanel {
   private JTextField searchText;
   private JButton searchButton;
-  private Runnable event = () -> {};
+  private Runnable event = () -> {
+  };
 
   public Search_Item(int width, int height) {
     setBackground(Color.white);
@@ -58,5 +59,9 @@ public class Search_Item extends JPanel {
 
   public JTextField getSearchText() {
     return searchText;
+  }
+
+  public void setSearchText(String text) {
+    searchText.setText(text);
   }
 }

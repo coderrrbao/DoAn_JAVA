@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ThemHangHoaChoNCCDialog",
+      "request": "launch",
+      "mainClass": "ui.nhacungcap.ThemHangHoaChoNCCDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
       "name": "ChiTietPhieuNhapSanPhamDialog",
       "request": "launch",
       "mainClass": "ui.nhapkho.sanpham.ChiTietPhieuNhapSanPhamDialog",

@@ -3,9 +3,16 @@ package ui.nhacungcap;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import bus.NguyenLieuBUS;
+import bus.SanPhamBUS;
+import dto.ChiTietNhaCungCap;
+import dto.NguyenLieu;
+import dto.NhaCungCap;
+import dto.SanPham;
 import util.TaoUI;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class ChiTietNhaCungCapDialog extends JDialog {
 
@@ -18,12 +25,16 @@ public class ChiTietNhaCungCapDialog extends JDialog {
     private JTable tblHangHoa;
     private DefaultTableModel modelHangHoa;
 
-    public ChiTietNhaCungCapDialog(Frame parent) {
+    private NhaCungCapUI nhaCungCapUI;
+    private NhaCungCap nhaCungCap;
+
+    public ChiTietNhaCungCapDialog(Frame parent, NhaCungCap nhaCungCap, NhaCungCapUI nhaCungCapUI) {
         super(parent, "Quản lý Nhà Cung Cấp", true);
         setSize(480, 600); // Tăng kích thước để có không gian chứa JTable
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
-
+        this.nhaCungCapUI = nhaCungCapUI;
+        this.nhaCungCap = nhaCungCap;
         // ==================== PHẦN TOP ====================
         JPanel pnTop = new JPanel(new BorderLayout(5, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
@@ -34,12 +45,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         btnXoaHang = new JButton("Xóa");
         cbLoaiHang = new JComboBox<>(new String[] { "Sản phẩm", "Nguyên liệu" });
 
-        cbLoaiHang.addActionListener(e -> {
-            String loaiHangDuocChon = (String) cbLoaiHang.getSelectedItem();
-            System.out.println("Đang reload lại model cho: " + loaiHangDuocChon);
-            // TODO: Gọi hàm truy vấn SQL và đổ dữ liệu lại vào modelHangHoa
-        });
-        TaoUI.setFixSize(cbLoaiHang, 100, 30);
+        TaoUI.setFixSize(cbLoaiHang, 150, 30);
 
         pnRow1.add(btnThemHang);
         pnRow1.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -53,7 +59,9 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         JScrollPane scrollHangHoa = TaoUI.taoTableScroll(modelHangHoa);
         tblHangHoa = (JTable) scrollHangHoa.getViewport().getView();
-        // Thiết lập chiều cao cố định cho bảng ở phần top khoảng 150px
+        tblHangHoa.getTableHeader()
+                .setPreferredSize(new Dimension(tblHangHoa.getColumnModel().getTotalColumnWidth(), 25));
+
         scrollHangHoa.setPreferredSize(new Dimension(400, 150));
 
         pnTop.add(pnRow1, BorderLayout.NORTH);
@@ -94,9 +102,76 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         btnDong.addActionListener(e -> dispose());
 
+        if (nhaCungCap != null) {
+            cbLoaiHang.removeAllItems();
+            if (!nhaCungCap.getCungCapNL() && !nhaCungCap.getCungCapSP()) {
+                cbLoaiHang.addItem("Chưa cập nhập");
+                cbLoaiHang.setEnabled(false);
+            }
+
+            else if (nhaCungCap.getCungCapNL() && nhaCungCap.getCungCapSP()) {
+                cbLoaiHang.addItem("Sản phẩm");
+                cbLoaiHang.addItem("Nguyên liệu");
+            } else if (nhaCungCap.getCungCapSP()) {
+                cbLoaiHang.addItem("Sản phẩm");
+                cbLoaiHang.setEnabled(false);
+            } else if (nhaCungCap.getCungCapNL()) {
+                cbLoaiHang.addItem("Nguyên liệu");
+                cbLoaiHang.setEnabled(false);
+            }
+
+        }
+        cbLoaiHang.setSelectedIndex(0);
+
         pnBottom.add(btnLuu);
         pnBottom.add(btnDong);
         add(pnBottom, BorderLayout.SOUTH);
+
+        loadDuLieu();
+        ganSuKien();
+
+    }
+
+    public void loadDuLieu() {
+        if (nhaCungCap == null) {
+            return;
+        }
+
+        txtMaNCC.setText(nhaCungCap.getMaNCC());
+        txtTenNCC.setText(nhaCungCap.getTenNCC());
+        txtDiaChi.setText(nhaCungCap.getDiaChi());
+        txtSoDienThoai.setText(nhaCungCap.getSoDienThoai());
+
+        modelHangHoa.setRowCount(0);
+        if (cbLoaiHang.getSelectedItem().toString().equals("Sản phẩm")) {
+            SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
+            for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
+                if (ct.getLoaiDoiTuong().equals("Sản phẩm")) {
+                    SanPham sp = sanPhamBUS.timSanPham(ct.getMaDoiTuong());
+                    if (sp != null) {
+                        modelHangHoa.addRow(new Object[] { sp.getMaSP(), sp.getTenSP(), "Sản phẩm", ct.getGiaNhap() });
+                    }
+                }
+            }
+        } else if (cbLoaiHang.getSelectedItem().toString().equals("Nguyên liệu")) {
+            NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
+            for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
+                if (ct.getLoaiDoiTuong().equals("Nguyên liệu")) {
+                    NguyenLieu nl = nguyenLieuBUS.timNguyenLieu(ct.getMaDoiTuong());
+                    if (nl != null) {
+                        modelHangHoa
+                                .addRow(new Object[] { nl.getMaNL(), nl.getTenNL(), "Nguyên liệu", ct.getGiaNhap() });
+                    }
+                }
+            }
+        }
+
+    }
+
+    public void ganSuKien() {
+        cbLoaiHang.addActionListener(e -> {
+            loadDuLieu();
+        });
     }
 
     // Hàm hỗ trợ tạo 1 dòng (Panel) với chiều cao cố định
@@ -113,7 +188,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
     public static void main(String[] args) {
 
-        ChiTietNhaCungCapDialog nhaCungCapDialog = new ChiTietNhaCungCapDialog(null);
+        ChiTietNhaCungCapDialog nhaCungCapDialog = new ChiTietNhaCungCapDialog(null, null, null);
         nhaCungCapDialog.setVisible(true);
     }
 }
