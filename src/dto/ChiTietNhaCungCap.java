@@ -1,7 +1,7 @@
 package dto;
 
 public class ChiTietNhaCungCap {
-    private int maNCCDT;
+    private String maCTNCC;
     private String maNCC;
     private String loaiDoiTuong;
     private String maDoiTuong;
@@ -10,8 +10,8 @@ public class ChiTietNhaCungCap {
     public ChiTietNhaCungCap() {
     }
 
-    public ChiTietNhaCungCap(int maNCCDT, String maNCC, String loaiDoiTuong, String maDoiTuong, double giaNhap) {
-        this.maNCCDT = maNCCDT;
+    public ChiTietNhaCungCap(String maNCCDT, String maNCC, String loaiDoiTuong, String maDoiTuong, double giaNhap) {
+        this.maCTNCC = maNCCDT;
         this.maNCC = maNCC;
         this.loaiDoiTuong = loaiDoiTuong;
         this.maDoiTuong = maDoiTuong;
@@ -25,12 +25,12 @@ public class ChiTietNhaCungCap {
         this.giaNhap = giaNhap;
     }
 
-    public int getMaNCCDT() {
-        return maNCCDT;
+    public String getMaCTNCC() {
+        return maCTNCC;
     }
 
-    public void setMaNCCDT(int maNCCDT) {
-        this.maNCCDT = maNCCDT;
+    public void setMaCTNCC(String maCTNCC) {
+        this.maCTNCC = maCTNCC;
     }
 
     public String getMaNCC() {

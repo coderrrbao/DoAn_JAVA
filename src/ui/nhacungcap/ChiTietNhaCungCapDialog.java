@@ -4,11 +4,13 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NguyenLieuBUS;
+import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import dto.ChiTietNhaCungCap;
 import dto.NguyenLieu;
 import dto.NhaCungCap;
 import dto.SanPham;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 import java.awt.*;
@@ -18,15 +20,18 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
     private JComboBox<String> cbLoaiHang;
     private JTextField txtMaNCC, txtTenNCC, txtSoDienThoai, txtDiaChi;
-    private JButton btnLuu, btnDong;
+    private JButton btnLuu, btnDong, btnThem, btnSua;
 
     // Khai báo thêm các component cho phần Top
-    private JButton btnThemHang, btnXoaHang;
+    private JButton btnThemHang, btnXoaHang, btnSuaHang;
     private JTable tblHangHoa;
-    private DefaultTableModel modelHangHoa;
+    private DefaultTableModel modelSP, modelNL;
 
     private NhaCungCapUI nhaCungCapUI;
     private NhaCungCap nhaCungCap;
+    private ThemHangHoaChoNCCDialog themHangHoaChoNCCDialog = new ThemHangHoaChoNCCDialog(null, this);
+
+    private ArrayList<String> listCTNCCCanXoa = new ArrayList<>();
 
     public ChiTietNhaCungCapDialog(Frame parent, NhaCungCap nhaCungCap, NhaCungCapUI nhaCungCapUI) {
         super(parent, "Quản lý Nhà Cung Cấp", true);
@@ -43,25 +48,31 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         JPanel pnRow1 = TaoUI.taoPanelBoxLayoutNgang(480, 30);
         btnThemHang = new JButton("Thêm");
         btnXoaHang = new JButton("Xóa");
+        btnSuaHang = new JButton("Sửa");
+        btnThem = new JButton("Thêm");
         cbLoaiHang = new JComboBox<>(new String[] { "Sản phẩm", "Nguyên liệu" });
 
         TaoUI.setFixSize(cbLoaiHang, 150, 30);
-
         pnRow1.add(btnThemHang);
         pnRow1.add(Box.createRigidArea(new Dimension(10, 0)));
         pnRow1.add(btnXoaHang);
+        pnRow1.add(Box.createRigidArea(new Dimension(10, 0)));
+        pnRow1.add(btnSuaHang);
         pnRow1.add(Box.createHorizontalGlue());
         pnRow1.add(cbLoaiHang);
 
         // --- Dòng 2: JTable ---
-        String[] columnNames = { "Mã", "Tên", "Loại", "Giá nhập" };
-        modelHangHoa = new DefaultTableModel(columnNames, 0);
+        String[] columnNames = { "MaCTNCC", "Mã", "Tên", "Loại", "Giá nhập" };
 
-        JScrollPane scrollHangHoa = TaoUI.taoTableScroll(modelHangHoa);
+        modelSP = new DefaultTableModel(columnNames, 0);
+        modelNL = new DefaultTableModel(columnNames, 0);
+
+        JScrollPane scrollHangHoa = TaoUI.taoTableScroll(modelSP);
+
         tblHangHoa = (JTable) scrollHangHoa.getViewport().getView();
+        tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
         tblHangHoa.getTableHeader()
                 .setPreferredSize(new Dimension(tblHangHoa.getColumnModel().getTotalColumnWidth(), 25));
-
         scrollHangHoa.setPreferredSize(new Dimension(400, 150));
 
         pnTop.add(pnRow1, BorderLayout.NORTH);
@@ -79,6 +90,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         txtTenNCC = new JTextField();
         txtSoDienThoai = new JTextField();
         txtDiaChi = new JTextField();
+        txtMaNCC.setEnabled(false);
 
         // Thêm các thành phần theo cấu trúc: 1 dòng Label - 1 dòng TextField
         pnForm.add(taoDong(new JLabel("Mã Nhà Cung Cấp:")));
@@ -99,82 +111,232 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnLuu = new JButton("Lưu");
         btnDong = new JButton("Đóng");
+        btnSua = new JButton("Sửa");
 
         btnDong.addActionListener(e -> dispose());
 
-        if (nhaCungCap != null) {
-            cbLoaiHang.removeAllItems();
-            if (!nhaCungCap.getCungCapNL() && !nhaCungCap.getCungCapSP()) {
-                cbLoaiHang.addItem("Chưa cập nhập");
-                cbLoaiHang.setEnabled(false);
-            }
-
-            else if (nhaCungCap.getCungCapNL() && nhaCungCap.getCungCapSP()) {
-                cbLoaiHang.addItem("Sản phẩm");
-                cbLoaiHang.addItem("Nguyên liệu");
-            } else if (nhaCungCap.getCungCapSP()) {
-                cbLoaiHang.addItem("Sản phẩm");
-                cbLoaiHang.setEnabled(false);
-            } else if (nhaCungCap.getCungCapNL()) {
-                cbLoaiHang.addItem("Nguyên liệu");
-                cbLoaiHang.setEnabled(false);
-            }
-
-        }
-        cbLoaiHang.setSelectedIndex(0);
-
+        pnBottom.add(btnSua);
+        pnBottom.add(btnThem);
         pnBottom.add(btnLuu);
         pnBottom.add(btnDong);
+
         add(pnBottom, BorderLayout.SOUTH);
 
+        initLoaiDialog();
         loadDuLieu();
         ganSuKien();
 
     }
 
+    private void initLoaiDialog() {
+        if (nhaCungCap != null) {
+            if (nhaCungCap.getCungCapNL()) {
+                cbLoaiHang.setSelectedItem("Nguyên liệu");
+            } else {
+                cbLoaiHang.setSelectedItem("Sản phẩm");
+            }
+            btnThem.setVisible(false);
+            btnDong.setVisible(false);
+
+            anThaoTacSua();
+        } else {
+            btnLuu.setVisible(false);
+            btnSua.setVisible(false);
+
+        }
+
+    }
+
     public void loadDuLieu() {
-        if (nhaCungCap == null) {
-            return;
+        if (nhaCungCap != null) {
+            txtMaNCC.setText(nhaCungCap.getMaNCC());
+            txtTenNCC.setText(nhaCungCap.getTenNCC());
+            txtDiaChi.setText(nhaCungCap.getDiaChi());
+            txtSoDienThoai.setText(nhaCungCap.getSoDienThoai());
         }
 
-        txtMaNCC.setText(nhaCungCap.getMaNCC());
-        txtTenNCC.setText(nhaCungCap.getTenNCC());
-        txtDiaChi.setText(nhaCungCap.getDiaChi());
-        txtSoDienThoai.setText(nhaCungCap.getSoDienThoai());
-
-        modelHangHoa.setRowCount(0);
         if (cbLoaiHang.getSelectedItem().toString().equals("Sản phẩm")) {
-            SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
-            for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
-                if (ct.getLoaiDoiTuong().equals("Sản phẩm")) {
-                    SanPham sp = sanPhamBUS.timSanPham(ct.getMaDoiTuong());
-                    if (sp != null) {
-                        modelHangHoa.addRow(new Object[] { sp.getMaSP(), sp.getTenSP(), "Sản phẩm", ct.getGiaNhap() });
+
+            tblHangHoa.setModel(modelSP);
+            if (!tblHangHoa.getModel().equals(modelSP)) {
+                tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
+            }
+
+            if (modelSP.getRowCount() == 0 && nhaCungCap != null) {
+                SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
+                for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
+                    if (ct.getLoaiDoiTuong().equals("Sản phẩm")) {
+                        SanPham sp = sanPhamBUS.timSanPham(ct.getMaDoiTuong());
+                        if (sp != null) {
+                            modelSP.addRow(new Object[] { ct.getMaCTNCC(), sp.getMaSP(), sp.getTenSP(), "Sản phẩm",
+                                    ct.getGiaNhap() });
+                        }
                     }
                 }
             }
+
         } else if (cbLoaiHang.getSelectedItem().toString().equals("Nguyên liệu")) {
-            NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
-            for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
-                if (ct.getLoaiDoiTuong().equals("Nguyên liệu")) {
-                    NguyenLieu nl = nguyenLieuBUS.timNguyenLieu(ct.getMaDoiTuong());
-                    if (nl != null) {
-                        modelHangHoa
-                                .addRow(new Object[] { nl.getMaNL(), nl.getTenNL(), "Nguyên liệu", ct.getGiaNhap() });
+            tblHangHoa.setModel(modelNL);
+            if (tblHangHoa.getModel().equals(modelNL)) {
+                tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
+            }
+
+            if (modelNL.getRowCount() == 0 && nhaCungCap != null) {
+                NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
+                for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
+                    if (ct.getLoaiDoiTuong().equals("Nguyên liệu")) {
+                        NguyenLieu nl = nguyenLieuBUS.timNguyenLieu(ct.getMaDoiTuong());
+                        if (nl != null) {
+                            modelNL
+                                    .addRow(new Object[] { ct.getMaCTNCC(), nl.getMaNL(), nl.getTenNL(), "Nguyên liệu",
+                                            ct.getGiaNhap() });
+                        }
                     }
                 }
+
             }
+
         }
 
+    }
+
+    private void anThaoTacSua() {
+        btnSua.setEnabled(true);
+        btnLuu.setEnabled(false);
+        txtDiaChi.setEditable(false);
+        txtMaNCC.setEditable(false);
+        txtSoDienThoai.setEditable(false);
+        txtTenNCC.setEditable(false);
+        tblHangHoa.setEnabled(false);
+        btnLuu.setEnabled(false);
+        btnThemHang.setEnabled(false);
+        btnXoaHang.setEnabled(false);
+        btnSuaHang.setEnabled(false);
+    }
+
+    private void batThaoTacSua() {
+        btnSua.setEnabled(false);
+        btnLuu.setEnabled(true);
+        txtDiaChi.setEditable(true);
+        txtMaNCC.setEditable(true);
+        txtSoDienThoai.setEditable(true);
+        txtTenNCC.setEditable(true);
+        tblHangHoa.setEnabled(true);
+        btnLuu.setEnabled(true);
+        btnThemHang.setEnabled(true);
+        btnXoaHang.setEnabled(true);
+        btnSuaHang.setEnabled(true);
     }
 
     public void ganSuKien() {
+
         cbLoaiHang.addActionListener(e -> {
             loadDuLieu();
         });
+
+        btnSua.addActionListener(e -> {
+            batThaoTacSua();
+        });
+
+        btnThemHang.addActionListener(e -> {
+            themHangHoaChoNCCDialog.lamMoi();
+            themHangHoaChoNCCDialog.setVisible(true);
+        });
+
+        btnXoaHang.addActionListener(e -> {
+            int row = tblHangHoa.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn hàng hóa cần xóa!");
+                return;
+            }
+
+            DefaultTableModel currentModel = (DefaultTableModel) tblHangHoa.getModel();
+            if (nhaCungCap != null && !currentModel.getValueAt(row, 0).toString().equals("")) {
+                listCTNCCCanXoa.add(currentModel.getValueAt(row, 0).toString());
+            }
+            currentModel.removeRow(row);
+        });
+
+        btnLuu.addActionListener(e -> {
+            NhaCungCap nccMoi = dongGoiNhaCungCap();
+            if (nccMoi != null) {
+                NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+                if (nhaCungCapBUS.capNhapNhaCungCap(nccMoi, listCTNCCCanXoa)) {
+                    TaoTinNhan.showAutoCloseMessage("Cập nhật thành công!", "Thông báo", 1);
+                    nhaCungCapUI.loadDuLieu();
+                    dispose();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thất bại!");
+                }
+            }
+        });
+
+        btnThem.addActionListener(e -> {
+            NhaCungCap nhaCungCap = dongGoiNhaCungCap();
+            NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+            if (nhaCungCapBUS.themNhaCungCap(nhaCungCap)) {
+                TaoTinNhan.showAutoCloseMessage("Thêm nhà cung cấp thành công", "Thông báo", 1);
+                nhaCungCapUI.loadDuLieu();
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Thêm nhà cung cấp thất bại", "Thông báo", 1);
+            }
+            dispose();
+        });
+
+        btnSuaHang.addActionListener(e -> {
+            int row = tblHangHoa.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn hàng để sửa!");
+                return;
+            }
+            DefaultTableModel modelHienTai = (DefaultTableModel) tblHangHoa.getModel();
+            ChiTietNhaCungCap chiTietNhaCungCap = new ChiTietNhaCungCap(modelHienTai.getValueAt(row, 0).toString(),
+                    modelHienTai.getValueAt(row, 3).toString(), modelHienTai.getValueAt(row, 1).toString(),
+                    Double.parseDouble(modelHienTai.getValueAt(row, 4).toString()));
+
+            SuaChiTietNhaCungCapDialog suaChiTietNhaCungCapDialog = new SuaChiTietNhaCungCapDialog(this,
+                    chiTietNhaCungCap, tblHangHoa.getValueAt(row, 2).toString(), row);
+            suaChiTietNhaCungCapDialog.setVisible(true);
+
+        });
+
     }
 
-    // Hàm hỗ trợ tạo 1 dòng (Panel) với chiều cao cố định
+    public void suaChiTietNhaCungCap(ChiTietNhaCungCap chiTietNhaCungCap, int dong) {
+        DefaultTableModel modelHienTai = (DefaultTableModel) tblHangHoa.getModel();
+        modelHienTai.setValueAt(String.valueOf(chiTietNhaCungCap.getGiaNhap()), dong, 4);
+    }
+
+    private boolean tonTaiTrongModel(String maHH, DefaultTableModel model) {
+        for (int i = 0; i < model.getRowCount(); i++) {
+            if (model.getValueAt(i, 1).toString().equals(maHH)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void themDoiTuongVaoTable(ChiTietNhaCungCap chiTietNhaCungCap) {
+        if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
+            if (!tonTaiTrongModel(chiTietNhaCungCap.getMaDoiTuong(), modelSP)) {
+                SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
+                SanPham sanPham = sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong());
+                modelSP.addRow(new Object[] { "", sanPham.getMaSP(), sanPham.getTenSP(),
+                        chiTietNhaCungCap.getLoaiDoiTuong(), chiTietNhaCungCap.getGiaNhap() });
+            }
+            cbLoaiHang.setSelectedItem("Sản phẩm");
+
+        } else if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Nguyên liệu")) {
+            if (!tonTaiTrongModel(chiTietNhaCungCap.getMaDoiTuong(), modelNL)) {
+                NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
+                NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(chiTietNhaCungCap.getMaDoiTuong());
+                modelNL.addRow(new Object[] { "", nguyenLieu.getMaNL(), nguyenLieu.getTenNL(),
+                        chiTietNhaCungCap.getLoaiDoiTuong(), chiTietNhaCungCap.getGiaNhap() });
+            }
+            cbLoaiHang.setSelectedItem("Nguyên liệu");
+        }
+    }
+
     private JPanel taoDong(JComponent comp) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
@@ -184,6 +346,36 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         marginPanel.add(panel, BorderLayout.CENTER);
         marginPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
         return marginPanel;
+    }
+
+    public NhaCungCap dongGoiNhaCungCap() {
+
+        String maNCC = txtMaNCC.getText().trim();
+        String tenNCC = txtTenNCC.getText().trim();
+        String sdt = txtSoDienThoai.getText().trim();
+        String diaChi = txtDiaChi.getText().trim();
+
+        NhaCungCap nhaCungCap = new NhaCungCap(maNCC, tenNCC, sdt, diaChi);
+        if (tenNCC.isEmpty() || sdt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên và SDT không được để trống!");
+            return null;
+        }
+
+        ArrayList<ChiTietNhaCungCap> dsChiTiet = new ArrayList<>();
+
+        for (int i = 0; i < modelSP.getRowCount(); i++) {
+            dsChiTiet.add(new ChiTietNhaCungCap(modelSP.getValueAt(i, 0).toString(),
+                    nhaCungCap != null ? nhaCungCap.getMaNCC() : "", "Sản phẩm",
+                    modelSP.getValueAt(i, 1).toString(), Double.parseDouble(modelSP.getValueAt(i, 4).toString())));
+        }
+
+        for (int i = 0; i < modelNL.getRowCount(); i++) {
+            dsChiTiet.add(new ChiTietNhaCungCap(modelNL.getValueAt(i, 0).toString(),
+                    nhaCungCap != null ? nhaCungCap.getMaNCC() : "", "Nguyên liệu",
+                    modelNL.getValueAt(i, 1).toString(), Double.parseDouble(modelNL.getValueAt(i, 4).toString())));
+        }
+        nhaCungCap.setListChiTietNhaCungCap(dsChiTiet);
+        return nhaCungCap;
     }
 
     public static void main(String[] args) {

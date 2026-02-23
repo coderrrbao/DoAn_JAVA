@@ -896,7 +896,7 @@ WHERE name = 'ChiTietNhaCungCap')
 BEGIN
     CREATE TABLE ChiTietNhaCungCap
     (
-        MaNCCDT INT IDENTITY(1,1) PRIMARY KEY,
+        MaCTNCC VARCHAR(50) PRIMARY KEY, -- Đã sửa thành VARCHAR và bỏ IDENTITY
         MaNCC VARCHAR(50) NOT NULL,
         LoaiDoiTuong NVARCHAR(50) NOT NULL,
         MaDoiTuong VARCHAR(50) NOT NULL,
@@ -904,42 +904,31 @@ BEGIN
         TrangThai BIT DEFAULT 1,
     )
 
+    -- Lưu ý: Khi INSERT bạn phải tự cung cấp giá trị cho MaCTNCC
     INSERT INTO ChiTietNhaCungCap
-        (MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
+        (MaCTNCC, MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
     VALUES
-        ('NCC_NL_01', N'Nguyên liệu', 'NL01', 180000),
-        -- Hạt Cà Phê
-        ('NCC_NL_01', N'Nguyên liệu', 'NL05', 450000),
-        -- Bột Matcha
-        ('NCC_NL_02', N'Nguyên liệu', 'NL14', 35000),
-        -- Xoài Tươi
-        ('NCC_NL_02', N'Nguyên liệu', 'NL03', 12000)
-    -- Đường Cát
+        ('CT001', 'NCC_NL_01', N'Nguyên liệu', 'NL01', 180000),
+        ('CT002', 'NCC_NL_01', N'Nguyên liệu', 'NL05', 450000),
+        ('CT003', 'NCC_NL_02', N'Nguyên liệu', 'NL14', 35000),
+        ('CT004', 'NCC_NL_02', N'Nguyên liệu', 'NL03', 12000)
 
-    -- NHÓM 2: Nhà cung cấp Sản phẩm
     INSERT INTO ChiTietNhaCungCap
-        (MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
+        (MaCTNCC, MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
     VALUES
-        ('NCC_SP_01', N'Sản phẩm', 'SP01', 9000),
-        -- Pepsi Lon
-        ('NCC_SP_01', N'Sản phẩm', 'SP27', 9000),
-        -- 7Up
-        ('NCC_SP_02', N'Sản phẩm', 'SP45', 35000),
-        -- Tiramisu
-        ('NCC_SP_02', N'Sản phẩm', 'SP47', 22000)
-    -- Bánh Croissant
+        ('CT005', 'NCC_SP_01', N'Sản phẩm', 'SP01', 9000),
+        ('CT006', 'NCC_SP_01', N'Sản phẩm', 'SP27', 9000),
+        ('CT007', 'NCC_SP_02', N'Sản phẩm', 'SP45', 35000),
+        ('CT008', 'NCC_SP_02', N'Sản phẩm', 'SP47', 22000)
 
-    -- NHÓM 3: Nhà cung cấp cung cấp CẢ HAI
     INSERT INTO ChiTietNhaCungCap
-        (MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
+        (MaCTNCC, MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap)
     VALUES
-        ('NCC_BOTH_01', N'Nguyên liệu', 'NL04', 28000),
-        -- Sữa tươi
-        ('NCC_BOTH_01', N'Sản phẩm', 'SP30', 6000)
-    -- Nước suối
+        ('CT009', 'NCC_BOTH_01', N'Nguyên liệu', 'NL04', 28000),
+        ('CT010', 'NCC_BOTH_01', N'Sản phẩm', 'SP30', 6000)
 
     ALTER TABLE ChiTietNhaCungCap 
-    ADD CONSTRAINT FK_NCCDT_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)
+    ADD CONSTRAINT FK_CTNCC_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)
 END;
 
 /* =============================================

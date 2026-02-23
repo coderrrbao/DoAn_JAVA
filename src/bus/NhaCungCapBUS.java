@@ -1,13 +1,18 @@
 package bus;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import dao.NhaCungCapDAO;
+import dao.conection.DBConnection;
 import dto.ChiTietNhaCungCap;
+import dto.LoSanPham;
 import dto.NguyenLieu;
 import dto.NhaCungCap;
+import dto.PhieuNhapSanPham;
 import dto.SanPham;
 
 public class NhaCungCapBUS {
@@ -130,4 +135,134 @@ public class NhaCungCapBUS {
         this.canUpdate = true;
     }
 
+    public boolean themNhaCungCap(NhaCungCap nhaCungCap) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            String maNCC = nhaCungCapDAO.layMaNhaCungCapKhaDung();
+            nhaCungCap.setMaNCC(maNCC);
+            if (!nhaCungCapDAO.themNhaCungCap(nhaCungCap)) {
+                throw new SQLException();
+            }
+            ChiTietNhaCungCapBUS chiTietNhaCungCapBUS = ChiTietNhaCungCapBUS.getChiTietNhaCungCapBUS();
+
+            for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
+                chiTietNhaCungCap.setMaNCC(maNCC);
+                if (!chiTietNhaCungCapBUS.themChiTietNhaCungCap(chiTietNhaCungCap, conn)) {
+                    throw new SQLException();
+                }
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
+
+    public boolean capNhapNhaCungCap(NhaCungCap nhaCungCap, ArrayList<String> listNCCCanXoa) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!nhaCungCapDAO.capNhapNhaCungCap(nhaCungCap, conn)) {
+                throw new SQLException();
+            }
+
+            ChiTietNhaCungCapBUS chiTietNhaCungCapBUS = ChiTietNhaCungCapBUS.getChiTietNhaCungCapBUS();
+            for (String ma : listNCCCanXoa) {
+                if (!chiTietNhaCungCapBUS.xoaChiTietNhaCungCap(ma, conn)) {
+                    throw new SQLException();
+                }
+            }
+
+            for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
+                chiTietNhaCungCap.setMaNCC(nhaCungCap.getMaNCC());
+                if (chiTietNhaCungCap.getMaCTNCC().equals("")) {
+                    if (!chiTietNhaCungCapBUS.themChiTietNhaCungCap(chiTietNhaCungCap, conn)) {
+                        throw new SQLException();
+                    }
+                } else {
+                    if (!chiTietNhaCungCapBUS.capNhapChiTietNhaCungCap(chiTietNhaCungCap, conn)) {
+                        throw new SQLException();
+                    }
+
+                }
+
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
+
+    public boolean xoaNhaCungCap(NhaCungCap nhaCungCap) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!nhaCungCapDAO.xoaNhaCungCap(nhaCungCap, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
 }

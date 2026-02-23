@@ -89,6 +89,10 @@ public class NhaCungCap {
     return listChiTietNhaCungCap;
   }
 
+  public void setListChiTietNhaCungCap(ArrayList<ChiTietNhaCungCap> listChiTietNhaCungCap) {
+    this.listChiTietNhaCungCap = listChiTietNhaCungCap;
+  }
+
   @Override
   public String toString() {
     return this.tenNCC;

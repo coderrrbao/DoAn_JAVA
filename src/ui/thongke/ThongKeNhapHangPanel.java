@@ -85,11 +85,11 @@ public class ThongKeNhapHangPanel extends JPanel {
         double giaNhapNL = 0;
         modelNL.setRowCount(0);
         modelSP.setRowCount(0);
-        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
+        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
         for (PhieuNhapNguyenLieu phieuNhapNguyenLieu : listPhieuNhapNguyenLieu) {
             NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapNguyenLieu.getMaNCC());
             modelNL.addRow(new Object[] { phieuNhapNguyenLieu.getMaPN(), phieuNhapNguyenLieu.getNgayNhap(),
-                    phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(), nhaCungCap.getTenNCC() });
+                    phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(), nhaCungCap==null?"":nhaCungCap.getTenNCC()});
             giaNhapNL += phieuNhapNguyenLieu.getTongTien();
         }
         for (PhieuNhapSanPham phieuNhapSanPham : listPhieuNhapSanPham) {

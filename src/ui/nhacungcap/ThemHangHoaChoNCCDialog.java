@@ -42,9 +42,11 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
     private JButton btnThem, btnHuy;
 
     private ChiTietNhaCungCap ketQuaDoiTuongChon = null;
+    private ChiTietNhaCungCapDialog chiTietNhaCungCapDialog;
 
-    public ThemHangHoaChoNCCDialog(Frame owner) {
+    public ThemHangHoaChoNCCDialog(Frame owner, ChiTietNhaCungCapDialog chiTietNhaCungCapDialog) {
         super(owner, "Thêm Hàng Hóa Cho Nhà Cung Cấp", true);
+        this.chiTietNhaCungCapDialog = chiTietNhaCungCapDialog;
         setSize(600, 500);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
@@ -104,7 +106,7 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
         btnThem = new JButton("Thêm");
         TaoUI.setFixSize(btnHuy, 100, 30);
         TaoUI.setFixSize(btnThem, 100, 30);
-        
+
         pnButtons.add(btnThem);
         pnButtons.add(btnHuy);
 
@@ -190,6 +192,8 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
                 ketQuaDoiTuongChon.setMaDoiTuong(maHang);
                 ketQuaDoiTuongChon.setGiaNhap(giaNhap);
 
+                chiTietNhaCungCapDialog.themDoiTuongVaoTable(ketQuaDoiTuongChon);
+
                 dispose();
             } catch (NumberFormatException ex) {
                 TaoTinNhan.showAutoCloseMessage("Giá nhập không hợp lệ!", "Lỗi", 1);
@@ -197,12 +201,13 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
         });
     }
 
-    public ChiTietNhaCungCap getHangHoaDuocChon() {
-        return ketQuaDoiTuongChon;
+    public void lamMoi() {
+        txtGiaNhap.setText("");
+        cbLoaiHang.setSelectedIndex(0);
     }
 
     public static void main(String[] args) {
-        ThemHangHoaChoNCCDialog themHangHoaChoNCCDialog = new ThemHangHoaChoNCCDialog(null);
+        ThemHangHoaChoNCCDialog themHangHoaChoNCCDialog = new ThemHangHoaChoNCCDialog(null, null);
         themHangHoaChoNCCDialog.setVisible(true);
     }
 }

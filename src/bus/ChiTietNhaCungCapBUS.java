@@ -1,8 +1,11 @@
 package bus;
 
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.ChiTietNhaCungCapDAO;
+import dao.conection.DBConnection;
 import dto.ChiTietNhaCungCap;
 
 public class ChiTietNhaCungCapBUS {
@@ -37,16 +40,102 @@ public class ChiTietNhaCungCapBUS {
     // HÀM LẤY LIST MÀ BẠN YÊU CẦU
     // ========================================================
 
-
-   public ArrayList<ChiTietNhaCungCap> layListChiTietNhaCungCap() {
+    public ArrayList<ChiTietNhaCungCap> layListChiTietNhaCungCap() {
         if (canUpdate || listChiTietNhaCungCap == null) {
             canUpdate = false;
             khoitao();
         }
         return listChiTietNhaCungCap;
-    } 
+    }
 
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
+    }
+
+    public boolean themChiTietNhaCungCap(ChiTietNhaCungCap chiTietNhaCungCap, Connection conn) {
+        try {
+
+            if (!chiTietNhaCungCapDAO.themChiTietNhaCungCap(chiTietNhaCungCap, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return true;
+    }
+
+    public boolean xoaChiTietNhaCungCap(String ma, Connection conn) {
+         try {
+
+            if (!chiTietNhaCungCapDAO.xoaChiTietNhaCungCap(ma, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return true;
+    }
+
+    public boolean capNhapChiTietNhaCungCap(ChiTietNhaCungCap chiTietNhaCungCap, Connection conn) {
+         try {
+
+            if (!chiTietNhaCungCapDAO.capNhapChiTietNhaCungCap(chiTietNhaCungCap, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        return true;
     }
 }

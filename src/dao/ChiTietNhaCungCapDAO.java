@@ -21,7 +21,7 @@ public class ChiTietNhaCungCapDAO {
 
             while (rs.next()) {
                 ChiTietNhaCungCap ct = new ChiTietNhaCungCap();
-                ct.setMaNCCDT(rs.getInt("MaNCCDT"));
+                ct.setMaCTNCC(rs.getString("MaCTNCC"));
                 ct.setMaNCC(rs.getString("MaNCC"));
                 ct.setLoaiDoiTuong(rs.getString("LoaiDoiTuong"));
                 ct.setMaDoiTuong(rs.getString("MaDoiTuong"));
@@ -31,65 +31,72 @@ public class ChiTietNhaCungCapDAO {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Lỗi truy vấn danh sách CTNCC: " + e.getMessage());
         }
         return listCTNCC;
     }
 
     public boolean themChiTietNhaCungCap(ChiTietNhaCungCap ct, Connection conn) {
-        String sql = "INSERT INTO ChiTietNhaCungCap (MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap, TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO ChiTietNhaCungCap (MaCTNCC, MaNCC, LoaiDoiTuong, MaDoiTuong, GiaNhap, TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, ct.getMaNCC());
-            pst.setString(2, ct.getLoaiDoiTuong());
-            pst.setString(3, ct.getMaDoiTuong());
-            pst.setDouble(4, ct.getGiaNhap());
-            pst.setInt(5, 1);
+            pst.setString(1, layMaCTNCCKhaDung(conn));
+            pst.setString(2, ct.getMaNCC());
+            pst.setNString(3, ct.getLoaiDoiTuong());
+            pst.setString(4, ct.getMaDoiTuong());
+            pst.setDouble(5, ct.getGiaNhap());
+            pst.setInt(6, 1);
 
-            int rowsAffected = pst.executeUpdate();
-            return rowsAffected > 0;
-
+            return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Lỗi khi thêm CTNCC: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean capNhatChiTietNhaCungCap(ChiTietNhaCungCap ct, Connection conn) {
+    public String layMaCTNCCKhaDung(Connection conn) {
+        String sql = "SELECT COUNT(*) FROM ChiTietNhaCungCap";
+        try (PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
+
+            if (rs.next()) {
+                int count = rs.getInt(1);
+                return String.format("CTNCC%03d", count + 1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "CTNCC001";
+    }
+
+    public boolean capNhapChiTietNhaCungCap(ChiTietNhaCungCap ct, Connection conn) {
         String sql = "UPDATE ChiTietNhaCungCap SET MaNCC = ?, LoaiDoiTuong = ?, MaDoiTuong = ?, GiaNhap = ? "
-                + "WHERE MaNCCDT = ?";
+                + "WHERE MaCTNCC = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, ct.getMaNCC());
-            pst.setString(2, ct.getLoaiDoiTuong());
+            pst.setNString(2, ct.getLoaiDoiTuong());
             pst.setString(3, ct.getMaDoiTuong());
             pst.setDouble(4, ct.getGiaNhap());
-            pst.setInt(5, ct.getMaNCCDT());
+            pst.setString(5, ct.getMaCTNCC()); // Kiểu String
 
-            int rowsAffected = pst.executeUpdate();
-            return rowsAffected > 0;
-
+            return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Lỗi khi cập nhật CTNCC: " + e.getMessage());
             return false;
         }
     }
 
-    public boolean xoaChiTietNhaCungCap(int maNCCDT, Connection conn) {
-        String sql = "UPDATE ChiTietNhaCungCap SET TrangThai = 0 WHERE MaNCCDT = ?";
+    public boolean xoaChiTietNhaCungCap(String maCTNCC, Connection conn) {
+        // Tham số truyền vào đổi từ int sang String
+        String sql = "UPDATE ChiTietNhaCungCap SET TrangThai = 0 WHERE MaCTNCC = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setInt(1, maNCCDT);
+            pst.setString(1, maCTNCC);
 
-            int rowsAffected = pst.executeUpdate();
-            return rowsAffected > 0;
-
+            return pst.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
-            System.out.println("Lỗi khi xóa mềm CTNCC: " + e.getMessage());
             return false;
         }
     }

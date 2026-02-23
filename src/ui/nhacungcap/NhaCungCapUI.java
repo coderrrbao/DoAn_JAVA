@@ -34,6 +34,10 @@ public class NhaCungCapUI extends JPanel {
 
         btnXoa = new JButton("Xóa");
 
+        TaoUI.setFixSize(btnTao, 100, 30);
+        TaoUI.setFixSize(btnXemChiTiet, 150, 30);
+        TaoUI.setFixSize(btnXoa, 100, 30);
+
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnTao);
@@ -87,7 +91,7 @@ public class NhaCungCapUI extends JPanel {
                 if (loaiCungCap.equals("")) {
                     loaiCungCap = "Không có";
                 }
-                model.addRow(new Object[] { nhaCungCap.getMaNCC(), nhaCungCap.getTenNCC(), nhaCungCap.getCungCapNL(),
+                model.addRow(new Object[] { nhaCungCap.getMaNCC(), nhaCungCap.getTenNCC(),
                         loaiCungCap, nhaCungCap.getSoDienThoai(), nhaCungCap.getDiaChi() });
             }
         }
@@ -111,6 +115,26 @@ public class NhaCungCapUI extends JPanel {
                 chiTietNhaCungCapDialog.setVisible(true);
             } else {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhà cung cấp để xem chi tiết", "Thông báo", 1);
+            }
+        });
+
+        btnXoa.addActionListener(e -> {
+            int dongChon = tableUI.getSelectedRow();
+            if (dongChon >= 0) {
+                NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+                NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(model.getValueAt(dongChon, 0).toString());
+                if (JOptionPane.showConfirmDialog(null, "Xóa nhà cung cấp " + nhaCungCap.getMaNCC() + " ?", "Thông báo",
+                        JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
+                    if (nhaCungCapBUS.xoaNhaCungCap(nhaCungCap)) {
+                        TaoTinNhan.showAutoCloseMessage("Xóa nhà cung cấp thành công", "Thông báo", 1);
+                        loadDuLieu();
+                    } else {
+                        TaoTinNhan.showAutoCloseMessage("Xóa nhà cung cấp thất bại", "Thông báo", 1);
+                    }
+                }
+
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhà cung cấp để xóa", "Thông báo", 1);
             }
         });
     }
