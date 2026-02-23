@@ -90,23 +90,29 @@ public class CongThucDAO {
 
     public ArrayList<ChiTietCongThuc> layCongThucPhaChe(String maSP, String maSize) {
         ArrayList<ChiTietCongThuc> list = new ArrayList<>();
-        // Câu lệnh này join 3 bảng: CongThuc -> ChiTietCongThuc -> NguyenLieu
         String sql = "SELECT ct.MaNL, nl.TenNL, ct.SoLuong " +
                 "FROM CongThuc c " +
                 "JOIN ChiTietCongThuc ct ON c.MaCT = ct.MaCT " +
                 "JOIN NguyenLieu nl ON ct.MaNL = nl.MaNL " +
-                "WHERE c.MaSP = ? AND c.MaSize = ?";
+                "WHERE c.MaSP = ?";
+
+        if (maSize == null || maSize.trim().isEmpty()) {
+            sql += " AND c.MaSize IS NULL";
+        } else {
+            sql += " AND c.MaSize = ?";
+        }
 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, maSP);
-            pst.setString(2, (maSize == null) ? "" : maSize);
+            if (maSize != null && !maSize.trim().isEmpty()) {
+                pst.setString(2, maSize);
+            }
 
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 ChiTietCongThuc ct = new ChiTietCongThuc();
-                // Tạo đối tượng Nguyên Liệu
                 NguyenLieu nl = new NguyenLieu();
                 nl.setMaNL(rs.getString("MaNL"));
                 nl.setTenNL(rs.getString("TenNL"));
