@@ -109,26 +109,22 @@ public class BanHangUI extends JPanel {
     private void ganSuKienGiamGia() {
         thanhToanPanel.getBtnXacNhanMGG().addActionListener(e -> {
             String inputCode = thanhToanPanel.getMaGiamGiaInput();
-
-            // Nếu người dùng bấm "Xác nhận"
             if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
                 if (inputCode.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Vui lòng nhập mã!");
                     return;
                 }
-
-                // Gọi Database để tìm và check mã
+                
                 MaGiamGiaBUS maGiamGiaBUS = new MaGiamGiaBUS();
                 MaGiamGia mgg = maGiamGiaBUS.timMaGiamGia(inputCode);
 
                 if (mgg != null) {
                     String thongBaoLoi = maGiamGiaBUS.kiemTraTrangThaiHopLe(mgg);
                     if (thongBaoLoi.isEmpty()) {
-                        // MÃ HỢP LỆ
-                        maGiamGiaDangDung = mgg; // Lưu vào biến toàn cục
+                        maGiamGiaDangDung = mgg;
                         JOptionPane.showMessageDialog(this, "Áp dụng mã thành công! Giảm " + mgg.getPhanTramGiam() + "%");
                         lockMaGiamGia(true);
-                        capNhatGiaoDien(); // Gọi hàm tính tiền
+                        capNhatGiaoDien();
                     } else {
                         JOptionPane.showMessageDialog(this, thongBaoLoi, "Lỗi Khuyến Mãi", JOptionPane.ERROR_MESSAGE);
                         resetGiamGia();
@@ -138,7 +134,6 @@ public class BanHangUI extends JPanel {
                     resetGiamGia();
                 }
             }
-            // Nếu người dùng bấm "Hủy"
             else {
                 resetGiamGia();
                 lockMaGiamGia(false);
@@ -154,7 +149,7 @@ public class BanHangUI extends JPanel {
     private void resetGiamGia() {
         maGiamGiaDangDung = null;
         thanhToanPanel.getTxtMaGiamGia().setText("");
-        capNhatGiaoDien(); // Tự tính lại về giá gốc
+        capNhatGiaoDien();
     }
 
     private void ganSuKienThanhToan() {
@@ -178,14 +173,14 @@ public class BanHangUI extends JPanel {
             hd.setMaKH("KH001");
             hd.setNhanVien(nvDemo);
 
-            hd.setTongTien(thanhToanPanel.getTongThanhToan()); // Tổng tiền đã trừ
+            hd.setTongTien(thanhToanPanel.getTongThanhToan());
 
             double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
             double tienDaGiam = tongTienHang - hd.getTongTien();
             hd.setTienKhuyenMai(tienDaGiam);
 
             if(maGiamGiaDangDung != null) {
-                hd.setMaGiamGia(maGiamGiaDangDung); // Mở cmt dòng này nếu HoaDon của bạn có setMaKM
+                hd.setMaGiamGia(maGiamGiaDangDung);
             }
             else {
                 hd.setMaGiamGia(null);
