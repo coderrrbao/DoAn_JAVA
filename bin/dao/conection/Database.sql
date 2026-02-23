@@ -238,7 +238,12 @@ BEGIN
 
         -- DM08: Sữa Chua
         ('SP49', N'Sữa Chua Trân Châu', 'DM08', 35000, 'NCC03', N'Pha chế', '/assets/img/pepsi.png', 300, 10, 1, N'Đã xác nhận'),
-        ('SP50', N'Sữa Chua Dẻo', 'DM08', 30000, 'NCC03', N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận')
+        ('SP50', N'Sữa Chua Dẻo', 'DM08', 30000, 'NCC03', N'Có sẵn', '/assets/img/pepsi.png', 100, 10, 1, N'Đã xác nhận'),
+
+        -- DM10: Topping
+        ('SP_TOP01', N'Trân Châu Đen', 'DM10', 5000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận'),
+        ('SP_TOP02', N'Thạch Phô Mai', 'DM10', 7000, 'NCC08', N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận'),
+        ('SP_TOP03', N'Kem Cheese', 'DM10', 10000, 'NCC03', N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận')
 END;
 
 /* =============================================
@@ -432,6 +437,8 @@ BEGIN
 
         -- Trà sữa & Trà
         ('CT04', 'SP04', 'SZ04_S', 1),
+        ('CT04_M', 'SP04', 'SZ04_M', 1),
+        ('CT04_L', 'SP04', 'SZ04_L', 1),
         ('CT12', 'SP12', 'SZ12_S', 1),
         ('CT13', 'SP13', 'SZ13_S', 1),
         ('CT14', 'SP14', 'SZ14_S', 1),
@@ -461,7 +468,13 @@ BEGIN
         ('CT39', 'SP39', 'SZ39_STD', 1),
         ('CT40', 'SP40', 'SZ40_STD', 1),
         ('CT41', 'SP41', 'SZ41_STD', 1),
-        ('CT49', 'SP49', 'SZ49_STD', 1)
+        ('CT49', 'SP49', 'SZ49_STD', 1),
+
+        -- Công thức cho Topping
+        ('CT_TOP01', 'SP_TOP01', NULL, 1),
+        ('CT_TOP02', 'SP_TOP02', NULL, 1)
+
+
 
 END;
 
@@ -496,6 +509,18 @@ BEGIN
         ('CTCT11', 'CT06', 'NL07', 0.03, 1),
         ('CTCT12', 'CT05', 'NL02', 0.02, 1),
         ('CTCT13', 'CT01', 'NL13', 0.2, 1),
+
+        -- Topping tốn nguyên liệu
+        ('CTCT_TOP01', 'CT_TOP01', 'NL06', 0.05, 1),
+        ('CTCT_TOP02', 'CT_TOP02', 'NL09', 0.05, 1),
+
+        -- Trà sữa truyền thống Size M (Gấp rưỡi Size S)
+        ('CTCT_04M_1', 'CT04_M', 'NL05', 0.015, 1),
+        ('CTCT_04M_2', 'CT04_M', 'NL04', 0.15, 1),
+
+        -- Trà sữa truyền thống Size L (Gấp đôi Size S)
+        ('CTCT_04L_1', 'CT04_L', 'NL05', 0.02, 1),
+        ('CTCT_04L_2', 'CT04_L', 'NL04', 0.2, 1),
         -- Đá bi
         ('CTCT14', 'CT01', 'NL11', 1, 1)
 -- Ly
@@ -808,7 +833,14 @@ BEGIN
         -- Matcha (Có số thập phân)
         ('LONL04', 'PNNL03', 'NL06', 250.0, '2024-01-20', '2024-01-15', '2024-03-15', 300000, N'Đã xác nhận', 1),
         -- Trân châu
-        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1)
+        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1),
+        -- Nguyên liệu (test)
+        ('LONL_NL04', 'PNNL01', 'NL04', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 30000, N'Đã xác nhận', 1), -- Sữa tươi
+        ('LONL_NL05', 'PNNL01', 'NL05', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 50000, N'Đã xác nhận', 1), -- Matcha/Trà
+        ('LONL_NL08', 'PNNL01', 'NL08', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 80000, N'Đã xác nhận', 1), -- Trà đen
+        ('LONL_NL09', 'PNNL01', 'NL09', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 60000, N'Đã xác nhận', 1), -- Kem béo
+        ('LONL_NL11', 'PNNL01', 'NL11', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 500, N'Đã xác nhận', 1),   -- Ly nhựa
+        ('LONL_NL13', 'PNNL01', 'NL13', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 20000, N'Đã xác nhận', 1)  -- Đá viên
 -- Syrup
 END;
 /* =============================================

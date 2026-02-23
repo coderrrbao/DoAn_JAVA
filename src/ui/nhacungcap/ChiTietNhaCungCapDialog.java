@@ -158,7 +158,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         if (cbLoaiHang.getSelectedItem().toString().equals("Sản phẩm")) {
 
             tblHangHoa.setModel(modelSP);
-            if (!tblHangHoa.getModel().equals(modelSP)) {
+            if (tblHangHoa.getColumnModel().getColumnCount()==5) {
                 tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
             }
 
@@ -177,7 +177,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         } else if (cbLoaiHang.getSelectedItem().toString().equals("Nguyên liệu")) {
             tblHangHoa.setModel(modelNL);
-            if (tblHangHoa.getModel().equals(modelNL)) {
+            if (tblHangHoa.getColumnModel().getColumnCount()==5) {
                 tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
             }
 
