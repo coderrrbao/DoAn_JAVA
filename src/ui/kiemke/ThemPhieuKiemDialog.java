@@ -280,8 +280,8 @@ public class ThemPhieuKiemDialog extends JDialog {
             pkk.setNgayKiem(LocalDate.now().toString());
             pkk.setMaLo(model.getValueAt(row, 0).toString());
             pkk.setLoaiLo(model.getValueAt(row, 1).toString());
-            pkk.setSoLuongSoSach(Integer.parseInt(model.getValueAt(row, 3).toString()));
-            pkk.setSoLuongThuc(Integer.parseInt(tfSoLuong.getText()));
+            pkk.setSoLuongSoSach(Double.parseDouble(model.getValueAt(row, 3).toString()));
+            pkk.setSoLuongThuc(Double.parseDouble(tfSoLuong.getText()));
             pkk.setGhiChu(textArea.getText());
             pkk.setMaNV(tfMaNv.getText());
             if (phieuKiemKe == null) {

@@ -519,7 +519,12 @@ public class TaoUI {
 
     public static JScrollPane taoTableScroll(DefaultTableModel model) {
         // 1. Khởi tạo JTable
-        JTable table = new JTable(model);
+        JTable table = new JTable(model) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Trả về false để tất cả các ô đều không thể chỉnh sửa
+            }
+        };
 
         // 2. Cấu hình giao diện bảng (Sử dụng Segoe UI cho hiện đại)
         table.setRowHeight(35);
@@ -585,69 +590,69 @@ public class TaoUI {
     }
 
     public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,
-                                       DefaultCategoryDataset dataset) {
-    // 1. Tạo biểu đồ miền (Area Chart)
-    JFreeChart chart = ChartFactory.createAreaChart(
-            tenBieuDo,
-            tenTrucNgang,
-            tenTrucDoc,
-            dataset,
-            PlotOrientation.VERTICAL,
-            true, true, false);
+            DefaultCategoryDataset dataset) {
+        // 1. Tạo biểu đồ miền (Area Chart)
+        JFreeChart chart = ChartFactory.createAreaChart(
+                tenBieuDo,
+                tenTrucNgang,
+                tenTrucDoc,
+                dataset,
+                PlotOrientation.VERTICAL,
+                true, true, false);
 
-    // ===== ĐỊNH DẠNG FONT =====
-    Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
-    Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
-    Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
+        // ===== ĐỊNH DẠNG FONT =====
+        Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
+        Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
+        Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
 
-    chart.getTitle().setFont(fontTieuDe);
-    if (chart.getLegend() != null) {
-        chart.getLegend().setItemFont(fontTick);
+        chart.getTitle().setFont(fontTieuDe);
+        if (chart.getLegend() != null) {
+            chart.getLegend().setItemFont(fontTick);
+        }
+
+        // ===== TÙY CHỈNH PLOT =====
+        CategoryPlot plot = chart.getCategoryPlot();
+        plot.getDomainAxis().setLabelFont(fontTruc);
+        plot.getDomainAxis().setTickLabelFont(fontTick);
+        plot.getRangeAxis().setLabelFont(fontTruc);
+        plot.getRangeAxis().setTickLabelFont(fontTick);
+
+        // Loại bỏ khoảng trống ở 2 đầu trục X để miền bám sát lề
+        plot.getDomainAxis().setLowerMargin(0.0);
+        plot.getDomainAxis().setUpperMargin(0.0);
+
+        // ===== NỀN + GRID =====
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setRangeGridlinePaint(new Color(220, 220, 220));
+        plot.setDomainGridlinePaint(new Color(220, 220, 220));
+        plot.setOutlineVisible(false);
+
+        // ===== TÙY CHỈNH MIỀN (RENDERER) =====
+        AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
+        // Màu sắc: Xanh lá nhẹ nhàng với độ trong suốt (Alpha = 150)
+        Color colorArea = new Color(76, 175, 80, 150);
+        renderer.setSeriesPaint(0, colorArea);
+
+        // Chống răng cưa (Vector graphics)
+        chart.setAntiAlias(true);
+        chart.setTextAntiAlias(true);
+
+        // ===== TẠO CHART PANEL (QUAN TRỌNG ĐỂ KHÔNG BỊ BỂ) =====
+        ChartPanel chartPanel = new ChartPanel(
+                chart,
+                800, 400, // Kích thước chuẩn
+                10, 10, // Kích thước tối thiểu
+                3000, 3000, // Kích thước tối đa (cho phép scale rộng không bị vỡ)
+                false, // useBuffer = false (Vẽ trực tiếp để nét căng, không bị mờ)
+                true, true, true, true, true);
+
+        chartPanel.setMouseWheelEnabled(false);
+        chartPanel.setDomainZoomable(false);
+        chartPanel.setRangeZoomable(false);
+        chartPanel.setBackground(Color.WHITE);
+
+        return chartPanel;
     }
-
-    // ===== TÙY CHỈNH PLOT =====
-    CategoryPlot plot = chart.getCategoryPlot();
-    plot.getDomainAxis().setLabelFont(fontTruc);
-    plot.getDomainAxis().setTickLabelFont(fontTick);
-    plot.getRangeAxis().setLabelFont(fontTruc);
-    plot.getRangeAxis().setTickLabelFont(fontTick);
-
-    // Loại bỏ khoảng trống ở 2 đầu trục X để miền bám sát lề
-    plot.getDomainAxis().setLowerMargin(0.0);
-    plot.getDomainAxis().setUpperMargin(0.0);
-
-    // ===== NỀN + GRID =====
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setRangeGridlinePaint(new Color(220, 220, 220));
-    plot.setDomainGridlinePaint(new Color(220, 220, 220));
-    plot.setOutlineVisible(false);
-
-    // ===== TÙY CHỈNH MIỀN (RENDERER) =====
-    AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
-    // Màu sắc: Xanh lá nhẹ nhàng với độ trong suốt (Alpha = 150)
-    Color colorArea = new Color(76, 175, 80, 150);
-    renderer.setSeriesPaint(0, colorArea);
-
-    // Chống răng cưa (Vector graphics)
-    chart.setAntiAlias(true);
-    chart.setTextAntiAlias(true);
-
-    // ===== TẠO CHART PANEL (QUAN TRỌNG ĐỂ KHÔNG BỊ BỂ) =====
-    ChartPanel chartPanel = new ChartPanel(
-            chart,
-            800, 400,    // Kích thước chuẩn
-            10, 10,      // Kích thước tối thiểu
-            3000, 3000,  // Kích thước tối đa (cho phép scale rộng không bị vỡ)
-            false,       // useBuffer = false (Vẽ trực tiếp để nét căng, không bị mờ)
-            true, true, true, true, true);
-
-    chartPanel.setMouseWheelEnabled(false);
-    chartPanel.setDomainZoomable(false);
-    chartPanel.setRangeZoomable(false);
-    chartPanel.setBackground(Color.WHITE);
-
-    return chartPanel;
-}
 
     public static void setDisabled(JComponent comp) {
         comp.setEnabled(false);

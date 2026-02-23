@@ -4,134 +4,136 @@ import java.awt.CardLayout;
 import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-
-import ui.thongke.ThongKeUI;
-import ui.tonkho.TonKhoUI;
-import ui.xuatkho.XuatKhoUI;
-import util.Luong;
 import ui.banhang.BanHangUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
 import ui.khuyenmai.KhuyenMaiUI;
 import ui.kiemke.KiemKeUI;
+import ui.nguyenlieu.NguyenLieuUI;
 import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
 import ui.nhapkho.NhapKhoUI;
 import ui.phanquyen.PhanQuyenUI;
 import ui.quanlysanpham.QuanLySanPhamUI;
 import ui.taikhoan.TaiKhoanUI;
+import ui.thongke.ThongKeUI;
+import ui.tonkho.TonKhoUI;
+import ui.xuatkho.XuatKhoUI;
+import util.Luong;
 
 public class ContentPaner extends JPanel {
 
-    private QuanLySanPhamUI quanLySanPhamUI;
-    private NhaCungCapUI nhaCungCapUI;
-    private NhapKhoUI nhapKhoUI;
-    private ThongKeUI thongKeUI;
-    private BanHangUI banHangUI;
-    private KhachHangUI khachHangUI;
-    private HoaDonUI hoaDonUI;
-    private NhanVienUI nhanVienUI;
-    private TaiKhoanUI taiKhoanUI;
-    private XuatKhoUI xuatKhoUI;
-    private TonKhoUI tonKhoUI;
-    private KhuyenMaiUI khuyenMaiUI;
-    private KiemKeUI kiemKeUI;
-    private PhanQuyenUI phanQuyenUI;
+  private QuanLySanPhamUI quanLySanPhamUI;
+  private NhaCungCapUI nhaCungCapUI;
+  private NhapKhoUI nhapKhoUI;
+  private ThongKeUI thongKeUI;
+  private BanHangUI banHangUI;
+  private KhachHangUI khachHangUI;
+  private HoaDonUI hoaDonUI;
+  private NhanVienUI nhanVienUI;
+  private TaiKhoanUI taiKhoanUI;
+  private XuatKhoUI xuatKhoUI;
+  private TonKhoUI tonKhoUI;
+  private KhuyenMaiUI khuyenMaiUI;
+  private KiemKeUI kiemKeUI;
+  private PhanQuyenUI phanQuyenUI;
+  private NguyenLieuUI nguyenLieuUI;
+  private CardLayout cardLayout;
 
-    private CardLayout cardLayout;
+  public ContentPaner(JFrame owner) {
+    cardLayout = new CardLayout();
+    setLayout(cardLayout);
+    setBackground(Color.white);
+    quanLySanPhamUI = new QuanLySanPhamUI(owner);
+    add(quanLySanPhamUI, "Quản lý sản phẩm");
+    Luong.handleDatabaseTask(
+        () -> {
+          nhaCungCapUI = new NhaCungCapUI();
+          nguyenLieuUI = new NguyenLieuUI();
+          nhapKhoUI = new NhapKhoUI();
+          thongKeUI = new ThongKeUI();
+          banHangUI = new BanHangUI();
+          khachHangUI = new KhachHangUI();
+          hoaDonUI = new HoaDonUI();
+          nhanVienUI = new NhanVienUI();
+          taiKhoanUI = new TaiKhoanUI();
+          xuatKhoUI = new XuatKhoUI(owner);
+          tonKhoUI = new TonKhoUI();
+          khuyenMaiUI = new KhuyenMaiUI();
+          phanQuyenUI = new PhanQuyenUI();
+          kiemKeUI = new KiemKeUI();
+        },
+        () -> {
+          add(nhaCungCapUI, "Nhà cung cấp");
+          add(nguyenLieuUI, "Nguyên liệu");
+          add(nhapKhoUI, "Nhập kho");
+          add(thongKeUI, "Thống kê");
+          add(banHangUI, "Bán hàng");
+          add(khachHangUI, "Khách hàng");
+          add(hoaDonUI, "Hóa đơn");
+          add(nhanVienUI, "Nhân viên");
+          add(taiKhoanUI, "Tài khoản");
+          add(xuatKhoUI, "Xuất kho");
+          add(tonKhoUI, "Tồn kho");
+          add(khuyenMaiUI, "Khuyến mãi");
+          add(phanQuyenUI, "Phân quyền");
+          add(kiemKeUI, "Kiểm kê");
+          revalidate();
+          repaint();
+        });
+  }
 
-    public ContentPaner(JFrame owner) {
-        cardLayout = new CardLayout();
-        setLayout(cardLayout);
-        setBackground(Color.white);
-        quanLySanPhamUI = new QuanLySanPhamUI(owner);
-        add(quanLySanPhamUI, "Quản lý sản phẩm");
-        Luong.handleDatabaseTask(
-                () -> {
+  public void switchPage(String name) {
+    cardLayout.show(this, name);
+  }
 
-                    nhaCungCapUI = new NhaCungCapUI();
-                    nhapKhoUI = new NhapKhoUI(owner);
-                    thongKeUI = new ThongKeUI();
-                    banHangUI = new BanHangUI();
-                    khachHangUI = new KhachHangUI();
-                    hoaDonUI = new HoaDonUI();
-                    nhanVienUI = new NhanVienUI();
-                    taiKhoanUI = new TaiKhoanUI();
-                    xuatKhoUI = new XuatKhoUI();
-                    tonKhoUI = new TonKhoUI();
-                    khuyenMaiUI = new KhuyenMaiUI();
-                    phanQuyenUI = new PhanQuyenUI();
-                    kiemKeUI = new KiemKeUI();
-                },
-                () -> {
+  public QuanLySanPhamUI getQuanLySanPhamUI() {
+    return quanLySanPhamUI;
+  }
 
-                    add(nhaCungCapUI, "Nhà cung cấp");
-                    add(nhapKhoUI, "Nhập kho");
-                    add(thongKeUI, "Thống kê");
-                    add(banHangUI, "Bán hàng");
-                    add(khachHangUI, "Khách hàng");
-                    add(hoaDonUI, "Hóa đơn");
-                    add(nhanVienUI, "Nhân viên");
-                    add(taiKhoanUI, "Tài khoản");
-                    add(xuatKhoUI, "Xuất kho");
-                    add(tonKhoUI, "Tồn kho");
-                    add(khuyenMaiUI, "Khuyến mãi");
-                    add(phanQuyenUI, "Phân quyền");
-                    add(kiemKeUI, "Kiểm kê");
-                    revalidate();
-                    repaint();
-                });
-    }
+  public NhaCungCapUI getNhaCungCapUI() {
+    return nhaCungCapUI;
+  }
 
-    public void switchPage(String name) {
-        cardLayout.show(this, name);
-    }
+  public NhapKhoUI getNhapKhoUI() {
+    return nhapKhoUI;
+  }
 
-    public QuanLySanPhamUI getQuanLySanPhamUI() {
-        return quanLySanPhamUI;
-    }
+  public ThongKeUI getThongKeUI() {
+    return thongKeUI;
+  }
 
-    public NhaCungCapUI getNhaCungCapUI() {
-        return nhaCungCapUI;
-    }
+  public BanHangUI getBanHangUI() {
+    return banHangUI;
+  }
 
-    public NhapKhoUI getNhapKhoUI() {
-        return nhapKhoUI;
-    }
+  public KhachHangUI getKhachHangUI() {
+    return khachHangUI;
+  }
 
-    public ThongKeUI getThongKeUI() {
-        return thongKeUI;
-    }
+  public HoaDonUI getHoaDonUI() {
+    return hoaDonUI;
+  }
 
-    public BanHangUI getBanHangUI() {
-        return banHangUI;
-    }
+  public NhanVienUI getNhanVienUI() {
+    return nhanVienUI;
+  }
 
-    public KhachHangUI getKhachHangUI() {
-        return khachHangUI;
-    }
+  public TaiKhoanUI getTaiKhoanUI() {
+    return taiKhoanUI;
+  }
 
-    public HoaDonUI getHoaDonUI() {
-        return hoaDonUI;
-    }
+  public XuatKhoUI getXuatKhoUI() {
+    return xuatKhoUI;
+  }
 
-    public NhanVienUI getNhanVienUI() {
-        return nhanVienUI;
-    }
+  public TonKhoUI getTonKhoUI() {
+    return tonKhoUI;
+  }
 
-    public TaiKhoanUI getTaiKhoanUI() {
-        return taiKhoanUI;
-    }
+  public NguyenLieuUI getNguyenLieuUI() {
+    return nguyenLieuUI;
+  }
 
-    public XuatKhoUI getXuatKhoUI() {
-        return xuatKhoUI;
-    }
-
-    public TonKhoUI getTonKhoUI() {
-        return tonKhoUI;
-    }
-
-    public void loadAll() {
-
-    }
+  public void loadAll() {}
 }

@@ -10,56 +10,113 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
-import ui.component.Search_Item;
+import bus.NhaCungCapBUS;
+import bus.PhieuNhapSanPhamBUS;
+import dto.NhaCungCap;
+import dto.PhieuNhapSanPham;
+import ui.component.LocNgay_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhapKhoSanPhamPanel extends JPanel {
-    private JButton nhapHangBtn, xemChiTietBtn;
-    private Search_Item search_Item;
+    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn;
+    private LocNgay_Item locNgay_Item;
     private JTable table;
+    private DefaultTableModel model;
 
-    public NhapKhoSanPhamPanel(Frame ouner) {
+    public NhapKhoSanPhamPanel() {
         setLayout(new BorderLayout());
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         nhapHangBtn = new JButton("Thêm");
         xemChiTietBtn = new JButton("Xem Chi tiết");
-        nhapHangBtn.addActionListener(e -> {
-            JDialog dialogNhapHang = new NhapKhoSanPhamDialog(ouner);
-            dialogNhapHang.setVisible(true);
-        });
+        xoaBtn = new JButton("Xóa");
 
-        search_Item = new Search_Item(300, 30);
-        top.add(search_Item);
+        TaoUI.setFixSize(nhapHangBtn, 100, 30);
+        TaoUI.setFixSize(xemChiTietBtn, 150, 30);
+        TaoUI.setFixSize(xoaBtn, 100, 30);
+
+        locNgay_Item = new LocNgay_Item(300, 30);
+        top.add(locNgay_Item);
         top.add(nhapHangBtn);
         top.add(xemChiTietBtn);
+        top.add(xoaBtn);
 
         add(top, BorderLayout.NORTH);
 
-        DefaultTableModel model = new DefaultTableModel();
+        model = new DefaultTableModel();
         model.addColumn("Mã Phiếu nhập");
         model.addColumn("Ngày nhập");
         model.addColumn("Nhân viên tạo phiếu");
         model.addColumn("Ghi chú");
         model.addColumn("Nhà cung cấp");
-        Object[][] dataPhieuNhap = {
-                { "PN001", "10/01/2026", "Nguyễn Văn A", "Nhập hàng định kỳ", "Công ty Coca-Cola" },
-                { "PN002", "11/01/2026", "Trần Thị B", "Nhập bổ sung Tết", "Suntory Pepsico" },
-                { "PN003", "11/01/2026", "Lê Văn C", "Hàng khuyến mãi", "Nhà máy Bia Sài Gòn" },
-                { "PN004", "12/01/2026", "Nguyễn Văn A", "Nhập gấp", "Công ty Tân Hiệp Phát" },
-                { "PN005", "12/01/2026", "Trần Thị B", "Kiểm kho nhập bù", "Nước khoáng Vĩnh Hảo" },
-                { "PN006", "13/01/2026", "Lê Văn C", "Nhập hàng mới", "Công ty TH True Milk" },
-                { "PN007", "13/01/2026", "Nguyễn Văn A", "Nhập nước suối", "Lavie Việt Nam" },
-                { "PN008", "14/01/2026", "Trần Thị B", "Nhập nước tăng lực", "Red Bull Việt Nam" },
-                { "PN009", "14/01/2026", "Lê Văn C", "Nhập bổ sung", "Công ty Nestle" },
-                { "PN010", "15/01/2026", "Nguyễn Văn A", "Hàng về trễ", "Công ty Masan" }
-        };
+        model.addColumn("Trạng thái");
 
-        for (Object[] row : dataPhieuNhap) {
-            model.addRow(row);
-        }
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
 
         add(scrollPane, BorderLayout.CENTER);
+
+        loadDuLieu();
+        ganSuKien();
+    }
+
+    private void ganSuKien() {
+        nhapHangBtn.addActionListener(e -> {
+            JDialog dialogNhapHang = new NhapKhoSanPhamDialog(this);
+            dialogNhapHang.setVisible(true);
+        });
+
+        xemChiTietBtn.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+            if (dongChon >= 0) {
+                PhieuNhapSanPham phieuNhapSanPham = phieuNhapSanPhamBUS
+                        .timPhieuNhapSanPham(model.getValueAt(dongChon, 0).toString());
+                ChiTietPhieuNhapSanPhamDialog chiTietPhieuNhapSanPhamDialog = new ChiTietPhieuNhapSanPhamDialog(null,
+                        phieuNhapSanPham, this);
+                chiTietPhieuNhapSanPhamDialog.setVisible(true);
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xem chi tiết", "Thông báo", dongChon);
+            }
+        });
+
+        xoaBtn.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+            if (dongChon >= 0) {
+                if (model.getValueAt(dongChon, 5).toString().equals("Đang xử lý")) {
+                    if (phieuNhapSanPhamBUS.xoaPhieuNhapSanPham(
+                            phieuNhapSanPhamBUS.timPhieuNhapSanPham(model.getValueAt(dongChon, 0).toString()))) {
+                        TaoTinNhan.showAutoCloseMessage("Xóa phiếu nhập sản phẩm thành công", "Thông báo",
+                                dongChon);
+                        loadDuLieu();
+                    }
+                } else {
+                    TaoTinNhan.showAutoCloseMessage("Phiếu nhập sản phẩm đã xác nhận, không thể xóa", "Thông báo",
+                            dongChon);
+                }
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", dongChon);
+            }
+        });
+
+        locNgay_Item.setEvent(() -> {
+            loadDuLieu();
+        });
+    }
+
+    public void loadDuLieu() {
+        model.setRowCount(0);
+        PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+
+        for (PhieuNhapSanPham phieuNhapSanPham : phieuNhapSanPhamBUS.layListPhieuNhapSanPham()) {
+            if (locNgay_Item.ngayTrongKhoan(phieuNhapSanPham.getNgayNhap())) {
+                NhaCungCap nhaCungCap = NhaCungCapBUS.getNhaCungCapBUS().timNhaCungCap(phieuNhapSanPham.getMaNCC());
+                model.addRow(new Object[] { phieuNhapSanPham.getMaPN(), phieuNhapSanPham.getNgayNhap(),
+                        phieuNhapSanPham.getMaNV(), phieuNhapSanPham.getGhiChu(),
+                        nhaCungCap != null ? nhaCungCap.getTenNCC() : "",
+                        phieuNhapSanPham.getTrangThaiXuLy() });
+            }
+        }
     }
 }

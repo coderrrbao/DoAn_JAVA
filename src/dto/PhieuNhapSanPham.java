@@ -1,5 +1,7 @@
 package dto;
 
+import java.util.ArrayList;
+
 public class PhieuNhapSanPham {
     private String maPN;
     private String ngayNhap;
@@ -8,18 +10,19 @@ public class PhieuNhapSanPham {
     private String maNCC;
     private String trangThaiXuLy;
     private String ghiChu;
+    private ArrayList<LoSanPham> listLoSanPham;
 
     public PhieuNhapSanPham() {
     }
 
     public PhieuNhapSanPham(String maLoSP, String ngayNhap, String maNV, double tongTien, String maNCC,
-            String trangThai, String ghiChu) {
+            String trangThaiXuLy, String ghiChu) {
         this.maPN = maLoSP;
         this.ngayNhap = ngayNhap;
         this.maNV = maNV;
         this.tongTien = tongTien;
         this.maNCC = maNCC;
-        this.trangThaiXuLy = trangThai;
+        this.trangThaiXuLy = trangThaiXuLy;
         this.ghiChu = ghiChu;
     }
 
@@ -77,5 +80,13 @@ public class PhieuNhapSanPham {
 
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
+    }
+
+    public ArrayList<LoSanPham> getListLoSanPham() {
+        return listLoSanPham;
+    }
+
+    public void setListLoSanPham(ArrayList<LoSanPham> listLoSanPham) {
+        this.listLoSanPham = listLoSanPham;
     }
 }

@@ -1,4 +1,5 @@
 package util;
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -21,10 +22,10 @@ public class Xulypdf {
             Map<String, Object> parameters = new HashMap<>();
             parameters.put("maHD", hoaDon.getMaHD());
             parameters.put("ngayTao", new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date()));
-            parameters.put("tenNV", hoaDon.getNhanVien().getTenNV());       
+            parameters.put("tenNV", hoaDon.getNhanVien().getTenNV());
             parameters.put("tongTien", String.valueOf(hoaDon.getTongTien()));
             parameters.put("thanhToan", String.valueOf(hoaDon.getTongTien()));
-            parameters.put("image", System.getProperty("user.dir")+"/src/report/");
+            parameters.put("image", System.getProperty("user.dir") + "/src/report/");
 
             for (ChiTietHoaDon ct : hoaDon.getListChiTietHoaDon()) {
                 String gia = String.valueOf(ct.getSanPham().getGiaBan());
@@ -43,9 +44,6 @@ public class Xulypdf {
         }
         return true;
     }
-
-
-    
 
     public static void main(String[] args) {
         System.out.println("Đang khởi tạo dữ liệu giả lập với 20 sản phẩm...");
@@ -75,8 +73,8 @@ public class Xulypdf {
             int soLuongMua = (i % 3) + 1; // Số lượng ngẫu nhiên từ 1 đến 3
 
             // Khởi tạo Sản phẩm
-            SanPham sp = new SanPham(maSP, tenSP, null, giaBan, null, "Ly", "img.png", 500, 10,
-                    "Đã xử lý",true);
+            SanPham sp = new SanPham(maSP, tenSP, null, giaBan, 0, "Ly", "img.png", 500, 10,
+                    "Đã xử lý", true);
 
             // Tạo Chi tiết hóa đơn cho sản phẩm này
             // Constructor: maCT, maHD, sanPham, size, soLuong, gia, trangThai

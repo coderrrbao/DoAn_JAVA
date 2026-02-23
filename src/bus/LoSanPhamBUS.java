@@ -51,13 +51,23 @@ public class LoSanPhamBUS {
         return null;
     }
 
+    public int laySoLuongSanPhamTrongKho(String maSP) {
+        int tong = 0;
+        for (LoSanPham loSanPham : listLoSanPham) {
+            if (loSanPham.getMaSP().equals(maSP)) {
+                tong += loSanPham.getSoLuong();
+            }
+        }
+        return tong;
+    }
+
     public boolean capNhapLoSanPham(LoSanPham loSanPham) {
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
 
             if (!loSanPhamDAO.capNhapLoSanPham(loSanPham, conn)) {
-                throw new SQLException("Update LoSanPham failed");
+                throw new SQLException();
             }
 
             conn.commit();
@@ -83,5 +93,77 @@ public class LoSanPhamBUS {
             }
         }
         return true;
+    }
+
+    public boolean xacNhanLoSanPham(LoSanPham loSanPham, Connection conn) {
+        try {
+            conn.setAutoCommit(false);
+
+            if (!loSanPhamDAO.xacNhanLoSanPham(loSanPham, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean themLoSanPham(LoSanPham loSanPham, Connection conn) {
+        try {
+            conn.setAutoCommit(false);
+            if (!loSanPhamDAO.themLoSanPham(loSanPham, conn)) {
+                throw new SQLException();
+            }
+        } catch (SQLException e) {
+            try {
+                if (conn != null) {
+                    conn.rollback();
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            try {
+                canUpdate = true;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+        return true;
+    }
+
+    public ArrayList<LoSanPham> layLoSanPhamChoPhieuNhap(String maPN) {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<LoSanPham> list = new ArrayList<>();
+        for (LoSanPham loSanPham : listLoSanPham) {
+            if (loSanPham.getMaPN().equals(maPN)) {
+                list.add(loSanPham);
+            }
+        }
+        return list;
     }
 }

@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.conection.DBConnection;
@@ -61,7 +62,7 @@ public class NhaCungCapDAO {
     public ArrayList<NhaCungCap> layListNhaCungCap() {
         ArrayList<NhaCungCap> listNhaCungCap = new ArrayList<>();
 
-        String sql = "SELECT * FROM NhaCungCap";
+        String sql = "SELECT * FROM NhaCungCap WHERE TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -135,6 +136,52 @@ public class NhaCungCapDAO {
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("Lỗi thêm NhaCungCap: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean themNhaCungCap(NhaCungCap ncc, Connection conn) {
+        String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi, TrangThai) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, ncc.getMaNCC());
+            pst.setNString(2, ncc.getTenNCC());
+            pst.setString(3, ncc.getSoDienThoai());
+            pst.setNString(4, ncc.getDiaChi());
+            pst.setInt(5, 1);
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaNhaCungCap(NhaCungCap ncc, Connection conn) {
+        String sql = "UPDATE NhaCungCap SET TrangThai = 0 WHERE MaNCC = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, ncc.getMaNCC());
+
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean capNhapNhaCungCap(NhaCungCap ncc, Connection conn) {
+        String sql = "UPDATE NhaCungCap SET TenNCC = ?, SoDienThoai = ?, DiaChi = ? WHERE MaNCC = ?";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, ncc.getTenNCC());
+            pst.setString(2, ncc.getSoDienThoai());
+            pst.setString(3, ncc.getDiaChi());
+            pst.setString(4, ncc.getMaNCC());
+
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi cập nhật NhaCungCap: " + e.getMessage());
             return false;
         }
     }

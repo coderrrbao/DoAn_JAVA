@@ -20,7 +20,7 @@ import util.TaoUI;
 public class QuanLySanPhamUI extends JPanel {
     private JButton themSpBtn, xuaFileBtn, nhapFileBtn, xoaBtn;
     private Search_Item search_Item;
-    private JComboBox<String> cbLoaiNuoc, cbNhaCungCap, cbDanhMuc;
+    private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
     private JFrame owner;
     private ArrayList<SanPham> listSanPham;
@@ -58,8 +58,6 @@ public class QuanLySanPhamUI extends JPanel {
         cbLoaiNuoc = new JComboBox<>(loai);
         cbLoaiNuoc.setMaximumSize(new Dimension(90, 32));
 
-        cbNhaCungCap = new JComboBox<>(ncc);
-        cbNhaCungCap.setMaximumSize(new Dimension(90, 32));
 
         cbDanhMuc = new JComboBox<>(danhmuc);
         cbDanhMuc.setMaximumSize(new Dimension(90, 32));
@@ -80,8 +78,6 @@ public class QuanLySanPhamUI extends JPanel {
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
         top.add(cbLoaiNuoc);
-        top.add(Box.createRigidArea(new Dimension(10, 0)));
-        top.add(cbNhaCungCap);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(cbDanhMuc);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -173,7 +169,6 @@ public class QuanLySanPhamUI extends JPanel {
 
         cbTrangThai.addActionListener(e -> locSanPham());
         cbLoaiNuoc.addActionListener(e -> locSanPham());
-        cbNhaCungCap.addActionListener(e -> locSanPham());
         cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
 
@@ -211,11 +206,7 @@ public class QuanLySanPhamUI extends JPanel {
     public void loadDataFromDatabase() {
         SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
         listSanPham = sanPhamBUS.layListSanPham();
-        NhaCungCapBUS nhaCungCapBUS = new NhaCungCapBUS();
-        ArrayList<String> luaChonNCC = nhaCungCapBUS.layLuaChonNCC();
-        luaChonNCC.add(0, "Nhà cung cấp");
-        ncc = luaChonNCC.toArray(new String[0]);
-        DefaultComboBoxModel<String> model = new DefaultComboBoxModel<>(ncc);
+
         DanhMucBUS danhMucBUS = new DanhMucBUS();
         ArrayList<String> luaChonDM = danhMucBUS.layLuaChonDanhMuc();
         luaChonDM.add(0, "Danh mục");
@@ -223,7 +214,6 @@ public class QuanLySanPhamUI extends JPanel {
         DefaultComboBoxModel<String> model1 = new DefaultComboBoxModel<>(danhmuc);
 
         cbDanhMuc.setModel(model1);
-        cbNhaCungCap.setModel(model);
         veLaiDanhSach(listSanPham);
         locSanPham();
         this.revalidate();
@@ -233,12 +223,9 @@ public class QuanLySanPhamUI extends JPanel {
     private void locSanPham() {
         listSanPhamLoc.clear();
         String luaChonLoaiNuoc = cbLoaiNuoc.getSelectedItem().toString();
-        String luaChonNCC = cbNhaCungCap.getSelectedItem().toString();
         String luaChonDM = cbDanhMuc.getSelectedItem().toString();
         String luaChonTrangThai = cbTrangThai.getSelectedItem().toString();
         for (SanPham sanPham : listSanPham) {
-            boolean matchNCC = sanPham.getNhaCungCap().getTenNCC().equals(luaChonNCC)
-                    || luaChonNCC.equals("Nhà cung cấp");
             boolean matchLoai = sanPham.getLoaiNuoc().equals(luaChonLoaiNuoc) || luaChonLoaiNuoc.equals("Loại nước");
             boolean matchDM = sanPham.getDanhMuc().getTenDM().equals(luaChonDM) || luaChonDM.equals("Danh mục");
             boolean matchSearch = sanPham.getTenSP().toUpperCase()
@@ -248,7 +235,7 @@ public class QuanLySanPhamUI extends JPanel {
                 matchTrangThai = true;
             }
 
-            if (matchNCC && matchLoai && matchDM && matchTrangThai && matchSearch) {
+            if ( matchLoai && matchDM && matchTrangThai && matchSearch) {
                 listSanPhamLoc.add(sanPham);
             }
         }

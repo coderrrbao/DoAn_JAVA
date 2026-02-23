@@ -7,7 +7,7 @@ public class SanPham {
     private String tenSP;
     private DanhMuc danhMuc;
     private long giaBan;
-    private NhaCungCap nhaCungCap;
+    private long giaNhap;
     private String loaiNuoc;
     private String anh;
     private int theTich;
@@ -24,14 +24,13 @@ public class SanPham {
         this.maSP = maSp;
     }
 
-    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan,
-            NhaCungCap nhaCungCap, String loaiNuoc, String anh,
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, long giaNhap, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
         this.giaBan = giaBan;
-        this.nhaCungCap = nhaCungCap;
+        this.giaNhap = giaNhap;
         this.loaiNuoc = loaiNuoc;
         this.anh = anh;
         this.theTich = theTich;
@@ -41,14 +40,12 @@ public class SanPham {
         listSize = new ArrayList<>();
     }
 
-    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan,
-            NhaCungCap nhaCungCap, String loaiNuoc, String anh,
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, CongThuc congThuc, String trangThaiXuLi, boolean trangThai) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
         this.giaBan = giaBan;
-        this.nhaCungCap = nhaCungCap;
         this.loaiNuoc = loaiNuoc;
         this.anh = anh;
         this.theTich = theTich;
@@ -87,10 +84,6 @@ public class SanPham {
         return danhMuc;
     }
 
-    public NhaCungCap getNhaCungCap() {
-        return nhaCungCap;
-    }
-
     public String getTenSP() {
         return tenSP;
     }
@@ -121,10 +114,6 @@ public class SanPham {
 
     public void setDanhMuc(DanhMuc danhMuc) {
         this.danhMuc = danhMuc;
-    }
-
-    public void setNhaCungCap(NhaCungCap nhaCungCap) {
-        this.nhaCungCap = nhaCungCap;
     }
 
     public void setTenSP(String tenSP) {
@@ -187,5 +176,13 @@ public class SanPham {
 
     public void setTrangThaiXuLy(String trangThaiXuLi) {
         this.trangThaiXuLy = trangThaiXuLi;
+    }
+
+    public long getGiaNhap() {
+        return giaNhap;
+    }
+
+    public void setGiaNhap(long giaNhap) {
+        this.giaNhap = giaNhap;
     }
 }

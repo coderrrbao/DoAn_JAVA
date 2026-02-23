@@ -1,7 +1,6 @@
 package ui.nhapkho;
 
 import java.awt.BorderLayout;
-import java.awt.Frame;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -11,11 +10,11 @@ import ui.nhapkho.sanpham.NhapKhoSanPhamPanel;
 public class NhapKhoUI extends JPanel {
     private NhapKhoSanPhamPanel nhapKhoSanPham;
     private NhapKhoNguyenLieuPanel nhapKhoNguyenLieu;
-    public NhapKhoUI(Frame ouner) {
+    public NhapKhoUI() {
         setLayout(new BorderLayout());
         
-        nhapKhoNguyenLieu = new NhapKhoNguyenLieuPanel(ouner);
-        nhapKhoSanPham = new NhapKhoSanPhamPanel(ouner);
+        nhapKhoNguyenLieu = new NhapKhoNguyenLieuPanel();
+        nhapKhoSanPham = new NhapKhoSanPhamPanel();
 
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Sản phẩm", nhapKhoSanPham);

@@ -22,7 +22,7 @@ public class ChiTietCongThucDAO {
 
             while (rs.next()) {
                 ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(rs.getString("MaCTCT"), rs.getString("MaCT"),
-                        new NguyenLieu(rs.getString("MaNL"), "", null, 0, "", 0, false),
+                        new NguyenLieu(rs.getString("MaNL"), "", 0, "", 0, false),
                         Double.parseDouble(rs.getString("SoLuong")));
                 listChiTietCongThuc.add(chiTietCongThuc);
             }
