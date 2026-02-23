@@ -11,10 +11,10 @@ import dto.TaiKhoan;
 public class TaiKhoanDao {
 
     // thêm tài khoản 
-    public boolean themTaiKhoan_DAO(TaiKhoan tk){
+    public boolean themTaiKhoan_DAO(TaiKhoan tk, Connection conn){
 
         String sql = "INSERT INTO TaiKhoan (TenTaiKhoan, TenDangNhap, MatKhau, maNQ, TrangThai) VALUES(?,?,?,?,?)";
-        try(Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, tk.getTenTaiKhoan());
             ps.setString(2, tk.getTenDangNhap());
             ps.setString(3, tk.getMatKhau());
@@ -29,10 +29,9 @@ public class TaiKhoanDao {
         }
     }
     // xóa tài khoản 
-    public boolean xoaTaiKhoan_DAO(String tenDangNhap) {
+    public boolean xoaTaiKhoan_DAO(String tenDangNhap, Connection conn) {
         String sql = "UPDATE TaiKhoan SET TrangThai = 0 WHERE TenDangNhap = ?";
-        try (Connection conn = DBConnection.getConnection(); 
-            PreparedStatement ps = conn.prepareStatement(sql)) {
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tenDangNhap);
             return ps.executeUpdate() > 0;
         } catch (Exception e) {
@@ -41,9 +40,9 @@ public class TaiKhoanDao {
         }
     }
     // thay đổi mật khẩu 
-    public boolean suaMatKhau_DAO(String tenDangNhap, String matKhauMoi){
+    public boolean suaMatKhau_DAO(String tenDangNhap, String matKhauMoi, Connection conn){
         String sql = "UPDATE TaiKhoan SET MatKhau = ? Where TenDangNhap = ?";
-        try(Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)){
+        try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, matKhauMoi);
             ps.setString(2, tenDangNhap);
             return ps.executeUpdate() > 0;

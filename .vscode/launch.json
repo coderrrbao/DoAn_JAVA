@@ -3,6 +3,20 @@
     "configurations": [
         {
             "type": "java",
+            "name": "Main",
+            "request": "launch",
+            "mainClass": "Main",
+            "projectName": "DoAn_JAVA_5bc8b9eb"
+        },
+        {
+            "type": "java",
+            "name": "LoginUI",
+            "request": "launch",
+            "mainClass": "ui.login.LoginUI",
+            "projectName": "DoAn_JAVA_5bc8b9eb"
+        },
+        {
+            "type": "java",
             "name": "ThemPhieuKiemDialog",
             "request": "launch",
             "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
