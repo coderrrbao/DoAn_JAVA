@@ -1,13 +1,10 @@
 package ui.banhang;
 
 import bus.HoaDonBUS;
+import bus.MaGiamGiaBUS;
 import bus.SanPhamBUS;
 import bus.ThongtinKhachHangBUS;
-import dto.ChiTietHoaDon;
-import dto.HoaDon;
-import dto.NhanVien;
-import dto.SanPham;
-import dto.Size;
+import dto.*;
 import ui.component.BoLocListener;
 import ui.component.SanPhamClickListener;
 import util.Xulypdf;
@@ -28,6 +25,7 @@ public class BanHangUI extends JPanel {
     private SanPhamBUS sanPhamBUS = new SanPhamBUS();
     private Xulypdf xulyPDF = new Xulypdf();
 
+    private MaGiamGia maGiamGiaDangDung = null;
     private double phanTramGiam = 0;
     private double tienGiamGiaTrucTiep = 0;
 
@@ -111,28 +109,40 @@ public class BanHangUI extends JPanel {
     private void ganSuKienGiamGia() {
         thanhToanPanel.getBtnXacNhanMGG().addActionListener(e -> {
             String inputCode = thanhToanPanel.getMaGiamGiaInput();
+
+            // Nếu người dùng bấm "Xác nhận"
             if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
-                if (inputCode.equalsIgnoreCase("GIAM10")) {
-                    phanTramGiam = 0.1; // 10%
-                    tienGiamGiaTrucTiep = 0;
-                    JOptionPane.showMessageDialog(this, "Áp dụng mã giảm 10% thành công!");
-                    lockMaGiamGia(true);
-                } else if (inputCode.equalsIgnoreCase("TRU20K")) {
-                    phanTramGiam = 0;
-                    tienGiamGiaTrucTiep = 20000;
-                    JOptionPane.showMessageDialog(this, "Áp dụng mã trừ 20k thành công!");
-                    lockMaGiamGia(true);
-                } else if (inputCode.isEmpty()) {
+                if (inputCode.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Vui lòng nhập mã!");
+                    return;
+                }
+
+                // Gọi Database để tìm và check mã
+                MaGiamGiaBUS maGiamGiaBUS = new MaGiamGiaBUS();
+                MaGiamGia mgg = maGiamGiaBUS.timMaGiamGia(inputCode);
+
+                if (mgg != null) {
+                    String thongBaoLoi = maGiamGiaBUS.kiemTraTrangThaiHopLe(mgg);
+                    if (thongBaoLoi.isEmpty()) {
+                        // MÃ HỢP LỆ
+                        maGiamGiaDangDung = mgg; // Lưu vào biến toàn cục
+                        JOptionPane.showMessageDialog(this, "Áp dụng mã thành công! Giảm " + mgg.getPhanTramGiam() + "%");
+                        lockMaGiamGia(true);
+                        capNhatGiaoDien(); // Gọi hàm tính tiền
+                    } else {
+                        JOptionPane.showMessageDialog(this, thongBaoLoi, "Lỗi Khuyến Mãi", JOptionPane.ERROR_MESSAGE);
+                        resetGiamGia();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, "Mã giảm giá không tồn tại!");
                     resetGiamGia();
                 }
-            } else {
+            }
+            // Nếu người dùng bấm "Hủy"
+            else {
                 resetGiamGia();
                 lockMaGiamGia(false);
             }
-            capNhatGiaoDien();
         });
     }
 
@@ -142,9 +152,9 @@ public class BanHangUI extends JPanel {
     }
 
     private void resetGiamGia() {
-        phanTramGiam = 0;
-        tienGiamGiaTrucTiep = 0;
+        maGiamGiaDangDung = null;
         thanhToanPanel.getTxtMaGiamGia().setText("");
+        capNhatGiaoDien(); // Tự tính lại về giá gốc
     }
 
     private void ganSuKienThanhToan() {
@@ -168,12 +178,18 @@ public class BanHangUI extends JPanel {
             hd.setMaKH("KH001");
             hd.setNhanVien(nvDemo);
 
-            hd.setTongTien(thanhToanPanel.getTongThanhToan());
+            hd.setTongTien(thanhToanPanel.getTongThanhToan()); // Tổng tiền đã trừ
 
             double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
             double tienDaGiam = tongTienHang - hd.getTongTien();
             hd.setTienKhuyenMai(tienDaGiam);
 
+            if(maGiamGiaDangDung != null) {
+                hd.setMaGiamGia(maGiamGiaDangDung); // Mở cmt dòng này nếu HoaDon của bạn có setMaKM
+            }
+            else {
+                hd.setMaGiamGia(null);
+            }
             hd.setTrangThai(true);
 
             ArrayList<ChiTietHoaDon> listCT = new ArrayList<>();
@@ -210,29 +226,20 @@ public class BanHangUI extends JPanel {
             hd.setListChiTietHoaDon(listCT);
 
             String loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
-
             if (loiTonKho != null) {
                 JOptionPane.showMessageDialog(this, loiTonKho, "Cảnh báo kho hàng", JOptionPane.WARNING_MESSAGE);
                 return;
             }
+
             if (hoaDonBUS.ThanhToan(hd)) {
-
-                int luaChon = JOptionPane.showConfirmDialog(this,
-                        "Thanh toán thành công! Bạn có muốn in hóa đơn không?",
-                        "Thông báo", JOptionPane.YES_NO_OPTION);
-
-                if (luaChon == JOptionPane.YES_OPTION) {
-                    xulyPDF.xuatHoaDon(hd);
-                }
-
+                int luaChon = JOptionPane.showConfirmDialog(this, "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                if (luaChon == JOptionPane.YES_OPTION) { xulyPDF.xuatHoaDon(hd); }
 
                 model.setRowCount(0);
-                thanhToanPanel.repaint();
                 thongTinKhachHangPanel.getTxtSdt().setText("");
                 thongTinKhachHangPanel.getTxtTenKh().setText("");
                 resetGiamGia();
                 lockMaGiamGia(false);
-                capNhatGiaoDien();
 
             } else {
                 JOptionPane.showMessageDialog(this, "Thanh toán thất bại! Vui lòng kiểm tra lại kết nối hoặc kho hàng.");
@@ -251,8 +258,11 @@ public class BanHangUI extends JPanel {
 
     private void capNhatGiaoDien() {
         double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
+        double tienGiam = 0;
 
-        double tienGiam = (tongTienHang * phanTramGiam) + tienGiamGiaTrucTiep;
+        if (maGiamGiaDangDung != null) {
+            tienGiam = tongTienHang * (maGiamGiaDangDung.getPhanTramGiam() / 100.0);
+        }
 
         if (tienGiam > tongTienHang) tienGiam = tongTienHang;
 
