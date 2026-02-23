@@ -107,7 +107,35 @@ public class TaiKhoanDao {
             }
         return nv;
     }
+    //lay list nhanvien 
+    public ArrayList<NhanVien> layDanhSachNhanVien_DAO() {
+        ArrayList<NhanVien> ds = new ArrayList<>();
+        String sql = "SELECT * FROM NhanVien";
 
+        try (
+            Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+        ) {
+            while (rs.next()) {
+                NhanVien nv = new NhanVien();
+                nv.setMaNV(rs.getString("MaNV"));
+                nv.setTenNV(rs.getString("TenNV"));
+                nv.setGioiTinh(rs.getString("GioiTinh"));
+                nv.setNgaySinh(rs.getDate("NgaySinh"));
+                nv.setSdt(rs.getString("SDT"));
+                nv.setDiaChi(rs.getString("DiaChi"));
+                nv.setChucVu(rs.getString("ChucVu"));
+                nv.setTaiKhoan(rs.getString("TaiKhoan"));
+                nv.setTrangThai(rs.getBoolean("TrangThai"));
+                // nv.setAnh(rs.getString("Anh"));
+                ds.add(nv);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ds;
+    }
     //dang nhap tai khoan 
     public boolean dangNhap_DAO(String tenDangNhap, String matKhau){
         String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";
@@ -120,6 +148,19 @@ public class TaiKhoanDao {
             try (ResultSet rs = ps.executeQuery()) {
                 return rs.next(); 
             }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    //kiem tra username da ton tai chua
+    public boolean kiemTraUsernameTonTai_DAO(String username) {
+        String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
         } catch (Exception e) {
             e.printStackTrace();
         }

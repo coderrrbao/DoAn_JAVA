@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 
 import bus.NhomQuyenBUS;
 import bus.TaiKhoanBUS;
+import dto.NhanVien;
 import dto.NhomQuyen;
 import dto.TaiKhoan;
 
@@ -31,10 +32,13 @@ public class ThemTaiKhoanDialog extends JDialog {
     private JPasswordField txtPass;
     private JTextField txtTenTaiKhoan;
     private JComboBox<String> cbQuyen;
+    private JComboBox<String> cbNVBox;
     private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
     private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+    
     private TaiKhoanUI taiKhoanUI;
     private ArrayList<NhomQuyen> dsNhomQuyen;
+    private ArrayList<NhanVien> dsNhanVien;
 
 
     public ThemTaiKhoanDialog(JFrame jFrame, TaiKhoanUI taiKhoanUI) {
@@ -55,11 +59,23 @@ public class ThemTaiKhoanDialog extends JDialog {
         txtUser = new JTextField();
         JPanel userField = TaoUI.taoFieldText("Username",100,220,30,10,txtUser
         );
-        // TÊN TÀI KHOẢN
-        txtTenTaiKhoan = new JTextField();
-        JPanel tenTKField = TaoUI.taoFieldText(
-            "Tên tài khoản", 100, 220, 30, 10, txtTenTaiKhoan
-        );
+        // TÊN TÀI KHOẢN // conbobox nhan vien
+        JPanel cbNVJPanel = new JPanel();
+        cbNVJPanel.setLayout(new BoxLayout(cbNVJPanel, BoxLayout.X_AXIS));
+        TaoUI.setFixSize(cbNVJPanel, 330, 30);
+
+        JLabel cbNVJLabel = new JLabel("Nhân Viên");
+        cbNVJLabel.setPreferredSize(new Dimension(110,30));
+        cbNVJLabel.setMinimumSize(new Dimension(110,30));
+        cbNVJLabel.setMaximumSize(new Dimension(110,30));
+
+        dsNhanVien = taiKhoanBUS.layDanhSachNhanVien_BUS();
+        cbNVBox = new JComboBox<>();
+        for(NhanVien nv : dsNhanVien){
+            cbNVBox.addItem(nv.getTenNV() + " (" + nv.getMaNV() + ")");
+        }
+        cbNVJPanel.add(cbNVJLabel);
+        cbNVJPanel.add(cbNVBox);
         //PASSWORD
         txtPass = new JPasswordField();
         JPanel passField = TaoUI.taoFieldText("Password",100,220,30,10,txtPass
@@ -74,7 +90,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         TaoUI.addItem(buttonPanel, btnThem, 5, true);
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
         
-        // COMBOBOX
+        // COMBOBOX quyen 
         JPanel cbJPanel = new JPanel();
         
         cbJPanel.setLayout(new BoxLayout(cbJPanel, BoxLayout.X_AXIS));
@@ -95,7 +111,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         cbJPanel.add(cbQuyen);
       
         //ADD COMPONENT
-        mainPanel.add(tenTKField);
+        mainPanel.add(cbNVJPanel);
         mainPanel.add(javax.swing.Box.createVerticalStrut(10));
         mainPanel.add(userField);
         mainPanel.add(javax.swing.Box.createVerticalStrut(10));
@@ -114,11 +130,13 @@ public class ThemTaiKhoanDialog extends JDialog {
 
     private void xuLyThemTaiKhoan() {
         // lay du lieu tu dialog
-        String tenTK = txtTenTaiKhoan.getText();
+        int indexNV = cbNVBox.getSelectedIndex();
+        String tenNV = dsNhanVien.get(indexNV).getTenNV();
         String user = txtUser.getText().trim();
         String pass = new String(txtPass.getPassword()).trim();
         int indexNQ = cbQuyen.getSelectedIndex();
         String maNQ =  dsNhomQuyen.get(indexNQ).getMaNQ();
+        
         
         // xu ly them vao database
         if (indexNQ == -1) {
@@ -130,6 +148,16 @@ public class ThemTaiKhoanDialog extends JDialog {
             );
             return;
         }
+        if ( indexNV== -1) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Vui lòng chọn Nhân viên!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+
         if (user.isEmpty() || pass.isEmpty()) {
             JOptionPane.showMessageDialog(
                     this,
@@ -139,7 +167,16 @@ public class ThemTaiKhoanDialog extends JDialog {
             );
             return;
         }
-        TaiKhoan tk = new TaiKhoan(tenTK,user, pass, maNQ, true);
+        if (taiKhoanBUS.KiemTraUsernameTonTai_Bus(user)) {
+            JOptionPane.showMessageDialog(
+                this,
+                "Username đã tồn tại!",
+                "Lỗi",
+                JOptionPane.ERROR_MESSAGE
+            );
+            return;
+        }
+        TaiKhoan tk = new TaiKhoan(tenNV,user, pass, maNQ, true);
         if(taiKhoanBUS.themTaiKhoan_BUS(tk)){
             JOptionPane.showMessageDialog(
                 this,
@@ -157,6 +194,7 @@ public class ThemTaiKhoanDialog extends JDialog {
             JOptionPane.ERROR_MESSAGE
             );
         }
+
     }
 }
 

@@ -119,6 +119,10 @@ public class TaiKhoanBUS {
     public ArrayList<TaiKhoan> layDanhSachTaiKhoan_BUS(){
         return dao.layDanhSachTaiKhoan_DAO();
     }
+    //lay danh sach nhan vien
+    public ArrayList<NhanVien> layDanhSachNhanVien_BUS(){
+        return dao.layDanhSachNhanVien_DAO();
+    }
     //dang nhap 
     public boolean dangNhap_BUS(String tenDangNhap, String MatKhau){
         return dao.dangNhap_DAO(tenDangNhap, MatKhau);
@@ -127,6 +131,10 @@ public class TaiKhoanBUS {
     //test nhap vao ten dang nhap lay nhan vien 
     public NhanVien layNhanVien_BUS(String user){
         return dao.layNhanVien_DAO(user);
+    }
+    // 
+    public Boolean KiemTraUsernameTonTai_Bus(String username){
+        return dao.kiemTraUsernameTonTai_DAO(username);
     }
 
 }
