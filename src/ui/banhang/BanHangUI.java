@@ -7,6 +7,7 @@ import bus.ThongtinKhachHangBUS;
 import dto.*;
 import ui.component.BoLocListener;
 import ui.component.SanPhamClickListener;
+import ui.login.PhienDangNhap;
 import util.Xulypdf;
 
 import java.awt.BorderLayout;
@@ -167,11 +168,12 @@ public class BanHangUI extends JPanel {
             long millis = System.currentTimeMillis();
             hd.setNgayBan(new Date(millis));
 
-            NhanVien nvDemo = new NhanVien();
-            nvDemo.setMaNV("NV01");
-            nvDemo.setTenNV("Nguyễn Văn A");
-            hd.setMaKH("KH001");
-            hd.setNhanVien(nvDemo);
+
+            NhanVien nvDangNhap = PhienDangNhap.getUser();
+            if (nvDangNhap != null) {
+                hd.setNhanVien(nvDangNhap);
+            }
+
 
             hd.setTongTien(thanhToanPanel.getTongThanhToan());
 
