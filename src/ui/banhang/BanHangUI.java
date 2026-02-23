@@ -10,14 +10,11 @@ import ui.component.SanPhamClickListener;
 import ui.login.PhienDangNhap;
 import util.Xulypdf;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.GridLayout;
+import java.awt.*;
 import java.util.ArrayList;
 import java.sql.Date;
 
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 public class BanHangUI extends JPanel {
@@ -83,7 +80,54 @@ public class BanHangUI extends JPanel {
         listSanPhamPanel.setListener(new SanPhamClickListener() {
             @Override
             public void onSanPhamClicked(SanPham sp) {
-                thongTinHoaDonPanel.themSanPham(sp);
+                ArrayList<SanPham> dsTopping = new ArrayList<>();
+                ArrayList<SanPham> dsTatCaSP = sanPhamBUS.layListSanPham();
+                for (SanPham s : dsTatCaSP) {
+                    if ("DM10".equals(s.getDanhMuc().getMaDM())) {
+                        dsTopping.add(s);
+                    }
+                }
+                ArrayList<Size> listSize = sp.getListSize();
+                if ((listSize == null || listSize.isEmpty()) && "Có sẵn".equals(sp.getLoaiNuoc())) {
+                    thongTinHoaDonPanel.themSanPham(sp);
+                    return;
+                }
+
+                Window ancestor = SwingUtilities.getWindowAncestor(BanHangUI.this);
+                TuyChonDialog dialog = new TuyChonDialog((Frame) ancestor, sp, listSize, dsTopping);
+                dialog.setVisible(true);
+
+                if (dialog.isXacNhan()) {
+                    Size sizeChon = dialog.getSizeDuocChon();
+                    ArrayList<SanPham> toppingChon = dialog.getToppingDuocChon();
+
+                    SanPham monChinh = new SanPham();
+                    monChinh.setMaSP(sp.getMaSP());
+                    monChinh.setTenSP(sp.getTenSP());
+                    monChinh.setGiaBan(sp.getGiaBan());
+                    monChinh.setDanhMuc(sp.getDanhMuc());
+                    monChinh.setLoaiNuoc(sp.getLoaiNuoc());
+                    monChinh.setListSize(sp.getListSize());
+
+                    if (sizeChon != null) {
+                        monChinh.setTenSP(sp.getTenSP() + " (" + sizeChon.getTenSize() + ")");
+                        double giaMoi = sp.getGiaBan() + (sp.getGiaBan() * sizeChon.getPhanTramGia() / 100.0);
+                        monChinh.setGiaBan((long) giaMoi);
+                    }
+
+                    thongTinHoaDonPanel.themSanPham(monChinh);
+
+                    for (SanPham tp : toppingChon) {
+                        SanPham tpCopy = new SanPham();
+                        tpCopy.setMaSP(tp.getMaSP());
+                        tpCopy.setTenSP("  ↳ " + tp.getTenSP());
+                        tpCopy.setGiaBan(tp.getGiaBan());
+                        tpCopy.setDanhMuc(tp.getDanhMuc());
+                        tpCopy.setLoaiNuoc(tp.getLoaiNuoc());
+
+                        thongTinHoaDonPanel.themSanPham(tpCopy);
+                    }
+                }
             }
         });
         listSanPhamPanel.reset();
@@ -196,7 +240,6 @@ public class BanHangUI extends JPanel {
                 String tenSP = model.getValueAt(i, 0).toString();
                 double giaBan = Double.parseDouble(model.getValueAt(i, 1).toString());
                 int soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());
-                // double thanhTien = Double.parseDouble(model.getValueAt(i, 3).toString());
 
                 SanPham spGoc = timSanPhamTheoTen(dsSanPhamHienCo, tenSP);
                 if (spGoc == null) {
@@ -211,13 +254,22 @@ public class BanHangUI extends JPanel {
                 ct.setSoLuong(soLuong);
                 ct.setGia(giaBan);
 
-                Size sizeMacDinh = new Size();
-                if (spGoc.getLoaiNuoc().equals("Pha chế") && spGoc.getListSize() != null && !spGoc.getListSize().isEmpty()) {
-                    sizeMacDinh.setMaSize(spGoc.getMaSP().replace("SP", "SZ")+ "_S");
-                    ct.setSize(sizeMacDinh);
-                } else {
-                    ct.setSize(null);
+                Size sizeChon = null;
+                if (tenSP.contains(" (")) {
+                    String tenSizeUI = tenSP.substring(tenSP.lastIndexOf(" (") + 2, tenSP.lastIndexOf(")"));
+
+                    if (spGoc.getListSize() != null) {
+                        for (Size s : spGoc.getListSize()) {
+                            if (s.getTenSize().equalsIgnoreCase(tenSizeUI)) {
+                                sizeChon = s;
+                                break;
+                            }
+                        }
+                    }
+                } else if (spGoc.getListSize() != null && !spGoc.getListSize().isEmpty() && !tenSP.startsWith("  ↳ ")) {
+                    sizeChon = spGoc.getListSize().get(0);
                 }
+                ct.setSize(sizeChon);
                 listCT.add(ct);
             }
             hd.setListChiTietHoaDon(listCT);
@@ -244,9 +296,15 @@ public class BanHangUI extends JPanel {
         });
     }
 
-    private SanPham timSanPhamTheoTen(ArrayList<SanPham> list, String ten) {
+    private SanPham timSanPhamTheoTen(ArrayList<SanPham> list, String tenGiaoDien) {
+        String tenGoc = tenGiaoDien.replace("  ↳ ", "");
+
+        if (tenGoc.contains(" (")) {
+            tenGoc = tenGoc.substring(0, tenGoc.lastIndexOf(" ("));
+        }
+
         for (SanPham sp : list) {
-            if (sp.getTenSP().equals(ten)) {
+            if (sp.getTenSP().equalsIgnoreCase(tenGoc.trim())) {
                 return sp;
             }
         }
