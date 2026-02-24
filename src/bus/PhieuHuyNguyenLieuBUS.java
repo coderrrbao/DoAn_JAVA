@@ -1,7 +1,10 @@
 package bus;
 
 import dao.PhieuHuyNguyenLieuDAO;
+import dao.conection.DBConnection;
 import dto.PhieuHuyNguyenLieu;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class PhieuHuyNguyenLieuBUS {
@@ -17,6 +20,9 @@ public class PhieuHuyNguyenLieuBUS {
 
   public void khoiTao() {
     listPhieuHuy = dao.layListPhieuHuy();
+    for (PhieuHuyNguyenLieu ph : listPhieuHuy) {
+      ph.setListLoNguyenLieuHuy(dao.layChiTietHuyTheoMaPH(ph.getMaPH()));
+    }
     canUpdate = false;
   }
 
@@ -25,9 +31,50 @@ public class PhieuHuyNguyenLieuBUS {
     return listPhieuHuy;
   }
 
-  public boolean thucHienHuy(String maNV, String lyDo, Object[][] data) {
-    boolean check = dao.luuPhieuHuy(maNV, lyDo, data);
-    if (check) canUpdate = true;
+  public boolean thucHienHuy(PhieuHuyNguyenLieu phieuHuy, Object[][] data) {
+    Connection conn = DBConnection.getConnection();
+    try {
+      conn.setAutoCommit(false);
+      String maPH = dao.layMaPhieuHuyNLKhaDung(conn);
+      phieuHuy.setMaPH(maPH);
+
+      if (!dao.themPhieuHuy(phieuHuy, conn)) throw new SQLException();
+
+      for (Object[] row : data) {
+        String maLo = row[3].toString();
+        double soLuong = Double.parseDouble(row[2].toString());
+        double gia = Double.parseDouble(row[4].toString());
+
+        // Sử dụng đúng hàm themChiTietHuy của bạn
+        if (!dao.themChiTietHuy(maPH, maLo, soLuong, gia, conn)) throw new SQLException();
+        if (!dao.truKhoLoNguyenLieu(maLo, soLuong, conn)) throw new SQLException();
+      }
+      conn.commit();
+      this.canUpdate = true;
+      return true;
+    } catch (SQLException e) {
+      try {
+        if (conn != null) conn.rollback();
+      } catch (Exception ex) {
+      }
+      return false;
+    } finally {
+      try {
+        conn.setAutoCommit(true);
+        conn.close();
+      } catch (Exception e) {
+      }
+    }
+  }
+
+  public boolean capNhatPhieuHuy(PhieuHuyNguyenLieu ph) {
+    Connection conn = DBConnection.getConnection();
+    boolean check = dao.capNhatPhieuHuy(ph, conn);
+    if (check) this.canUpdate = true;
+    try {
+      conn.close();
+    } catch (Exception e) {
+    }
     return check;
   }
 }

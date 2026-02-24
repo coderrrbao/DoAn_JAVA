@@ -1,33 +1,35 @@
 package dto;
 
 import java.sql.Date;
+import java.util.ArrayList;
 
 public class PhieuHuyNguyenLieu {
   private String maPH;
-  private String maLo;
+  // private String maLo;
   private Date ngayHuy;
   private String maNV;
   private String lyDo;
   private double tongTien;
-  private boolean trangThai;
+  private String trangThaiXuLy;
+  private ArrayList<LoNguyenLieu> listLoNguyenLieuHuy = new ArrayList<>();
 
   public PhieuHuyNguyenLieu() {}
 
   public PhieuHuyNguyenLieu(
       String maPH,
-      String maLo,
+      // String maLo,
       Date ngayHuy,
       String maNV,
       String lyDo,
       double tongTien,
-      boolean trangThai) {
+      String trangThai) {
     this.maPH = maPH;
-    this.maLo = maLo;
+    // this.maLo = maLo;
     this.ngayHuy = ngayHuy;
     this.maNV = maNV;
     this.lyDo = lyDo;
     this.tongTien = tongTien;
-    this.trangThai = trangThai;
+    this.trangThaiXuLy = trangThai;
   }
 
   public String getMaPH() {
@@ -38,13 +40,13 @@ public class PhieuHuyNguyenLieu {
     this.maPH = maPH;
   }
 
-  public String getMaLo() {
-    return maLo;
-  }
+  // public String getMaLo() {
+  //   return maLo;
+  // }
 
-  public void setMaLo(String maLo) {
-    this.maLo = maLo;
-  }
+  // public void setMaLo(String maLo) {
+  //   this.maLo = maLo;
+  // }
 
   public Date getNgayHuy() {
     return ngayHuy;
@@ -78,11 +80,19 @@ public class PhieuHuyNguyenLieu {
     this.tongTien = tongTien;
   }
 
-  public boolean getTrangThai() {
-    return trangThai;
+  public String getTrangThaiXuLy() {
+    return trangThaiXuLy;
   }
 
-  public void setTrangThai(boolean trangThai) {
-    this.trangThai = trangThai;
+  public void setTrangThaiXuLy(String trangThaiXuLy) {
+    this.trangThaiXuLy = trangThaiXuLy;
+  }
+
+  public ArrayList<LoNguyenLieu> getListLoNguyenLieuHuy() {
+    return listLoNguyenLieuHuy;
+  }
+
+  public void setListLoNguyenLieuHuy(ArrayList<LoNguyenLieu> list) {
+    this.listLoNguyenLieuHuy = list;
   }
 }

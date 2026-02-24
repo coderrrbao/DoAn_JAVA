@@ -5,8 +5,8 @@ import bus.NguyenLieuBUS;
 import bus.PhieuHuyNguyenLieuBUS;
 import dto.LoNguyenLieu;
 import dto.NguyenLieu;
+import dto.PhieuHuyNguyenLieu;
 import java.awt.*;
-import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import ui.login.PhienDangNhap;
@@ -15,54 +15,56 @@ import util.TaoUI;
 public class XuatKhoNguyenLieuDialog extends JDialog {
   private JTable tblKho, tblChoXuat;
   private DefaultTableModel modelKho, modelChoXuat;
-  private JTextField txtMaNL, txtTenNL, txtSoLuong, txtMaLo, txtMaNV;
+  private JTextField txtMaNL, txtTenNL, txtSoLuong, txtMaLo, txtMaNV, txtLyDo;
   private JButton btnThem, btnXacNhan;
   private XuatKhoNguyenLieuPanel parentPanel;
 
   public XuatKhoNguyenLieuDialog(XuatKhoNguyenLieuPanel parent) {
-    super((Frame) null, "Hủy Kho Nguyên Liệu Theo Lô", true);
+    super((Frame) null, "Tạo Phiếu Hủy Nguyên Liệu", true);
     this.parentPanel = parent;
-    setSize(1000, 650);
+    setSize(1000, 680);
     setLocationRelativeTo(null);
     setLayout(new BorderLayout());
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
     JPanel left = TaoUI.taoPanelBorderLayout(450, 600);
-
-    // Thêm cột Giá Nhập vào bảng tồn kho
     modelKho =
         new DefaultTableModel(new String[] {"Mã NL", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0);
     tblKho = new JTable(modelKho);
     left.add(new JScrollPane(tblKho), BorderLayout.CENTER);
 
     JPanel right = new JPanel(new BorderLayout());
-    JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 250);
+    JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 350);
 
-    String maNVHienTai = (PhienDangNhap.getUser() != null) ? PhienDangNhap.getUser().getMaNV() : "";
-    txtMaNV = new JTextField(maNVHienTai);
+    txtMaNV =
+        new JTextField(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
     txtMaNV.setEditable(false);
     txtMaNL = new JTextField();
-    TaoUI.setDisabled(txtMaNL);
+    txtMaNL.setEditable(false);
     txtTenNL = new JTextField();
-    TaoUI.setDisabled(txtTenNL);
+    txtTenNL.setEditable(false);
     txtMaLo = new JTextField();
-    TaoUI.setDisabled(txtMaLo);
+    txtMaLo.setEditable(false);
     txtSoLuong = new JTextField();
+    txtLyDo = new JTextField(); // Yêu cầu: Thêm phần nhập lý do
 
     form.add(new JLabel("Mã Nhân Viên:"));
     form.add(txtMaNV);
     form.add(new JLabel("Mã Nguyên liệu:"));
     form.add(txtMaNL);
-    form.add(new JLabel("Mã Lô:"));
-    form.add(txtMaLo);
     form.add(new JLabel("Tên Nguyên liệu:"));
     form.add(txtTenNL);
+    form.add(new JLabel("Mã Lô:"));
+    form.add(txtMaLo);
     form.add(new JLabel("Số lượng hủy:"));
     form.add(txtSoLuong);
+    form.add(new JLabel("Lý do hủy:"));
+    form.add(txtLyDo);
+
     btnThem = new JButton("Thêm vào danh sách hủy");
+    form.add(Box.createVerticalStrut(10));
     form.add(btnThem);
 
-    // Bảng chờ hủy thêm cột Giá Nhập
     modelChoXuat =
         new DefaultTableModel(new String[] {"Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
     tblChoXuat = new JTable(modelChoXuat);
@@ -85,7 +87,8 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
   private void loadDataKhoNL() {
     modelKho.setRowCount(0);
-    ArrayList<LoNguyenLieu> listLo = LoNguyenLieuBUS.getLoNguyenLieuBUS().layListLoNguyenLieu();
+    java.util.ArrayList<LoNguyenLieu> listLo =
+        LoNguyenLieuBUS.getLoNguyenLieuBUS().layListLoNguyenLieu();
     for (LoNguyenLieu lo : listLo) {
       if (lo.getSoLuong() > 0)
         modelKho.addRow(
@@ -113,39 +116,46 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         e -> {
           try {
             int r = tblKho.getSelectedRow();
-            double slHuy = Double.parseDouble(txtSoLuong.getText());
-            double ton = Double.parseDouble(modelKho.getValueAt(r, 3).toString());
-            double gia = Double.parseDouble(modelKho.getValueAt(r, 4).toString());
-            if (slHuy <= 0 || slHuy > ton) {
+            double sl = Double.parseDouble(txtSoLuong.getText());
+            if (sl <= 0 || sl > Double.parseDouble(modelKho.getValueAt(r, 3).toString())) {
               JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
               return;
             }
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaNL.getText(), txtTenNL.getText(), slHuy, txtMaLo.getText(), gia
+                  txtMaNL.getText(),
+                  txtTenNL.getText(),
+                  sl,
+                  txtMaLo.getText(),
+                  modelKho.getValueAt(r, 4)
                 });
-            txtSoLuong.setText("");
           } catch (Exception ex) {
-            JOptionPane.showMessageDialog(this, "Nhập số lượng hợp lệ!");
           }
         });
 
     btnXacNhan.addActionListener(
         e -> {
-          int rowCount = modelChoXuat.getRowCount();
-          if (rowCount == 0) return;
-          Object[][] data = new Object[rowCount][5];
-          for (int i = 0; i < rowCount; i++) {
-            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+          if (modelChoXuat.getRowCount() == 0 || txtLyDo.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập lý do và danh sách hủy!");
+            return;
           }
-          if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS()
-              .thucHienHuy(txtMaNV.getText(), "Hủy hỏng", data)) {
-            JOptionPane.showMessageDialog(this, "Thành công!");
-            parentPanel.loadDuLieu(); //
+          double tongTien = 0;
+          Object[][] data = new Object[modelChoXuat.getRowCount()][5];
+          for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
+            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+            tongTien +=
+                Double.parseDouble(data[i][2].toString())
+                    * Double.parseDouble(data[i][4].toString());
+          }
+
+          PhieuHuyNguyenLieu ph = new PhieuHuyNguyenLieu();
+          ph.setMaNV(txtMaNV.getText());
+          ph.setLyDo(txtLyDo.getText());
+          ph.setTongTien(tongTien);
+
+          if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().thucHienHuy(ph, data)) {
+            parentPanel.loadDuLieu();
             dispose();
-          } else {
-            JOptionPane.showMessageDialog(
-                this, "Thất bại! Kiểm tra lại mã cột MaLoNL trong Database.");
           }
         });
   }

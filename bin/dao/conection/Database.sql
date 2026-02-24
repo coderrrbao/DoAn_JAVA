@@ -1115,4 +1115,52 @@ FROM sys.foreign_keys
 WHERE name = 'FK_Quyen_NhomQuyen')
     ALTER TABLE Quyen ADD CONSTRAINT FK_Quyen_NhomQuyen
     FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
+/* =============================================================
+   CHỈNH SỬA CẤU TRÚC PHIẾU HỦY ĐỂ PHÙ HỢP VỚI CODE JAVA
+   ============================================================= */
 
+-- 1. XÓA CÁC BẢNG CŨ (Lưu ý: Sẽ mất dữ liệu mẫu của 2 bảng này)
+DROP TABLE IF EXISTS PhieuHuySanPham;
+DROP TABLE IF EXISTS PhieuHuyNguyenLieu;
+
+-- 2. TẠO LẠI CẤU TRÚC CHO SẢN PHẨM
+CREATE TABLE PhieuHuySanPham (
+    MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
+    NgayHuy DATETIME DEFAULT GETDATE(),
+    MaNV VARCHAR(50),
+    LyDo NVARCHAR(MAX),
+    TongGiaTri DECIMAL(18, 2),
+    TrangThaiXuLy NVARCHAR(50), -- 'Đang xử lý', 'Đã xác nhận'
+    TrangThai BIT DEFAULT 1
+);
+
+CREATE TABLE ChiTietPhieuHuySanPham (
+    MaPH VARCHAR(50) NOT NULL,
+    MaLo VARCHAR(50) NOT NULL,
+    SoLuong FLOAT,
+    DonGia DECIMAL(18, 2),
+    PRIMARY KEY (MaPH, MaLo),
+    FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH),
+    FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP)
+);
+
+-- 3. TẠO LẠI CẤU TRÚC CHO NGUYÊN LIỆU
+CREATE TABLE PhieuHuyNguyenLieu (
+    MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
+    NgayHuy DATETIME DEFAULT GETDATE(),
+    MaNV VARCHAR(50),
+    LyDo NVARCHAR(MAX),
+    TongTien DECIMAL(18, 2),
+    TrangThaiXuLy NVARCHAR(50),
+    TrangThai BIT DEFAULT 1
+);
+
+CREATE TABLE ChiTietPhieuHuyNguyenLieu (
+    MaPH VARCHAR(50) NOT NULL,
+    MaLo VARCHAR(50) NOT NULL,
+    SoLuong FLOAT,
+    DonGia DECIMAL(18, 2),
+    PRIMARY KEY (MaPH, MaLo),
+    FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH),
+    FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL)
+);

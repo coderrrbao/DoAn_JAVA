@@ -1,15 +1,12 @@
 package ui.nguyenlieu;
 
-import bus.NhaCungCapBUS;
 import dto.NguyenLieu;
-import dto.NhaCungCap;
 import java.awt.*;
-import java.util.ArrayList;
 import javax.swing.*;
 
 public class FormNguyenLieu extends JDialog {
   private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
-  private JComboBox<String> cbNhaCungCap;
+  // Đã xóa JComboBox cbNhaCungCap
   private JButton btnLuu, btnHuy;
   private NguyenLieu ketQua = null;
   private boolean isEdit = false;
@@ -19,7 +16,7 @@ public class FormNguyenLieu extends JDialog {
     this.isEdit = (editNL != null);
 
     initUI();
-    loadNhaCungCap();
+    // Đã xóa loadNhaCungCap()
 
     if (isEdit) {
       duLieuCu(editNL);
@@ -41,13 +38,13 @@ public class FormNguyenLieu extends JDialog {
 
   private void initUI() {
     setLayout(new BorderLayout());
-    JPanel pnlInput = new JPanel(new GridLayout(6, 2, 10, 10));
+    // Giảm số hàng của GridLayout từ 6 xuống 5 vì đã bỏ NCC
+    JPanel pnlInput = new JPanel(new GridLayout(5, 2, 10, 10));
     pnlInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
     txtMa = new JTextField("Tự động");
     txtMa.setEditable(false);
     txtTen = new JTextField();
-    cbNhaCungCap = new JComboBox<>();
     txtGia = new JTextField();
     txtDonVi = new JTextField();
     txtMucCanhBao = new JTextField();
@@ -56,8 +53,7 @@ public class FormNguyenLieu extends JDialog {
     pnlInput.add(txtMa);
     pnlInput.add(new JLabel("Tên nguyên liệu:"));
     pnlInput.add(txtTen);
-    pnlInput.add(new JLabel("Nhà cung cấp:"));
-    pnlInput.add(cbNhaCungCap);
+    // Đã xóa Label và ComboBox Nhà cung cấp ở đây
     pnlInput.add(new JLabel("Giá nhập:"));
     pnlInput.add(txtGia);
     pnlInput.add(new JLabel("Đơn vị tính:"));
@@ -73,24 +69,6 @@ public class FormNguyenLieu extends JDialog {
 
     add(pnlInput, BorderLayout.CENTER);
     add(pnlButtons, BorderLayout.SOUTH);
-  }
-
-  private void loadNhaCungCap() {
-    cbNhaCungCap.removeAllItems();
-    ArrayList<String> dsTenNCC = NhaCungCapBUS.getNhaCungCapBUS().layLuaChonNCCNguyenLieu();
-
-    if (dsTenNCC != null && !dsTenNCC.isEmpty()) {
-      for (String ten : dsTenNCC) {
-        cbNhaCungCap.addItem(ten);
-      }
-    } else {
-      ArrayList<NhaCungCap> all = NhaCungCapBUS.getNhaCungCapBUS().laylistNhaCungCap();
-      if (all != null) {
-        for (NhaCungCap ncc : all) {
-          cbNhaCungCap.addItem(ncc.getTenNCC());
-        }
-      }
-    }
   }
 
   private void duLieuCu(NguyenLieu editNL) {
@@ -114,7 +92,7 @@ public class FormNguyenLieu extends JDialog {
       ketQua.setDonVi(txtDonVi.getText().trim());
       ketQua.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
 
-      NhaCungCapBUS.getNhaCungCapBUS().danhDauCanCapNhat();
+      // Đã xóa dòng NhaCungCapBUS.getNhaCungCapBUS().danhDauCanCapNhat();
 
       dispose();
     } catch (NumberFormatException ex) {
