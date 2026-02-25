@@ -15,12 +15,10 @@ public class TuyChonDialog extends JDialog {
     private ArrayList<Size> listSize;
     private ArrayList<SanPham> listTopping;
 
-    // Biến lưu trữ kết quả chọn
     private Size sizeDuocChon = null;
     private ArrayList<SanPham> toppingDuocChon = new ArrayList<>();
     private boolean isXacNhan = false;
 
-    // UI Components
     private JLabel lblTongTien;
     private DecimalFormat df = new DecimalFormat("#,### đ");
     private double tongTienHienTai = 0;
@@ -41,7 +39,6 @@ public class TuyChonDialog extends JDialog {
         setPreferredSize(new Dimension(450, 550));
         getContentPane().setBackground(Color.WHITE);
 
-        // --- 1. TOP PANEL: THÔNG TIN MÓN ---
         JPanel pnlTop = new JPanel();
         pnlTop.setLayout(new BoxLayout(pnlTop, BoxLayout.Y_AXIS));
         pnlTop.setBackground(Color.WHITE);
@@ -58,13 +55,11 @@ public class TuyChonDialog extends JDialog {
         pnlTop.add(Box.createVerticalStrut(5));
         pnlTop.add(lblGiaGoc);
 
-        // --- 2. CENTER PANEL: CHỌN SIZE & TOPPING ---
         JPanel pnlCenter = new JPanel();
         pnlCenter.setLayout(new BoxLayout(pnlCenter, BoxLayout.Y_AXIS));
         pnlCenter.setBackground(Color.WHITE);
         pnlCenter.setBorder(new EmptyBorder(10, 20, 10, 20));
 
-        // 2.1 Khu vực Chọn Size
         if (!listSize.isEmpty()) {
             JLabel lblSizeTitle = new JLabel("🔵 CHỌN SIZE (Bắt buộc)");
             lblSizeTitle.setFont(new Font("SansSerif", Font.BOLD, 14));
@@ -92,7 +87,6 @@ public class TuyChonDialog extends JDialog {
                     sizeDuocChon = size;
                 }
 
-                // Bắt sự kiện click để tính lại tiền
                 radSize.addActionListener(e -> {
                     sizeDuocChon = size;
                     tinhTien();
@@ -138,12 +132,12 @@ public class TuyChonDialog extends JDialog {
         }
 
         JPanel pnlBottom = new JPanel(new BorderLayout());
-        pnlBottom.setBackground(new Color(245, 245, 250)); // Màu xám nhẹ cho chân trang
+        pnlBottom.setBackground(new Color(245, 245, 250));
         pnlBottom.setBorder(new EmptyBorder(15, 20, 15, 20));
 
         lblTongTien = new JLabel("Tạm tính: 0 đ");
         lblTongTien.setFont(new Font("SansSerif", Font.BOLD, 16));
-        lblTongTien.setForeground(new Color(220, 53, 69)); // Màu đỏ tươi
+        lblTongTien.setForeground(new Color(220, 53, 69));
 
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
         pnlButtons.setOpaque(false);

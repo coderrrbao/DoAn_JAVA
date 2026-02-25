@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
 
 import dao.conection.DBConnection;
 import dto.KhachHang;
@@ -52,6 +53,32 @@ public class KhachHangDAO {
             System.out.println("Lỗi truy vấn Khách hàng: " + e.getMessage());
         }
         return "";
+    }
+
+    public ArrayList<KhachHang> layDanhSachKhachHang() {
+        ArrayList<KhachHang> ds = new ArrayList<>();
+        String sql = "SELECT * FROM KhachHang WHERE TrangThai = 1";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement pst = conn.prepareStatement(sql);
+             ResultSet rs = pst.executeQuery()) {
+
+            while (rs.next()) {
+                KhachHang kh = new KhachHang(
+                        rs.getString("MaKH"),
+                        rs.getNString("TenKH"),
+                        rs.getNString("GioiTinh"),
+                        rs.getString("SDT"),
+                        rs.getDouble("TenDaMua"),
+                        rs.getString("MaHang")
+                );
+                ds.add(kh);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn toàn bộ khách hàng: " + e.getMessage());
+        }
+        return ds;
     }
 
     public boolean themKhachHang(KhachHang kh) {
