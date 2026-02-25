@@ -149,17 +149,33 @@ public class BanHangUI extends JPanel {
 
         ganSuKienThanhToan();
         ganSuKienGiamGia();
+        loadDanhSachKhuyenMai();
+    }
+
+
+
+    private void loadDanhSachKhuyenMai() {
+        MaGiamGiaBUS kmBUS = new MaGiamGiaBUS();
+        ArrayList<MaGiamGia> ds = kmBUS.layDanhSachKhuyenMai();
+        if (ds != null) {
+            for (MaGiamGia mgg : ds) {
+                if (kmBUS.kiemTraTrangThaiHopLe(mgg).isEmpty()) {
+                    thanhToanPanel.getCbxKhuyenMai().addItem(mgg.getMaKM() + " - Giảm " + mgg.getPhanTramGiam() + "%");
+                }
+            }
+        }
     }
 
     private void ganSuKienGiamGia() {
         thanhToanPanel.getBtnXacNhanMGG().addActionListener(e -> {
             String inputCode = thanhToanPanel.getMaGiamGiaInput();
-            if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
+
+            if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Áp dụng") || thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
                 if (inputCode.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Vui lòng nhập mã!");
+                    JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khuyến mãi từ danh sách!");
                     return;
                 }
-                
+
                 MaGiamGiaBUS maGiamGiaBUS = new MaGiamGiaBUS();
                 MaGiamGia mgg = maGiamGiaBUS.timMaGiamGia(inputCode);
 
@@ -167,7 +183,7 @@ public class BanHangUI extends JPanel {
                     String thongBaoLoi = maGiamGiaBUS.kiemTraTrangThaiHopLe(mgg);
                     if (thongBaoLoi.isEmpty()) {
                         maGiamGiaDangDung = mgg;
-                        JOptionPane.showMessageDialog(this, "Áp dụng mã thành công! Giảm " + mgg.getPhanTramGiam() + "%");
+                        JOptionPane.showMessageDialog(this, "Áp dụng mã thành công! Hóa đơn được giảm " + mgg.getPhanTramGiam() + "%");
                         lockMaGiamGia(true);
                         capNhatGiaoDien();
                     } else {
@@ -175,7 +191,7 @@ public class BanHangUI extends JPanel {
                         resetGiamGia();
                     }
                 } else {
-                    JOptionPane.showMessageDialog(this, "Mã giảm giá không tồn tại!");
+                    JOptionPane.showMessageDialog(this, "Mã giảm giá không tồn tại hoặc đã bị xóa!");
                     resetGiamGia();
                 }
             }
@@ -187,13 +203,13 @@ public class BanHangUI extends JPanel {
     }
 
     private void lockMaGiamGia(boolean lock) {
-        thanhToanPanel.getTxtMaGiamGia().setEditable(!lock);
-        thanhToanPanel.getBtnXacNhanMGG().setText(lock ? "Hủy" : "Xác nhận");
+        thanhToanPanel.getCbxKhuyenMai().setEnabled(!lock);
+        thanhToanPanel.getBtnXacNhanMGG().setText(lock ? "Hủy" : "Áp dụng");
     }
 
     private void resetGiamGia() {
         maGiamGiaDangDung = null;
-        thanhToanPanel.getTxtMaGiamGia().setText("");
+        thanhToanPanel.getCbxKhuyenMai().setSelectedIndex(0);
         capNhatGiaoDien();
     }
 

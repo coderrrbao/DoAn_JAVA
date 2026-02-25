@@ -37,4 +37,8 @@ public class MaGiamGiaBUS {
         }
         return "";
     }
+
+    public java.util.ArrayList<MaGiamGia> layDanhSachKhuyenMai() {
+        return maGiamGiaDAO.layDanhSachKhuyenMai();
+    }
 }

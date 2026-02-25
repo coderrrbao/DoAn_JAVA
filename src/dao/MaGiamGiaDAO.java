@@ -33,6 +33,27 @@ public class MaGiamGiaDAO {
         return null;
     }
 
+    public ArrayList<MaGiamGia> layDanhSachKhuyenMai() {
+        ArrayList<MaGiamGia> ds = new ArrayList<>();
+        String sql = "SELECT * FROM KhuyenMai WHERE TrangThai = 1";
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql);
+             java.sql.ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                MaGiamGia km = new MaGiamGia();
+                km.setMaKM(rs.getString("MaKM"));
+                km.setPhanTramGiam(rs.getInt("PhanTramGiam"));
+                km.setTuNgay(rs.getDate("TuNgay"));
+                km.setDenNgay(rs.getDate("DenNgay"));
+                km.setTrangThai(rs.getBoolean("TrangThai"));
+                ds.add(km);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ds;
+    }
+
     public ArrayList<MaGiamGia> getTatCaMaGiamGia() {
         ArrayList<MaGiamGia> list = new ArrayList<>();
         String sql = "SELECT * FROM KhuyenMai";
