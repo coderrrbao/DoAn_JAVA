@@ -183,7 +183,6 @@ public class BanHangUI extends JPanel {
                     String thongBaoLoi = maGiamGiaBUS.kiemTraTrangThaiHopLe(mgg);
                     if (thongBaoLoi.isEmpty()) {
                         maGiamGiaDangDung = mgg;
-                        JOptionPane.showMessageDialog(this, "Áp dụng mã thành công! Hóa đơn được giảm " + mgg.getPhanTramGiam() + "%");
                         lockMaGiamGia(true);
                         capNhatGiaoDien();
                     } else {
@@ -236,6 +235,37 @@ public class BanHangUI extends JPanel {
 
 
             hd.setTongTien(thanhToanPanel.getTongThanhToan());
+            String sdtNhap = thongTinKhachHangPanel.getTxtSdt().getText().trim();
+            String tenNhap = thongTinKhachHangPanel.getTxtTenKh().getText().trim();
+            KhachHang khChon = thongTinKhachHangPanel.getKhachHangDuocChon();
+
+            if (!sdtNhap.isEmpty() && khChon == null) {
+                if (tenNhap.isEmpty()) {
+                    JOptionPane.showMessageDialog(this, "Phát hiện Số điện thoại mới! Vui lòng điền Tên Khách Hàng để lưu thông tin tích điểm.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                    thongTinKhachHangPanel.getTxtTenKh().requestFocus();
+                    return;
+                }
+
+                ThongtinKhachHangBUS khBUS = new ThongtinKhachHangBUS();
+                String maKHMoi = khBUS.taoMaKHMoi();
+
+                KhachHang khMoi = new KhachHang(maKHMoi, tenNhap, "Khác", sdtNhap, 0.0, "HTV01");
+                khMoi.setTrangThai(true);
+
+                if (khBUS.themKhachHang(khMoi)) {
+                    hd.setMaKH(maKHMoi);
+                    System.out.println("Đã tự động lưu Khách hàng mới: " + tenNhap);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu thông tin khách hàng mới vào Database!");
+                    return;
+                }
+
+            } else if (khChon != null) {
+                hd.setMaKH(khChon.getMaKH());
+
+            } else {
+                hd.setMaKH(null);
+            }
 
             double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
             double tienDaGiam = tongTienHang - hd.getTongTien();
@@ -297,6 +327,10 @@ public class BanHangUI extends JPanel {
             }
 
             if (hoaDonBUS.ThanhToan(hd)) {
+                if (hd.getMaKH() != null) {
+                    ThongtinKhachHangBUS khBUS = new ThongtinKhachHangBUS();
+                    khBUS.capNhatTienDaMua(hd.getMaKH(), hd.getTongTien());
+                }
                 int luaChon = JOptionPane.showConfirmDialog(this, "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
                 if (luaChon == JOptionPane.YES_OPTION) { xulyPDF.xuatHoaDon(hd); }
 

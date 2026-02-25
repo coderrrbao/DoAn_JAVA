@@ -39,13 +39,12 @@ public class ThanhToanPanel extends JPanel {
         JLabel lblMa = new JLabel("Chương trình KM:");
         lblMa.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        // Khởi tạo ComboBox
         cbxKhuyenMai = new JComboBox<>();
-        cbxKhuyenMai.addItem("-- Không áp dụng --"); // Dòng mặc định
+        cbxKhuyenMai.addItem("-- Không áp dụng --");
         TaoUI.setFixSize(cbxKhuyenMai, 180, 30);
 
         btnMGG = new JButton("Áp dụng");
-        TaoUI.setFixSize(btnMGG, 100, 30); // Thu gọn nút cho cân đối
+        TaoUI.setFixSize(btnMGG, 100, 30);
 
         TaoUI.addItem(rightPanel, lblMa, 3, false);
         TaoUI.addItem(rightPanel, cbxKhuyenMai, 3, false);
@@ -72,10 +71,9 @@ public class ThanhToanPanel extends JPanel {
         return cbxKhuyenMai;
     }
 
-    // Hàm siêu trí tuệ: Tự cắt lấy mã KM (VD: "KM01 - Giảm 10%" -> "KM01")
     public String getMaGiamGiaInput() {
         if (cbxKhuyenMai.getSelectedIndex() == 0 || cbxKhuyenMai.getSelectedItem() == null) {
-            return ""; // Trả về rỗng nếu chọn "-- Không áp dụng --"
+            return "";
         }
         String selectedItem = cbxKhuyenMai.getSelectedItem().toString();
         if (selectedItem.contains(" - ")) {

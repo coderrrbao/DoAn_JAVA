@@ -7,6 +7,7 @@ public class KhachHang {
     private String sdt;
     private double tenDaMua;
     private String maHang;
+    private boolean trangThai;
 
     public KhachHang() {
     }
@@ -18,6 +19,7 @@ public class KhachHang {
         this.sdt = sdt;
         this.tenDaMua = tenDaMua;
         this.maHang = maHang;
+        this.trangThai = true;
     }
 
 
@@ -68,4 +70,8 @@ public class KhachHang {
     public void setMaHang(String maHang) {
         this.maHang = maHang;
     }
+
+    public boolean isTrangThai() { return trangThai; }
+
+    public void setTrangThai(boolean trangThai) { this.trangThai = trangThai; }
 }
