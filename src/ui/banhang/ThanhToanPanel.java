@@ -8,14 +8,14 @@ import java.awt.Dimension;
 import javax.swing.BorderFactory;
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
 import util.TaoUI;
 
 public class ThanhToanPanel extends JPanel {
     private JLabel tongHoaDonText, tienKMText, tongThanhToanText;
-    private JTextField txtMaGiamGia;
+    private JComboBox<String> cbxKhuyenMai;
     private JButton btnMGG, thanhToanButton, huyButton;
 
     public ThanhToanPanel() {
@@ -36,16 +36,18 @@ public class ThanhToanPanel extends JPanel {
         leftPanel.add(Box.createVerticalGlue());
 
         JPanel rightPanel = TaoUI.taoPanelCanGiua(300, 40);
-        JLabel lblMa = new JLabel("Mã giảm giá:");
+        JLabel lblMa = new JLabel("Chương trình KM:");
         lblMa.setFont(new Font("Arial", Font.PLAIN, 14));
 
-        txtMaGiamGia = new JTextField(15);
-        TaoUI.setFixSize(txtMaGiamGia, 180, 30);
-        btnMGG = new JButton("Xác nhận");
-        TaoUI.setFixSize(btnMGG, 165, 30);
+        cbxKhuyenMai = new JComboBox<>();
+        cbxKhuyenMai.addItem("-- Không áp dụng --");
+        TaoUI.setFixSize(cbxKhuyenMai, 180, 30);
+
+        btnMGG = new JButton("Áp dụng");
+        TaoUI.setFixSize(btnMGG, 100, 30);
 
         TaoUI.addItem(rightPanel, lblMa, 3, false);
-        TaoUI.addItem(rightPanel, txtMaGiamGia, 3, false);
+        TaoUI.addItem(rightPanel, cbxKhuyenMai, 3, false);
         TaoUI.addItem(rightPanel, btnMGG, 3, false);
 
         mainGridPanel.add(leftPanel);
@@ -65,6 +67,21 @@ public class ThanhToanPanel extends JPanel {
         add(buttonsPanel);
     }
 
+    public JComboBox<String> getCbxKhuyenMai() {
+        return cbxKhuyenMai;
+    }
+
+    public String getMaGiamGiaInput() {
+        if (cbxKhuyenMai.getSelectedIndex() == 0 || cbxKhuyenMai.getSelectedItem() == null) {
+            return "";
+        }
+        String selectedItem = cbxKhuyenMai.getSelectedItem().toString();
+        if (selectedItem.contains(" - ")) {
+            return selectedItem.split(" - ")[0].trim();
+        }
+        return selectedItem;
+    }
+
     public JButton getBtnThanhToan() {
         return thanhToanButton;
     }
@@ -73,16 +90,8 @@ public class ThanhToanPanel extends JPanel {
         return huyButton;
     }
 
-    public JTextField getTxtMaGiamGia() {
-        return txtMaGiamGia;
-    }
-
     public JButton getBtnXacNhanMGG() {
         return btnMGG;
-    }
-
-    public String getMaGiamGiaInput() {
-        return txtMaGiamGia.getText().trim();
     }
 
     public double getTongThanhToan() {
@@ -108,7 +117,6 @@ public class ThanhToanPanel extends JPanel {
         tongThanhToanText.setText(df.format(tongThanhToan) + " VNĐ");
     }
 
-    // Hàm phụ trợ tạo dòng text
     private JLabel addDongTien(JPanel parent, String title, String value, Color color, int fontSize) {
         JPanel p = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
         JLabel lblTitle = new JLabel(title);

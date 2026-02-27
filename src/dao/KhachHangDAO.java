@@ -151,5 +151,17 @@ public class KhachHangDAO {
             return false;
         }
     }
+    public boolean capNhatTienDaMua(String maKH, double tienThem) {
+        String sql = "UPDATE KhachHang SET TenDaMua = ISNULL(TenDaMua, 0) + ? WHERE MaKH = ?";
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setDouble(1, tienThem);
+            pst.setString(2, maKH);
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
 
