@@ -1,12 +1,11 @@
 package dto;
 
-import java.util.Date;
-
 public class NhanVien {
     private String maNV;
     private String tenNV;
     private String gioiTinh;
-    private Date ngaySinh;
+    private String ngaySinh;
+    private String ngayVaoLam;
     private String sdt;
     private String diaChi;
     private String chucVu;
@@ -17,12 +16,14 @@ public class NhanVien {
     public NhanVien() {
     }
 
-    public NhanVien(String maNV, String tenNV, String gioiTinh, Date ngaySinh, String sdt, String diaChi,
+    public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String ngayVaoLam, String sdt,
+            String diaChi,
             String chucVu, String taiKhoan, String anh, boolean trangThai) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
+        this.ngayVaoLam = ngayVaoLam;
         this.sdt = sdt;
         this.diaChi = diaChi;
         this.chucVu = chucVu;
@@ -55,12 +56,20 @@ public class NhanVien {
         this.gioiTinh = gioiTinh;
     }
 
-    public Date getNgaySinh() {
+    public String getNgaySinh() {
         return ngaySinh;
     }
 
-    public void setNgaySinh(Date ngaySinh) {
+    public void setNgaySinh(String ngaySinh) {
         this.ngaySinh = ngaySinh;
+    }
+
+    public String getNgayVaoLam() {
+        return ngayVaoLam;
+    }
+
+    public void setNgayVaoLam(String ngayVaoLam) {
+        this.ngayVaoLam = ngayVaoLam;
     }
 
     public String getSdt() {

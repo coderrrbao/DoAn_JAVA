@@ -3,11 +3,18 @@ package ui.khachhang;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Font;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.HashSet;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import bus.KhachHangBUS;
+import dto.KhachHang;
+import ui.component.IconButtonEditor;
+import ui.component.IconButtonRender;
 import ui.component.Search_Item;
 import util.TaoUI;
 
@@ -18,6 +25,9 @@ public class KhachHangUI extends JPanel {
     private JTable tableUI;
     private DefaultTableModel model;
 
+    private List<KhachHang> listKhachHang = new ArrayList<>();
+    private List<KhachHang> listKhachHangLoc = new ArrayList<>();
+
     public KhachHangUI() {
         setLayout(new BorderLayout());
 
@@ -25,17 +35,22 @@ public class KhachHangUI extends JPanel {
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        String[] hang = { "Tất cả hạng", "Đồng", "Bạc", "Vàng" };
+        String[] hang = {
+                "Tất cả hạng",
+                "Thành Viên Mới",
+                "Thành Viên Bạc",
+                "Thành Viên Vàng",
+                "Thành Viên Bạch Kim",
+                "Thành Viên Kim Cương"
+        };
         cbHangThanhVien = new JComboBox<>(hang);
-        cbHangThanhVien.setPreferredSize(new Dimension(120, 30));
-        cbHangThanhVien.setMaximumSize(new Dimension(120, 30));
+        cbHangThanhVien.setPreferredSize(new Dimension(150, 30));
+        cbHangThanhVien.setMaximumSize(new Dimension(150, 30));
 
         search_Item = new Search_Item(300, 30);
 
         btnTao = new JButton("Thêm");
-
         btnSua = new JButton("Sửa");
-
         btnXoa = new JButton("Xóa");
 
         top.add(cbHangThanhVien);
@@ -44,8 +59,6 @@ public class KhachHangUI extends JPanel {
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnTao);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
-        top.add(btnSua);
-        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
         top.add(Box.createHorizontalGlue());
 
@@ -53,8 +66,16 @@ public class KhachHangUI extends JPanel {
 
         model = new DefaultTableModel() {
             @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                if (columnIndex == 6) {
+                    return JButton.class;
+                }
+                return Object.class;
+            }
+
+            @Override
             public boolean isCellEditable(int row, int column) {
-                return false;
+                return column == 6;
             }
         };
         model.addColumn("Mã khách hàng");
@@ -63,18 +84,167 @@ public class KhachHangUI extends JPanel {
         model.addColumn("Số điện thoại");
         model.addColumn("Tổng chi tiêu");
         model.addColumn("Hạng thành viên");
+        model.addColumn("");
 
-        model.addRow(new Object[] { "KH001", "Nguyễn Văn A", "Nam", "0123456789", "5.000.000", "Vàng" });
-        model.addRow(new Object[] { "KH002", "Trần Thị B", "Nữ", "0987654321", "2.500.000", "Bạc" });
-        model.addRow(new Object[] { "KH003", "Lê Văn C", "Nam", "0912345678", "500.000", "Đồng" });
-        model.addRow(new Object[] { "KH004", "Phạm Thị D", "Nữ", "0898765432", "10.000.000", "Vàng" });
+        HashSet<Integer> set = new HashSet<>();
+        set.add(6); // cột icon, không căn giữa hết
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
+        tableUI = (JTable) scrollPane.getViewport().getView();
 
-        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
-        tableUI  = (JTable) scrollPane.getViewport().getView();
+        tableUI.getColumnModel().getColumn(6).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
+        tableUI.getColumnModel().getColumn(6).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
+            String maKH = (String) model.getValueAt(row, 0);
+            KhachHangBUS bus = new KhachHangBUS();
+            KhachHang kh = bus.timKhachHangTheoMa(maKH);
+            if (kh != null) {
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                ThemKhachHangDialog dialog = new ThemKhachHangDialog(parentFrame, this, kh);
+                dialog.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        }));
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        add(scrollPane,BorderLayout.CENTER);
+        tableContainer.add(scrollPane, BorderLayout.CENTER);
+
+        add(tableContainer, BorderLayout.CENTER);
+
+        ganSuKien();
+        loadDataFromDatabase();
+    }
+
+    private void ganSuKien() {
+        btnTao.addActionListener(e -> {
+            JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+            ThemKhachHangDialog dialog = new ThemKhachHangDialog(parentFrame, this);
+            dialog.setVisible(true);
+        });
+
+        btnSua.addActionListener(e -> {
+            int row = tableUI.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần sửa", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            row = tableUI.convertRowIndexToModel(row);
+            String maKH = (String) model.getValueAt(row, 0);
+            KhachHangBUS bus = new KhachHangBUS();
+            KhachHang kh = bus.timKhachHangTheoMa(maKH);
+            if (kh != null) {
+                JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+                ThemKhachHangDialog dialog = new ThemKhachHangDialog(parentFrame, this, kh);
+                dialog.setVisible(true);
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cbHangThanhVien.addActionListener(e -> locKhachHang());
+        search_Item.setEvent(this::locKhachHang);
+
+        btnXoa.addActionListener(e -> {
+            int row = tableUI.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn khách hàng cần xóa", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                return;
+            }
+            row = tableUI.convertRowIndexToModel(row);
+            String maKH = (String) model.getValueAt(row, 0);
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Bạn có muốn xóa khách hàng " + maKH + "?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                KhachHangBUS bus = new KhachHangBUS();
+                boolean ok = bus.xoaKhachHang(maKH);
+                if (ok) {
+                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    loadDataFromDatabase();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+    }
+
+    public void hienThiDanhSachKhachHang() {
+        loadDataFromDatabase();
+    }
+
+    private void loadDataFromDatabase() {
+        KhachHangBUS bus = new KhachHangBUS();
+        listKhachHang = bus.layDanhSachKhachHang();
+        locKhachHang();
+    }
+
+    private String tenHangTuMa(String maHang) {
+        if (maHang == null)
+            return "Thành Viên Mới";
+        return switch (maHang) {
+            case "HTV01" -> "Thành Viên Mới";
+            case "HTV02" -> "Thành Viên Bạc";
+            case "HTV03" -> "Thành Viên Vàng";
+            case "HTV04" -> "Thành Viên Bạch Kim";
+            case "HTV05" -> "Thành Viên Kim Cương";
+            default -> "Thành Viên Mới";
+        };
+    }
+
+    private void locKhachHang() {
+        listKhachHangLoc.clear();
+        String hangFilter = (String) cbHangThanhVien.getSelectedItem();
+        String keyword = search_Item.getTextSearch() != null ? search_Item.getTextSearch().trim().toUpperCase() : "";
+
+        for (KhachHang kh : listKhachHang) {
+            String tenHang = tenHangTuMa(kh.getMaHang());
+
+            boolean matchHang = "Tất cả hạng".equals(hangFilter) || tenHang.equals(hangFilter);
+
+            boolean matchSearch = true;
+            if (!keyword.isEmpty()) {
+                String ma = kh.getMaKH() != null ? kh.getMaKH() : "";
+                String ten = kh.getTenKH() != null ? kh.getTenKH() : "";
+                String sdt = kh.getSdt() != null ? kh.getSdt() : "";
+                matchSearch = ma.toUpperCase().contains(keyword)
+                        || ten.toUpperCase().contains(keyword)
+                        || sdt.toUpperCase().contains(keyword);
+            }
+
+            if (matchHang && matchSearch) {
+                listKhachHangLoc.add(kh);
+            }
+        }
+
+        veLaiDanhSach(listKhachHangLoc);
+    }
+
+    private void veLaiDanhSach(List<KhachHang> list) {
+        model.setRowCount(0);
+        for (KhachHang kh : list) {
+            model.addRow(new Object[] {
+                    kh.getMaKH(),
+                    kh.getTenKH(),
+                    kh.getGioiTinh(),
+                    kh.getSdt(),
+                    dinhDangTien(kh.getTenDaMua()),
+                    tenHangTuMa(kh.getMaHang()),
+                    null
+            });
+        }
+        tableUI.revalidate();
+        tableUI.repaint();
+    }
+
+    private String dinhDangTien(double value) {
+        DecimalFormat df = new DecimalFormat("#,###");
+        return df.format(value);
     }
 
     public JButton getBtnTao() {
