@@ -46,7 +46,6 @@ public class XuatKhoSanPhamPanel extends JPanel {
               }
             }
             if (selected != null) {
-              // Đã sửa: Truyền 3 tham số (Frame, DTO, Panel)
               ChiTietPhieuXuatSanPhamDialog detail =
                   new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
               detail.setVisible(true);

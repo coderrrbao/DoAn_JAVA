@@ -104,7 +104,7 @@ public class KiemKeUI extends JPanel {
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        locNgay = new LocNgay_Item(350, 35);
+        locNgay = new LocNgay_Item(450, 35);
         top.add(locNgay);
 
         btnThem = new JButton("Thêm");

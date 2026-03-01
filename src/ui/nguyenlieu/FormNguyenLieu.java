@@ -6,7 +6,6 @@ import javax.swing.*;
 
 public class FormNguyenLieu extends JDialog {
   private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
-  // Đã xóa JComboBox cbNhaCungCap
   private JButton btnLuu, btnHuy;
   private NguyenLieu ketQua = null;
   private boolean isEdit = false;
@@ -15,8 +14,8 @@ public class FormNguyenLieu extends JDialog {
     super(owner, editNL == null ? "Thêm Nguyên Liệu" : "Sửa Nguyên Liệu", true);
     this.isEdit = (editNL != null);
 
+    setSize(new Dimension(500, 300));
     initUI();
-    // Đã xóa loadNhaCungCap()
 
     if (isEdit) {
       duLieuCu(editNL);
@@ -32,15 +31,14 @@ public class FormNguyenLieu extends JDialog {
           dispose();
         });
 
-    pack();
     setLocationRelativeTo(owner);
   }
 
   private void initUI() {
     setLayout(new BorderLayout());
-    // Giảm số hàng của GridLayout từ 6 xuống 5 vì đã bỏ NCC
-    JPanel pnlInput = new JPanel(new GridLayout(5, 2, 10, 10));
-    pnlInput.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+    JPanel pnlMain = new JPanel();
+    pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+    pnlMain.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
     txtMa = new JTextField("Tự động");
     txtMa.setEditable(false);
@@ -49,25 +47,30 @@ public class FormNguyenLieu extends JDialog {
     txtDonVi = new JTextField();
     txtMucCanhBao = new JTextField();
 
-    pnlInput.add(new JLabel("Mã nguyên liệu:"));
-    pnlInput.add(txtMa);
-    pnlInput.add(new JLabel("Tên nguyên liệu:"));
-    pnlInput.add(txtTen);
-    // Đã xóa Label và ComboBox Nhà cung cấp ở đây
-    pnlInput.add(new JLabel("Giá nhập:"));
-    pnlInput.add(txtGia);
-    pnlInput.add(new JLabel("Đơn vị tính:"));
-    pnlInput.add(txtDonVi);
-    pnlInput.add(new JLabel("Mức cảnh báo:"));
-    pnlInput.add(txtMucCanhBao);
+    String[] labels = { "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:" };
+    JTextField[] fields = { txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao };
 
-    JPanel pnlButtons = new JPanel();
+    for (int i = 0; i < labels.length; i++) {
+      Box row = Box.createHorizontalBox();
+
+      JLabel lbl = new JLabel(labels[i]);
+      lbl.setPreferredSize(new Dimension(150, 50));
+      lbl.setMaximumSize(new Dimension(150, 50));
+
+      row.add(lbl);
+      row.add(fields[i]);
+
+      pnlMain.add(row);
+      pnlMain.add(Box.createVerticalStrut(10));
+    }
+
+    JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnLuu = new JButton("Lưu");
     btnHuy = new JButton("Hủy");
     pnlButtons.add(btnLuu);
     pnlButtons.add(btnHuy);
 
-    add(pnlInput, BorderLayout.CENTER);
+    add(pnlMain, BorderLayout.CENTER);
     add(pnlButtons, BorderLayout.SOUTH);
   }
 
@@ -92,8 +95,6 @@ public class FormNguyenLieu extends JDialog {
       ketQua.setDonVi(txtDonVi.getText().trim());
       ketQua.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
 
-      // Đã xóa dòng NhaCungCapBUS.getNhaCungCapBUS().danhDauCanCapNhat();
-
       dispose();
     } catch (NumberFormatException ex) {
       JOptionPane.showMessageDialog(this, "Giá và Mức cảnh báo phải là số!");
@@ -102,5 +103,10 @@ public class FormNguyenLieu extends JDialog {
 
   public NguyenLieu getKetQua() {
     return ketQua;
+  }
+
+  public static void main(String[] args) {
+    FormNguyenLieu formNguyenLieu = new FormNguyenLieu(null, null);
+    formNguyenLieu.setVisible(true);
   }
 }

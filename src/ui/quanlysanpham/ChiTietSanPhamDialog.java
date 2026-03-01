@@ -98,12 +98,12 @@ public class ChiTietSanPhamDialog extends JDialog {
             thongTin2.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
         }
         thongTin2.add(Box.createHorizontalGlue());
-        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 80, 80, 30, 5, tfCanhBao));
+        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 60,100, 30, 5, tfCanhBao));
 
         JPanel thongTin3 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
         thongTin3.add(TaoUI.taoFieldText("Dung tích(ml)", 80, 80, 30, 5, tfDungTich));
         thongTin3.add(Box.createHorizontalGlue());
-        thongTin3.add(TaoUI.taoFieldText("Giá bán", 80, 100, 30, 5, tfGiaBan));
+        thongTin3.add(TaoUI.taoFieldText("Giá bán", 60, 100, 30, 5, tfGiaBan));
 
         JPanel thongTin5 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
 
@@ -119,12 +119,13 @@ public class ChiTietSanPhamDialog extends JDialog {
         TaoUI.setFixSize(cbDanhMuc, 100, 35);
         cbLoaiNuoc = new JComboBox<>(luaChonLoaiNuoc.toArray());
         cbLoaiNuoc.setFont(cbLoaiNuoc.getFont().deriveFont(11.0f));
+        TaoUI.setFixSize(cbLoaiNuoc, 100, 35);
         thongTin5.add(new JLabel("Loại nước"));
-        thongTin5.add(Box.createRigidArea(new Dimension(10, 0)));
+        thongTin5.add(Box.createRigidArea(new Dimension(25, 0)));
         thongTin5.add(cbLoaiNuoc);
         thongTin5.add(Box.createHorizontalGlue());
         thongTin5.add(new JLabel("Danh mục"));
-        thongTin5.add(Box.createRigidArea(new Dimension(15, 0)));
+        thongTin5.add(Box.createRigidArea(new Dimension(10, 0)));
         thongTin5.add(cbDanhMuc);
 
         JPanel thongTin5_1 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
@@ -136,7 +137,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray());
         cbTrangThaiXuLy.setFont(cbTrangThaiXuLy.getFont().deriveFont(11.0f));
         thongTin5_1.add(new JLabel("Trạng thái"));
-        thongTin5_1.add(Box.createRigidArea(new Dimension(10, 0)));
+        thongTin5_1.add(Box.createRigidArea(new Dimension(25, 0)));
         thongTin5_1.add(cbTrangThaiXuLy);
         thongTin5_1.add(Box.createHorizontalGlue());
 
@@ -495,5 +496,9 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
         return listSize;
     }
-
+    public static void main(String[] args) {
+        SanPham  sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP01");
+        ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(sanPham, null);
+        chiTietSanPhamDialog.setVisible(true);
+    }
 }
