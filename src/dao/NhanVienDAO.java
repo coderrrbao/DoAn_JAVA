@@ -4,29 +4,31 @@ import java.sql.*;
 import java.util.*;
 import dao.conection.DBConnection;
 import dto.NhanVien;
+import dto.TaiKhoan;
 
 public class NhanVienDAO {
 
     // 1. Lấy danh sách: Chỉ lấy những người có TrangThai = 1
-    public List<NhanVien> layDanhSachNhanVien() {
-        List<NhanVien> ds = new ArrayList<>();
-        String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1"; // Lọc trạng thái
+    public ArrayList<NhanVien> layDanhSachNhanVien() {
+        ArrayList<NhanVien> ds = new ArrayList<>();
+        String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1"; 
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql);
              ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
+                TaiKhoan taiKhoan = new TaiKhoan();
+                // Giả sử cột trong DB lưu mã tài khoản là "TaiKhoan"
+                taiKhoan.setMaTK(rs.getString("TaiKhoan"));
+                
                 ds.add(new NhanVien(
-                    rs.getString("MaNV"),
-                    rs.getNString("TenNV"),
-                    rs.getNString("GioiTinh"),
-                    rs.getString("NgaySinh"),
-                    rs.getString("SDT"),
-                    rs.getNString("DiaChi"),
-                    rs.getNString("ChucVu"),
-                    rs.getString("TaiKhoan"),
-                    rs.getNString("Anh"),
-                    rs.getBoolean("TrangThai")
-                ));
+                        rs.getString("MaNV"),
+                        rs.getNString("TenNV"),
+                        rs.getNString("GioiTinh"),
+                        rs.getString("NgaySinh"),
+                        rs.getString("SDT"),
+                        rs.getNString("DiaChi"),
+                        taiKhoan,
+                        rs.getNString("Anh")));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -34,27 +36,29 @@ public class NhanVienDAO {
         return ds;
     }
 
-    // 2. Thêm nhân viên: Luôn gán TrangThai = 1
+    // 2. Thêm nhân viên: Luôn gán TrangThai = 1, bỏ ChucVu
     public Boolean themNhanVien(NhanVien nv) {
         String sql = """
-                INSERT INTO NhanVien (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, Anh, TrangThai)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1) -- Ép cứng trạng thái = 1
+                INSERT INTO NhanVien (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, TaiKhoan, Anh, TrangThai)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)
                 """;
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
-            
-            nv.setMaNV(layMaNhanVien());
-            
+
+            // Nếu bạn chưa gán mã trước khi gọi hàm này
+            if (nv.getMaNV() == null || nv.getMaNV().isEmpty()) {
+                nv.setMaNV(layMaNhanVien());
+            }
+
             pst.setString(1, nv.getMaNV());
             pst.setNString(2, nv.getTenNV());
             pst.setNString(3, nv.getGioiTinh());
             pst.setString(4, nv.getNgaySinh());
             pst.setString(5, nv.getSdt());
             pst.setNString(6, nv.getDiaChi());
-            pst.setNString(7, nv.getChucVu());
-            pst.setString(8, nv.getTaiKhoan());
-            pst.setNString(9, nv.getAnh());
-            // Không cần set tham số thứ 10 vì SQL đã để mặc định là 1
+            // Lấy TenDangNhap hoặc MaTK tùy vào thiết kế cột TaiKhoan của bạn
+            pst.setString(7, nv.getTaiKhoan() != null ? nv.getTaiKhoan().getMaTK() : null);
+            pst.setNString(8, nv.getAnh());
 
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
@@ -64,25 +68,25 @@ public class NhanVienDAO {
     }
 
     // 3. Tìm kiếm: Chỉ tìm người có TrangThai = 1
-    public NhanVien timNhanVienTheoMa(String maNV) {
+    public NhanVien timNhanVien(String maNV) {
         String sql = "SELECT * FROM NhanVien WHERE MaNV = ? AND TrangThai = 1";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, maNV);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
+                    TaiKhoan taiKhoan = new TaiKhoan();
+                    taiKhoan.setMaTK(rs.getString("TaiKhoan"));
+                    
                     return new NhanVien(
-                        rs.getString("MaNV"),
-                        rs.getNString("TenNV"),
-                        rs.getNString("GioiTinh"),
-                        rs.getString("NgaySinh"),
-                        rs.getString("SDT"),
-                        rs.getNString("DiaChi"),
-                        rs.getNString("ChucVu"),
-                        rs.getString("TaiKhoan"),
-                        rs.getNString("Anh"),
-                        rs.getBoolean("TrangThai")
-                    );
+                            rs.getString("MaNV"),
+                            rs.getNString("TenNV"),
+                            rs.getNString("GioiTinh"),
+                            rs.getString("NgaySinh"),
+                            rs.getString("SDT"),
+                            rs.getNString("DiaChi"),
+                            taiKhoan,
+                            rs.getNString("Anh"));
                 }
             }
         } catch (Exception e) {
@@ -91,7 +95,7 @@ public class NhanVienDAO {
         return null;
     }
 
-    // 4. Xóa nhân viên: Cập nhật TrangThai thành 0 (Soft Delete)
+    // 4. Xóa nhân viên (Xóa mềm bằng cách update TrangThai)
     public boolean xoaNhanVien(String maNV) {
         String sql = "UPDATE NhanVien SET TrangThai = 0 WHERE MaNV = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -104,7 +108,7 @@ public class NhanVienDAO {
         return false;
     }
 
-    // Các hàm phụ trợ giữ nguyên
+    // 5. Tự động lấy mã nhân viên tiếp theo
     public String layMaNhanVien() {
         String sql = "SELECT MAX(CAST(SUBSTRING(MaNV, 3, LEN(MaNV)) AS INT)) FROM NhanVien";
         try (Connection conn = DBConnection.getConnection();
@@ -113,25 +117,17 @@ public class NhanVienDAO {
             if (rs.next()) {
                 return String.format("NV%02d", rs.getInt(1) + 1);
             }
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "NV01";
     }
 
-    public List<String> layDanhSachChucVu() {
-        List<String> ds = new ArrayList<>();
-        String sql = "SELECT TenNhomQuyen FROM NhomQuyen";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
-            while (rs.next()) ds.add(rs.getString("TenNhomQuyen"));
-        } catch (Exception e) { e.printStackTrace(); }
-        return ds;
-    }
-
+    // 6. Cập nhật nhân viên: Bỏ ChucVu
     public boolean capNhatNhanVien(NhanVien nv) {
         String sql = """
                 UPDATE NhanVien
-                SET TenNV = ?, GioiTinh = ?, NgaySinh = ?, SDT = ?, DiaChi = ?, ChucVu = ?, Anh = ?
+                SET TenNV = ?, GioiTinh = ?, NgaySinh = ?, SDT = ?, DiaChi = ?, Anh = ?
                 WHERE MaNV = ? AND TrangThai = 1
                 """;
         try (Connection conn = DBConnection.getConnection();
@@ -141,11 +137,13 @@ public class NhanVienDAO {
             pst.setString(3, nv.getNgaySinh());
             pst.setString(4, nv.getSdt());
             pst.setNString(5, nv.getDiaChi());
-            pst.setNString(6, nv.getChucVu());
-            pst.setNString(7, nv.getAnh());
-            pst.setString(8, nv.getMaNV());
+            pst.setNString(6, nv.getAnh());
+            pst.setString(7, nv.getMaNV());
+            
             return pst.executeUpdate() > 0;
-        } catch (Exception e) { e.printStackTrace(); }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return false;
     }
 }

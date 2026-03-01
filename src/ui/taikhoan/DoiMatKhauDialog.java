@@ -95,8 +95,8 @@ public class DoiMatKhauDialog extends JDialog{
         }
         String tenDangNhap = taiKhoanUI.getModel().getValueAt(row, 1).toString();
         // xu ly
-        taiKhoanBUS = new TaiKhoanBUS();
-        boolean kq = taiKhoanBUS.suaMatKhau_BUS(tenDangNhap, matKhauMoi);
+        taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
+        boolean kq = taiKhoanBUS.suaMatKhau(tenDangNhap, matKhauMoi);
 
         if(kq){
             javax.swing.JOptionPane.showMessageDialog(this,

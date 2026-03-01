@@ -7,26 +7,22 @@ public class NhanVien {
     private String ngaySinh;
     private String sdt;
     private String diaChi;
-    private String chucVu;
-    private String taiKhoan;
+    private TaiKhoan taiKhoan;
     private String anh;
-    private boolean trangThai;
 
     public NhanVien() {
     }
 
     public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String sdt,
-            String diaChi, String chucVu, String taiKhoan, String anh, boolean trangThai) {
+            String diaChi, TaiKhoan taiKhoan, String anh) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
         this.sdt = sdt;
         this.diaChi = diaChi;
-        this.chucVu = chucVu;
         this.taiKhoan = taiKhoan;
         this.anh = anh;
-        this.trangThai = trangThai;
     }
 
     // Getter và Setter
@@ -78,19 +74,11 @@ public class NhanVien {
         this.diaChi = diaChi;
     }
 
-    public String getChucVu() {
-        return chucVu;
-    }
-
-    public void setChucVu(String chucVu) {
-        this.chucVu = chucVu;
-    }
-
-    public String getTaiKhoan() {
+    public TaiKhoan getTaiKhoan() {
         return taiKhoan;
     }
 
-    public void setTaiKhoan(String taiKhoan) {
+    public void setTaiKhoan(TaiKhoan taiKhoan) {
         this.taiKhoan = taiKhoan;
     }
 
@@ -100,13 +88,5 @@ public class NhanVien {
 
     public void setAnh(String anh) {
         this.anh = anh;
-    }
-
-    public boolean isTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
     }
 }

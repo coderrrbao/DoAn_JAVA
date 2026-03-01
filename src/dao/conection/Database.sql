@@ -59,29 +59,20 @@ WHERE name = 'TaiKhoan')
 BEGIN
     CREATE TABLE TaiKhoan
     (
-        TenTaiKhoan NVARCHAR(50),
-        TenDangNhap NVARCHAR(50) NOT NULL PRIMARY KEY,
+        MaTK VARCHAR(50) NOT NULL PRIMARY KEY,
+        TenDangNhap VARCHAR(50),
+        MaNV VARCHAR(50),
         MatKhau VARCHAR(255) NOT NULL,
         maNQ VARCHAR(50),
+        TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO TaiKhoan
-        (TenTaiKhoan, TenDangNhap, MatKhau, maNQ, TrangThai)
+        (MaTK,MaNV, TenDangNhap, MatKhau, maNQ,TrangThaiXuLy, TrangThai)
     VALUES
-        (N'Lê Huy Hoàng', 'admin', '123456', 'NQ01', 1),
-        (N'Nguyễn Hoài Bảo', 'NV01', '123456', 'NQ02', 1),
-        (N'Phạm Hữu Phú Ngáo', 'NV02', '123456', 'NQ03', 1),
-        (N'Trần Thị Thu Ngân', 'nhanvien1', '123456', 'NQ02', 1),
-        (N'Lê Văn Kho', 'nhanvienkho', '123456', 'NQ03', 1),
-        (N'Phạm Văn Pha Chế', 'phache01', '123456', 'NQ04', 1),
-        (N'Lý Thị Pha Chế 2', 'phache02', '123456', 'NQ04', 1),
-        (N'Ngô Văn Bảo Vệ', 'baove01', '123456', 'NQ06', 1),
-        (N'Đỗ Thị Kế Toán', 'ketoan01', '123456', 'NQ05', 1),
-        (N'Hoàng Văn Giám Sát', 'giamsat01', '123456', 'NQ08', 1),
-        (N'Vũ Thị Marketing', 'marketing01', '123456', 'NQ09', 1),
-        (N'Bùi Văn Sale 2', 'sale02', '123456', 'NQ02', 1),
-        (N'Trịnh Thị Sale 3', 'sale03', '123456', 'NQ02', 1),
-        (N'Phan Văn Kho 2', 'kho02', '123456', 'NQ03', 1)
+        ('TK01', 'NV01', 'admin', '123456', 'NQ01', N'Đã xác nhận', 1),
+        ('TK02', 'NV02', 'NV01', '123456', 'NQ02', N'Đã xác nhận', 1),
+        ('TK03', 'NV01', 'NV02', '123456', 'NQ03', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -541,18 +532,17 @@ BEGIN
         NgaySinh DATE,
         SDT VARCHAR(20),
         DiaChi NVARCHAR(255),
-        ChucVu NVARCHAR(100),
-        TaiKhoan NVARCHAR(50),
+        TaiKhoan VARCHAR(50),
         Anh NVARCHAR(255),
         TrangThai BIT
     )
 
     INSERT INTO NhanVien
-        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, Anh, TrangThai)
+        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, TaiKhoan, Anh, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Địa chỉ 1', N'Thu ngân', 'NV01', NULL, 1),
-        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '0902345678', N'Địa chỉ 2', N'Thu ngân', 'NV02', NULL, 1),
-        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Địa chỉ 3', N'Quản lý', 'admin', NULL, 1)
+        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Địa chỉ 1', 'TK01', '/assets/img/goku.png', 1),
+        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '0902345678', N'Địa chỉ 2', 'TK02', NULL, 1),
+        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Địa chỉ 3', 'TK03', NULL, 1)
 END;
 
 /* =============================================
@@ -1010,11 +1000,6 @@ FROM sys.foreign_keys
 WHERE name = 'FK_TaiKhoan_NhomQuyen')
     ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhomQuyen FOREIGN KEY (maNQ) REFERENCES NhomQuyen(MaNQ);
 
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_NhanVien_TaiKhoan')
-    ALTER TABLE NhanVien ADD CONSTRAINT FK_NhanVien_TaiKhoan FOREIGN KEY (TaiKhoan) REFERENCES TaiKhoan(TenDangNhap);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys

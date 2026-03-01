@@ -89,8 +89,8 @@ public class NhanVienUI extends JPanel {
         tableUI.getColumnModel().getColumn(5).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
             String maNV = (String) model.getValueAt(row, 0);
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-            NhanVienBUS bus = new NhanVienBUS();
-            NhanVien nv = bus.timNhanVienTheoMa(maNV);
+            NhanVienBUS bus = NhanVienBUS.getNhanVienBUS();
+            NhanVien nv = bus.timNhanVien(maNV);
             if (nv != null) {
                 ThemNhanVienDialog dia = new ThemNhanVienDialog(parentFrame, this, nv);
                 dia.setVisible(true);
@@ -121,7 +121,7 @@ public class NhanVienUI extends JPanel {
     }
 
     private void layDanhSachNhanVien() {
-        NhanVienBUS bus = new NhanVienBUS();
+        NhanVienBUS bus = NhanVienBUS.getNhanVienBUS();
         listNhanVien = bus.layDanhSachNhanVien();
         locNhanVien();
     }
@@ -134,7 +134,8 @@ public class NhanVienUI extends JPanel {
 
         for (NhanVien nv : listNhanVien) {
             boolean matchChucVu = "Tất cả".equals(chucVuFilter)
-                    || (nv.getChucVu() != null && nv.getChucVu().equals(chucVuFilter));
+                    || (nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen() != null
+                            && nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen().equals(chucVuFilter));
 
             boolean matchSearch = true;
             if (!keyword.isEmpty()) {
@@ -161,7 +162,7 @@ public class NhanVienUI extends JPanel {
                     nv.getMaNV(),
                     nv.getTenNV(),
                     nv.getGioiTinh(),
-                    nv.getChucVu(),
+                    nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen(),
                     nv.getSdt(),
                     null // Dành cho nút sửa ở index 5
             });
@@ -186,14 +187,14 @@ public class NhanVienUI extends JPanel {
             int confirm = JOptionPane.showConfirmDialog(this,
                     "Bạn có muốn xóa nhân viên " + maNV + "?", "Xác nhận",
                     JOptionPane.YES_NO_OPTION);
-            
+
             if (confirm == JOptionPane.YES_OPTION) {
-                NhanVienBUS bus = new NhanVienBUS();
+                NhanVienBUS bus = NhanVienBUS.getNhanVienBUS();
                 boolean ok = bus.xoaNhanVien(maNV);
                 if (ok) {
                     JOptionPane.showMessageDialog(this, "Xóa nhân viên thành công", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    layDanhSachNhanVien(); 
+                    layDanhSachNhanVien();
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa nhân viên thất bại", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
@@ -202,11 +203,31 @@ public class NhanVienUI extends JPanel {
         });
     }
 
-    public JButton getBtnTao() { return btnTao; }
-    public JButton getBtnSua() { return btnSua; }
-    public JButton getBtnXoa() { return btnXoa; }
-    public JComboBox<String> getCbChucVu() { return cbChucVu; }
-    public Search_Item getSearch_Item() { return search_Item; }
-    public JTable getTableUI() { return tableUI; }
-    public DefaultTableModel getModel() { return model; }
+    public JButton getBtnTao() {
+        return btnTao;
+    }
+
+    public JButton getBtnSua() {
+        return btnSua;
+    }
+
+    public JButton getBtnXoa() {
+        return btnXoa;
+    }
+
+    public JComboBox<String> getCbChucVu() {
+        return cbChucVu;
+    }
+
+    public Search_Item getSearch_Item() {
+        return search_Item;
+    }
+
+    public JTable getTableUI() {
+        return tableUI;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
 }

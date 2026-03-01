@@ -3,6 +3,7 @@ package ui.thongtinuser;
 import java.awt.Dimension;
 import javax.swing.*;
 import dto.NhanVien;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class ThongTinCaNhanPanel extends JPanel {
@@ -14,8 +15,9 @@ public class ThongTinCaNhanPanel extends JPanel {
     public ThongTinCaNhanPanel() {
         TaoUI.taoPanelBoxLayoutDoc(this, 400, 780);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
         initGUI();
+
+        setDuLieu(PhienDangNhap.getUser());
     }
 
     private void initGUI() {
@@ -56,7 +58,8 @@ public class ThongTinCaNhanPanel extends JPanel {
         btnSua = new JButton("Sửa");
         btnLuuThongTin = new JButton("Lưu thông tin");
         btnLuuThongTin.setEnabled(false);
-        TaoUI.addItem(buttonSuaPanel, btnSua, 10, true);TaoUI.addItem(buttonSuaPanel, btnLuuThongTin, 10, true);
+        TaoUI.addItem(buttonSuaPanel, btnSua, 10, true);
+        TaoUI.addItem(buttonSuaPanel, btnLuuThongTin, 10, true);
         add(buttonSuaPanel);
 
     }
@@ -83,11 +86,10 @@ public class ThongTinCaNhanPanel extends JPanel {
         tfNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().toString() : "");
         tfSDT.setText(nv.getSdt());
         tfDiaChi.setText(nv.getDiaChi());
-        tfChucVu.setText(nv.getChucVu());
+        tfChucVu.setText(nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
 
-        // if (nv.getTaiKhoan() != null) {
-        //     tfTenTaiKhoan.setText(nv.getTaiKhoan().getTenTaiKhoan());
-        //     tfPhanQuyen.setText(nv.getTaiKhoan().getPhanQuyen());
-        // }
+        if (nv.getTaiKhoan() != null) {
+    
+        }
     }
 }

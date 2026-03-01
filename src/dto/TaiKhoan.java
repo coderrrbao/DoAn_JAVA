@@ -1,29 +1,32 @@
 package dto;
 
 public class TaiKhoan {
-    private String tenTaiKhoan;
+    private String maTK;
+    private String maNV;
     private String tenDangNhap;
     private String matKhau;
-    private String maNQ;
-    private boolean trangThai;
+    private NhomQuyen nhomQuyen;
+    private String trangThaiXuLy;
 
     public TaiKhoan() {
     }
 
-    public TaiKhoan(String tenTaiKhoan,String tenDangNhap, String matKhau, String maNQ, boolean trangThai) {
-        this.tenTaiKhoan = tenTaiKhoan;
+    public TaiKhoan(String maTK, String maNV, String tenDangNhap, String matKhau, NhomQuyen nhomQuyen,
+            String trangThai) {
+        this.maTK = maTK;
+        this.maNV = maNV;
         this.tenDangNhap = tenDangNhap;
         this.matKhau = matKhau;
-        this.maNQ = maNQ;
-        this.trangThai = trangThai;
+        this.nhomQuyen = nhomQuyen;
+        this.trangThaiXuLy = trangThai;
     }
 
-    public String getTenTaiKhoan(){
-        return tenTaiKhoan;
+    public String getMaNV() {
+        return maNV;
     }
-    
-    public void setTenTaiKhoan(String tenTaiKhoan){
-        this.tenTaiKhoan = tenTaiKhoan;
+
+    public void setMaNV(String maNV) {
+        this.maNV = maNV;
     }
 
     public String getTenDangNhap() {
@@ -42,19 +45,27 @@ public class TaiKhoan {
         this.matKhau = matKhau;
     }
 
-    public String getMaNQ() {
-        return maNQ;
+    public NhomQuyen getNhomQuyen() {
+        return nhomQuyen;
     }
 
-    public void setMaNQ(String maNQ) {
-        this.maNQ = maNQ;
+    public void setNhomQuyen(NhomQuyen nhomQuyen) {
+        this.nhomQuyen = nhomQuyen;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
+    public String getTrangThaiXuLy() {
+        return trangThaiXuLy;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
+    public void setTrangThaiXuLy(String trangThaiXuLy) {
+        this.trangThaiXuLy = trangThaiXuLy;
+    }
+
+    public String getMaTK() {
+        return maTK;
+    }
+
+    public void setMaTK(String maTK) {
+        this.maTK = maTK;
     }
 }

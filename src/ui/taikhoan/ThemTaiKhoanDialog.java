@@ -15,6 +15,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import bus.NhanVienBUS;
 import bus.NhomQuyenBUS;
 import bus.TaiKhoanBUS;
 import dto.NhanVien;
@@ -33,13 +34,12 @@ public class ThemTaiKhoanDialog extends JDialog {
     private JTextField txtTenTaiKhoan;
     private JComboBox<String> cbQuyen;
     private JComboBox<String> cbNVBox;
-    private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
-    private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
-    
+    private NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+    private TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
+
     private TaiKhoanUI taiKhoanUI;
     private ArrayList<NhomQuyen> dsNhomQuyen;
     private ArrayList<NhanVien> dsNhanVien;
-
 
     public ThemTaiKhoanDialog(JFrame jFrame, TaiKhoanUI taiKhoanUI) {
         super(jFrame, "Thêm tài khoản", true);
@@ -51,66 +51,65 @@ public class ThemTaiKhoanDialog extends JDialog {
     }
 
     private void initUI() {
-        //PANEL CHÍNH
+        // PANEL CHÍNH
         JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 180);
         TaoUI.suaBorderChoPanel(mainPanel, 15, 15, 15, 15);
 
-        //USER
+        // USER
         txtUser = new JTextField();
-        JPanel userField = TaoUI.taoFieldText("Username",100,220,30,10,txtUser
-        );
+        JPanel userField = TaoUI.taoFieldText("Username", 100, 220, 30, 10, txtUser);
         // TÊN TÀI KHOẢN // conbobox nhan vien
         JPanel cbNVJPanel = new JPanel();
         cbNVJPanel.setLayout(new BoxLayout(cbNVJPanel, BoxLayout.X_AXIS));
         TaoUI.setFixSize(cbNVJPanel, 330, 30);
 
         JLabel cbNVJLabel = new JLabel("Nhân Viên");
-        cbNVJLabel.setPreferredSize(new Dimension(110,30));
-        cbNVJLabel.setMinimumSize(new Dimension(110,30));
-        cbNVJLabel.setMaximumSize(new Dimension(110,30));
+        cbNVJLabel.setPreferredSize(new Dimension(110, 30));
+        cbNVJLabel.setMinimumSize(new Dimension(110, 30));
+        cbNVJLabel.setMaximumSize(new Dimension(110, 30));
 
-        dsNhanVien = taiKhoanBUS.layDanhSachNhanVien_BUS();
+        NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
+        dsNhanVien = nhanVienBUS.layDanhSachNhanVien();
         cbNVBox = new JComboBox<>();
-        for(NhanVien nv : dsNhanVien){
+        for (NhanVien nv : dsNhanVien) {
             cbNVBox.addItem(nv.getTenNV() + " (" + nv.getMaNV() + ")");
         }
         cbNVJPanel.add(cbNVJLabel);
         cbNVJPanel.add(cbNVBox);
-        //PASSWORD
+        // PASSWORD
         txtPass = new JPasswordField();
-        JPanel passField = TaoUI.taoFieldText("Password",100,220,30,10,txtPass
-        );
+        JPanel passField = TaoUI.taoFieldText("Password", 100, 220, 30, 10, txtPass);
 
-        //BUTTON PANEL
+        // BUTTON PANEL
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
-        
+
         JButton btnThem = new JButton("Thêm");
         JButton btnHuy = new JButton("Hủy");
 
         TaoUI.addItem(buttonPanel, btnThem, 5, true);
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
-        
-        // COMBOBOX quyen 
+
+        // COMBOBOX quyen
         JPanel cbJPanel = new JPanel();
-        
+
         cbJPanel.setLayout(new BoxLayout(cbJPanel, BoxLayout.X_AXIS));
         TaoUI.setFixSize(cbJPanel, 330, 30);
-        
-        JLabel cbJLabel = new JLabel("Quyền");
-        cbJLabel.setPreferredSize(new Dimension(110,30));
-        cbJLabel.setMinimumSize(new Dimension(110,30));
-        cbJLabel.setMaximumSize(new Dimension(110,30));
 
-        dsNhomQuyen = nhomQuyenBUS.layDanhSachNhomQuyen_BUS();
+        JLabel cbJLabel = new JLabel("Quyền");
+        cbJLabel.setPreferredSize(new Dimension(110, 30));
+        cbJLabel.setMinimumSize(new Dimension(110, 30));
+        cbJLabel.setMaximumSize(new Dimension(110, 30));
+
+        dsNhomQuyen = nhomQuyenBUS.layDanhSachNhomQuyen();
         cbQuyen = new JComboBox<>();
         for (NhomQuyen nq : dsNhomQuyen) {
             cbQuyen.addItem(nq.getTenNhomQuyen());
         }
-        
+
         cbJPanel.add(cbJLabel);
         cbJPanel.add(cbQuyen);
-      
-        //ADD COMPONENT
+
+        // ADD COMPONENT
         mainPanel.add(cbNVJPanel);
         mainPanel.add(javax.swing.Box.createVerticalStrut(10));
         mainPanel.add(userField);
@@ -135,26 +134,23 @@ public class ThemTaiKhoanDialog extends JDialog {
         String user = txtUser.getText().trim();
         String pass = new String(txtPass.getPassword()).trim();
         int indexNQ = cbQuyen.getSelectedIndex();
-        String maNQ =  dsNhomQuyen.get(indexNQ).getMaNQ();
-        
-        
+        String maNQ = dsNhomQuyen.get(indexNQ).getMaNQ();
+
         // xu ly them vao database
         if (indexNQ == -1) {
             JOptionPane.showMessageDialog(
-                this,
-                "Vui lòng chọn nhóm quyền!",
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE
-            );
+                    this,
+                    "Vui lòng chọn nhóm quyền!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if ( indexNV== -1) {
+        if (indexNV == -1) {
             JOptionPane.showMessageDialog(
-                this,
-                "Vui lòng chọn Nhân viên!",
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE
-            );
+                    this,
+                    "Vui lòng chọn Nhân viên!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
 
@@ -163,38 +159,34 @@ public class ThemTaiKhoanDialog extends JDialog {
                     this,
                     "Vui lòng nhập đầy đủ Username và Password!",
                     "Lỗi",
-                    JOptionPane.ERROR_MESSAGE
-            );
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        if (taiKhoanBUS.KiemTraUsernameTonTai_Bus(user)) {
+        if (taiKhoanBUS.kiemTraUsernameTonTai(user)) {
             JOptionPane.showMessageDialog(
-                this,
-                "Username đã tồn tại!",
-                "Lỗi",
-                JOptionPane.ERROR_MESSAGE
-            );
+                    this,
+                    "Username đã tồn tại!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
             return;
         }
-        TaiKhoan tk = new TaiKhoan(tenNV,user, pass, maNQ, true);
-        if(taiKhoanBUS.themTaiKhoan_BUS(tk)){
+        NhomQuyen nhomQuyen = new NhomQuyen();
+        nhomQuyen.setMaNQ(maNQ);
+        TaiKhoan tk = new TaiKhoan("", tenNV, user, pass, nhomQuyen, "");
+        if (taiKhoanBUS.themTaiKhoan(tk)) {
             JOptionPane.showMessageDialog(
-                this,
-                "Thêm tài khoản thành công!"
-                );
-                taiKhoanUI.hienThiDanhSachTaiKhoan();
-                dispose();
+                    this,
+                    "Thêm tài khoản thành công!");
+            taiKhoanUI.hienThiDanhSachTaiKhoan();
+            dispose();
             return;
-        }
-        else{
-        JOptionPane.showMessageDialog(
-            this,
-            "Thêm tài khoản thất bại!",
-            "Thông báo",
-            JOptionPane.ERROR_MESSAGE
-            );
+        } else {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Thêm tài khoản thất bại!",
+                    "Thông báo",
+                    JOptionPane.ERROR_MESSAGE);
         }
 
     }
 }
-

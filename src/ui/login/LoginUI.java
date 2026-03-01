@@ -1,7 +1,10 @@
 package ui.login;
 
+import bus.NhanVienBUS;
 import bus.TaiKhoanBUS;
 import dto.NhanVien;
+import dto.TaiKhoan;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -25,7 +28,7 @@ import util.TaoUI;
 public class LoginUI extends JFrame {
   private JTextField txtuser;
   private JPasswordField txtpass;
-  private TaiKhoanBUS taiKhoanBUS = new TaiKhoanBUS();
+  private TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
   private MainFrame mainFrame = new MainFrame();
 
   public LoginUI() {
@@ -46,14 +49,13 @@ public class LoginUI extends JFrame {
     // CENTER
     ImageIcon icon = new ImageIcon(getClass().getResource("/assets/img/bglogin.jpg"));
     Image backgroundImage = icon.getImage();
-    JPanel centerPanel =
-        new JPanel() {
-          @Override
-          protected void paintComponent(Graphics g) {
-            super.paintComponent(g);
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-          }
-        };
+    JPanel centerPanel = new JPanel() {
+      @Override
+      protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+      }
+    };
 
     TaoUI.taoPanelBoxLayoutDoc(centerPanel, 400, 400);
     centerPanel = TaoUI.suaBorderChoPanel(centerPanel, 15, 15, 15, 15);
@@ -133,11 +135,12 @@ public class LoginUI extends JFrame {
       return;
     }
     // xu ly dang nhap
-    if (taiKhoanBUS.dangNhap_BUS(user, pass)) {
+    TaiKhoan taiKhoan = taiKhoanBUS.dangNhap(user, pass);
+    if (taiKhoan != null) {
       // luu phien dang nhap
-      NhanVien nv = taiKhoanBUS.layNhanVien_BUS(user);
+      NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
+      NhanVien nv = nhanVienBUS.timNhanVien(taiKhoan.getMaNV());
       PhienDangNhap.setUser(nv);
-      //
       TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
       mainFrame.getTopPaner().capNhapThongTin(nv);
       mainFrame.setVisible(true);
