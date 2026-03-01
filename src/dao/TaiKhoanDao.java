@@ -11,7 +11,7 @@ import dto.TaiKhoan;
 public class TaiKhoanDao {
 
     // thêm tài khoản 
-    public boolean themTaiKhoan_DAO(TaiKhoan tk, Connection conn){
+    public boolean themTaiKhoan(TaiKhoan tk, Connection conn){
 
         String sql = "INSERT INTO TaiKhoan (TenTaiKhoan, TenDangNhap, MatKhau, maNQ, TrangThai) VALUES(?,?,?,?,?)";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
@@ -29,7 +29,7 @@ public class TaiKhoanDao {
         }
     }
     // xóa tài khoản 
-    public boolean xoaTaiKhoan_DAO(String tenDangNhap, Connection conn) {
+    public boolean xoaTaiKhoan(String tenDangNhap, Connection conn) {
         String sql = "UPDATE TaiKhoan SET TrangThai = 0 WHERE TenDangNhap = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setString(1, tenDangNhap);
@@ -40,7 +40,7 @@ public class TaiKhoanDao {
         }
     }
     // thay đổi mật khẩu 
-    public boolean suaMatKhau_DAO(String tenDangNhap, String matKhauMoi, Connection conn){
+    public boolean suaMatKhau(String tenDangNhap, String matKhauMoi, Connection conn){
         String sql = "UPDATE TaiKhoan SET MatKhau = ? Where TenDangNhap = ?";
         try(PreparedStatement ps = conn.prepareStatement(sql)){
             ps.setString(1, matKhauMoi);
@@ -52,7 +52,7 @@ public class TaiKhoanDao {
         }
     }
     //lay list tai khoan 
-    public ArrayList<TaiKhoan> layDanhSachTaiKhoan_DAO() {
+    public ArrayList<TaiKhoan> layDanhSachTaiKhoan() {
         ArrayList<TaiKhoan> ds = new ArrayList<>();
         String sql = "SELECT * FROM TaiKhoan";
 
@@ -76,7 +76,7 @@ public class TaiKhoanDao {
         return ds;
     }
     //test lay nhan vien 
-    public NhanVien layNhanVien_DAO(String user){
+    public NhanVien layNhanVien(String user){
             NhanVien nv = null;
             String sql = """
                     SELECT nv.*
@@ -94,13 +94,13 @@ public class TaiKhoanDao {
                     nv.setMaNV(rs.getString("MaNV"));
                     nv.setTenNV(rs.getString("TenNV"));
                     nv.setGioiTinh(rs.getString("GioiTinh"));
-                    nv.setNgaySinh(rs.getDate("NgaySinh"));
+                    nv.setNgaySinh(rs.getString("NgaySinh"));
                     nv.setSdt(rs.getString("SDT"));
                     nv.setDiaChi(rs.getString("DiaChi"));
                     nv.setChucVu(rs.getString("ChucVu"));
                     nv.setTaiKhoan(rs.getString("TaiKhoan"));
                     nv.setTrangThai(rs.getBoolean("TrangThai"));
-                    // nv.setAnh(rs.getString("Anh"));
+                    nv.setAnh(rs.getString("Anh"));
                 }
             }catch(Exception e){
                 e.printStackTrace();
@@ -108,7 +108,7 @@ public class TaiKhoanDao {
         return nv;
     }
     //lay list nhanvien 
-    public ArrayList<NhanVien> layDanhSachNhanVien_DAO() {
+    public ArrayList<NhanVien> layDanhSachNhanVien() {
         ArrayList<NhanVien> ds = new ArrayList<>();
         String sql = "SELECT * FROM NhanVien";
 
@@ -122,13 +122,13 @@ public class TaiKhoanDao {
                 nv.setMaNV(rs.getString("MaNV"));
                 nv.setTenNV(rs.getString("TenNV"));
                 nv.setGioiTinh(rs.getString("GioiTinh"));
-                nv.setNgaySinh(rs.getDate("NgaySinh"));
+                nv.setNgaySinh(rs.getString("NgaySinh"));
                 nv.setSdt(rs.getString("SDT"));
                 nv.setDiaChi(rs.getString("DiaChi"));
                 nv.setChucVu(rs.getString("ChucVu"));
                 nv.setTaiKhoan(rs.getString("TaiKhoan"));
                 nv.setTrangThai(rs.getBoolean("TrangThai"));
-                // nv.setAnh(rs.getString("Anh"));
+                nv.setAnh(rs.getString("Anh"));
                 ds.add(nv);
             }
         } catch (Exception e) {
@@ -137,7 +137,7 @@ public class TaiKhoanDao {
         return ds;
     }
     //dang nhap tai khoan 
-    public boolean dangNhap_DAO(String tenDangNhap, String matKhau){
+    public boolean dangNhap(String tenDangNhap, String matKhau){
         String sql = "SELECT * FROM TaiKhoan WHERE TenDangNhap = ? AND MatKhau = ?";
         try (Connection conn = DBConnection.getConnection(); 
             PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -154,7 +154,7 @@ public class TaiKhoanDao {
         return false;
     }
     //kiem tra username da ton tai chua
-    public boolean kiemTraUsernameTonTai_DAO(String username) {
+    public boolean kiemTraUsernameTonTai(String username) {
         String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";
         try (Connection conn = DBConnection.getConnection();
             PreparedStatement ps = conn.prepareStatement(sql)) {

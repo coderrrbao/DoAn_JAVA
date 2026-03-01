@@ -22,7 +22,7 @@ public class TaiKhoanBUS {
 
         try {
             conn.setAutoCommit(false);
-            if (!dao.themTaiKhoan_DAO(tk, conn)) {
+            if (!dao.themTaiKhoan(tk, conn)) {
                 throw new SQLException();
             }
             conn.commit();
@@ -55,7 +55,7 @@ public class TaiKhoanBUS {
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
-            if (!dao.xoaTaiKhoan_DAO(tenDangNhap, conn)) {
+            if (!dao.xoaTaiKhoan(tenDangNhap, conn)) {
                 throw new SQLException();
             }
             conn.commit();
@@ -91,7 +91,7 @@ public class TaiKhoanBUS {
         try {
             conn.setAutoCommit(false);
 
-            if (!dao.suaMatKhau_DAO(tenDangNhap, matKhauMoi, conn)) {
+            if (!dao.suaMatKhau(tenDangNhap, matKhauMoi, conn)) {
                 throw new SQLException();
             }
             conn.commit();
@@ -117,24 +117,24 @@ public class TaiKhoanBUS {
     }
     //lay danh sach tai khoan
     public ArrayList<TaiKhoan> layDanhSachTaiKhoan_BUS(){
-        return dao.layDanhSachTaiKhoan_DAO();
+        return dao.layDanhSachTaiKhoan();
     }
     //lay danh sach nhan vien
     public ArrayList<NhanVien> layDanhSachNhanVien_BUS(){
-        return dao.layDanhSachNhanVien_DAO();
+        return dao.layDanhSachNhanVien();
     }
     //dang nhap 
     public boolean dangNhap_BUS(String tenDangNhap, String MatKhau){
-        return dao.dangNhap_DAO(tenDangNhap, MatKhau);
+        return dao.dangNhap(tenDangNhap, MatKhau);
     }
 
     //test nhap vao ten dang nhap lay nhan vien 
     public NhanVien layNhanVien_BUS(String user){
-        return dao.layNhanVien_DAO(user);
+        return dao.layNhanVien(user);
     }
     // 
     public Boolean KiemTraUsernameTonTai_Bus(String username){
-        return dao.kiemTraUsernameTonTai_DAO(username);
+        return dao.kiemTraUsernameTonTai(username);
     }
 
 }

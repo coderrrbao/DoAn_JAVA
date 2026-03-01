@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import bus.ThongtinKhachHangBUS;
+import bus.KhachHangBUS;
 import dto.KhachHang;
 import util.TaoUI;
 
@@ -28,7 +28,7 @@ public class ThongTinKhachHangPanel extends JPanel {
     private JTextField txtSdt;
     private JTextField txtTenKh;
 
-    private ThongtinKhachHangBUS khachHangBUS;
+    private KhachHangBUS khachHangBUS;
     private ArrayList<KhachHang> danhSachKH;
     private ArrayList<KhachHang> danhSachGoiY;
     private JPopupMenu popupMenu;
@@ -39,7 +39,7 @@ public class ThongTinKhachHangPanel extends JPanel {
     private boolean isSelecting = false;
 
     public ThongTinKhachHangPanel() {
-        khachHangBUS = new ThongtinKhachHangBUS();
+        khachHangBUS = new KhachHangBUS();
         danhSachKH = new ArrayList<>();
         loadDataKhachHang();
 

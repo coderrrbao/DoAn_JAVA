@@ -1,24 +1,22 @@
 package dto;
 
-import java.util.Date;
-
 public class NhanVien {
     private String maNV;
     private String tenNV;
     private String gioiTinh;
-    private Date ngaySinh;
+    private String ngaySinh;
     private String sdt;
     private String diaChi;
     private String chucVu;
     private String taiKhoan;
-    private boolean trangThai;
     private String anh;
+    private boolean trangThai;
 
     public NhanVien() {
     }
 
-    public NhanVien(String maNV, String tenNV, String gioiTinh, Date ngaySinh, String sdt, String diaChi,
-            String chucVu, String taiKhoan, String anh, boolean trangThai) {
+    public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String sdt,
+            String diaChi, String chucVu, String taiKhoan, String anh, boolean trangThai) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
@@ -27,10 +25,11 @@ public class NhanVien {
         this.diaChi = diaChi;
         this.chucVu = chucVu;
         this.taiKhoan = taiKhoan;
-        this.trangThai = trangThai;
         this.anh = anh;
+        this.trangThai = trangThai;
     }
 
+    // Getter và Setter
     public String getMaNV() {
         return maNV;
     }
@@ -55,11 +54,11 @@ public class NhanVien {
         this.gioiTinh = gioiTinh;
     }
 
-    public Date getNgaySinh() {
+    public String getNgaySinh() {
         return ngaySinh;
     }
 
-    public void setNgaySinh(Date ngaySinh) {
+    public void setNgaySinh(String ngaySinh) {
         this.ngaySinh = ngaySinh;
     }
 
@@ -95,19 +94,19 @@ public class NhanVien {
         this.taiKhoan = taiKhoan;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
     public String getAnh() {
         return anh;
     }
 
     public void setAnh(String anh) {
         this.anh = anh;
+    }
+
+    public boolean isTrangThai() {
+        return trangThai;
+    }
+
+    public void setTrangThai(boolean trangThai) {
+        this.trangThai = trangThai;
     }
 }

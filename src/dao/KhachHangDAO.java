@@ -4,11 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.List;
 
 import dao.conection.DBConnection;
 import dto.KhachHang;
 
 public class KhachHangDAO {
+
     public KhachHang layKhachHangTheoSDT(String sdt) {
         KhachHang kh = null;
         String sql = "SELECT * FROM KhachHang WHERE TrangThai = 1 AND SDT = ?";
@@ -25,8 +27,7 @@ public class KhachHangDAO {
                         rs.getNString("GioiTinh"),
                         rs.getString("SDT"),
                         rs.getDouble("TenDaMua"),
-                        rs.getString("MaHang")
-                );
+                        rs.getString("MaHang"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -55,32 +56,6 @@ public class KhachHangDAO {
         return "";
     }
 
-    public ArrayList<KhachHang> layDanhSachKhachHang() {
-        ArrayList<KhachHang> ds = new ArrayList<>();
-        String sql = "SELECT * FROM KhachHang WHERE TrangThai = 1";
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
-
-            while (rs.next()) {
-                KhachHang kh = new KhachHang(
-                        rs.getString("MaKH"),
-                        rs.getNString("TenKH"),
-                        rs.getNString("GioiTinh"),
-                        rs.getString("SDT"),
-                        rs.getDouble("TenDaMua"),
-                        rs.getString("MaHang")
-                );
-                ds.add(kh);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Lỗi truy vấn toàn bộ khách hàng: " + e.getMessage());
-        }
-        return ds;
-    }
-
     public boolean themKhachHang(KhachHang kh) {
         String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, SDT, TenDaMua, MaHang, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -102,6 +77,80 @@ public class KhachHangDAO {
         }
     }
 
+    public ArrayList<KhachHang> layDanhSachKhachHang() {
+        ArrayList<KhachHang> ds = new ArrayList<>();
+        String sql = "SELECT * FROM KhachHang WHERE TrangThai = 1";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                KhachHang kh = new KhachHang(
+                        rs.getString("MaKH"),
+                        rs.getNString("TenKH"),
+                        rs.getNString("GioiTinh"),
+                        rs.getString("SDT"),
+                        rs.getDouble("TenDaMua"),
+                        rs.getString("MaHang"));
+                ds.add(kh);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn danh sách khách hàng: " + e.getMessage());
+        }
+        return ds;
+    }
+
+    public KhachHang layKhachHangTheoMa(String maKH) {
+        KhachHang kh = null;
+        String sql = "SELECT * FROM KhachHang WHERE MaKH = ?";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maKH);
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                kh = new KhachHang(
+                        rs.getString("MaKH"),
+                        rs.getNString("TenKH"),
+                        rs.getNString("GioiTinh"),
+                        rs.getString("SDT"),
+                        rs.getDouble("TenDaMua"),
+                        rs.getString("MaHang"));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi truy vấn KhachHang theo mã: " + e.getMessage());
+        }
+        return kh;
+    }
+
+    public boolean capNhatKhachHang(KhachHang kh) {
+        String sql = "UPDATE KhachHang SET TenKH = ?, GioiTinh = ?, SDT = ?, TenDaMua = ?, MaHang = ? WHERE MaKH = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, kh.getTenKH());
+            pst.setString(2, kh.getGioiTinh());
+            pst.setString(3, kh.getSdt());
+            pst.setDouble(4, kh.getTenDaMua());
+            pst.setString(5, kh.getMaHang());
+            pst.setString(6, kh.getMaKH());
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi cập nhật KhachHang: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean xoaKhachHang(String maKH) {
+        String sql = "UPDATE KhachHang SET TrangThai = 0 WHERE MaKH = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maKH);
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi xóa KhachHang: " + e.getMessage());
+            return false;
+        }
+    }
     public boolean capNhatTienDaMua(String maKH, double tienThem) {
         String sql = "UPDATE KhachHang SET TenDaMua = ISNULL(TenDaMua, 0) + ? WHERE MaKH = ?";
         try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
@@ -115,3 +164,4 @@ public class KhachHangDAO {
         return false;
     }
 }
+

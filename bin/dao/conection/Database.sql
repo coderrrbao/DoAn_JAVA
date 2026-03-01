@@ -543,23 +543,16 @@ BEGIN
         DiaChi NVARCHAR(255),
         ChucVu NVARCHAR(100),
         TaiKhoan NVARCHAR(50),
+        Anh NVARCHAR(255),
         TrangThai BIT
     )
+
     INSERT INTO NhanVien
-        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, TrangThai)
+        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, TaiKhoan, Anh, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '0909123456', N'TP.HCM', N'Cửa hàng trưởng', 'admin', 1),
-        ('NV02', N'Trần Thị Thu Ngân', N'Nữ', '2000-05-15', '0909123457', N'Bình Dương', N'Thu ngân', 'nhanvien1', 1),
-        ('NV03', N'Lê Văn Kho', N'Nam', '1995-08-20', '0909123458', N'Đồng Nai', N'Thủ kho', 'nhanvienkho', 1),
-        ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '0909222333', N'TP.HCM', N'Pha chế', 'phache01', 1),
-        ('NV05', N'Lý Thị Pha Chế 2', N'Nữ', '1999-11-20', '0909333444', N'TP.HCM', N'Pha chế', 'phache02', 1),
-        ('NV06', N'Ngô Văn Bảo Vệ', N'Nam', '1985-06-30', '0909555666', N'Long An', N'Bảo vệ', 'baove01', 1),
-        ('NV07', N'Đỗ Thị Kế Toán', N'Nữ', '1992-09-09', '0909777888', N'TP.HCM', N'Kế toán', 'ketoan01', 1),
-        ('NV08', N'Hoàng Văn Giám Sát', N'Nam', '1991-03-03', '0909888999', N'TP.HCM', N'Giám sát', 'giamsat01', 1),
-        ('NV09', N'Vũ Thị Marketing', N'Nữ', '1997-07-07', '0909000111', N'TP.HCM', N'Marketing', 'marketing01', 1),
-        ('NV10', N'Bùi Văn Sale 2', N'Nam', '2001-12-12', '0909111222', N'Bình Dương', N'Thu ngân', 'sale02', 1),
-        ('NV11', N'Trịnh Thị Sale 3', N'Nữ', '2002-01-20', '0909333555', N'TP.HCM', N'Thu ngân', 'sale03', 1),
-        ('NV12', N'Phan Văn Kho 2', N'Nam', '1996-04-25', '0909666777', N'Đồng Nai', N'Thủ kho', 'kho02', 1)
+        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Địa chỉ 1', N'Thu ngân', 'NV01', NULL, 1),
+        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '0902345678', N'Địa chỉ 2', N'Thu ngân', 'NV02', NULL, 1),
+        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Địa chỉ 3', N'Quản lý', 'admin', NULL, 1)
 END;
 
 /* =============================================
@@ -671,16 +664,13 @@ BEGIN
     INSERT INTO HoaDon
         (MaHD, MaNV, MaKH, MaKM, NgayBan, TongTien, TienKhuyenMai, TrangThai)
     VALUES
-        ('HD001', 'NV02', 'KH001', 'KM02', '2024-01-15', 55000, 11000, 1),
-        ('HD002', 'NV02', 'KH002', NULL, '2024-01-16', 15000, 0, 1),
-        ('HD003', 'NV02', 'KH003', 'KM07', '2024-01-17', 100000, 10000, 1),
-        ('HD004', 'NV10', 'KH004', 'KM02', '2024-01-17', 200000, 40000, 1),
-        ('HD005', 'NV11', 'KH005', NULL, '2024-01-18', 45000, 0, 1),
-        ('HD006', 'NV02', 'KH001', 'KM03', '2024-01-19', 30000, 1500, 1),
-        ('HD007', 'NV10', 'KH006', NULL, '2024-01-20', 80000, 0, 1),
-        ('HD008', 'NV11', 'KH007', 'KM02', '2024-01-21', 150000, 30000, 1),
-        ('HD009', 'NV02', 'KH008', NULL, '2024-01-22', 25000, 0, 1),
-        ('HD010', 'NV10', 'KH009', 'KM07', '2024-01-22', 90000, 9000, 1)
+        ('HD001', 'NV01', 'KH001', 'KM07', GETDATE(), 150000, 10000, 1),
+        ('HD002', 'NV02', 'KH002', NULL, GETDATE(), 200000, 0, 1),
+        ('HD003', 'NV01', 'KH003', NULL, GETDATE(), 105000, 0, 1),
+        ('HD004', 'NV02', 'KH004', 'KM02', GETDATE(), 180000, 36000, 1),
+        ('HD005', 'NV01', 'KH005', NULL, GETDATE(), 45000, 0, 1),
+        ('HD006', 'NV03', 'KH006', NULL, GETDATE(), 35000, 0, 1),
+        ('HD007', 'NV01', 'KH007', NULL, GETDATE(), 80000, 0, 1)
 END;
 
 /* =============================================
@@ -738,9 +728,10 @@ BEGIN
     VALUES
         ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
         ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP03', '2024-01-15', 'NV12', 2000000, 'NCC10', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP04', '2024-02-01', 'NV03', 10000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP05', '2024-02-05', 'NV12', 1500000, 'NCC11', N'Đã xác nhận', N'Đã xác nhận', 1)
+
+        ('PNSP03', '2024-01-15', 'NV03', 2000000, 'NCC10', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP04', '2024-02-01', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNSP05', '2024-02-05', 'NV03', 1500000, 'NCC11', N'Đã xác nhận', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -796,9 +787,9 @@ BEGIN
         (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
         ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNNL02', '2024-01-13', 'NV12', 3000000, 'NCC03', N'Đã xác nhận', N'Đã xác nhận', 1),
+        ('PNNL02', '2024-01-13', 'NV02', 3000000, 'NCC03', N'Đã xác nhận', N'Đã xác nhận', 1),
         ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC08', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNNL04', '2024-02-01', 'NV12', 2000000, 'NCC05', N'Đã xác nhận', N'Đã xác nhận', 1)
+        ('PNNL04', '2024-02-01', 'NV02', 2000000, 'NCC05', N'Đã xác nhận', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -835,12 +826,18 @@ BEGIN
         -- Trân châu
         ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1),
         -- Nguyên liệu (test)
-        ('LONL_NL04', 'PNNL01', 'NL04', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 30000, N'Đã xác nhận', 1), -- Sữa tươi
-        ('LONL_NL05', 'PNNL01', 'NL05', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 50000, N'Đã xác nhận', 1), -- Matcha/Trà
-        ('LONL_NL08', 'PNNL01', 'NL08', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 80000, N'Đã xác nhận', 1), -- Trà đen
-        ('LONL_NL09', 'PNNL01', 'NL09', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 60000, N'Đã xác nhận', 1), -- Kem béo
-        ('LONL_NL11', 'PNNL01', 'NL11', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 500, N'Đã xác nhận', 1),   -- Ly nhựa
-        ('LONL_NL13', 'PNNL01', 'NL13', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 20000, N'Đã xác nhận', 1)  -- Đá viên
+        ('LONL_NL04', 'PNNL01', 'NL04', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 30000, N'Đã xác nhận', 1),
+        -- Sữa tươi
+        ('LONL_NL05', 'PNNL01', 'NL05', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 50000, N'Đã xác nhận', 1),
+        -- Matcha/Trà
+        ('LONL_NL08', 'PNNL01', 'NL08', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 80000, N'Đã xác nhận', 1),
+        -- Trà đen
+        ('LONL_NL09', 'PNNL01', 'NL09', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 60000, N'Đã xác nhận', 1),
+        -- Kem béo
+        ('LONL_NL11', 'PNNL01', 'NL11', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 500, N'Đã xác nhận', 1),
+        -- Ly nhựa
+        ('LONL_NL13', 'PNNL01', 'NL13', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 20000, N'Đã xác nhận', 1)
+-- Đá viên
 -- Syrup
 END;
 /* =============================================
@@ -852,22 +849,42 @@ WHERE name = 'PhieuHuySanPham')
 BEGIN
     CREATE TABLE PhieuHuySanPham
     (
-        MaPH VARCHAR(50) NOT NULL,
-        MaLo VARCHAR(50) NOT NULL,
+        MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayHuy DATE,
         MaNV VARCHAR(50),
         LyDo NVARCHAR(MAX),
         TongGiaTri DECIMAL(18, 2),
         TrangThaiXuLy NVARCHAR(50),
-        TrangThai BIT,
-        PRIMARY KEY (MaPH, MaLo)
+        TrangThai BIT
     )
     INSERT INTO PhieuHuySanPham
-        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai)
+        (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHSP01', 'LOSP01', '2024-02-01', 'NV01', N'Lon bị móp méo do vận chuyển', 80000, N'Chờ duyệt', 1),
-        ('PHSP02', 'LOSP03', '2024-01-21', 'NV01', N'Hết hạn sử dụng', 50000, N'Đã duyệt', 1)
+        ('PHSP01', '2024-02-20', 'NV03', N'Sản phẩm hết hạn sử dụng', 4000000, N'Đã xác nhận', 1),
+        ('PHSP02', '2024-02-21', 'NV03', N'Hư hỏng do quá trình vận chuyển', 1500000, N'Đã xác nhận', 1)
 END;
+
+IF NOT EXISTS (SELECT *
+FROM sys.tables
+WHERE name = 'ChiTietPhieuHuySanPham')
+BEGIN
+    CREATE TABLE ChiTietPhieuHuySanPham
+    (
+        MaPH VARCHAR(50) NOT NULL,
+        MaLo VARCHAR(50) NOT NULL,
+        SoLuong FLOAT,
+        DonGia DECIMAL(18, 2),
+        PRIMARY KEY (MaPH, MaLo),
+        CONSTRAINT FK_CTPHSP_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH),
+        CONSTRAINT FK_CTPHSP_LoSP FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP)
+    )
+    INSERT INTO ChiTietPhieuHuySanPham
+        (MaPH, MaLo, SoLuong, DonGia)
+    VALUES
+        ('PHSP01', 'LOSP02', 10, 400000),
+        ('PHSP02', 'LOSP05', 5, 300000)
+END;
+
 
 /* =============================================
    23. BẢNG PHIẾU HỦY NGUYÊN LIỆU (Ingredient Disposal)
@@ -878,22 +895,41 @@ WHERE name = 'PhieuHuyNguyenLieu')
 BEGIN
     CREATE TABLE PhieuHuyNguyenLieu
     (
-        MaPH VARCHAR(50) NOT NULL,
-        MaLo VARCHAR(50) NOT NULL,
+        MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayHuy DATE,
         MaNV VARCHAR(50),
         LyDo NVARCHAR(MAX),
         TongTien DECIMAL(18, 2),
         TrangThaiXuLy NVARCHAR(50),
-        TrangThai BIT,
-        PRIMARY KEY (MaPH, MaLo)
+        TrangThai BIT
     )
     INSERT INTO PhieuHuyNguyenLieu
-        (MaPH, MaLo, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy, TrangThai)
+        (MaPH, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHNL01', 'LONL04', '2024-03-16', 'NV01', N'Trân châu bị hỏng do ẩm mốc', 200000, N'Đã duyệt', 1)
+        ('PHNL01', '2024-02-22', 'NV03', N'Nguyên liệu bị ẩm mốc', 300000, N'Đã xác nhận', 1),
+        ('PHNL02', '2024-02-23', 'NV03', N'Đổ vỡ bao bì', 250000, N'Đã xác nhận', 1)
 END;
 
+IF NOT EXISTS (SELECT *
+FROM sys.tables
+WHERE name = 'ChiTietPhieuHuyNguyenLieu')
+BEGIN
+    CREATE TABLE ChiTietPhieuHuyNguyenLieu
+    (
+        MaPH VARCHAR(50) NOT NULL,
+        MaLo VARCHAR(50) NOT NULL,
+        SoLuong FLOAT,
+        DonGia DECIMAL(18, 2),
+        PRIMARY KEY (MaPH, MaLo),
+        CONSTRAINT FK_CTPHNL_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH),
+        CONSTRAINT FK_CTPHNL_LoNL FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL)
+    )
+    INSERT INTO ChiTietPhieuHuyNguyenLieu
+        (MaPH, MaLo, SoLuong, DonGia)
+    VALUES
+        ('PHNL01', 'LONL01', 2, 150000),
+        ('PHNL02', 'LONL02', 1, 250000)
+END;
 
 IF NOT EXISTS (SELECT *
 FROM sys.tables
@@ -928,7 +964,8 @@ WHERE name = 'ChiTietNhaCungCap')
 BEGIN
     CREATE TABLE ChiTietNhaCungCap
     (
-        MaCTNCC VARCHAR(50) PRIMARY KEY, -- Đã sửa thành VARCHAR và bỏ IDENTITY
+        MaCTNCC VARCHAR(50) PRIMARY KEY,
+        -- Đã sửa thành VARCHAR và bỏ IDENTITY
         MaNCC VARCHAR(50) NOT NULL,
         LoaiDoiTuong NVARCHAR(50) NOT NULL,
         MaDoiTuong VARCHAR(50) NOT NULL,
@@ -967,11 +1004,6 @@ END;
    KHOÁ NGOẠI (Foreign Keys) - Giữ nguyên không đổi
    ============================================= */
 
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhieuKiemKe_NhanVien')
-    ALTER TABLE PhieuKiemKe ADD CONSTRAINT FK_PhieuKiemKe_NhanVien 
-    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
@@ -1090,77 +1122,59 @@ FROM sys.foreign_keys
 WHERE name = 'FK_LoNguyenLieu_NguyenLieu')
     ALTER TABLE LoNguyenLieu ADD CONSTRAINT FK_LoNguyenLieu_NguyenLieu FOREIGN KEY (MaNL) REFERENCES NguyenLieu(MaNL);
 
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhieuHuySP_NhanVien')
-    ALTER TABLE PhieuHuySanPham ADD CONSTRAINT FK_PhieuHuySP_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhieuHuySP_LoSanPham')
-    ALTER TABLE PhieuHuySanPham ADD CONSTRAINT FK_PhieuHuySP_LoSanPham FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP);
+
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_PhieuHuyNL_NhanVien')
-    ALTER TABLE PhieuHuyNguyenLieu ADD CONSTRAINT FK_PhieuHuyNL_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+    ALTER TABLE PhieuHuyNguyenLieu 
+    ADD CONSTRAINT FK_PhieuHuyNL_NhanVien 
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_PhieuHuyNL_LoNguyenLieu')
-    ALTER TABLE PhieuHuyNguyenLieu ADD CONSTRAINT FK_PhieuHuyNL_LoNguyenLieu FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
+WHERE name = 'FK_CTPHNL_PhieuHuy')
+    ALTER TABLE ChiTietPhieuHuyNguyenLieu 
+    ADD CONSTRAINT FK_CTPHNL_PhieuHuy 
+    FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH);
+
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_CTPHNL_LoNL')
+    ALTER TABLE ChiTietPhieuHuyNguyenLieu 
+    ADD CONSTRAINT FK_CTPHNL_LoNL 
+    FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
+
+
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhieuHuySP_NhanVien')
+    ALTER TABLE PhieuHuySanPham 
+    ADD CONSTRAINT FK_PhieuHuySP_NhanVien 
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_CTPHSP_PhieuHuy')
+    ALTER TABLE ChiTietPhieuHuySanPham 
+    ADD CONSTRAINT FK_CTPHSP_PhieuHuy 
+    FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH);
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_CTPHSP_LoSP')
+    ALTER TABLE ChiTietPhieuHuySanPham 
+    ADD CONSTRAINT FK_CTPHSP_LoSP 
+    FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP);
+
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_Quyen_NhomQuyen')
     ALTER TABLE Quyen ADD CONSTRAINT FK_Quyen_NhomQuyen
     FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
-/* =============================================================
-   CHỈNH SỬA CẤU TRÚC PHIẾU HỦY ĐỂ PHÙ HỢP VỚI CODE JAVA
-   ============================================================= */
-
--- 1. XÓA CÁC BẢNG CŨ (Lưu ý: Sẽ mất dữ liệu mẫu của 2 bảng này)
-DROP TABLE IF EXISTS PhieuHuySanPham;
-DROP TABLE IF EXISTS PhieuHuyNguyenLieu;
-
--- 2. TẠO LẠI CẤU TRÚC CHO SẢN PHẨM
-CREATE TABLE PhieuHuySanPham (
-    MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
-    NgayHuy DATETIME DEFAULT GETDATE(),
-    MaNV VARCHAR(50),
-    LyDo NVARCHAR(MAX),
-    TongGiaTri DECIMAL(18, 2),
-    TrangThaiXuLy NVARCHAR(50), -- 'Đang xử lý', 'Đã xác nhận'
-    TrangThai BIT DEFAULT 1
-);
-
-CREATE TABLE ChiTietPhieuHuySanPham (
-    MaPH VARCHAR(50) NOT NULL,
-    MaLo VARCHAR(50) NOT NULL,
-    SoLuong FLOAT,
-    DonGia DECIMAL(18, 2),
-    PRIMARY KEY (MaPH, MaLo),
-    FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH),
-    FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP)
-);
-
--- 3. TẠO LẠI CẤU TRÚC CHO NGUYÊN LIỆU
-CREATE TABLE PhieuHuyNguyenLieu (
-    MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
-    NgayHuy DATETIME DEFAULT GETDATE(),
-    MaNV VARCHAR(50),
-    LyDo NVARCHAR(MAX),
-    TongTien DECIMAL(18, 2),
-    TrangThaiXuLy NVARCHAR(50),
-    TrangThai BIT DEFAULT 1
-);
-
-CREATE TABLE ChiTietPhieuHuyNguyenLieu (
-    MaPH VARCHAR(50) NOT NULL,
-    MaLo VARCHAR(50) NOT NULL,
-    SoLuong FLOAT,
-    DonGia DECIMAL(18, 2),
-    PRIMARY KEY (MaPH, MaLo),
-    FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH),
-    FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL)
-);

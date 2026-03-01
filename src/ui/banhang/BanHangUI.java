@@ -1,9 +1,9 @@
 package ui.banhang;
 
 import bus.HoaDonBUS;
+import bus.KhachHangBUS;
 import bus.MaGiamGiaBUS;
 import bus.SanPhamBUS;
-import bus.ThongtinKhachHangBUS;
 import dto.*;
 import ui.component.BoLocListener;
 import ui.component.SanPhamClickListener;
@@ -45,7 +45,7 @@ public class BanHangUI extends JPanel {
         thongTinKhachHangPanel = new ThongTinKhachHangPanel();
         leftPanel.add(thongTinKhachHangPanel, BorderLayout.NORTH);
 
-        ThongtinKhachHangBUS khachHangBUS = new ThongtinKhachHangBUS();
+        KhachHangBUS khachHangBUS = new KhachHangBUS();
 
         thongTinKhachHangPanel.getTxtSdt().getDocument().addDocumentListener(
                 new javax.swing.event.DocumentListener() {
@@ -60,11 +60,19 @@ public class BanHangUI extends JPanel {
                             thongTinKhachHangPanel.getTxtTenKh().setEditable(true);
                         }
                     }
-                    public void insertUpdate(javax.swing.event.DocumentEvent e) { xuLy(); }
-                    public void removeUpdate(javax.swing.event.DocumentEvent e) { xuLy(); }
-                    public void changedUpdate(javax.swing.event.DocumentEvent e) { xuLy(); }
-                }
-        );
+
+                    public void insertUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+
+                    public void removeUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+
+                    public void changedUpdate(javax.swing.event.DocumentEvent e) {
+                        xuLy();
+                    }
+                });
 
         thanhToanPanel = new ThanhToanPanel();
         leftPanel.add(thanhToanPanel, BorderLayout.SOUTH);
@@ -139,6 +147,7 @@ public class BanHangUI extends JPanel {
             public void onLoc(ArrayList<SanPham> ds) {
                 listSanPhamPanel.render(ds);
             }
+
             @Override
             public void onLamMoi() {
                 SanPhamBUS.getSanPhamBUS().khoitao();
@@ -151,8 +160,6 @@ public class BanHangUI extends JPanel {
         ganSuKienGiamGia();
         loadDanhSachKhuyenMai();
     }
-
-
 
     private void loadDanhSachKhuyenMai() {
         MaGiamGiaBUS kmBUS = new MaGiamGiaBUS();
@@ -170,7 +177,8 @@ public class BanHangUI extends JPanel {
         thanhToanPanel.getBtnXacNhanMGG().addActionListener(e -> {
             String inputCode = thanhToanPanel.getMaGiamGiaInput();
 
-            if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Áp dụng") || thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
+            if (thanhToanPanel.getBtnXacNhanMGG().getText().equals("Áp dụng")
+                    || thanhToanPanel.getBtnXacNhanMGG().getText().equals("Xác nhận")) {
                 if (inputCode.isEmpty()) {
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khuyến mãi từ danh sách!");
                     return;
@@ -193,8 +201,7 @@ public class BanHangUI extends JPanel {
                     JOptionPane.showMessageDialog(this, "Mã giảm giá không tồn tại hoặc đã bị xóa!");
                     resetGiamGia();
                 }
-            }
-            else {
+            } else {
                 resetGiamGia();
                 lockMaGiamGia(false);
             }
@@ -227,12 +234,10 @@ public class BanHangUI extends JPanel {
             long millis = System.currentTimeMillis();
             hd.setNgayBan(new Date(millis));
 
-
             NhanVien nvDangNhap = PhienDangNhap.getUser();
             if (nvDangNhap != null) {
                 hd.setNhanVien(nvDangNhap);
             }
-
 
             hd.setTongTien(thanhToanPanel.getTongThanhToan());
             String sdtNhap = thongTinKhachHangPanel.getTxtSdt().getText().trim();
@@ -241,23 +246,29 @@ public class BanHangUI extends JPanel {
 
             if (!sdtNhap.isEmpty() && khChon == null) {
                 if (tenNhap.isEmpty()) {
-                    JOptionPane.showMessageDialog(this, "Phát hiện Số điện thoại mới! Vui lòng điền Tên Khách Hàng để lưu thông tin tích điểm.", "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(this,
+                            "Phát hiện Số điện thoại mới! Vui lòng điền Tên Khách Hàng để lưu thông tin tích điểm.",
+                            "Thiếu thông tin", JOptionPane.WARNING_MESSAGE);
                     thongTinKhachHangPanel.getTxtTenKh().requestFocus();
                     return;
                 }
 
-                ThongtinKhachHangBUS khBUS = new ThongtinKhachHangBUS();
+                KhachHangBUS khBUS = new KhachHangBUS();
                 String maKHMoi = khBUS.taoMaKHMoi();
 
                 KhachHang khMoi = new KhachHang(maKHMoi, tenNhap, "Khác", sdtNhap, 0.0, "HTV01");
                 khMoi.setTrangThai(true);
 
-                if (khBUS.themKhachHang(khMoi)) {
-                    hd.setMaKH(maKHMoi);
-                    System.out.println("Đã tự động lưu Khách hàng mới: " + tenNhap);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Lỗi khi lưu thông tin khách hàng mới vào Database!");
-                    return;
+                try {
+                    if (khBUS.themKhachHang(khMoi)) {
+                        hd.setMaKH(maKHMoi);
+                        System.out.println("Đã tự động lưu Khách hàng mới: " + tenNhap);
+                    } else {
+                        JOptionPane.showMessageDialog(this, "Lỗi khi lưu thông tin khách hàng mới vào Database!");
+                        return;
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, ex.getMessage(), "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
                 }
 
             } else if (khChon != null) {
@@ -271,10 +282,9 @@ public class BanHangUI extends JPanel {
             double tienDaGiam = tongTienHang - hd.getTongTien();
             hd.setTienKhuyenMai(tienDaGiam);
 
-            if(maGiamGiaDangDung != null) {
+            if (maGiamGiaDangDung != null) {
                 hd.setMaGiamGia(maGiamGiaDangDung);
-            }
-            else {
+            } else {
                 hd.setMaGiamGia(null);
             }
             hd.setTrangThai(true);
@@ -328,11 +338,14 @@ public class BanHangUI extends JPanel {
 
             if (hoaDonBUS.ThanhToan(hd)) {
                 if (hd.getMaKH() != null) {
-                    ThongtinKhachHangBUS khBUS = new ThongtinKhachHangBUS();
+                    KhachHangBUS khBUS = new KhachHangBUS();
                     khBUS.capNhatTienDaMua(hd.getMaKH(), hd.getTongTien());
                 }
-                int luaChon = JOptionPane.showConfirmDialog(this, "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                if (luaChon == JOptionPane.YES_OPTION) { xulyPDF.xuatHoaDon(hd); }
+                int luaChon = JOptionPane.showConfirmDialog(this,
+                        "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                if (luaChon == JOptionPane.YES_OPTION) {
+                    xulyPDF.xuatHoaDon(hd);
+                }
 
                 model.setRowCount(0);
                 thongTinKhachHangPanel.getTxtSdt().setText("");
@@ -341,7 +354,8 @@ public class BanHangUI extends JPanel {
                 lockMaGiamGia(false);
 
             } else {
-                JOptionPane.showMessageDialog(this, "Thanh toán thất bại! Vui lòng kiểm tra lại kết nối hoặc kho hàng.");
+                JOptionPane.showMessageDialog(this,
+                        "Thanh toán thất bại! Vui lòng kiểm tra lại kết nối hoặc kho hàng.");
             }
         });
     }
@@ -369,7 +383,8 @@ public class BanHangUI extends JPanel {
             tienGiam = tongTienHang * (maGiamGiaDangDung.getPhanTramGiam() / 100.0);
         }
 
-        if (tienGiam > tongTienHang) tienGiam = tongTienHang;
+        if (tienGiam > tongTienHang)
+            tienGiam = tongTienHang;
 
         thanhToanPanel.capNhatThongTinThanhToan(tongTienHang, tienGiam);
     }
