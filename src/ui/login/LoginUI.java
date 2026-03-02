@@ -7,9 +7,11 @@ import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -27,7 +29,7 @@ public class LoginUI extends JFrame {
   private JTextField txtuser;
   private JPasswordField txtpass;
   private TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
-  private MainFrame mainFrame = new MainFrame(this);
+  private MainFrame mainFrame = new MainFrame();
 
   public LoginUI() {
     setSize(700, 400);
@@ -71,6 +73,14 @@ public class LoginUI extends JFrame {
     txtpass = new JPasswordField();
     JPanel passJPanel = TaoUI.taoFieldText("Mật Khẩu", 90, 230, 30, 10, txtpass);
 
+    // quen mat khau
+    JPanel quenMKPanel = new JPanel();
+    JLabel quenMKJLabel = new JLabel("Quên mật khẩu?");
+    quenMKPanel.setLayout(new BoxLayout(quenMKPanel, BoxLayout.X_AXIS));
+    quenMKPanel.setMaximumSize(new Dimension(320, 25));
+    quenMKPanel.add(javax.swing.Box.createHorizontalGlue());
+    quenMKPanel.add(quenMKJLabel);
+
     // button
     JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
@@ -88,6 +98,8 @@ public class LoginUI extends JFrame {
     centerPanel.add(userJPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(10));
     centerPanel.add(passJPanel);
+    centerPanel.add(javax.swing.Box.createVerticalStrut(10));
+    centerPanel.add(quenMKPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(30));
     centerPanel.add(buttonPanel);
 
@@ -102,6 +114,7 @@ public class LoginUI extends JFrame {
 
     userJPanel.setOpaque(false);
     passJPanel.setOpaque(false);
+    quenMKPanel.setOpaque(false);
     buttonPanel.setOpaque(false);
   }
 
@@ -138,16 +151,7 @@ public class LoginUI extends JFrame {
           this, "Tài khoản hoặc mật khẩu không chính xác", "Thông báo", JOptionPane.ERROR_MESSAGE);
     }
   }
-  //get mainframe
-  public MainFrame getMainFrame(){
-    return mainFrame;
-  }
-  //xoa du lieu 
-  public void xoaDuLieu() {
-    txtuser.setText("");
-    txtpass.setText("");
-    txtuser.requestFocus();
-  }
+
   public static void main(String[] args) {
     LoginUI ui = new LoginUI();
     ui.setVisible(true);

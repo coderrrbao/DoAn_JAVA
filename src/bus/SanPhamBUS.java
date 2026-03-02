@@ -153,7 +153,24 @@ public class SanPhamBUS {
         return true;
     }
 
-   
+    public String luuAnh(String maSp, JFileChooser fileChooser) {
+        String duongDanMoi;
+        try {
+            File file = fileChooser.getSelectedFile();
+            if (file == null) {
+                file = new File(System.getProperty("user.dir") + "/src/assets/img/douongmd.png");
+            }
+            Path path = Paths.get("src/assets/img/");
+            duongDanMoi = maSp;
+            duongDanMoi += file.getName().substring(file.getName().lastIndexOf("."));
+            Path pathDich = path.resolve(duongDanMoi);
+            Files.copy(file.toPath(), pathDich, StandardCopyOption.REPLACE_EXISTING);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+        return "/assets/img/" + duongDanMoi;
+    }
 
     public String layMaSanPhamKhaDung() {
         return sanPhamDAO.layMaSanPhamKhaDung(null);

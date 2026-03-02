@@ -42,11 +42,11 @@ public class DoiMatKhauDialog extends JDialog{
 
         //nhap mat khau
         TXTMatKhauMoi = new JPasswordField();
-        JPanel MatKhauMoiPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 110 ,220 , 30, 10, TXTMatKhauMoi);
+        JPanel MatKhauMoiPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80 ,220 , 30, 10, TXTMatKhauMoi);
 
         //xac nhan mat khau
         TXTXacNhanMatKhau = new JPasswordField();
-        JPanel xacNhanMatKhauJPanel = TaoUI.taoFieldText("Xác Nhận Mật Khẩu", 110 ,220 , 30, 10, TXTXacNhanMatKhau);
+        JPanel xacNhanMatKhauJPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80 ,220 , 30, 10, TXTXacNhanMatKhau);
 
         //button
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
@@ -106,5 +106,10 @@ public class DoiMatKhauDialog extends JDialog{
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Đổi mật khẩu thất bại");
         }
+    }
+
+    public static void main(String[] args) {
+        DoiMatKhauDialog ui = new DoiMatKhauDialog(null, null);
+        ui.setVisible(true);
     }
 }

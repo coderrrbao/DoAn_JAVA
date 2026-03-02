@@ -1,24 +1,16 @@
 package ui.thongtinuser;
 
 import java.awt.Dimension;
-import java.io.File;
-
 import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-
-import bus.NhanVienBUS;
 import dto.NhanVien;
 import ui.login.PhienDangNhap;
-import util.Anh;
 import util.TaoUI;
 
 public class ThongTinCaNhanPanel extends JPanel {
     private JTextField tfMaNV, tfTenNV, tfGioiTinh, tfNgaySinh, tfSDT, tfDiaChi, tfChucVu;
+    private JTextField tfTenTaiKhoan, tfPhanQuyen, tfTrangThai;
     private JButton btnLuuThongTin, btnSua, btnChonAnh;
     private JLabel lblAnhDaiDien;
-    private JFileChooser fileChooser = new JFileChooser();
-    private boolean daDoiAnh = false;
-    private NhanVien nhanVien = null;
 
     public ThongTinCaNhanPanel() {
         TaoUI.taoPanelBoxLayoutDoc(this, 400, 780);
@@ -26,47 +18,6 @@ public class ThongTinCaNhanPanel extends JPanel {
         initGUI();
 
         setDuLieu(PhienDangNhap.getUser());
-        tacChucNangSua();
-        ganSuKien();
-    }
-
-    private void ganSuKien() {
-        btnSua.addActionListener(e -> {
-            batChucNangSua();
-        });
-
-        btnLuuThongTin.addActionListener(e -> {
-            NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
-            NhanVien nv = dongGoiNhanVien();
-            if (nhanVienBUS.capNhatNhanVien(nv) == null) {
-                setDuLieu(nv);
-                tacChucNangSua();
-            }
-        });
-
-        btnChonAnh.addActionListener(e -> {
-            fileChooser = new JFileChooser();
-            fileChooser.setFileFilter(new FileNameExtensionFilter("Hình ảnh", "jpg", "png", "jpeg"));
-            int result = fileChooser.showOpenDialog(this);
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-                File fileAnh = fileChooser.getSelectedFile();
-                ImageIcon icon = new ImageIcon(fileAnh.getAbsolutePath());
-                lblAnhDaiDien.setIcon(icon);
-                daDoiAnh = true;
-            }
-        });
-
-    }
-
-    private NhanVien dongGoiNhanVien() {
-        if (daDoiAnh) {
-            String duongDan = Anh.luuAnhNV(nhanVien.getMaNV(), fileChooser);
-            nhanVien.setAnh(duongDan);
-            daDoiAnh = false;
-        }
-        return new NhanVien(tfMaNV.getText(), tfTenNV.getText(), tfGioiTinh.getText(), tfNgaySinh.getText(),
-                tfSDT.getText(), tfDiaChi.getText(), nhanVien.getTaiKhoan(), nhanVien.getAnh());
     }
 
     private void initGUI() {
@@ -128,40 +79,7 @@ public class ThongTinCaNhanPanel extends JPanel {
         return thongTin;
     }
 
-    private void tacChucNangSua() {
-        tfChucVu.setEditable(false);
-        tfDiaChi.setEditable(false);
-        tfGioiTinh.setEditable(false);
-        tfMaNV.setEditable(false);
-        tfNgaySinh.setEditable(false);
-        tfSDT.setEditable(false);
-        tfSDT.setEditable(false);
-        btnChonAnh.setEnabled(false);
-        tfTenNV.setEditable(false);
-
-        btnSua.setEnabled(true);
-        btnLuuThongTin.setEnabled(false);
-    }
-
-    private void batChucNangSua() {
-        tfChucVu.setEditable(true);
-        tfDiaChi.setEditable(true);
-        tfGioiTinh.setEditable(true);
-        tfNgaySinh.setEditable(true);
-        tfSDT.setEditable(true);
-        tfTenNV.setEditable(true);
-        btnChonAnh.setEnabled(true);
-        tfMaNV.setEditable(false);
-
-        btnSua.setEnabled(false);
-        btnLuuThongTin.setEnabled(true);
-    }
-
     public void setDuLieu(NhanVien nv) {
-        if (nv == null) {
-            return;
-        }
-        nhanVien = nv;
         tfMaNV.setText(nv.getMaNV());
         tfTenNV.setText(nv.getTenNV());
         tfGioiTinh.setText(nv.getGioiTinh());
@@ -170,7 +88,8 @@ public class ThongTinCaNhanPanel extends JPanel {
         tfDiaChi.setText(nv.getDiaChi());
         tfChucVu.setText(nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
 
-        ImageIcon icon = TaoUI.taoImageIcon(nhanVien.getAnh(), 180, 180);
-        lblAnhDaiDien.setIcon(icon);
+        if (nv.getTaiKhoan() != null) {
+    
+        }
     }
 }

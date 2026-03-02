@@ -123,6 +123,7 @@ public class NhanVienDAO {
         return "NV01";
     }
 
+    // 6. Cập nhật nhân viên: Bỏ ChucVu
     public boolean capNhatNhanVien(NhanVien nv) {
         String sql = """
                 UPDATE NhanVien

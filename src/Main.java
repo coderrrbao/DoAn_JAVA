@@ -1,7 +1,9 @@
 import dao.conection.DatabaseInit;
 import java.awt.Color;
+import java.awt.EventQueue;
 import javax.swing.UIManager;
 import ui.login.LoginUI;
+import ui.main.MainFrame;
 
 public class Main {
   public static void main(String[] args) {
