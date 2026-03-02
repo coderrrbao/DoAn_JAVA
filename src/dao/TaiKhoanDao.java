@@ -58,7 +58,7 @@ public class TaiKhoanDao {
     // Lấy danh sách tài khoản
     public ArrayList<TaiKhoan> layDanhSachTaiKhoan() {
         ArrayList<TaiKhoan> ds = new ArrayList<>();
-        String sql = "SELECT * FROM TaiKhoan";
+        String sql = "SELECT * FROM TaiKhoan WHERE TrangThai = 1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -115,7 +115,27 @@ public class TaiKhoanDao {
         }
         return null;
     }
-
+    // lay ma tai khoan kha dung 
+    // Lấy mã tài khoản khả dụng
+    public String layMaTaiKhoanKhaDung() {
+        String sql = "SELECT MAX(MaTK) FROM TaiKhoan"; //lay lon nhat theo thu tu tu dien
+        String maMoi = "";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String maCuoi = rs.getString(1);
+                if (maCuoi != null) {
+                    int so = Integer.parseInt(maCuoi.substring(2));
+                    so++;
+                    maMoi = String.format("TK%02d", so);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return maMoi;
+    }
     // Kiểm tra username đã tồn tại chưa
     public boolean kiemTraUsernameTonTai(String username) {
         String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";
