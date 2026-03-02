@@ -65,7 +65,7 @@ public class TaiKhoanUI extends JPanel {
                 return false;
             }
         };
-        model.addColumn("Tên tài khoản");
+        model.addColumn("Mã nhân viên");
         model.addColumn("Tên đăng nhập");
         model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");

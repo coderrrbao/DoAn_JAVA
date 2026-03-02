@@ -130,11 +130,12 @@ public class ThemTaiKhoanDialog extends JDialog {
     private void xuLyThemTaiKhoan() {
         // lay du lieu tu dialog
         int indexNV = cbNVBox.getSelectedIndex();
-        String tenNV = dsNhanVien.get(indexNV).getTenNV();
+        String maNV = dsNhanVien.get(indexNV).getMaNV();
         String user = txtUser.getText().trim();
         String pass = new String(txtPass.getPassword()).trim();
         int indexNQ = cbQuyen.getSelectedIndex();
         String maNQ = dsNhomQuyen.get(indexNQ).getMaNQ();
+        String maTk = taiKhoanBUS.layMaTaiKhoanKhaDung();
 
         // xu ly them vao database
         if (indexNQ == -1) {
@@ -172,7 +173,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         }
         NhomQuyen nhomQuyen = new NhomQuyen();
         nhomQuyen.setMaNQ(maNQ);
-        TaiKhoan tk = new TaiKhoan("", tenNV, user, pass, nhomQuyen, "");
+        TaiKhoan tk = new TaiKhoan(maTk, maNV, user, pass, nhomQuyen, "Đang hoạt động");
         if (taiKhoanBUS.themTaiKhoan(tk)) {
             JOptionPane.showMessageDialog(
                     this,

@@ -18,6 +18,7 @@ import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
 import dto.Size;
+import util.Anh;
 import util.TaoUI;
 
 public class ChiTietSanPhamDialog extends JDialog {
@@ -479,7 +480,7 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         if (lblAnh.getIcon() != null) {
             SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
-            sp.setAnh(sanPhamBUS.luuAnh(sanPhamBUS.layMaSanPhamKhaDung(), fileChooser));
+            sp.setAnh(Anh.luuAnhSP(sanPhamBUS.layMaSanPhamKhaDung(), fileChooser));
         }
 
         return sp;
