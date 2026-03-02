@@ -12,6 +12,8 @@ import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+
+import ui.login.PhienDangNhap;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
@@ -47,7 +49,7 @@ public class MenuPanel extends JPanel {
     addMenuItem(
         "Thông tin",
         () -> {
-          NhanVien nv = new NhanVien();
+          NhanVien nv = PhienDangNhap.getUser();
           JDialog thongTin = new ThongTinDialog(null, nv);
           thongTin.setVisible(true);
         });

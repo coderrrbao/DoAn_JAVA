@@ -66,7 +66,7 @@ public class TaiKhoanDao {
 
             while (rs.next()) {
                 TaiKhoan tk = new TaiKhoan();
-                tk.setMaTK(rs.getString("MaTK")); // Fix: Bổ sung MaTK
+                tk.setMaTK(rs.getString("MaTK")); 
                 tk.setMaNV(rs.getString("MaNV"));
                 tk.setTenDangNhap(rs.getString("TenDangNhap"));
                 tk.setMatKhau(rs.getString("MatKhau"));

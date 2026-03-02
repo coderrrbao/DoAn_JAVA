@@ -23,7 +23,6 @@ public class MainFrame extends JFrame {
         cardLayout.show(contentPaner, "Quản lý sản phẩm");
         MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner, this);
         add(menuPanel, BorderLayout.WEST);
-        setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(false);
     }
@@ -35,4 +34,5 @@ public class MainFrame extends JFrame {
     public ContentPaner getContentPaner() {
         return contentPaner;
     }
+
 }
