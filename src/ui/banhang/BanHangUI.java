@@ -24,14 +24,17 @@ public class BanHangUI extends JPanel {
     private Xulypdf xulyPDF = new Xulypdf();
 
     private MaGiamGia maGiamGiaDangDung = null;
-    private double phanTramGiam = 0;
-    private double tienGiamGiaTrucTiep = 0;
 
     private ThongTinKhachHangPanel thongTinKhachHangPanel;
     private ThanhToanPanel thanhToanPanel;
     private ThongTinHoaDonPanel thongTinHoaDonPanel;
     private ListSanPhamPanel listSanPhamPanel;
     private BoLocPanel boLocPanel;
+    private Runnable onThanhToanSuccess;
+
+    public void setOnThanhToanSuccess(Runnable onThanhToanSuccess) {
+        this.onThanhToanSuccess = onThanhToanSuccess;
+    }
 
     public BanHangUI() {
         setLayout(new GridLayout(1, 2, 0, 0));
@@ -352,6 +355,10 @@ public class BanHangUI extends JPanel {
                 thongTinKhachHangPanel.getTxtTenKh().setText("");
                 resetGiamGia();
                 lockMaGiamGia(false);
+
+                if(onThanhToanSuccess != null) {
+                    onThanhToanSuccess.run();
+                }
 
             } else {
                 JOptionPane.showMessageDialog(this,
