@@ -21,6 +21,7 @@ import ui.thongtinuser.ThongTinDialog;
 public class MenuPanel extends JPanel {
   private List<MenuPanelItem> menuItems;
   private LoginUI loginFrame;
+
   public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame, LoginUI loginUI) {
     menuItems = new ArrayList<>();
     loginFrame = loginUI;
@@ -43,6 +44,7 @@ public class MenuPanel extends JPanel {
     addMenuItem("Bán hàng", cardLayout, cardPanel);
     addMenuItem("Hóa đơn", cardLayout, cardPanel);
     addMenuItem("Khách hàng", cardLayout, cardPanel);
+    addMenuItem("Hạng thành viên", cardLayout, cardPanel);
     addMenuItem("Nhân viên", cardLayout, cardPanel);
     addMenuItem("Tài khoản", cardLayout, cardPanel);
     addMenuItem("Phân quyền", cardLayout, cardPanel);
@@ -58,7 +60,7 @@ public class MenuPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    addMenuItem("Đăng xuất", ()->{
+    addMenuItem("Đăng xuất", () -> {
       dangXuat();
     });
 
@@ -82,15 +84,15 @@ public class MenuPanel extends JPanel {
     return menuItems;
   }
 
-  private void dangXuat(){
+  private void dangXuat() {
     int confirm = JOptionPane.showConfirmDialog(
-            null,
-            "Bạn có chắc muốn đăng xuất?",
-            "Xác nhận",
-            JOptionPane.YES_NO_OPTION);
+        null,
+        "Bạn có chắc muốn đăng xuất?",
+        "Xác nhận",
+        JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
-      //xoa du lieu old
+      // xoa du lieu old
       loginFrame.xoaDuLieu();
       // đóng MainFrame
       loginFrame.getMainFrame().setVisible(false);

@@ -37,7 +37,7 @@ public class MenuPanelItem extends JPanel {
     }
 
     private void initUI(String text) {
-        Dimension size = new Dimension(200, 37);
+        Dimension size = new Dimension(200, 35);
         setPreferredSize(size);
         setMaximumSize(size);
         setMinimumSize(size);

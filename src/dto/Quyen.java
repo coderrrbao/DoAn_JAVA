@@ -2,7 +2,6 @@ package dto;
 
 public class Quyen {
     private String maQuyen;
-    private String maNQ;
     private String tenQuyen;
 
     public Quyen() {
@@ -13,12 +12,6 @@ public class Quyen {
         this.tenQuyen = tenQuyen;
     }
 
-    public String getMaNQ(){
-        return maNQ;
-    }
-    public void setMaNQ(String maNQ){
-        this.maNQ = maNQ;
-    }
     public String getMaQuyen() {
         return maQuyen;
     }

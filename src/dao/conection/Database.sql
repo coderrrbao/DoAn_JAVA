@@ -11,16 +11,10 @@ BEGIN
     INSERT INTO NhomQuyen
         (MaNQ, TenNhomQuyen, TrangThai)
     VALUES
-        ('NQ01', N'Quản Lý Cửa Hàng', 1),
-        ('NQ02', N'Nhân Viên Bán Hàng', 1),
-        ('NQ03', N'Nhân Viên Kho', 1),
-        ('NQ04', N'Nhân Viên Pha Chế', 1),
-        ('NQ05', N'Kế Toán', 1),
-        ('NQ06', N'Bảo Vệ', 1),
-        ('NQ07', N'Quản Lý Nhân Sự', 1),
-        ('NQ08', N'Giám Sát Ca', 1),
-        ('NQ09', N'Marketing', 1),
-        ('NQ10', N'Admin Hệ Thống', 1)
+        ('AD', N'Admin', 1),
+        ('QL', N'Quản lý', 1),
+        ('NVK', N'Nhân viên kho', 1),
+        ('NVBH', N'Nhân viên bán hàng', 1)
 END;
 IF NOT EXISTS (SELECT *
 FROM sys.tables
@@ -29,27 +23,267 @@ BEGIN
     CREATE TABLE Quyen
     (
         MaQuyen VARCHAR(50) NOT NULL PRIMARY KEY,
-        MaNQ VARCHAR(50) NOT NULL,
         TenQuyen NVARCHAR(100)
     )
+
     INSERT INTO Quyen
-        (MaQuyen, MaNQ, TenQuyen)
+        (MaQuyen, TenQuyen)
     VALUES
-        ('Q01', 'NQ01', N'Quản lý sản phẩm'),
-        ('Q02', 'NQ01', N'Quản lý nhân viên'),
-        ('Q03', 'NQ02', N'Bán hàng'),
-        ('Q04', 'NQ03', N'Nhập kho'),
-        ('Q05', 'NQ01', N'Xem báo cáo doanh thu'),
-        ('Q06', 'NQ09', N'Quản lý khuyến mãi'),
-        ('Q07', 'NQ02', N'Quản lý khách hàng'),
-        ('Q08', 'NQ08', N'Duyệt phiếu hủy'),
-        ('Q09', 'NQ10', N'Cấu hình hệ thống'),
-        ('Q10', 'NQ03', N'Xuất kho'),
-        ('Q11', 'NQ05', N'Xem lịch sử giao dịch'),
-        ('Q12', 'NQ04', N'Chỉnh sửa công thức')
+        -- 1. Quản lý sản phẩm
+        ('Q01', N'QLSP_TAO'),
+        ('Q02', N'QLSP_XEM'),
+        ('Q03', N'QLSP_SUA'),
+        ('Q04', N'QLSP_XOA'),
+        -- 2. Nguyên liệu
+        ('Q05', N'NL_TAO'),
+        ('Q06', N'NL_XEM'),
+        ('Q07', N'NL_SUA'),
+        ('Q08', N'NL_XOA'),
+        -- 3. Nhà cung cấp
+        ('Q09', N'NCC_TAO'),
+        ('Q10', N'NCC_XEM'),
+        ('Q11', N'NCC_SUA'),
+        ('Q12', N'NCC_XOA'),
+        -- 4. Nhập kho
+        ('Q13', N'NK_TAO'),
+        ('Q14', N'NK_XEM'),
+        ('Q15', N'NK_SUA'),
+        ('Q16', N'NK_XOA'),
+        -- 5. Tồn kho
+        ('Q17', N'TKHO_TAO'),
+        ('Q18', N'TKHO_XEM'),
+        ('Q19', N'TKHO_SUA'),
+        ('Q20', N'TKHO_XOA'),
+        -- 6. Xuất kho
+        ('Q21', N'XK_TAO'),
+        ('Q22', N'XK_XEM'),
+        ('Q23', N'XK_SUA'),
+        ('Q24', N'XK_XOA'),
+        -- 7. Kiểm kê
+        ('Q25', N'KK_TAO'),
+        ('Q26', N'KK_XEM'),
+        ('Q27', N'KK_SUA'),
+        ('Q28', N'KK_XOA'),
+        -- 8. Bán hàng
+        ('Q29', N'BH_TAO'),
+        ('Q30', N'BH_XEM'),
+        ('Q31', N'BH_SUA'),
+        ('Q32', N'BH_XOA'),
+        -- 9. Hóa đơn
+        ('Q33', N'HD_TAO'),
+        ('Q34', N'HD_XEM'),
+        ('Q35', N'HD_SUA'),
+        ('Q36', N'HD_XOA'),
+        -- 10. Khách hàng
+        ('Q37', N'KH_TAO'),
+        ('Q38', N'KH_XEM'),
+        ('Q39', N'KH_SUA'),
+        ('Q40', N'KH_XOA'),
+        -- 11. Hạng thành viên
+        ('Q41', N'HTV_TAO'),
+        ('Q42', N'HTV_XEM'),
+        ('Q43', N'HTV_SUA'),
+        ('Q44', N'HTV_XOA'),
+        -- 12. Nhân viên
+        ('Q45', N'NV_TAO'),
+        ('Q46', N'NV_XEM'),
+        ('Q47', N'NV_SUA'),
+        ('Q48', N'NV_XOA'),
+        -- 13. Tài khoản
+        ('Q49', N'TK_TAO'),
+        ('Q50', N'TK_XEM'),
+        ('Q51', N'TK_SUA'),
+        ('Q52', N'TK_XOA'),
+        -- 14. Phân quyền
+        ('Q53', N'PQ_TAO'),
+        ('Q54', N'PQ_XEM'),
+        ('Q55', N'PQ_SUA'),
+        ('Q56', N'PQ_XOA'),
+        -- 15. Thống kê
+        ('Q57', N'TKE_TAO'),
+        ('Q58', N'TKE_XEM'),
+        ('Q59', N'TKE_SUA'),
+        ('Q60', N'TKE_XOA'),
+        -- 16. Khuyến mãi
+        ('Q61', N'KM_TAO'),
+        ('Q62', N'KM_XEM'),
+        ('Q63', N'KM_SUA'),
+        ('Q64', N'KM_XOA')
 END;
 
+IF NOT EXISTS (SELECT *
+FROM sys.tables
+WHERE name = 'PhanQuyen')
+BEGIN
+    CREATE TABLE PhanQuyen
+    (
+        MaNQ VARCHAR(50) NOT NULL,
+        MaQuyen VARCHAR(50) NOT NULL,
+        TrangThai BIT DEFAULT 1,
+        PRIMARY KEY (MaNQ, MaQuyen)
+    )
 
+    INSERT INTO PhanQuyen
+        (MaNQ, MaQuyen)
+    VALUES
+        -- A. ADMIN (Sở hữu toàn bộ quyền từ Q01 -> Q64)
+        ('AD', 'Q01'),
+        ('AD', 'Q02'),
+        ('AD', 'Q03'),
+        ('AD', 'Q04'),
+        ('AD', 'Q05'),
+        ('AD', 'Q06'),
+        ('AD', 'Q07'),
+        ('AD', 'Q08'),
+        ('AD', 'Q09'),
+        ('AD', 'Q10'),
+        ('AD', 'Q11'),
+        ('AD', 'Q12'),
+        ('AD', 'Q13'),
+        ('AD', 'Q14'),
+        ('AD', 'Q15'),
+        ('AD', 'Q16'),
+        ('AD', 'Q17'),
+        ('AD', 'Q18'),
+        ('AD', 'Q19'),
+        ('AD', 'Q20'),
+        ('AD', 'Q21'),
+        ('AD', 'Q22'),
+        ('AD', 'Q23'),
+        ('AD', 'Q24'),
+        ('AD', 'Q25'),
+        ('AD', 'Q26'),
+        ('AD', 'Q27'),
+        ('AD', 'Q28'),
+        ('AD', 'Q29'),
+        ('AD', 'Q30'),
+        ('AD', 'Q31'),
+        ('AD', 'Q32'),
+        ('AD', 'Q33'),
+        ('AD', 'Q34'),
+        ('AD', 'Q35'),
+        ('AD', 'Q36'),
+        ('AD', 'Q37'),
+        ('AD', 'Q38'),
+        ('AD', 'Q39'),
+        ('AD', 'Q40'),
+        ('AD', 'Q41'),
+        ('AD', 'Q42'),
+        ('AD', 'Q43'),
+        ('AD', 'Q44'),
+        ('AD', 'Q45'),
+        ('AD', 'Q46'),
+        ('AD', 'Q47'),
+        ('AD', 'Q48'),
+        ('AD', 'Q49'),
+        ('AD', 'Q50'),
+        ('AD', 'Q51'),
+        ('AD', 'Q52'),
+        ('AD', 'Q53'),
+        ('AD', 'Q54'),
+        ('AD', 'Q55'),
+        ('AD', 'Q56'),
+        ('AD', 'Q57'),
+        ('AD', 'Q58'),
+        ('AD', 'Q59'),
+        ('AD', 'Q60'),
+        ('AD', 'Q61'),
+        ('AD', 'Q62'),
+        ('AD', 'Q63'),
+        ('AD', 'Q64'),
+
+        -- B. QUẢN LÝ (Tất cả quyền trừ Tài khoản Q49-Q52 và Phân quyền Q53-Q56)
+        ('QL', 'Q01'),
+        ('QL', 'Q02'),
+        ('QL', 'Q03'),
+        ('QL', 'Q04'),
+        ('QL', 'Q05'),
+        ('QL', 'Q06'),
+        ('QL', 'Q07'),
+        ('QL', 'Q08'),
+        ('QL', 'Q09'),
+        ('QL', 'Q10'),
+        ('QL', 'Q11'),
+        ('QL', 'Q12'),
+        ('QL', 'Q13'),
+        ('QL', 'Q14'),
+        ('QL', 'Q15'),
+        ('QL', 'Q16'),
+        ('QL', 'Q17'),
+        ('QL', 'Q18'),
+        ('QL', 'Q19'),
+        ('QL', 'Q20'),
+        ('QL', 'Q21'),
+        ('QL', 'Q22'),
+        ('QL', 'Q23'),
+        ('QL', 'Q24'),
+        ('QL', 'Q25'),
+        ('QL', 'Q26'),
+        ('QL', 'Q27'),
+        ('QL', 'Q28'),
+        ('QL', 'Q29'),
+        ('QL', 'Q30'),
+        ('QL', 'Q31'),
+        ('QL', 'Q32'),
+        ('QL', 'Q33'),
+        ('QL', 'Q34'),
+        ('QL', 'Q35'),
+        ('QL', 'Q36'),
+        ('QL', 'Q37'),
+        ('QL', 'Q38'),
+        ('QL', 'Q39'),
+        ('QL', 'Q40'),
+        ('QL', 'Q41'),
+        ('QL', 'Q42'),
+        ('QL', 'Q43'),
+        ('QL', 'Q44'),
+        ('QL', 'Q45'),
+        ('QL', 'Q46'),
+        ('QL', 'Q47'),
+        ('QL', 'Q48'),
+        ('QL', 'Q57'),
+        ('QL', 'Q58'),
+        ('QL', 'Q59'),
+        ('QL', 'Q60'),
+        ('QL', 'Q61'),
+        ('QL', 'Q62'),
+        ('QL', 'Q63'),
+        ('QL', 'Q64'),
+
+        -- C. NHÂN VIÊN KHO (Sản phẩm, Nguyên liệu, NCC, Nhập/Xuất/Tồn/Kiểm kê)
+        ('NVK', 'Q02'),
+        ('NVK', 'Q05'),
+        ('NVK', 'Q06'),
+        ('NVK', 'Q07'),
+        ('NVK', 'Q08'),
+        ('NVK', 'Q09'),
+        ('NVK', 'Q10'),
+        ('NVK', 'Q11'),
+        ('NVK', 'Q12'),
+        ('NVK', 'Q13'),
+        ('NVK', 'Q14'),
+        ('NVK', 'Q15'),
+        ('NVK', 'Q17'),
+        ('NVK', 'Q18'),
+        ('NVK', 'Q21'),
+        ('NVK', 'Q22'),
+        ('NVK', 'Q25'),
+        ('NVK', 'Q26'),
+        ('NVK', 'Q27'),
+
+        -- D. NHÂN VIÊN BÁN HÀNG (Sản phẩm, Bán hàng, Hóa đơn, Khách hàng, HTV, KM)
+        ('NVBH', 'Q02'),
+        ('NVBH', 'Q29'),
+        ('NVBH', 'Q30'),
+        ('NVBH', 'Q33'),
+        ('NVBH', 'Q34'),
+        ('NVBH', 'Q37'),
+        ('NVBH', 'Q38'),
+        ('NVBH', 'Q39'),
+        ('NVBH', 'Q42'),
+        ('NVBH', 'Q58'),
+        ('NVBH', 'Q62')
+END;
 /* =============================================
    4. BẢNG TÀI KHOẢN (Accounts)
    ============================================= */
@@ -70,9 +304,9 @@ BEGIN
     INSERT INTO TaiKhoan
         (MaTK,MaNV, TenDangNhap, MatKhau, maNQ,TrangThaiXuLy, TrangThai)
     VALUES
-        ('TK01', 'NV01', 'admin', '123456', 'NQ01', N'Đã xác nhận', 1),
-        ('TK02', 'NV02', 'NV01', '123456', 'NQ02', N'Đã xác nhận', 1),
-        ('TK03', 'NV01', 'NV02', '123456', 'NQ03', N'Đã xác nhận', 1)
+        ('TK01', 'NV01', 'admin', '123456', 'AD', N'Đã xác nhận', 1),
+        ('TK02', 'NV02', 'NV01', '123456', 'QL', N'Đã xác nhận', 1),
+        ('TK03', 'NV01', 'NV02', '123456', 'QL', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -1160,6 +1394,32 @@ WHERE name = 'FK_CTPHSP_LoSP')
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_Quyen_NhomQuyen')
-    ALTER TABLE Quyen ADD CONSTRAINT FK_Quyen_NhomQuyen
+WHERE name = 'FK_PhanQuyen_NhomQuyen')
+    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_NhomQuyen 
     FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhanQuyen_Quyen')
+    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_Quyen 
+    FOREIGN KEY (MaQuyen) REFERENCES Quyen(MaQuyen);
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_TaiKhoan_NhanVien')
+    ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhanVien 
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_NhanVien_TaiKhoan')
+    ALTER TABLE NhanVien ADD CONSTRAINT FK_NhanVien_TaiKhoan 
+    FOREIGN KEY (TaiKhoan) REFERENCES TaiKhoan(MaTK);
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhieuKiemKe_NhanVien')
+    ALTER TABLE PhieuKiemKe ADD CONSTRAINT FK_PhieuKiemKe_NhanVien 
+    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+

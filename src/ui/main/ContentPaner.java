@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import ui.banhang.BanHangUI;
+import ui.hangthanhvien.HangThanhVienUI;
 import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
 import ui.khuyenmai.KhuyenMaiUI;
@@ -13,7 +14,7 @@ import ui.nguyenlieu.NguyenLieuUI;
 import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
 import ui.nhapkho.NhapKhoUI;
-import ui.phanquyen.PhanQuyenUI;
+import ui.phanquyen.NhomQuyenUI;
 import ui.quanlysanpham.QuanLySanPhamUI;
 import ui.taikhoan.TaiKhoanUI;
 import ui.thongke.ThongKeUI;
@@ -36,9 +37,11 @@ public class ContentPaner extends JPanel {
   private TonKhoUI tonKhoUI;
   private KhuyenMaiUI khuyenMaiUI;
   private KiemKeUI kiemKeUI;
-  private PhanQuyenUI phanQuyenUI;
+  private NhomQuyenUI phanQuyenUI;
   private NguyenLieuUI nguyenLieuUI;
+  private HangThanhVienUI hangThanhVienUI;
   private CardLayout cardLayout;
+
 
   public ContentPaner(JFrame owner) {
     cardLayout = new CardLayout();
@@ -60,8 +63,9 @@ public class ContentPaner extends JPanel {
           xuatKhoUI = new XuatKhoUI(owner);
           tonKhoUI = new TonKhoUI();
           khuyenMaiUI = new KhuyenMaiUI();
-          phanQuyenUI = new PhanQuyenUI();
+          phanQuyenUI = new NhomQuyenUI();
           kiemKeUI = new KiemKeUI();
+          hangThanhVienUI = new HangThanhVienUI();
         },
         () -> {
           add(nhaCungCapUI, "Nhà cung cấp");
@@ -78,6 +82,7 @@ public class ContentPaner extends JPanel {
           add(khuyenMaiUI, "Khuyến mãi");
           add(phanQuyenUI, "Phân quyền");
           add(kiemKeUI, "Kiểm kê");
+          add(hangThanhVienUI, "Hạng thành viên");
           revalidate();
           repaint();
         });
