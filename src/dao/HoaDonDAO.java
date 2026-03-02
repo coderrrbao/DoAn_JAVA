@@ -49,7 +49,40 @@ public class HoaDonDAO {
     }
 
     public ArrayList<HoaDon> layDanhSachHoaDon() {
-        return new ArrayList<>();
+        ArrayList<HoaDon> list = new ArrayList<>();
+        String sql = "SELECT * FROM HoaDon WHERE TrangThai = 1 ORDER BY MaHD DESC";
+        try (Connection conn = DBConnection.getConnection();
+            PreparedStatement pst = conn.prepareStatement(sql);
+            ResultSet rs = pst.executeQuery()) {
+            while (rs.next()) {
+                HoaDon hd = new HoaDon();
+                hd.setMaHD(rs.getString("MaHD"));
+
+                String maNV = rs.getString("MaNV");
+                if (maNV != null) {
+                    NhanVien nv = new NhanVien();
+                    nv.setMaNV(maNV);
+                    hd.setNhanVien(nv);
+                }
+                hd.setMaKH(rs.getString("MaKH"));
+                String maKM = rs.getString("MaKM");
+                if (maKM != null) {
+                    MaGiamGia km = new MaGiamGia();
+                    km.setMaKM(maKM);
+                    hd.setMaGiamGia(km);
+                }
+
+                hd.setNgayBan(rs.getDate("NgayBan"));
+                hd.setTongTien(rs.getDouble("TongTien"));
+                hd.setTienKhuyenMai(rs.getDouble("TienKhuyenMai"));
+                hd.setTrangThai(rs.getBoolean("TrangThai"));
+                list.add(hd);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("Lỗi lấy danh sách hóa đơn: " + e.getMessage());
+        }
+        return list;
     }
 
     public String layMaHoaDonCuoiCung() {

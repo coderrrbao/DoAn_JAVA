@@ -4,16 +4,22 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import bus.HoaDonBUS;
+import dto.HoaDon;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
     private JButton btnXemChiTiet, btnXoa;
+    private HoaDonBUS hoaDonBUS = new HoaDonBUS();
     private Search_Item search_Item;
     private JTable table;
     private DefaultTableModel model;
@@ -55,9 +61,7 @@ public class HoaDonUI extends JPanel {
         model.addColumn("Mã khách hàng");
         model.addColumn("Tổng tiền");
 
-        model.addRow(new Object[] { "HD001", "2026-01-06", "NV01", "KH01", "100.000" });
-        model.addRow(new Object[] { "HD002", "2026-01-06", "NV02", "KH02", "200.000" });
-        model.addRow(new Object[] { "HD003", "2026-01-13", "NV01", "KH03", "150.000" });
+        loadData();;
 
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table  = (JTable) scrollPane.getViewport().getView();
@@ -67,6 +71,24 @@ public class HoaDonUI extends JPanel {
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);
+    }
+
+    public void loadData() {
+        model.setRowCount(0);
+        ArrayList<HoaDon> list = hoaDonBUS.layDanhSachHoaDon();
+         if (list != null) {
+             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+             DecimalFormat df = new DecimalFormat("#,### VNĐ");
+
+             for (HoaDon hd : list) {
+                 String maNV = (hd.getNhanVien() != null) && hd.getNhanVien().getMaNV() != null ? hd.getNhanVien().getMaNV() : "";
+                 String maKH = (hd.getMaKH() != null) ? hd.getMaKH() : "Khách vãng lai";
+                 String NgayTao = (hd.getNgayBan() != null) ? sdf.format(hd.getNgayBan()) : "";
+                 String TongTien = df.format(hd.getTongTien());
+
+                 model.addRow(new Object[] { hd.getMaHD(), NgayTao, maNV, maKH, TongTien });
+             }
+         }
     }
 
     public JButton getBtnXemChiTiet() { return btnXemChiTiet; }

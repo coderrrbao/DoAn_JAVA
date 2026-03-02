@@ -86,6 +86,30 @@ public class NhanVienBUS {
         return true;
     }
 
+    public int getTongSoTrang(int pageSize) {
+        if (canUpdate || listNhanVien == null) {
+            khoitao();
+        }
+        return (int) Math.ceil((double) listNhanVien.size() / pageSize);
+    }
+
+    public ArrayList<NhanVien> layTrang(int page, int pageSize) {
+        if (canUpdate || listNhanVien == null) {
+            canUpdate = false;
+            khoitao();
+        }
+        ArrayList<NhanVien> kq = new ArrayList<>();
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, listNhanVien.size());
+
+        if (start >= listNhanVien.size())
+            return kq;
+
+        for (int i = start; i < end; i++) {
+            kq.add(listNhanVien.get(i));
+        }
+        return kq;
+    }
 
     public NhanVien timNhanVien(String maNV) {
         if (canUpdate || listNhanVien == null) {
@@ -100,7 +124,14 @@ public class NhanVienBUS {
         return null;
     }
 
-
+    public static String xoaDau(String text) {
+        if (text == null)
+            return "";
+        java.text.Normalizer.Form form = java.text.Normalizer.Form.NFD;
+        return java.text.Normalizer.normalize(text, form)
+                .replaceAll("\\p{InCombiningDiacriticalMarks}+", "")
+                .toLowerCase();
+    }
 
     public ArrayList<NhanVien> timKiemNhanVien(String tuKhoa) {
         if (canUpdate || listNhanVien == null) {
@@ -109,15 +140,15 @@ public class NhanVienBUS {
         }
 
         ArrayList<NhanVien> ketQua = new ArrayList<>();
-        String tuKhoaChuanHoa =(tuKhoa != null ? tuKhoa.trim() : "");
+        String tuKhoaChuanHoa = xoaDau(tuKhoa != null ? tuKhoa.trim() : "");
 
         for (NhanVien nv : listNhanVien) {
             String tenNV = nv.getTenNV() != null ? nv.getTenNV() : "";
             String sdt = nv.getSdt() != null ? nv.getSdt() : "";
             String maNV = nv.getMaNV() != null ? nv.getMaNV() : "";
 
-            boolean khopTen = tenNV.contains(tuKhoaChuanHoa);
-            boolean khopMa = maNV.contains(tuKhoaChuanHoa);
+            boolean khopTen = xoaDau(tenNV).contains(tuKhoaChuanHoa);
+            boolean khopMa = xoaDau(maNV).contains(tuKhoaChuanHoa);
             boolean khopSDT = sdt.contains(tuKhoaChuanHoa);
 
             if (khopTen || khopMa || khopSDT) {

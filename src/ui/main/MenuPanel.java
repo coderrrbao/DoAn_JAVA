@@ -15,16 +15,15 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import ui.login.LoginUI;
-import ui.login.PhienDangNhap;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
   private List<MenuPanelItem> menuItems;
-  private LoginUI loginFrame;
+  private LoginUI loginUI;
 
-  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame, LoginUI loginUI) {
+  public MenuPanel(CardLayout cardLayout, JPanel cardPanel,LoginUI loginUI) {
     menuItems = new ArrayList<>();
-    loginFrame = loginUI;
+    this.loginUI=loginUI;
     setPreferredSize(new Dimension(200, 700));
     setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
     setMinimumSize(new Dimension(200, 700));
@@ -53,7 +52,7 @@ public class MenuPanel extends JPanel {
     addMenuItem(
         "Thông tin",
         () -> {
-          NhanVien nv = PhienDangNhap.getUser();
+          NhanVien nv = new NhanVien();
           JDialog thongTin = new ThongTinDialog(null, nv);
           thongTin.setVisible(true);
         });
@@ -93,11 +92,11 @@ public class MenuPanel extends JPanel {
 
     if (confirm == JOptionPane.YES_OPTION) {
       // xoa du lieu old
-      loginFrame.xoaDuLieu();
+      loginUI.lamMoi();;
       // đóng MainFrame
-      loginFrame.getMainFrame().setVisible(false);
+      loginUI.getMainFrame().setVisible(false);
       // mở lại màn hình đăng nhập
-      loginFrame.setVisible(true);
+      loginUI.setVisible(true);
     }
   }
 }

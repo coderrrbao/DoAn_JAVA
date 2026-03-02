@@ -83,6 +83,13 @@ public class ContentPaner extends JPanel {
           add(phanQuyenUI, "Phân quyền");
           add(kiemKeUI, "Kiểm kê");
           add(hangThanhVienUI, "Hạng thành viên");
+
+          banHangUI.setOnThanhToanSuccess(() -> {
+              if(hoaDonUI != null) {
+                    hoaDonUI.loadData();
+              }
+          });
+
           revalidate();
           repaint();
         });
