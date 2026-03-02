@@ -187,29 +187,8 @@ public class TaiKhoanBUS {
         }
         return false;
     }
-
-    public int getTongSoTrang(int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            khoitao();
-        }
-        return (int) Math.ceil((double) listTaiKhoan.size() / pageSize);
-    }
-
-    public ArrayList<TaiKhoan> layTrang(int page, int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            canUpdate = false;
-            khoitao();
-        }
-        ArrayList<TaiKhoan> kq = new ArrayList<>();
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, listTaiKhoan.size());
-
-        if (start >= listTaiKhoan.size())
-            return kq;
-
-        for (int i = start; i < end; i++) {
-            kq.add(listTaiKhoan.get(i));
-        }
-        return kq;
+    //lay ma tai khoan kha dung 
+    public String layMaTaiKhoanKhaDung(){
+        return dao.layMaTaiKhoanKhaDung();
     }
 }
