@@ -11,15 +11,18 @@ import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+
+import ui.login.LoginUI;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
   private List<MenuPanelItem> menuItems;
-
-  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame) {
+  private LoginUI loginFrame;
+  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame, LoginUI loginUI) {
     menuItems = new ArrayList<>();
-
+    loginFrame = loginUI;
     setPreferredSize(new Dimension(200, 700));
     setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
     setMinimumSize(new Dimension(200, 700));
@@ -54,7 +57,10 @@ public class MenuPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    addMenuItem("Đăng xuất", cardLayout, cardPanel);
+    addMenuItem("Đăng xuất", ()->{
+      dangXuat();
+    });
+
   }
 
   private void addMenuItem(String title, CardLayout cardLayout, JPanel cardPanel) {
@@ -73,5 +79,22 @@ public class MenuPanel extends JPanel {
 
   public List<MenuPanelItem> getMenuItems() {
     return menuItems;
+  }
+
+  private void dangXuat(){
+    int confirm = JOptionPane.showConfirmDialog(
+            null,
+            "Bạn có chắc muốn đăng xuất?",
+            "Xác nhận",
+            JOptionPane.YES_NO_OPTION);
+
+    if (confirm == JOptionPane.YES_OPTION) {
+      //xoa du lieu old
+      loginFrame.xoaDuLieu();
+      // đóng MainFrame
+      loginFrame.getMainFrame().setVisible(false);
+      // mở lại màn hình đăng nhập
+      loginFrame.setVisible(true);
+    }
   }
 }

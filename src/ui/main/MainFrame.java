@@ -2,13 +2,14 @@ package ui.main;
 
 import javax.swing.JFrame;
 
+import ui.login.LoginUI;
+
 import java.awt.*;
 
 public class MainFrame extends JFrame {
     private TopPaner topPaner;
     private ContentPaner contentPaner;
-
-    public MainFrame() {
+    public MainFrame(LoginUI loginUI) {
         setSize(1400, 800);
         setTitle("Quản lý cửa hàng nước giải khát");
         setLocationRelativeTo(null);
@@ -21,7 +22,7 @@ public class MainFrame extends JFrame {
         add(contentPaner, BorderLayout.CENTER);
         CardLayout cardLayout = (CardLayout) contentPaner.getLayout();
         cardLayout.show(contentPaner, "Quản lý sản phẩm");
-        MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner, this);
+        MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner, this, loginUI);
         add(menuPanel, BorderLayout.WEST);
         setResizable(false);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
