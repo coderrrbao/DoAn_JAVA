@@ -766,17 +766,16 @@ BEGIN
         NgaySinh DATE,
         SDT VARCHAR(20),
         DiaChi NVARCHAR(255),
-        TaiKhoan VARCHAR(50),
         Anh NVARCHAR(255),
         TrangThai BIT
     )
 
     INSERT INTO NhanVien
-        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, TaiKhoan, Anh, TrangThai)
+        (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Địa chỉ 1', 'TK01', '/assets/img/goku.png', 1),
-        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '0902345678', N'Địa chỉ 2', 'TK02', NULL, 1),
-        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Địa chỉ 3', 'TK03', NULL, 1)
+        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Địa chỉ 1', '/assets/img/goku.png', 1),
+        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '0902345678', N'Địa chỉ 2', NULL, 1),
+        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Địa chỉ 3', NULL, 1)
 END;
 
 /* =============================================
@@ -1409,13 +1408,6 @@ FROM sys.foreign_keys
 WHERE name = 'FK_TaiKhoan_NhanVien')
     ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhanVien 
     FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
-
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_NhanVien_TaiKhoan')
-    ALTER TABLE NhanVien ADD CONSTRAINT FK_NhanVien_TaiKhoan 
-    FOREIGN KEY (TaiKhoan) REFERENCES TaiKhoan(MaTK);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys

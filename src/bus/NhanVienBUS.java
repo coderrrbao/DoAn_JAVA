@@ -1,7 +1,12 @@
 package bus;
 
+import java.sql.Connection;
 import java.util.ArrayList;
+
+import org.apache.poi.hssf.record.DBCellRecord;
+
 import dao.NhanVienDAO;
+import dao.conection.DBConnection;
 import dto.NhanVien;
 import util.XuLyExcel; // Giả định bạn dùng class này giống bên SanPhamBUS
 
@@ -26,11 +31,7 @@ public class NhanVienBUS {
     }
 
     public void khoitao() {
-        TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
         listNhanVien = dao.layDanhSachNhanVien();
-        for (NhanVien nhanVien : listNhanVien){
-            nhanVien.setTaiKhoan(taiKhoanBUS.timTaiKhoan(nhanVien.getTaiKhoan().getMaTK()));
-        }
     }
 
     public ArrayList<NhanVien> layDanhSachNhanVien() {
@@ -156,6 +157,10 @@ public class NhanVienBUS {
             }
         }
         return ketQua;
+    }
+
+    public String layMaNVMoi() {
+        return dao.layMaNhanVien();
     }
 
     private String kiemTraDuLieu(NhanVien nv) {

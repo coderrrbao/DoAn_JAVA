@@ -170,7 +170,10 @@ public class TaiKhoanBUS {
     public TaiKhoan dangNhap(String tenDangNhap, String matKhau) {
         if (tenDangNhap == null || matKhau == null)
             return null;
-        return dao.dangNhap(tenDangNhap, matKhau);
+        TaiKhoan taiKhoan = dao.dangNhap(tenDangNhap, matKhau);
+        NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+        taiKhoan.setNhomQuyen(nhomQuyenBUS.timNhomQuyen(taiKhoan.getNhomQuyen().getMaNQ()));
+        return taiKhoan;
     }
 
     public Boolean kiemTraUsernameTonTai(String username) {

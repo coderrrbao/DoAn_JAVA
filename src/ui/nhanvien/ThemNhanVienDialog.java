@@ -13,6 +13,7 @@ import java.util.Date;
 import com.toedter.calendar.JDateChooser;
 import bus.NhanVienBUS;
 import dto.NhanVien;
+import util.Anh;
 import util.TaoUI;
 
 public class ThemNhanVienDialog extends JDialog {
@@ -150,6 +151,7 @@ public class ThemNhanVienDialog extends JDialog {
 
     private void initLoaiDialog() {
         if (nhanVien != null) {
+            btnDong.setVisible(false);
             btnThem.setVisible(false);
             anThaoTacSua();
         } else {
@@ -189,14 +191,15 @@ public class ThemNhanVienDialog extends JDialog {
         // XỬ LÝ THÊM NHÂN VIÊN
         btnThem.addActionListener(e -> {
             NhanVien nv = getFormDinhDang();
-            if (nv == null) return;
+            if (nv == null)
+                return;
 
             // Xử lý lưu ảnh vào thư mục dự án
             if (fileChooser != null && fileChooser.getSelectedFile() != null) {
-                // String duongDanMoi = Anh.luuAnhNV(,fileChooser.getSelectedFile());
-                // if (duongDanMoi != null) {
-                //     nv.setAnh(duongDanMoi); // Ghi đè đường dẫn thực tế vào NhanVien
-                // }
+                String duongDanMoi = Anh.luuAnhNV(bus.layMaNVMoi(), fileChooser);
+                if (duongDanMoi != null) {
+                    nv.setAnh(duongDanMoi);
+                }
             }
 
             String thongBaoLoi = bus.themNhanVien(nv);
@@ -204,29 +207,32 @@ public class ThemNhanVienDialog extends JDialog {
             if (thongBaoLoi != null) {
                 JOptionPane.showMessageDialog(this, thongBaoLoi, "Lỗi", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                if (nvUI != null) nvUI.hienThiDanhSachNhanVien();
+                JOptionPane.showMessageDialog(this, "Thêm nhân viên thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                if (nvUI != null)
+                    nvUI.hienThiDanhSachNhanVien();
                 dispose();
             }
         });
 
         // XỬ LÝ LƯU (CẬP NHẬT)
         btnLuu.addActionListener(e -> {
-            if (nhanVien == null) return;
+            if (nhanVien == null)
+                return;
 
             NhanVien nvMoi = getFormDinhDang();
-            if (nvMoi == null) return;
+            if (nvMoi == null)
+                return;
 
             nvMoi.setMaNV(nhanVien.getMaNV());
 
             // Xử lý lưu ảnh mới (nếu có chọn)
             if (fileChooser != null && fileChooser.getSelectedFile() != null) {
-                // String duongDanMoi = luuAnhMoi(fileChooser.getSelectedFile());
-                // if (duongDanMoi != null) {
-                //     nvMoi.setAnh(duongDanMoi);
-                // }
+                String duongDanMoi = Anh.luuAnhNV(bus.layMaNVMoi(), fileChooser);
+                if (duongDanMoi != null) {
+                    nvMoi.setAnh(duongDanMoi);
+                }
             } else {
-                // Nếu không chọn ảnh mới, giữ nguyên đường dẫn cũ
                 nvMoi.setAnh(nhanVien.getAnh());
             }
 
@@ -235,8 +241,10 @@ public class ThemNhanVienDialog extends JDialog {
             if (thongBaoLoi != null) {
                 JOptionPane.showMessageDialog(this, thongBaoLoi, "Lỗi", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                if (nvUI != null) nvUI.hienThiDanhSachNhanVien();
+                JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                if (nvUI != null)
+                    nvUI.hienThiDanhSachNhanVien();
                 dispose();
             }
         });
@@ -246,7 +254,8 @@ public class ThemNhanVienDialog extends JDialog {
         if (fileChooser == null) {
             fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn ảnh nhân viên");
-            FileNameExtensionFilter filter = new FileNameExtensionFilter("Hình ảnh (JPG, PNG, GIF)", "jpg", "jpeg", "png", "gif");
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("Hình ảnh (JPG, PNG, GIF)", "jpg", "jpeg",
+                    "png", "gif");
             fileChooser.setFileFilter(filter);
         }
 
@@ -283,7 +292,7 @@ public class ThemNhanVienDialog extends JDialog {
         nv.setSdt(txtPhone.getText().trim());
         nv.setDiaChi(txtAddress.getText().trim());
         nv.setGioiTinh((String) cbGioiTinh.getSelectedItem());
-        
+
         // Mặc định set đường dẫn ảnh đang hiện trên form (trước khi lưu đè)
         nv.setAnh(hinhAnhPath);
 
@@ -294,8 +303,9 @@ public class ThemNhanVienDialog extends JDialog {
     }
 
     private void dienThongTinNhanVien() {
-        if (nhanVien == null) return;
-        
+        if (nhanVien == null)
+            return;
+
         txtName.setText(nhanVien.getTenNV());
         txtPhone.setText(nhanVien.getSdt());
         txtAddress.setText(nhanVien.getDiaChi());

@@ -66,7 +66,7 @@ public class ThongTinCaNhanPanel extends JPanel {
             daDoiAnh = false;
         }
         return new NhanVien(tfMaNV.getText(), tfTenNV.getText(), tfGioiTinh.getText(), tfNgaySinh.getText(),
-                tfSDT.getText(), tfDiaChi.getText(), nhanVien.getTaiKhoan(), nhanVien.getAnh());
+                tfSDT.getText(), tfDiaChi.getText(), nhanVien.getAnh());
     }
 
     private void initGUI() {
@@ -168,7 +168,7 @@ public class ThongTinCaNhanPanel extends JPanel {
         tfNgaySinh.setText(nv.getNgaySinh() != null ? nv.getNgaySinh().toString() : "");
         tfSDT.setText(nv.getSdt());
         tfDiaChi.setText(nv.getDiaChi());
-        tfChucVu.setText(nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
+        tfChucVu.setText(PhienDangNhap.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
 
         ImageIcon icon = TaoUI.taoImageIcon(nhanVien.getAnh(), 180, 180);
         lblAnhDaiDien.setIcon(icon);

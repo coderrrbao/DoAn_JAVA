@@ -141,6 +141,7 @@ public class LoginUI extends JFrame {
       NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
       NhanVien nv = nhanVienBUS.timNhanVien(taiKhoan.getMaNV());
       PhienDangNhap.setUser(nv);
+      PhienDangNhap.setTaiKhoan(taiKhoan);
       TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
       mainFrame.getTopPaner().capNhapThongTin(nv);
       mainFrame.setVisible(true);

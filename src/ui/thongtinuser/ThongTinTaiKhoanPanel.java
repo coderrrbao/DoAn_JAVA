@@ -6,10 +6,8 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JTextField;
 
 import bus.TaiKhoanBUS;
-import dto.NhanVien;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -57,10 +55,9 @@ public class ThongTinTaiKhoanPanel extends JPanel {
             String matKhauMoi = new String(mkMoi);
             String xacNhan = new String(mkXacNhan);
 
-            NhanVien nhanVien = PhienDangNhap.getUser();
-            if (matKhauCu.equals(nhanVien.getTaiKhoan().getMatKhau())) {
+            if (matKhauCu.equals(PhienDangNhap.getTaiKhoan().getMatKhau())) {
                 if (xacNhan.equals(matKhauMoi)) {
-                    if (taiKhoanBUS.suaMatKhau(nhanVien.getTaiKhoan().getTenDangNhap(), matKhauMoi)) {
+                    if (taiKhoanBUS.suaMatKhau(PhienDangNhap.getTaiKhoan().getTenDangNhap(), matKhauMoi)) {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thành công", "Thông báo", 1);
                     } else {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thất bại", "Thông báo", 1);
