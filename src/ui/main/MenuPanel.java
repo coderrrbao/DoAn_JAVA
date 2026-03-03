@@ -66,8 +66,11 @@ public class MenuPanel extends JPanel {
   }
 
   private void addMenuItem(String title, CardLayout cardLayout, JPanel cardPanel) {
-    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel,menuItems);
+    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel, menuItems);
     menuItems.add(item);
+    if (title.equals("Quản lý sản phẩm")) {
+      item.setMauChon();
+    }
     add(item);
     add(Box.createVerticalStrut(2));
   }

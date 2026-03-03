@@ -171,6 +171,9 @@ public class TaiKhoanBUS {
         if (tenDangNhap == null || matKhau == null)
             return null;
         TaiKhoan taiKhoan = dao.dangNhap(tenDangNhap, matKhau);
+        if (taiKhoan == null) {
+            return null;
+        }
         NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
         taiKhoan.setNhomQuyen(nhomQuyenBUS.timNhomQuyen(taiKhoan.getNhomQuyen().getMaNQ()));
         return taiKhoan;

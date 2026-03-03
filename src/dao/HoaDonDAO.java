@@ -6,7 +6,7 @@ import java.sql.ResultSet;
 import java.util.ArrayList;
 import dao.conection.DBConnection;
 import dto.HoaDon;
-import dto.MaGiamGia;
+import dto.KhuyenMai;
 import dto.NhanVien;
 
 public class HoaDonDAO {
@@ -67,7 +67,7 @@ public class HoaDonDAO {
                 hd.setMaKH(rs.getString("MaKH"));
                 String maKM = rs.getString("MaKM");
                 if (maKM != null) {
-                    MaGiamGia km = new MaGiamGia();
+                    KhuyenMai km = new KhuyenMai();
                     km.setMaKM(maKM);
                     hd.setMaGiamGia(km);
                 }

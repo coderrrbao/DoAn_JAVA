@@ -30,11 +30,11 @@ public class NguyenLieuUI extends JPanel {
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
     search_Item = new Search_Item(300, 30);
-    btnTao = new JButton("Thêm Nguyên Liệu");
+    btnTao = new JButton("Thêm");
     btnSua = new JButton("Sửa");
     btnXoa = new JButton("Xóa");
 
-    TaoUI.setFixSize(btnTao, 120, 30);
+    TaoUI.setFixSize(btnTao, 80, 30);
     TaoUI.setFixSize(btnXoa, 80, 30);
     TaoUI.setFixSize(btnSua, 80, 30);
 

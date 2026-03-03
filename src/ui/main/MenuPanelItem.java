@@ -90,4 +90,8 @@ public class MenuPanelItem extends JPanel {
     public void setDaChon(boolean daChon) {
         this.daChon = daChon;
     }
+
+    public void setMauChon() {
+        setBackground(hoverBg);
+    }
 }

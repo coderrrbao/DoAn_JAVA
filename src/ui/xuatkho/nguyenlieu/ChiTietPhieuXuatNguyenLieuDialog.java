@@ -82,10 +82,12 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     btnSua = new JButton("Sửa");
     btnLuu = new JButton("Lưu");
     btnLuu.setEnabled(false);
-    if ("Đã xác nhận".equals(ph.getTrangThaiXuLy())) btnSua.setEnabled(false);
+    if (!"Đã xác nhận".equals(ph.getTrangThaiXuLy())){
+      add(pnBtn, BorderLayout.SOUTH);
+    }
     pnBtn.add(btnSua);
     pnBtn.add(btnLuu);
-    add(pnBtn, BorderLayout.SOUTH);
+    
 
     loadData();
     ganSuKien();

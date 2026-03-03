@@ -7,6 +7,7 @@ import java.awt.Font;
 
 import javax.swing.Box;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -20,9 +21,8 @@ import util.TaoUI;
 public class ThongKeDoanhThuPanel extends JPanel {
     private DefaultCategoryDataset dataset;
     private JLabel lbTongDoanhThu;
-
+    private JComboBox<String> cbLoaiTk;
     JButton btnThongKe;
-    LocNgay_Item locNgay;
 
     public ThongKeDoanhThuPanel() {
         setLayout(new BorderLayout());
@@ -31,10 +31,9 @@ public class ThongKeDoanhThuPanel extends JPanel {
         initGUI();
     }
 
-
-    private void loadDuLieu(){
+    private void loadDuLieu() {
         HoaDonBUS hoaDonBUS = new HoaDonBUS();
-        
+
     }
 
     private void initGUI() {
@@ -48,8 +47,12 @@ public class ThongKeDoanhThuPanel extends JPanel {
         top.setBackground(Color.white);
         btnThongKe = new JButton("Thống kê");
         TaoUI.setFixSize(btnThongKe, 100, 28);
-        locNgay = new LocNgay_Item(400, 28);
-        top.add(locNgay);
+
+        String[] loai = { "Theo ngày", "Theo tháng", "Theo năm" };
+        cbLoaiTk = new JComboBox<>(loai);
+        top.add(cbLoaiTk);
+        cbLoaiTk.setPreferredSize(new Dimension(200,28));
+        cbLoaiTk.setMaximumSize(new Dimension(200,28));
         top.add(Box.createRigidArea(new Dimension(20, 0)));
         top.add(btnThongKe);
         return top;

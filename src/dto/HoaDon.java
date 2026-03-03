@@ -10,7 +10,7 @@ public class HoaDon {
     private NhanVien nhanVien;
     private String maKH;
     // private String maKM;
-    private MaGiamGia maGiamGia = null;
+    private KhuyenMai maGiamGia = null;
     private Date ngayBan;
     private double tongTien;
     private double tienKhuyenMai;
@@ -21,7 +21,7 @@ public class HoaDon {
         this.listChiTietHoaDon = new ArrayList<>();
     }
 
-    public HoaDon(String maHD, NhanVien nhanVien, String maKH, MaGiamGia maGiamGia,
+    public HoaDon(String maHD, NhanVien nhanVien, String maKH, KhuyenMai maGiamGia,
             Date ngayBan, double tongTien, double tienKhuyenMai, boolean trangThai) {
         this.maHD = maHD;
         this.nhanVien = nhanVien;
@@ -66,11 +66,11 @@ public class HoaDon {
         this.maKH = maKH;
     }
 
-    public MaGiamGia getMaGiamGia() {
+    public KhuyenMai getMaGiamGia() {
         return maGiamGia;
     }
 
-    public void setMaGiamGia(MaGiamGia maGiamGia) {
+    public void setMaGiamGia(KhuyenMai maGiamGia) {
         this.maGiamGia = maGiamGia;
     }
 
