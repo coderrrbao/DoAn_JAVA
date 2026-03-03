@@ -18,12 +18,12 @@ import ui.login.LoginUI;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
-  private List<MenuPanelItem> menuItems;
+  private ArrayList<MenuPanelItem> menuItems;
   private LoginUI loginUI;
 
-  public MenuPanel(CardLayout cardLayout, JPanel cardPanel,LoginUI loginUI) {
+  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, LoginUI loginUI) {
     menuItems = new ArrayList<>();
-    this.loginUI=loginUI;
+    this.loginUI = loginUI;
     setPreferredSize(new Dimension(200, 700));
     setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
     setMinimumSize(new Dimension(200, 700));
@@ -66,7 +66,7 @@ public class MenuPanel extends JPanel {
   }
 
   private void addMenuItem(String title, CardLayout cardLayout, JPanel cardPanel) {
-    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel);
+    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel,menuItems);
     menuItems.add(item);
     add(item);
     add(Box.createVerticalStrut(2));
@@ -92,7 +92,8 @@ public class MenuPanel extends JPanel {
 
     if (confirm == JOptionPane.YES_OPTION) {
       // xoa du lieu old
-      loginUI.lamMoi();;
+      loginUI.lamMoi();
+      ;
       // đóng MainFrame
       loginUI.getMainFrame().setVisible(false);
       // mở lại màn hình đăng nhập
