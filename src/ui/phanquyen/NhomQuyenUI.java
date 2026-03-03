@@ -82,12 +82,18 @@ public class NhomQuyenUI extends JPanel {
         model.setRowCount(0);
         listNhomQuyen = nhomQuyenBUS.layDanhSachNhomQuyen();
         for (NhomQuyen nhomQuyen : listNhomQuyen) {
-            model.addRow(
-                    new Object[] { nhomQuyen.getMaNQ(), nhomQuyen.getTenNhomQuyen(), nhomQuyen.getListQuyen().size() });
+            if (nhomQuyen.getTenNhomQuyen().contains(search_Item.getTextSearch().toString())) {
+                model.addRow(
+                        new Object[] { nhomQuyen.getMaNQ(), nhomQuyen.getTenNhomQuyen(),
+                                nhomQuyen.getListQuyen().size() });
+            }
+
         }
     }
 
     private void ganSuKien() {
+        search_Item.setEvent(this::loadDuLieu);
+
         btnXemChiTiet.addActionListener(e -> {
             int dongChon = table.getSelectedRow();
             if (dongChon >= 0) {

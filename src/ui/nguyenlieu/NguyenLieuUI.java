@@ -34,6 +34,10 @@ public class NguyenLieuUI extends JPanel {
     btnSua = new JButton("Sửa");
     btnXoa = new JButton("Xóa");
 
+    TaoUI.setFixSize(btnTao, 120, 30);
+    TaoUI.setFixSize(btnXoa, 80, 30);
+    TaoUI.setFixSize(btnSua, 80, 30);
+
     top.add(search_Item);
     top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(btnTao);
@@ -47,13 +51,12 @@ public class NguyenLieuUI extends JPanel {
     add(top, BorderLayout.NORTH);
 
     // --- GIAO DIỆN BẢNG ---
-    model =
-        new DefaultTableModel() {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    model = new DefaultTableModel() {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
 
     model.addColumn("Mã NL");
     model.addColumn("Tên nguyên liệu");
@@ -81,8 +84,7 @@ public class NguyenLieuUI extends JPanel {
   private void addEvents() {
     btnTao.addActionListener(
         e -> {
-          FormNguyenLieu form =
-              new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), null);
+          FormNguyenLieu form = new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), null);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (nlBUS.themNguyenLieu(form.getKetQua())) {
@@ -102,9 +104,8 @@ public class NguyenLieuUI extends JPanel {
             return;
           }
           String maNL = model.getValueAt(row, 0).toString();
-          int confirm =
-              JOptionPane.showConfirmDialog(
-                  this, "Xác nhận xóa " + maNL + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+          int confirm = JOptionPane.showConfirmDialog(
+              this, "Xác nhận xóa " + maNL + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
           if (confirm == JOptionPane.YES_OPTION) {
             if (nlBUS.xoaNguyenLieu(maNL)) {
               JOptionPane.showMessageDialog(this, "Đã xóa!");
@@ -122,8 +123,7 @@ public class NguyenLieuUI extends JPanel {
           }
           String maNL = model.getValueAt(row, 0).toString();
           NguyenLieu nlCanSua = nlBUS.timNguyenLieu(maNL);
-          FormNguyenLieu form =
-              new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), nlCanSua);
+          FormNguyenLieu form = new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), nlCanSua);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (nlBUS.capNhatNguyenLieu(form.getKetQua())) {
@@ -161,11 +161,11 @@ public class NguyenLieuUI extends JPanel {
     for (NguyenLieu nl : list) {
       model.addRow(
           new Object[] {
-            nl.getMaNL(),
-            nl.getTenNL(),
-            nl.getGia(),
-            nl.getDonVi(),
-            nl.getMucCanhBao()
+              nl.getMaNL(),
+              nl.getTenNL(),
+              nl.getGia(),
+              nl.getDonVi(),
+              nl.getMucCanhBao()
           });
     }
   }

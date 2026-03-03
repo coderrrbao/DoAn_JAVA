@@ -28,7 +28,7 @@ public class ThemKhachHangDialog extends JDialog {
         this.khUI = khUI;
         this.khachHang = null;
         initUI();
-        setSize(400, 280);
+        setSize(400, 260);
         setLocationRelativeTo(owner);
         setResizable(false);
     }
@@ -62,9 +62,9 @@ public class ThemKhachHangDialog extends JDialog {
         cbGioiTinh = new JComboBox<>(dsGioiTinh);
 
         JLabel cbGTLabel = new JLabel("Giới tính");
-        cbGTLabel.setPreferredSize(new Dimension(110, 30));
-        cbGTLabel.setMinimumSize(new Dimension(110, 30));
-        cbGTLabel.setMaximumSize(new Dimension(110, 30));
+        cbGTLabel.setPreferredSize(new Dimension(120, 30));
+        cbGTLabel.setMinimumSize(new Dimension(120, 30));
+        cbGTLabel.setMaximumSize(new Dimension(120, 30));
 
         cbGTPanel.add(cbGTLabel);
         cbGTPanel.add(cbGioiTinh);
@@ -81,15 +81,15 @@ public class ThemKhachHangDialog extends JDialog {
         hangPanel.add(lblHangThanhVien);
 
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
-        
+
         // Khởi tạo 4 nút
         btnSua = new JButton("Sửa");
         btnThem = new JButton("Thêm");
         btnLuu = new JButton("Lưu");
         btnHuy = new JButton("Đóng");
 
-        TaoUI.addItem(buttonPanel, btnSua, 5, true);
         TaoUI.addItem(buttonPanel, btnThem, 5, true);
+        TaoUI.addItem(buttonPanel, btnSua, 5, true);
         TaoUI.addItem(buttonPanel, btnLuu, 5, true);
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
 
@@ -113,39 +113,42 @@ public class ThemKhachHangDialog extends JDialog {
     }
 
     private void initLoaiDialog() {
-        if (khachHang != null) { 
-            // Đang xem chi tiết -> Ẩn nút Thêm, khoá nhập liệu
+        if (khachHang != null) {
+            btnHuy.setVisible(false);
             btnThem.setVisible(false);
             anThaoTacSua();
-        } else { 
-            // Đang mở để thêm mới -> Ẩn Sửa/Lưu, hiện nút Thêm
-            btnLuu.setVisible(false);
+        } else {
+            // Chế độ Thêm mới: Ẩn Sửa/Lưu, hiện Thêm
             btnSua.setVisible(false);
-            txtName.setEditable(true);
-            txtPhone.setEditable(true);
-            cbGioiTinh.setEnabled(true);
+            btnLuu.setVisible(false);
+            btnThem.setVisible(true);
+            setFieldsEnabled(true);
         }
     }
 
+    // Trạng thái: Tắc Sửa (khi mới mở hoặc vừa lưu xong)
     private void anThaoTacSua() {
-        btnSua.setVisible(true);
-        btnLuu.setVisible(false);
-        txtName.setEditable(false);
-        txtPhone.setEditable(false);
-        cbGioiTinh.setEnabled(false);
+        btnSua.setEnabled(true); // Cho phép nhấn Sửa
+        btnLuu.setEnabled(false); // Khóa nút Lưu
+        setFieldsEnabled(false); // Khóa nhập liệu
     }
 
+    // Trạng thái: Bật Sửa (khi nhấn vào nút Sửa)
     private void batThaoTacSua() {
-        btnSua.setVisible(false);
-        btnLuu.setVisible(true);
-        txtName.setEditable(true);
-        txtPhone.setEditable(true);
-        cbGioiTinh.setEnabled(true);
+        btnSua.setEnabled(false); // Khóa nút Sửa (đã nhấn rồi)
+        btnLuu.setEnabled(true); // Bật nút Lưu để người dùng bấm
+        setFieldsEnabled(true); // Mở khóa nhập liệu
+    }
+
+    private void setFieldsEnabled(boolean status) {
+        txtName.setEditable(status);
+        txtPhone.setEditable(status);
+        cbGioiTinh.setEnabled(status);
     }
 
     private void ganSuKien() {
         btnHuy.addActionListener(e -> dispose());
-        
+
         btnSua.addActionListener(e -> batThaoTacSua());
 
         // Sự kiện riêng biệt cho nút Thêm
@@ -165,7 +168,8 @@ public class ThemKhachHangDialog extends JDialog {
                 if (!bus.themKhachHang(kh)) {
                     JOptionPane.showMessageDialog(this, "Thêm thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
                     if (khUI != null) {
                         khUI.hienThiDanhSachKhachHang();
                     }
@@ -179,10 +183,11 @@ public class ThemKhachHangDialog extends JDialog {
         // Sự kiện riêng biệt cho nút Lưu (khi sửa)
         btnLuu.addActionListener(e -> {
             if (khachHang == null) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
-            
+
             String name = txtName.getText().trim();
             String phone = txtPhone.getText().trim();
             String gt = (String) cbGioiTinh.getSelectedItem();
@@ -195,7 +200,8 @@ public class ThemKhachHangDialog extends JDialog {
             if (result != null) {
                 JOptionPane.showMessageDialog(this, result, "Lỗi", JOptionPane.ERROR_MESSAGE);
             } else {
-                JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 if (khUI != null) {
                     khUI.hienThiDanhSachKhachHang();
                 }

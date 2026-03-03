@@ -29,7 +29,6 @@ public class TaiKhoanUI extends JPanel {
 
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
         top.setBackground(Color.WHITE);
-        top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
         String[] quyen = { "Quản lý", "Nhân viên bán hàng" };
         cbNhomQuyen = new JComboBox<>(quyen);
@@ -87,7 +86,6 @@ public class TaiKhoanUI extends JPanel {
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer = TaoUI.suaBorderChoPanel(tableContainer, 10, 10, 10, 10);
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);

@@ -16,7 +16,8 @@ public class Main {
     new LoginUI();
     // EventQueue.invokeLater(
     // () -> {
-    // new MainFrame().setVisible(true);
+    // new MainFrame(null).setVisible(true);
     // });
+    // }
   }
 }

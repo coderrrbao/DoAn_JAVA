@@ -76,15 +76,16 @@ public class NhanVienUI extends JPanel {
         model.addColumn("Giới tính"); // 2
         model.addColumn("Chức vụ"); // 3
         model.addColumn("Số điện thoại"); // 4
-        // Đã xóa cột "Trạng thái"
-        model.addColumn(""); // 5 (Cột chứa nút Sửa)
+        model.addColumn("");
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(5); // Set index 5 cho cột Nút
+        set.add(5);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
-
-        // Cập nhật index 5 cho Render và Editor
+        tableUI.setAutoCreateColumnsFromModel(false);
+        tableUI.getColumnModel().getColumn(5).setMinWidth(80);
+        tableUI.getColumnModel().getColumn(5).setMaxWidth(80);
+        tableUI.getColumnModel().getColumn(5).setPreferredWidth(80);
         tableUI.getColumnModel().getColumn(5).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
         tableUI.getColumnModel().getColumn(5).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
             String maNV = (String) model.getValueAt(row, 0);
@@ -167,8 +168,6 @@ public class NhanVienUI extends JPanel {
                     null // Dành cho nút sửa ở index 5
             });
         }
-        tableUI.revalidate();
-        tableUI.repaint();
     }
 
     private void ganSuKienLocVaXoa() {

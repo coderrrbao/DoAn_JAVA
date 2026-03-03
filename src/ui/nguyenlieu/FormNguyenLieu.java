@@ -5,108 +5,173 @@ import java.awt.*;
 import javax.swing.*;
 
 public class FormNguyenLieu extends JDialog {
-  private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
-  private JButton btnLuu, btnHuy;
-  private NguyenLieu ketQua = null;
-  private boolean isEdit = false;
+    private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
+  
+    private JButton btnThem, btnSua, btnLuu, btnHuy;
+    
+    private NguyenLieu ketQua = null;
+    private boolean isEdit = false;
 
-  public FormNguyenLieu(Frame owner, NguyenLieu editNL) {
-    super(owner, editNL == null ? "Thêm Nguyên Liệu" : "Sửa Nguyên Liệu", true);
-    this.isEdit = (editNL != null);
+    public FormNguyenLieu(Frame owner, NguyenLieu editNL) {
+        super(owner, editNL == null ? "Thêm Nguyên Liệu" : "Chi tiết Nguyên Liệu", true);
+        this.isEdit = (editNL != null);
 
-    setSize(new Dimension(500, 300));
-    initUI();
+        setSize(new Dimension(500, 350));
+        initUI();
 
-    if (isEdit) {
-      duLieuCu(editNL);
+        if (isEdit) {
+            duLieuCu(editNL);
+        }
+
+        initLoaiDialog();
+        ganSuKien(editNL);
+
+        setLocationRelativeTo(owner);
     }
 
-    btnLuu.addActionListener(
-        e -> {
-          xuLyLuu(editNL);
+    private void initUI() {
+        setLayout(new BorderLayout());
+        JPanel pnlMain = new JPanel();
+        pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
+        pnlMain.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
+
+        txtMa = new JTextField("Tự động");
+        txtMa.setEditable(false); 
+        txtTen = new JTextField();
+        txtGia = new JTextField();
+        txtDonVi = new JTextField();
+        txtMucCanhBao = new JTextField();
+
+        String[] labels = { "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:" };
+        JTextField[] fields = { txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao };
+
+        for (int i = 0; i < labels.length; i++) {
+            Box row = Box.createHorizontalBox();
+
+            JLabel lbl = new JLabel(labels[i]);
+            lbl.setPreferredSize(new Dimension(120, 30));
+            lbl.setMaximumSize(new Dimension(120, 30));
+
+            row.add(lbl);
+            row.add(Box.createHorizontalStrut(10));
+            row.add(fields[i]);
+
+            pnlMain.add(row);
+            pnlMain.add(Box.createVerticalStrut(15));
+        }
+
+        JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
+        
+        // Khởi tạo các nút
+        btnThem = new JButton("Thêm");
+        btnSua = new JButton("Sửa");
+        btnLuu = new JButton("Lưu");
+        btnHuy = new JButton("Đóng");
+
+        pnlButtons.add(btnThem);
+        pnlButtons.add(btnSua);
+        pnlButtons.add(btnLuu);
+        pnlButtons.add(btnHuy);
+
+        add(pnlMain, BorderLayout.CENTER);
+        add(pnlButtons, BorderLayout.SOUTH);
+    }
+
+    private void initLoaiDialog() {
+        if (isEdit) {
+            btnHuy.setVisible(false);
+            btnThem.setVisible(false);
+            anThaoTacSua();
+        } else {
+            // Chế độ Thêm: Ẩn Sửa/Lưu, hiện Thêm
+            btnSua.setVisible(false);
+            btnLuu.setVisible(false);
+            btnThem.setVisible(true);
+            setEditableForm(true);
+        }
+    }
+
+    private void setEditableForm(boolean status) {
+        txtTen.setEditable(status);
+        txtGia.setEditable(status);
+        txtDonVi.setEditable(status);
+        txtMucCanhBao.setEditable(status);
+    }
+
+    private void anThaoTacSua() {
+        btnSua.setEnabled(true);
+        btnLuu.setEnabled(false);
+        setEditableForm(false);
+    }
+
+    private void batThaoTacSua() {
+        btnSua.setEnabled(false);
+        btnLuu.setEnabled(true);
+        setEditableForm(true);
+    }
+
+    private void ganSuKien(NguyenLieu editNL) {
+        btnHuy.addActionListener(e -> dispose());
+        
+        btnSua.addActionListener(e -> batThaoTacSua());
+
+        // Sự kiện nút Thêm
+        btnThem.addActionListener(e -> {
+            if (kiemTraHopLe()) {
+                ketQua = new NguyenLieu();
+                ganDuLieu(ketQua);
+                dispose();
+            }
         });
 
-    btnHuy.addActionListener(
-        e -> {
-          dispose();
+        // Sự kiện nút Lưu (khi Sửa)
+        btnLuu.addActionListener(e -> {
+            if (kiemTraHopLe()) {
+                ketQua = editNL; // Cập nhật trên đối tượng cũ
+                ganDuLieu(ketQua);
+                dispose();
+            }
         });
-
-    setLocationRelativeTo(owner);
-  }
-
-  private void initUI() {
-    setLayout(new BorderLayout());
-    JPanel pnlMain = new JPanel();
-    pnlMain.setLayout(new BoxLayout(pnlMain, BoxLayout.Y_AXIS));
-    pnlMain.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-    txtMa = new JTextField("Tự động");
-    txtMa.setEditable(false);
-    txtTen = new JTextField();
-    txtGia = new JTextField();
-    txtDonVi = new JTextField();
-    txtMucCanhBao = new JTextField();
-
-    String[] labels = { "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:" };
-    JTextField[] fields = { txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao };
-
-    for (int i = 0; i < labels.length; i++) {
-      Box row = Box.createHorizontalBox();
-
-      JLabel lbl = new JLabel(labels[i]);
-      lbl.setPreferredSize(new Dimension(150, 50));
-      lbl.setMaximumSize(new Dimension(150, 50));
-
-      row.add(lbl);
-      row.add(fields[i]);
-
-      pnlMain.add(row);
-      pnlMain.add(Box.createVerticalStrut(10));
     }
 
-    JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    btnLuu = new JButton("Lưu");
-    btnHuy = new JButton("Hủy");
-    pnlButtons.add(btnLuu);
-    pnlButtons.add(btnHuy);
-
-    add(pnlMain, BorderLayout.CENTER);
-    add(pnlButtons, BorderLayout.SOUTH);
-  }
-
-  private void duLieuCu(NguyenLieu editNL) {
-    txtMa.setText(editNL.getMaNL());
-    txtTen.setText(editNL.getTenNL());
-    txtGia.setText(String.valueOf(editNL.getGia()));
-    txtDonVi.setText(editNL.getDonVi());
-    txtMucCanhBao.setText(String.valueOf(editNL.getMucCanhBao()));
-  }
-
-  private void xuLyLuu(NguyenLieu editNL) {
-    try {
-      if (txtTen.getText().trim().isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Vui lòng nhập tên!");
-        return;
-      }
-
-      ketQua = (isEdit) ? editNL : new NguyenLieu();
-      ketQua.setTenNL(txtTen.getText().trim());
-      ketQua.setGia(Double.parseDouble(txtGia.getText().trim()));
-      ketQua.setDonVi(txtDonVi.getText().trim());
-      ketQua.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
-
-      dispose();
-    } catch (NumberFormatException ex) {
-      JOptionPane.showMessageDialog(this, "Giá và Mức cảnh báo phải là số!");
+    private void duLieuCu(NguyenLieu editNL) {
+        txtMa.setText(editNL.getMaNL());
+        txtTen.setText(editNL.getTenNL());
+        txtGia.setText(String.valueOf(editNL.getGia()));
+        txtDonVi.setText(editNL.getDonVi());
+        txtMucCanhBao.setText(String.valueOf(editNL.getMucCanhBao()));
     }
-  }
 
-  public NguyenLieu getKetQua() {
-    return ketQua;
-  }
+    // Hàm phụ trợ kiểm tra dữ liệu đầu vào
+    private boolean kiemTraHopLe() {
+        if (txtTen.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nguyên liệu!");
+            return false;
+        }
+        try {
+            Double.parseDouble(txtGia.getText().trim());
+            Integer.parseInt(txtMucCanhBao.getText().trim());
+            return true;
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Giá và Mức cảnh báo phải là số hợp lệ!");
+            return false;
+        }
+    }
 
-  public static void main(String[] args) {
-    FormNguyenLieu formNguyenLieu = new FormNguyenLieu(null, null);
-    formNguyenLieu.setVisible(true);
-  }
+    // Hàm phụ trợ gán dữ liệu từ Form vào đối tượng
+    private void ganDuLieu(NguyenLieu nl) {
+        nl.setTenNL(txtTen.getText().trim());
+        nl.setGia(Double.parseDouble(txtGia.getText().trim()));
+        nl.setDonVi(txtDonVi.getText().trim());
+        nl.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
+    }
+
+    public NguyenLieu getKetQua() {
+        return ketQua;
+    }
+
+    public static void main(String[] args) {
+        FormNguyenLieu formNguyenLieu = new FormNguyenLieu(null, null);
+        formNguyenLieu.setVisible(true);
+    }
 }
