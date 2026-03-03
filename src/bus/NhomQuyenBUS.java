@@ -3,6 +3,8 @@ package bus;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import dao.NhomQuyenDAO;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
@@ -104,8 +106,69 @@ public class NhomQuyenBUS {
         return true;
     }
 
+    public boolean capNhatNhomQuyen(NhomQuyen nhomQuyen) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!nhomQuyenDAO.capNhatNhomQuyen(nhomQuyen, conn)) {
+                throw new SQLException();
+            }
+            PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
+            ArrayList<PhanQuyen> listPhanQuyenTrongDB = phanQuyenBUS.layPhanQuyenChoNhomQuyen(nhomQuyen.getMaNQ());
+            HashSet<String> set = new HashSet<>();
+            for (PhanQuyen phanQuyen : listPhanQuyenTrongDB) {
+                set.add(phanQuyen.getMaQuyen());
+            }
+            QuyenBUS quyenBUS = QuyenBUS.getQuyenBUS();
+            for (Quyen quyen : nhomQuyen.getListQuyen()) {
+                Quyen q = quyenBUS.timQuyenTheoTen(quyen.getTenQuyen());
+                quyen.setMaQuyen(q.getMaQuyen());
+            }
 
-     public boolean xoaNhomQuyen(NhomQuyen nhomQuyen) {
+            HashSet<String> set2 = new HashSet<>();
+            for (Quyen quyen : nhomQuyen.getListQuyen()) {
+                if (!set.contains(quyen.getMaQuyen())) {
+                    if (!phanQuyenBUS.themPhanQuyen(new PhanQuyen(nhomQuyen.getMaNQ(), quyen.getMaQuyen()), conn)) {
+                        throw new SQLException();
+                    }
+                }
+                set2.add(quyen.getMaQuyen());
+            }
+            for (PhanQuyen phanQuyen : listPhanQuyenTrongDB) {
+                if (!set2.contains(phanQuyen.getMaQuyen())) {
+                    if (!phanQuyenBUS.xoaPhanQuyen(phanQuyen, conn)) {
+                        throw new SQLException();
+                    }
+                }
+
+            }
+
+            conn.commit();
+
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                    canUpdate = true;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+            }
+        }
+        this.canUpdate = true;
+        return true;
+    }
+
+    public boolean xoaNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
@@ -113,7 +176,7 @@ public class NhomQuyenBUS {
             if (!nhomQuyenDAO.xoaNhomQuyen(nhomQuyen, conn)) {
                 throw new SQLException();
             }
-          
+
             conn.commit();
 
         } catch (SQLException e) {

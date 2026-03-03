@@ -80,4 +80,22 @@ public class NhomQuyenDAO {
         }
         return ketQua;
     }
+
+    public boolean capNhatNhomQuyen(NhomQuyen nq, Connection conn) {
+        boolean ketQua = false;
+        String sql = "UPDATE NhomQuyen SET TenNhomQuyen = ? WHERE MaNQ = ? AND TrangThai = 1";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, nq.getTenNhomQuyen());
+            ps.setString(2, nq.getMaNQ());
+
+            int rowsAffected = ps.executeUpdate();
+            ketQua = rowsAffected > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ketQua;
+    }
 }

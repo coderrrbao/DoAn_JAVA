@@ -38,7 +38,19 @@ public class PhanQuyenBUS {
         return listPhanQuyen;
     }
 
-
+    public ArrayList<PhanQuyen> layPhanQuyenChoNhomQuyen(String maNQ) {
+        if (canUpdate || listPhanQuyen == null) {
+            khoiTao();
+            canUpdate = false;
+        }
+        ArrayList<PhanQuyen> list = new ArrayList<>();
+        for (PhanQuyen phanQuyen : listPhanQuyen) {
+            if (phanQuyen.getMaNQ().equals(maNQ)) {
+                list.add(phanQuyen);
+            }
+        }
+        return list;
+    }
 
     public boolean themPhanQuyen(PhanQuyen phanQuyen, Connection conn) {
         try {

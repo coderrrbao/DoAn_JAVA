@@ -134,7 +134,17 @@ public class NhomQuyenDialog extends JDialog {
 
         if (btnLuu != null) {
             btnLuu.addActionListener(e -> {
-
+                NhomQuyen duLieuNQ = dongGoiNhomQuyen();
+                nhomQuyen.setListQuyen(duLieuNQ.getListQuyen());
+                NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+                if (nhomQuyenBUS.capNhatNhomQuyen(nhomQuyen)) {
+                    TaoTinNhan.showAutoCloseMessage("Cập nhật nhóm quyền thành công", "Thông báo", 1);
+                    loadDuLieu(nhomQuyen);
+                    tacThaoTacSua();
+                    nhomQuyenUI.loadDuLieu();
+                } else {
+                    TaoTinNhan.showAutoCloseMessage("Cập nhật nhóm quyền thất bại", "Thông báo", 1);
+                }
             });
         }
 
