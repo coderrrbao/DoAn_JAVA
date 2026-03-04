@@ -29,12 +29,13 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     setLayout(new BorderLayout(10, 10));
 
     // CHỈNH SỬA 1: Ngăn chỉnh sửa các ô trong Table
-    modelChiTiet = new DefaultTableModel(new String[] { "Mã Lô", "Tên SP", "Số lượng", "Giá" }, 0) {
-      @Override
-      public boolean isCellEditable(int row, int column) {
-        return false;
-      }
-    };
+    modelChiTiet =
+        new DefaultTableModel(new String[] {"Mã Lô", "Tên SP", "Số lượng", "Giá"}, 0) {
+          @Override
+          public boolean isCellEditable(int row, int column) {
+            return false;
+          }
+        };
 
     tblChiTiet = new JTable(modelChiTiet);
     tblChiTiet.getTableHeader().setReorderingAllowed(false); // Ngăn kéo cột
@@ -50,11 +51,11 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     txtNV = new JTextField(ph.getMaNV());
     txtLyDo = new JTextField(ph.getLyDo());
     txtTong = new JTextField(String.format("%,.0f VNĐ", ph.getTongGiaTri()));
-    cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
+    cbTrangThai = new JComboBox<>(new String[] {"Đang xử lý", "Đã xác nhận"});
     cbTrangThai.setSelectedItem(ph.getTrangThaiXuLy());
 
     // CHỈNH SỬA 2: Chặn hoàn toàn việc click và hiện con trỏ chuột
-    JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong };
+    JTextField[] fields = {txtMaPH, txtNgay, txtNV, txtLyDo, txtTong};
     for (JTextField f : fields) {
       f.setEditable(false);
       f.setBackground(Color.WHITE);
@@ -117,7 +118,7 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
         SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(lo.getMaSP());
         modelChiTiet.addRow(
             new Object[] {
-                lo.getMaLoSP(), (sp != null ? sp.getTenSP() : "N/A"), lo.getSoLuong(), lo.getGiaNhap()
+              lo.getMaLoSP(), (sp != null ? sp.getTenSP() : "N/A"), lo.getSoLuong(), lo.getGiaNhap()
             });
       }
     }

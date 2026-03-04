@@ -63,7 +63,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
     modelChoXuat = new DefaultTableModel(new String[] { "Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập" }, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
-    btnXacNhan = new JButton("XÁC NHẬN HỦY & TRỪ KHO");
+    btnXacNhan = new JButton("XÁC NHẬN");
     btnXacNhan.setBackground(Color.RED);
     btnXacNhan.setForeground(Color.WHITE);
 

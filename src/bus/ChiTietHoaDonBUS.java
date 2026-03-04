@@ -11,4 +11,8 @@ public class ChiTietHoaDonBUS {
     public ArrayList<ChiTietHoaDon> layListChiTietHoaDon() {
         return chiTietHoaDonDAO.layListChiTietHoaDon();
     }
+
+    public ArrayList<ChiTietHoaDon> layChiTietTheoMaHD(String maHD) {
+        return chiTietHoaDonDAO.getChiTietTheoMaHD(maHD);
+    }
 }

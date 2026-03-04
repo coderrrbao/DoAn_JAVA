@@ -89,4 +89,39 @@ public class ChiTietHoaDonDAO {
             return false;
         }
     }
+
+    public ArrayList<ChiTietHoaDon> getChiTietTheoMaHD(String MaHD) {
+        ArrayList<ChiTietHoaDon> list = new ArrayList<>();
+        String sql = "SELECT c.*, s.TenSP FROM ChiTietHoaDon c JOIN SanPham s ON c.MaSP = s.MaSP WHERE c.MaHD = ?";
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, MaHD);
+            try (java.sql.ResultSet rs = pst.executeQuery()) {
+                while (rs.next()) {
+                    ChiTietHoaDon ct = new ChiTietHoaDon();
+                    ct.setMaCTHD(rs.getString("MaCTHD"));
+                    ct.setMaHD(rs.getString("MaHD"));
+                    ct.setSoLuong(rs.getInt("SoLuong"));
+                    ct.setGia(rs.getDouble("Gia"));
+
+                    dto.SanPham sp = new dto.SanPham();
+                    sp.setMaSP(rs.getString("MaSP"));
+                    sp.setTenSP(rs.getString("TenSP"));
+                    ct.setSanPham(sp);
+
+                    String maSize = rs.getString("MaSize");
+                    if (maSize != null && !maSize.isEmpty()) {
+                        dto.Size size = new dto.Size();
+                        size.setMaSize(maSize);
+                        size.setTenSize(maSize);
+                        ct.setSize(size);
+                    }
+                    list.add(ct);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 }

@@ -151,4 +151,12 @@ public class HoaDonBUS {
     public ArrayList<HoaDon> layDanhSachHoaDon() {
         return hoaDonDAO.layDanhSachHoaDon();
     }
+
+    public HoaDon timHoaDonTheoMa(String maHD) {
+        return hoaDonDAO.timHoaDonTheoMa(maHD);
+    }
+
+    public boolean xoaHoaDon(String maHD) {
+        return hoaDonDAO.xoaHoaDon(maHD);
+    }
 }

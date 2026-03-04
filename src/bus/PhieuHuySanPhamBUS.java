@@ -2,6 +2,7 @@ package bus;
 
 import dao.PhieuHuySanPhamDAO;
 import dao.conection.DBConnection;
+import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -20,7 +21,6 @@ public class PhieuHuySanPhamBUS {
 
   public void khoiTao() {
     listPhieuHuy = dao.layListPhieuHuy();
-    // Bắt chước Nhập kho: Nạp danh sách lô chi tiết cho mỗi phiếu hủy
     for (PhieuHuySanPham ph : listPhieuHuy) {
       ph.setListLoSanPhamHuy(dao.layChiTietHuyTheoMaPH(ph.getMaPH()));
     }
@@ -49,7 +49,6 @@ public class PhieuHuySanPhamBUS {
         double gia = Double.parseDouble(row[4].toString());
 
         if (!dao.themChiTietHuy(maPH, maLo, soLuong, gia, conn)) throw new SQLException();
-        if (!dao.truKhoLoSanPham(maLo, soLuong, conn)) throw new SQLException();
       }
       conn.commit();
       this.canUpdate = true;
@@ -71,12 +70,35 @@ public class PhieuHuySanPhamBUS {
 
   public boolean capNhatPhieuHuy(PhieuHuySanPham ph) {
     Connection conn = DBConnection.getConnection();
-    boolean check = dao.capNhatPhieuHuy(ph, conn);
-    if (check) this.canUpdate = true;
     try {
-      conn.close();
-    } catch (Exception e) {
+      conn.setAutoCommit(false);
+      if (!dao.capNhatPhieuHuy(ph, conn)) throw new SQLException("Câp nhật thất bại");
+      if ("Đã xác nhận".equalsIgnoreCase(ph.getTrangThaiXuLy().trim())) {
+        ArrayList<LoSanPham> chiTiet = dao.layChiTietHuyTheoMaPH(ph.getMaPH());
+        if (chiTiet == null) throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
+        for (LoSanPham Lo : chiTiet) {
+          if (!dao.truKhoLoSanPham(Lo.getMaLoSP(), Lo.getSoLuong(), conn))
+            throw new SQLException("Trừ kho thất bại");
+        }
+      }
+      conn.commit();
+      this.canUpdate = true;
+      khoiTao();
+      bus.LoSanPhamBUS.getLoSanPhamBUS().khoitao();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      try {
+        if (conn != null) conn.rollback();
+      } catch (Exception ex) {
+      }
+      return false;
+    } finally {
+      try {
+        conn.setAutoCommit(true);
+        conn.close();
+      } catch (Exception e) {
+      }
     }
-    return check;
   }
 }
