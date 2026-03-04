@@ -69,7 +69,7 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         new DefaultTableModel(new String[] {"Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
-    btnXacNhan = new JButton("XÁC NHẬN HỦY & TRỪ KHO");
+    btnXacNhan = new JButton("XÁC NHẬN");
     btnXacNhan.setBackground(new Color(0, 153, 76));
     btnXacNhan.setForeground(Color.WHITE);
 
