@@ -1,12 +1,10 @@
 package ui.taikhoan;
 
-import bus.NhomQuyenBUS;
 import bus.TaiKhoanBUS;
 import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 
@@ -17,7 +15,7 @@ import ui.component.Search_Item;
 import util.TaoUI;
 
 public class TaiKhoanUI extends JPanel {
-    private JButton btnTao, btnXoa, btnResetMatKhau;
+    private JButton btnTao, btnXoa, btnResetMatKhau, btnXuatExcel, bntNhapExcel, btnSuaThongTin;
     private JComboBox<String> cbNhomQuyen;
     private Search_Item search_Item;
     private JTable tableUI;
@@ -42,8 +40,17 @@ public class TaiKhoanUI extends JPanel {
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
         btnResetMatKhau.addActionListener(e -> openDoiMatKhauDialog());
+
         btnXoa = new JButton("Xóa");
         btnXoa.addActionListener(e -> XoaTaiKhoan_Ui());
+
+        btnXuatExcel = new JButton("Xuất exc");
+        btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
+
+        bntNhapExcel = new JButton("Nhập exc");
+
+        btnSuaThongTin = new JButton("Sửa thông tin");
+        btnSuaThongTin.addActionListener(e -> openSuaTaiKhoanDialog());
 
         top.add(cbNhomQuyen);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -54,6 +61,12 @@ public class TaiKhoanUI extends JPanel {
         top.add(btnResetMatKhau);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnSuaThongTin);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(bntNhapExcel);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -64,7 +77,7 @@ public class TaiKhoanUI extends JPanel {
                 return false;
             }
         };
-        model.addColumn("Tên tài khoản");
+        model.addColumn("Mã nhân viên");
         model.addColumn("Tên đăng nhập");
         model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");
@@ -94,8 +107,47 @@ public class TaiKhoanUI extends JPanel {
     // open them tai khoan dialog
     private void openThemTaiKhoanDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame, this);
+        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame, this,null);
         dia.setVisible(true);
+    }
+    //open sua tai khoan dialog
+    private void openSuaTaiKhoanDialog() {
+        int chonDong = tableUI.getSelectedRow();
+        if (chonDong == -1) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Vui lòng chọn tài khoản để sửa!",
+                    "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+
+        // Lấy MaNV từ bảng
+        String maNV = model.getValueAt(chonDong, 0).toString();
+
+        // Tìm tài khoản tương ứng trong BUS
+        String tenDangNhap = model.getValueAt(chonDong, 1).toString();
+
+        TaiKhoan taiKhoanChon = null;
+        for (TaiKhoan tk : taiKhoanBUS.layDanhSachTaiKhoan()) {
+            if (tk.getTenDangNhap().equals(tenDangNhap)) {
+                taiKhoanChon = tk;
+                break;
+            }
+        }
+
+        if (taiKhoanChon == null) {
+            JOptionPane.showMessageDialog(this, "Không tìm thấy tài khoản!");
+            return;
+        }
+
+        JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
+
+        // GỌI CONSTRUCTOR SỬA
+        ThemTaiKhoanDialog dialog =
+                new ThemTaiKhoanDialog(parentFrame, this, taiKhoanChon);
+
+        dialog.setVisible(true);
     }
 
     // open doi mat khau dialog

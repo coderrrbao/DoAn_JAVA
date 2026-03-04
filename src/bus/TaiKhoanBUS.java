@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
 import dto.TaiKhoan;
+import util.XuLyExcel;
 
 public class TaiKhoanBUS {
 
@@ -166,6 +167,45 @@ public class TaiKhoanBUS {
             }
         }
     }
+    //sua tai khoan
+    public boolean suaTaiKhoan(TaiKhoan tk) {
+        if (tk == null || tk.getMaTK() == null) {
+            return false;
+        }
+
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+
+            if (!dao.suaTaiKhoan(tk, conn)) {
+                throw new SQLException();
+            }
+
+            conn.commit();
+            canUpdate = true;
+            return true;
+
+        } catch (Exception e) {
+            try {
+                if (conn != null)
+                    conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            e.printStackTrace();
+            return false;
+
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
 
     public TaiKhoan dangNhap(String tenDangNhap, String matKhau) {
         if (tenDangNhap == null || matKhau == null)
@@ -217,5 +257,9 @@ public class TaiKhoanBUS {
             kq.add(listTaiKhoan.get(i));
         }
         return kq;
+    }
+    //xuat exc
+    public boolean xuatExc(){
+        return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
     }
 }
