@@ -88,42 +88,4 @@ public class CongThucDAO {
         return "";
     }
 
-    public ArrayList<ChiTietCongThuc> layCongThucPhaChe(String maSP, String maSize) {
-        ArrayList<ChiTietCongThuc> list = new ArrayList<>();
-        String sql = "SELECT ct.MaNL, nl.TenNL, ct.SoLuong " +
-                "FROM CongThuc c " +
-                "JOIN ChiTietCongThuc ct ON c.MaCT = ct.MaCT " +
-                "JOIN NguyenLieu nl ON ct.MaNL = nl.MaNL " +
-                "WHERE c.MaSP = ?";
-
-        if (maSize == null || maSize.trim().isEmpty()) {
-            sql += " AND c.MaSize IS NULL";
-        } else {
-            sql += " AND c.MaSize = ?";
-        }
-
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
-
-            pst.setString(1, maSP);
-            if (maSize != null && !maSize.trim().isEmpty()) {
-                pst.setString(2, maSize);
-            }
-
-            ResultSet rs = pst.executeQuery();
-            while (rs.next()) {
-                ChiTietCongThuc ct = new ChiTietCongThuc();
-                NguyenLieu nl = new NguyenLieu();
-                nl.setMaNL(rs.getString("MaNL"));
-                nl.setTenNL(rs.getString("TenNL"));
-
-                ct.setNguyenLieu(nl);
-                ct.setSoLuong(rs.getDouble("SoLuong"));
-                list.add(ct);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
 }

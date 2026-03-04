@@ -61,7 +61,8 @@ public class QuanLySanPhamUI extends JPanel {
             xuaFileBtn.setVisible(false);
         }
         chiTietSanPhamDialog.suaLaiGiaoDienTheoQuyen();
-
+        this.revalidate();
+        this.repaint();
     }
 
     private void initTopBar() {

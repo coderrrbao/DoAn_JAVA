@@ -114,7 +114,7 @@ public class ContentPaner extends JPanel {
     if (khachHangUI != null)
       khachHangUI.suaLaiGiaoDienTheoQuyen();
     // if (hoaDonUI != null)
-    //   hoaDonUI.suaLaiGiaoDienTheoQuyen();
+    // hoaDonUI.suaLaiGiaoDienTheoQuyen();
     if (nhanVienUI != null)
       nhanVienUI.suaLaiGiaoDienTheoQuyen();
     if (taiKhoanUI != null)
@@ -131,5 +131,7 @@ public class ContentPaner extends JPanel {
       kiemKeUI.suaLaiGiaoDienTheoQuyen();
     if (hangThanhVienUI != null)
       hangThanhVienUI.suaLaiGiaoDienTheoQuyen();
+    this.revalidate();
+    this.repaint();
   }
 }

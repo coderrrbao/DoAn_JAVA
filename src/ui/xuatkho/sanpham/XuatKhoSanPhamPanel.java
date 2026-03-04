@@ -79,7 +79,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
     if (!listQuyen.contains("NK_TAO")) {
       xuatHangBtn.setVisible(false);
     }
-
+    this.revalidate();
+    this.repaint();
   }
 
   public void loadDuLieu() {

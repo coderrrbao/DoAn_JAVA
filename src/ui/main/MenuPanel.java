@@ -20,11 +20,9 @@ import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
   private ArrayList<MenuPanelItem> menuItems;
-  private LoginUI loginUI;
 
-  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, LoginUI loginUI) {
+  public MenuPanel(CardLayout cardLayout, JPanel cardPanel) {
     menuItems = new ArrayList<>();
-    this.loginUI = loginUI;
     setPreferredSize(new Dimension(200, 700));
     setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
     setMinimumSize(new Dimension(200, 700));
@@ -180,8 +178,8 @@ public class MenuPanel extends JPanel {
 
     if (confirm == JOptionPane.YES_OPTION) {
       // xoa du lieu old
+      LoginUI loginUI = LoginUI.getLoginUI();
       loginUI.lamMoi();
-      ;
       // đóng MainFrame
       loginUI.getMainFrame().setVisible(false);
       // mở lại màn hình đăng nhập

@@ -108,6 +108,8 @@ public class NhaCungCapUI extends JPanel {
         if (!listQuyen.contains("NCC_XOA")) {
             btnXoa.setVisible(false);
         }
+        this.revalidate();
+        this.repaint();
     }
 
     public void ganSuKien() {

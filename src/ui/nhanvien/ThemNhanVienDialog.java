@@ -152,7 +152,7 @@ public class ThemNhanVienDialog extends JDialog {
 
     /**
      * Phân quyền cho Dialog Nhân viên:
-     * - Nếu thêm mới: Ẩn nút "Thêm" và khóa Form nếu không có quyền NV_THEM.
+     * - Nếu thêm mới: Ẩn nút "Thêm" và khóa Form nếu không có quyền NV_TAO.
      * - Nếu xem/sửa: Ẩn nút "Sửa" và nút "Chọn ảnh" nếu không có quyền NV_SUA.
      */
     public void suaLaiGiaoDienTheoQuyen() {
@@ -160,7 +160,7 @@ public class ThemNhanVienDialog extends JDialog {
 
         // TRƯỜNG HỢP 1: Chế độ thêm mới (nhanVien == null)
         if (nhanVien == null) {
-            if (!listQuyen.contains("NV_THEM")) {
+            if (!listQuyen.contains("NV_TAO")) {
                 btnThem.setVisible(false);
                 setEditableForm(false); // Khóa toàn bộ form nhập liệu
                 this.setTitle("Thông tin nhân viên mới (Chỉ xem)");
@@ -175,6 +175,8 @@ public class ThemNhanVienDialog extends JDialog {
                 this.setTitle("Chi tiết nhân viên (Chế độ chỉ đọc)");
             }
         }
+        this.revalidate();
+        this.repaint();
     }
 
     private void initLoaiDialog() {

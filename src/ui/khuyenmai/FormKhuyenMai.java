@@ -38,7 +38,7 @@ public void suaLaiGiaoDienTheoQuyen() {
 
     // 1. Trường hợp Thêm mới
     if (!isEdit) {
-        if (!listQuyen.contains("KM_THEM")) {
+        if (!listQuyen.contains("KM_TAO")) {
             btnThem.setEnabled(false);
             setEditableForm(false);
             setTitle("Thông báo: Bạn không có quyền thêm khuyến mãi");

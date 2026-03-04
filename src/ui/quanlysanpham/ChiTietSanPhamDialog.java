@@ -518,6 +518,8 @@ public class ChiTietSanPhamDialog extends JDialog {
             btnXoaSize.setVisible(false);
         }
         xemCongThucDialog.suaLaiGiaoDienTheoQuyen();
+        this.revalidate();
+        this.repaint();
     }
 
     public static void main(String[] args) {

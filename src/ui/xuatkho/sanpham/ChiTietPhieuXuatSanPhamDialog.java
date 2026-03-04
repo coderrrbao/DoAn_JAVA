@@ -105,6 +105,8 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
       // Cập nhật tiêu đề để người dùng biết họ đang ở chế độ chỉ đọc
       this.setTitle("Chi Tiết Phiếu Hủy Sản Phẩm (Chế độ chỉ đọc)");
     }
+    this.revalidate();
+    this.repaint();
   }
 
   private void loadData() {

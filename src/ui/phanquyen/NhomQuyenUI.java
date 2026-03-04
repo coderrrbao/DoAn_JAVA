@@ -40,26 +40,21 @@ public class NhomQuyenUI extends JPanel {
         ganSuKien();
         loadDuLieu();
     }
-public void suaLaiGiaoDienTheoQuyen() {
-    var listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Quyền Thêm nhóm quyền mới
-    if (!listQuyen.contains("PQ_THEM")) {
-        btnThem.setVisible(false);
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("PQ_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        if (!listQuyen.contains("PQ_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
     }
 
-    // 2. Quyền Xóa nhóm quyền
-    if (!listQuyen.contains("PQ_XOA")) {
-        btnXoa.setVisible(false);
-    }
-
-    // 3. Quyền Xem/Sửa chi tiết (PQ_SUA)
-    // Lưu ý: Nếu không có quyền sửa, ta vẫn nên cho họ xem chi tiết (Read-only) 
-    // trừ khi bạn muốn chặn tuyệt đối quyền xem.
-    if (!listQuyen.contains("PQ_SUA")) {
-        btnXemChiTiet.setText("Xem chi tiết (Chỉ đọc)");
-    }
-}
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
         top.setPreferredSize(new Dimension(100, 45));

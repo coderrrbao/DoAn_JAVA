@@ -324,7 +324,7 @@ public class BanHangUI extends JPanel {
                             }
                         }
                     }
-                } else if (spGoc.getListSize() != null && !spGoc.getListSize().isEmpty() && !tenSP.startsWith("  ↳ ")) {
+                } else if (spGoc.getListSize() != null && !spGoc.getListSize().isEmpty() && !tenSP.startsWith("  --> ")) {
                     sizeChon = spGoc.getListSize().get(0);
                 }
                 ct.setSize(sizeChon);

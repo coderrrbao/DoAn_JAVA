@@ -25,7 +25,7 @@ public class KhuyenMaiUI extends JPanel {
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
     private JButton btnThem, btnSua, btnXoa;
-    
+
     private KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
 
     public KhuyenMaiUI() {
@@ -36,28 +36,32 @@ public class KhuyenMaiUI extends JPanel {
         centerContainer.add(taoPanelTable(), BorderLayout.CENTER);
 
         add(centerContainer, BorderLayout.CENTER);
-        
+
         loadDataToTable();
         addEvents();
     }
-public void suaLaiGiaoDienTheoQuyen() {
-    var listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Quyền Thêm khuyến mãi mới
-    if (!listQuyen.contains("KM_THEM")) {
-        btnThem.setVisible(false);
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm khuyến mãi mới
+        if (!listQuyen.contains("KM_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        // 2. Quyền Sửa chương trình khuyến mãi
+        if (!listQuyen.contains("KM_SUA")) {
+            btnSua.setVisible(false);
+        }
+
+        // 3. Quyền Xóa (kết thúc sớm) khuyến mãi
+        if (!listQuyen.contains("KM_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
     }
 
-    // 2. Quyền Sửa chương trình khuyến mãi
-    if (!listQuyen.contains("KM_SUA")) {
-        btnSua.setVisible(false);
-    }
-
-    // 3. Quyền Xóa (kết thúc sớm) khuyến mãi
-    if (!listQuyen.contains("KM_XOA")) {
-        btnXoa.setVisible(false);
-    }
-}
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
         top.setPreferredSize(new Dimension(100, 45));
@@ -107,14 +111,15 @@ public void suaLaiGiaoDienTheoQuyen() {
         ArrayList<KhuyenMai> list = kmBUS.layListKhuyenMai();
 
         for (KhuyenMai km : list) {
-            // Kiểm tra xem Từ ngày của khuyến mãi có nằm trong khoảng thời gian đã chọn không
+            // Kiểm tra xem Từ ngày của khuyến mãi có nằm trong khoảng thời gian đã chọn
+            // không
             if (locNgay.ngayTrongKhoan(km.getTuNgay())) {
                 model.addRow(new Object[] {
-                    km.getMaKM(),
-                    km.getPhanTramGiam() + "%",
-                    km.getTuNgay(),
-                    km.getDenNgay(),
-                    kmBUS.xacDinhTrangThai(km) 
+                        km.getMaKM(),
+                        km.getPhanTramGiam() + "%",
+                        km.getTuNgay(),
+                        km.getDenNgay(),
+                        kmBUS.xacDinhTrangThai(km)
                 });
             }
         }
@@ -141,7 +146,8 @@ public void suaLaiGiaoDienTheoQuyen() {
                 return;
             }
             String maKM = model.getValueAt(row, 0).toString();
-            int confirm = JOptionPane.showConfirmDialog(this, "Xác nhận xóa mã " + maKM + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(this, "Xác nhận xóa mã " + maKM + "?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
                 if (kmBUS.xoaKhuyenMai(maKM)) {
                     JOptionPane.showMessageDialog(this, "Đã xóa thành công!");
@@ -158,7 +164,7 @@ public void suaLaiGiaoDienTheoQuyen() {
             }
             String maKM = model.getValueAt(row, 0).toString();
             KhuyenMai kmCanSua = kmBUS.timKhuyenMai(maKM);
-            
+
             FormKhuyenMai form = new FormKhuyenMai((Frame) SwingUtilities.getWindowAncestor(this), kmCanSua);
             form.setVisible(true);
             if (form.getKetQua() != null) {

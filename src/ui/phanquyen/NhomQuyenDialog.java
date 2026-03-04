@@ -22,6 +22,8 @@ import javax.swing.border.EmptyBorder;
 import bus.NhomQuyenBUS;
 import dto.NhomQuyen;
 import dto.Quyen;
+import ui.login.LoginUI;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -90,7 +92,7 @@ public class NhomQuyenDialog extends JDialog {
 
         // 1. Trường hợp Thêm mới
         if (nhomQuyen == null) {
-            if (!listQuyen.contains("PQ_THEM")) {
+            if (!listQuyen.contains("PQ_TAO")) {
                 if (btnThem != null)
                     btnThem.setEnabled(false);
                 tfTenNhomQuyen.setEditable(false);
@@ -110,6 +112,8 @@ public class NhomQuyenDialog extends JDialog {
                 setEnableAllCheckBoxes(false);
             }
         }
+        this.revalidate();
+        this.repaint();
     }
 
     /**
@@ -158,6 +162,11 @@ public class NhomQuyenDialog extends JDialog {
         tfTenNhomQuyen.setFocusable(false);
         for (JCheckBox[] boxes : mapCheckBoxes.values()) {
             for (JCheckBox cb : boxes) {
+                if ((cb.getActionCommand().equals("PQ_TAO") || cb.getActionCommand().equals("PQ_XEM")
+                        || cb.getActionCommand().equals("PQ_SUA") || cb.getActionCommand().equals("PQ_XOA"))
+                        && nhomQuyen.getTenNhomQuyen().equals("Admin")) {
+                    cb.setSelected(true);
+                }
                 if (set.contains(cb.getActionCommand())) {
                     cb.setSelected(true);
                 }
@@ -179,13 +188,20 @@ public class NhomQuyenDialog extends JDialog {
                 NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
                 if (nhomQuyenBUS.capNhatNhomQuyen(nhomQuyen)) {
                     TaoTinNhan.showAutoCloseMessage("Cập nhật nhóm quyền thành công", "Thông báo", 1);
-                    nhomQuyen = nhomQuyenBUS.timNhomQuyen(nhomQuyen.getMaNQ());
-                    loadDuLieu(nhomQuyen);
-                    tacThaoTacSua();
                     nhomQuyenUI.loadDuLieu();
                 } else {
                     TaoTinNhan.showAutoCloseMessage("Cập nhật nhóm quyền thất bại", "Thông báo", 1);
                 }
+                NhomQuyen nhomQuyen = NhomQuyenBUS.getNhomQuyenBUS()
+                        .timNhomQuyen(PhienDangNhap.getTaiKhoan().getNhomQuyen().getMaNQ());
+                HashSet<String> listQuyen = new HashSet<>();
+                for (Quyen quyen : nhomQuyen.getListQuyen()) {
+                    listQuyen.add(quyen.getTenQuyen());
+                }
+                PhienDangNhap.setListQuyen(listQuyen);
+                LoginUI.getLoginUI().getMainFrame().getMenuPanel().suaLaiGiaoDienTheoQuyen();
+                LoginUI.getLoginUI().getMainFrame().getContentPaner().suaLaiGiaoDienTheoQuyen();
+                dispose();
             });
         }
 
@@ -234,6 +250,11 @@ public class NhomQuyenDialog extends JDialog {
             if (boxes != null) {
                 for (JCheckBox cb : boxes) {
                     if (cb != null) {
+                        if (cb.getActionCommand().equals("PQ_TAO") || cb.getActionCommand().equals("PQ_XEM")
+                                || cb.getActionCommand().equals("PQ_SUA") || cb.getActionCommand().equals("PQ_XOA")) {
+                            cb.setEnabled(false);
+                            continue;
+                        }
                         cb.setEnabled(true);
                     }
                 }
@@ -308,7 +329,6 @@ public class NhomQuyenDialog extends JDialog {
             boxes[i] = new JCheckBox();
             row.add(createCheckBoxPanel(boxes[i]));
             boxes[i].setActionCommand(maChucNang + chucNangChinh.get(i));
-
         }
         mapCheckBoxes.put(tenChucNang, boxes);
 

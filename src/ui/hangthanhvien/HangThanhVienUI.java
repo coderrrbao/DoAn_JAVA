@@ -80,8 +80,8 @@ public class HangThanhVienUI extends JPanel {
 public void suaLaiGiaoDienTheoQuyen() {
     var listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Quyền Thêm hạng mới (HTV_THEM)
-    if (!listQuyen.contains("HTV_THEM")) {
+    // 1. Quyền Thêm hạng mới (HTV_TAO)
+    if (!listQuyen.contains("HTV_TAO")) {
         btnTao.setVisible(false);
     }
 

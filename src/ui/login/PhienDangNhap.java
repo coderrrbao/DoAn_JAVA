@@ -34,6 +34,10 @@ public class PhienDangNhap {
         listQuyen.add(tenQuyen);
     }
 
+    public static void setListQuyen(HashSet<String> listQuyen) {
+        PhienDangNhap.listQuyen = listQuyen;
+    }
+
     public static void dangXuat() {
         taiKhoan = null;
         user = null;

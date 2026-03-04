@@ -42,23 +42,25 @@ public class KiemKeUI extends JPanel {
     }
 
     public void suaLaiGiaoDienTheoQuyen() {
-    var listQuyen = PhienDangNhap.getListQuyen();
+        var listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Quyền Thêm phiếu kiểm kê (KK_THEM)
-    if (!listQuyen.contains("KK_THEM")) {
-        btnThem.setVisible(false);
-    }
+        // 1. Quyền Thêm phiếu kiểm kê (KK_TAO)
+        if (!listQuyen.contains("KK_TAO")) {
+            btnThem.setVisible(false);
+        }
 
-    // 2. Quyền Sửa phiếu kiểm kê (KK_SUA)
-    if (!listQuyen.contains("KK_SUA")) {
-        btnSua.setVisible(false);
-    }
+        // 2. Quyền Sửa phiếu kiểm kê (KK_SUA)
+        if (!listQuyen.contains("KK_SUA")) {
+            btnSua.setVisible(false);
+        }
 
-    // 3. Quyền Xóa phiếu kiểm kê (KK_XOA)
-    if (!listQuyen.contains("KK_XOA")) {
-        btnXoa.setVisible(false);
+        // 3. Quyền Xóa phiếu kiểm kê (KK_XOA)
+        if (!listQuyen.contains("KK_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
     }
-}
 
     private void ganSuKien() {
         btnThem.addActionListener(e -> {

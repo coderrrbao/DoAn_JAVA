@@ -81,7 +81,7 @@ public class FormHangThanhVien extends JDialog {
 
         // TRƯỜNG HỢP 1: Chế độ thêm mới (isEdit == false)
         if (!isEdit) {
-            if (!listQuyen.contains("HTV_THEM")) {
+            if (!listQuyen.contains("HTV_TAO")) {
                 btnThem.setVisible(false);
                 setEditableForm(false); // Khóa không cho nhập liệu
                 this.setTitle("Thông tin hạng (Chỉ xem)");

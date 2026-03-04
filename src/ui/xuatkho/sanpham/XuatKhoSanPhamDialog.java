@@ -100,6 +100,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
       // Cập nhật tiêu đề thông báo chế độ chỉ đọc
       this.setTitle("Xem thông tin tạo phiếu hủy (Chế độ chỉ đọc)");
     }
+    this.revalidate();
+    this.repaint();
   }
 
   private void loadData() {

@@ -15,7 +15,7 @@ public class TaiKhoanDao {
     public boolean themTaiKhoan(TaiKhoan tk, Connection conn) {
         String sql = "INSERT INTO TaiKhoan (MaTK, MaNV, TenDangNhap, MatKhau, maNQ, TrangThaiXuLy, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setString(1, tk.getMaTK()); 
+            ps.setString(1, layMaTaiKhoanKhaDung(conn));
             ps.setString(2, tk.getMaNV());
             ps.setString(3, tk.getTenDangNhap());
             ps.setString(4, tk.getMatKhau());
@@ -58,7 +58,7 @@ public class TaiKhoanDao {
     // Lấy danh sách tài khoản
     public ArrayList<TaiKhoan> layDanhSachTaiKhoan() {
         ArrayList<TaiKhoan> ds = new ArrayList<>();
-        String sql = "SELECT * FROM TaiKhoan";
+        String sql = "SELECT * FROM TaiKhoan Where TrangThai = 1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -115,7 +115,49 @@ public class TaiKhoanDao {
         }
         return null;
     }
+    //sua tai khoan
+    public boolean suaTaiKhoan(TaiKhoan tk, Connection conn) {
+        String sql = "UPDATE TaiKhoan SET "
+                + "MaNV = ?, "
+                + "MatKhau = ?, "
+                + "maNQ = ?, "
+                + "TrangThaiXuLy = ? "
+                + "WHERE MaTK = ?";
 
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tk.getMaNV());
+            ps.setString(2, tk.getMatKhau());
+            ps.setString(3, tk.getNhomQuyen().getMaNQ());
+            ps.setString(4, tk.getTrangThaiXuLy());
+            ps.setString(5, tk.getMaTK());
+
+            return ps.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public String layMaTaiKhoanKhaDung(Connection conn) {
+        String sql = "SELECT MAX(MaTK) FROM TaiKhoan"; //lay lon nhat theo thu tu tu dien
+        String maMoi = "";
+        try (
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                String maCuoi = rs.getString(1);
+                if (maCuoi != null) {
+                    int so = Integer.parseInt(maCuoi.substring(2));
+                    so++;
+                    maMoi = String.format("TK%02d", so);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return maMoi;
+    }
     // Kiểm tra username đã tồn tại chưa
     public boolean kiemTraUsernameTonTai(String username) {
         String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";

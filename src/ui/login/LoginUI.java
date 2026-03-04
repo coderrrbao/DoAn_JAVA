@@ -27,10 +27,12 @@ import util.TaoTinNhan;
 import util.TaoUI;
 
 public class LoginUI extends JFrame {
+
+  private static LoginUI loginUI = null;
   private JTextField txtuser;
   private JPasswordField txtpass;
   private TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
-  private MainFrame mainFrame = new MainFrame(this);
+  private MainFrame mainFrame = new MainFrame();
 
   public LoginUI() {
     setSize(700, 400);
@@ -39,9 +41,9 @@ public class LoginUI extends JFrame {
     initUI(mainFrame);
 
     setLocationRelativeTo(null);
-    setResizable(false);
 
     setVisible(true);
+    LoginUI.setLoginUI(this);
   }
 
   private void initUI(JFrame mainFrame) {
@@ -54,7 +56,25 @@ public class LoginUI extends JFrame {
       @Override
       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+
+        int imgWidth = backgroundImage.getWidth(this);
+        int imgHeight = backgroundImage.getHeight(this);
+
+        // Tính scale giữ nguyên tỉ lệ
+        double scale = Math.max(
+            (double) panelWidth / imgWidth,
+            (double) panelHeight / imgHeight);
+
+        int newWidth = (int) (imgWidth * scale);
+        int newHeight = (int) (imgHeight * scale);
+
+        // Căn giữa ảnh
+        int x = (panelWidth - newWidth) / 2;
+        int y = (panelHeight - newHeight) / 2;
+
+        g.drawImage(backgroundImage, x, y, newWidth, newHeight, this);
       }
     };
 
@@ -74,14 +94,6 @@ public class LoginUI extends JFrame {
     txtpass = new JPasswordField();
     JPanel passJPanel = TaoUI.taoFieldText("Mật Khẩu", 90, 230, 30, 10, txtpass);
 
-    // quen mat khau
-    JPanel quenMKPanel = new JPanel();
-    JLabel quenMKJLabel = new JLabel("Quên mật khẩu?");
-    quenMKPanel.setLayout(new BoxLayout(quenMKPanel, BoxLayout.X_AXIS));
-    quenMKPanel.setMaximumSize(new Dimension(320, 25));
-    quenMKPanel.add(javax.swing.Box.createHorizontalGlue());
-    quenMKPanel.add(quenMKJLabel);
-
     // button
     JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
@@ -99,14 +111,14 @@ public class LoginUI extends JFrame {
     centerPanel.add(userJPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(10));
     centerPanel.add(passJPanel);
-    centerPanel.add(javax.swing.Box.createVerticalStrut(10));
-    centerPanel.add(quenMKPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(30));
     centerPanel.add(buttonPanel);
 
     // left panel
     JPanel leftJPanel = TaoUI.taoPanelBoxLayoutDoc(300, 400);
     JLabel anh = TaoUI.taoJlabelAnh("/assets/img/login.png", 300, 400);
+    Color customBlue = new Color(31, 177, 190);
+    leftJPanel.setBackground(customBlue);
     leftJPanel.add(anh);
     getContentPane().setBackground(new Color(245, 247, 250));
     // add vao frame chinh
@@ -115,7 +127,6 @@ public class LoginUI extends JFrame {
 
     userJPanel.setOpaque(false);
     passJPanel.setOpaque(false);
-    quenMKPanel.setOpaque(false);
     buttonPanel.setOpaque(false);
   }
 
@@ -145,7 +156,6 @@ public class LoginUI extends JFrame {
       PhienDangNhap.setUser(nv);
       PhienDangNhap.setTaiKhoan(taiKhoan);
       for (Quyen quyen : PhienDangNhap.getTaiKhoan().getNhomQuyen().getListQuyen()) {
-        System.out.println(quyen.getTenQuyen());
         PhienDangNhap.themQuyen(quyen.getTenQuyen());
       }
       TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
@@ -169,6 +179,14 @@ public class LoginUI extends JFrame {
   public void lamMoi() {
     txtpass.setText("");
     txtuser.setText("");
+  }
+
+  public static LoginUI getLoginUI() {
+    return loginUI;
+  }
+
+  public static void setLoginUI(LoginUI loginUI) {
+    LoginUI.loginUI = loginUI;
   }
 
   public static void main(String[] args) {

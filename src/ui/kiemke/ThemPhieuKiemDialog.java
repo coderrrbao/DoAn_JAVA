@@ -115,7 +115,7 @@ public class ThemPhieuKiemDialog extends JDialog {
 
         // TRƯỜNG HỢP 1: Đang tạo phiếu mới (phieuKiemKe == null)
         if (phieuKiemKe == null) {
-            if (!listQuyen.contains("KK_THEM")) {
+            if (!listQuyen.contains("KK_TAO")) {
                 btnThem.setVisible(false);
                 btnLamMoi.setVisible(false);
                 tfSoLuong.setEditable(false);
@@ -131,6 +131,8 @@ public class ThemPhieuKiemDialog extends JDialog {
                 this.setTitle("Chi tiết phiếu kiểm kê (Chế độ chỉ đọc)");
             }
         }
+        this.revalidate();
+        this.repaint();
     }
 
     private void loaiDuLieu() {

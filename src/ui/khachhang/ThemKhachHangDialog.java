@@ -46,17 +46,12 @@ public class ThemKhachHangDialog extends JDialog {
         suaLaiGiaoDienTheoQuyen();
     }
 
-    /**
-     * Phân quyền cho Dialog Khách hàng:
-     * - Nếu là thêm mới: Ẩn nút "Thêm" nếu không có quyền KH_THEM.
-     * - Nếu là xem/sửa: Ẩn nút "Sửa" nếu không có quyền KH_SUA.
-     */
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
         // TH 1: Chế độ thêm mới (khachHang == null)
         if (khachHang == null) {
-            if (!listQuyen.contains("KH_THEM")) {
+            if (!listQuyen.contains("KH_TAO")) {
                 btnThem.setVisible(false);
                 setFieldsEnabled(false); // Khóa luôn không cho nhập
                 this.setTitle("Thông tin khách hàng (Chỉ xem)");

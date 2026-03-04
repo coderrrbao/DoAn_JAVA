@@ -106,8 +106,8 @@ public class NhanVienUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm nhân viên (NV_THEM)
-        if (!listQuyen.contains("NV_THEM")) {
+        // 1. Quyền Thêm nhân viên (NV_TAO)
+        if (!listQuyen.contains("NV_TAO")) {
             btnTao.setVisible(false);
         }
 
@@ -115,14 +115,8 @@ public class NhanVienUI extends JPanel {
         if (!listQuyen.contains("NV_XOA")) {
             btnXoa.setVisible(false);
         }
-
-        // 3. Quyền Sửa nhân viên (NV_SUA)
-        if (!listQuyen.contains("NV_SUA")) {
-            // Ẩn cột "Sửa" (cột số 4) trong Table
-            tableUI.getColumnModel().getColumn(4).setMinWidth(0);
-            tableUI.getColumnModel().getColumn(4).setMaxWidth(0);
-            tableUI.getColumnModel().getColumn(4).setPreferredWidth(0);
-        }
+        this.revalidate();
+        this.repaint();
     }
 
     private void openThemNhanVienDialog() {

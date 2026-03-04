@@ -150,6 +150,8 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
             // Đổi tiêu đề để thông báo người dùng chỉ đang ở chế độ xem
             this.setTitle("Chi Tiết Phiếu Nhập Sản Phẩm (Chế độ chỉ đọc)");
         }
+        this.revalidate();
+        this.repaint();
     }
 
     public void loadDuLieu() {

@@ -11,7 +11,7 @@ public class MainFrame extends JFrame {
     private ContentPaner contentPaner;
     private MenuPanel menuPanel; 
 
-    public MainFrame(LoginUI loginUI) {
+    public MainFrame() {
         setSize(1400, 800);
         setTitle("Quản lý cửa hàng nước giải khát");
         setLocationRelativeTo(null);
@@ -24,7 +24,7 @@ public class MainFrame extends JFrame {
         add(contentPaner, BorderLayout.CENTER);
         CardLayout cardLayout = (CardLayout) contentPaner.getLayout();
         cardLayout.show(contentPaner, "Quản lý sản phẩm");
-        menuPanel = new MenuPanel(cardLayout, contentPaner, loginUI);
+        menuPanel = new MenuPanel(cardLayout, contentPaner);
         add(menuPanel, BorderLayout.WEST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(false);
