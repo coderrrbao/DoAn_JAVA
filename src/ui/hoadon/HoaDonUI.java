@@ -60,6 +60,10 @@ public class HoaDonUI extends JPanel {
 
         loadData();
 
+        locNgay.setEvent(() -> {
+            loadData();
+        });
+
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
 
@@ -102,24 +106,56 @@ public class HoaDonUI extends JPanel {
             ChiTietHoaDonDialog dialog = new ChiTietHoaDonDialog(parent, hdFull, dsChiTiet);
             dialog.setVisible(true);
         });
+
+        btnXoa.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 hóa đơn để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                return;
+            }
+
+            String maHD = model.getValueAt(row, 0).toString();
+
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc chắn muốn xóa hóa đơn [" + maHD + "] không?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (hoaDonBUS.xoaHoaDon(maHD)) {
+                    JOptionPane.showMessageDialog(this, "Đã xóa hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    loadData();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi: Không thể xóa hóa đơn này!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     public void loadData() {
         model.setRowCount(0);
         ArrayList<HoaDon> list = hoaDonBUS.layDanhSachHoaDon();
-         if (list != null) {
-             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-             DecimalFormat df = new DecimalFormat("#,### VNĐ");
+        if (list != null) {
+            SimpleDateFormat sdfDisplay = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat sdfCheck = new SimpleDateFormat("yyyy-MM-dd");
+            DecimalFormat df = new DecimalFormat("#,### VNĐ");
 
-             for (HoaDon hd : list) {
-                 String maNV = (hd.getNhanVien() != null) && hd.getNhanVien().getMaNV() != null ? hd.getNhanVien().getMaNV() : "";
-                 String maKH = (hd.getMaKH() != null) ? hd.getMaKH() : "Khách vãng lai";
-                 String NgayTao = (hd.getNgayBan() != null) ? sdf.format(hd.getNgayBan()) : "";
-                 String TongTien = df.format(hd.getTongTien());
+            for (HoaDon hd : list) {
+                if (hd.getNgayBan() != null) {
+                    String ngayCheck = sdfCheck.format(hd.getNgayBan());
 
-                 model.addRow(new Object[] { hd.getMaHD(), NgayTao, maNV, maKH, TongTien });
-             }
-         }
+                    if (locNgay.ngayTrongKhoan(ngayCheck)) {
+                        String maNV = (hd.getNhanVien() != null) && hd.getNhanVien().getMaNV() != null ? hd.getNhanVien().getMaNV() : "";
+                        String maKH = (hd.getMaKH() != null) ? hd.getMaKH() : "Khách vãng lai";
+                        String NgayTao = sdfDisplay.format(hd.getNgayBan());
+                        String TongTien = df.format(hd.getTongTien());
+
+                        model.addRow(new Object[] { hd.getMaHD(), NgayTao, maNV, maKH, TongTien });
+                    }
+                }
+            }
+        }
     }
 
 

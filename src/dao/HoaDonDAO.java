@@ -142,4 +142,16 @@ public class HoaDonDAO {
         }
         return null;
     }
+
+    public boolean xoaHoaDon(String maHD) {
+        String sql = "UPDATE HoaDon SET TrangThai = 0 WHERE MaHD = ?";
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maHD);
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
