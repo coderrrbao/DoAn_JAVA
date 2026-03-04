@@ -100,4 +100,46 @@ public class HoaDonDAO {
         }
         return null;
     }
+
+    public HoaDon timHoaDonTheoMa(String maHD) {
+        String sql = "SELECT * FROM HoaDon WHERE MaHD = ?";
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
+             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, maHD);
+
+            try (java.sql.ResultSet rs = pst.executeQuery()) {
+                if (rs.next()) {
+                    HoaDon hd = new HoaDon();
+                    hd.setMaHD(rs.getString("MaHD"));
+
+                    String maNV = rs.getString("MaNV");
+                    if (maNV != null) {
+                        dto.NhanVien nv = new dto.NhanVien();
+                        nv.setMaNV(maNV);
+                        hd.setNhanVien(nv);
+                    }
+
+                    hd.setMaKH(rs.getString("MaKH"));
+
+                    String maKM = rs.getString("MaKM");
+                    if (maKM != null) {
+                        dto.KhuyenMai mg = new dto.KhuyenMai();
+                        mg.setMaKM(maKM);
+                        hd.setMaGiamGia(mg);
+                    }
+
+                    hd.setNgayBan(rs.getDate("NgayBan"));
+                    hd.setTongTien(rs.getDouble("TongTien"));
+                    hd.setTienKhuyenMai(rs.getDouble("TienKhuyenMai"));
+                    hd.setTrangThai(rs.getBoolean("TrangThai"));
+
+                    return hd;
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }
