@@ -7,21 +7,19 @@ public class NhanVien {
     private String ngaySinh;
     private String sdt;
     private String diaChi;
-    private TaiKhoan taiKhoan;
     private String anh;
 
     public NhanVien() {
     }
 
     public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String sdt,
-            String diaChi, TaiKhoan taiKhoan, String anh) {
+            String diaChi, String anh) {
         this.maNV = maNV;
         this.tenNV = tenNV;
         this.gioiTinh = gioiTinh;
         this.ngaySinh = ngaySinh;
         this.sdt = sdt;
         this.diaChi = diaChi;
-        this.taiKhoan = taiKhoan;
         this.anh = anh;
     }
 
@@ -72,14 +70,6 @@ public class NhanVien {
 
     public void setDiaChi(String diaChi) {
         this.diaChi = diaChi;
-    }
-
-    public TaiKhoan getTaiKhoan() {
-        return taiKhoan;
-    }
-
-    public void setTaiKhoan(TaiKhoan taiKhoan) {
-        this.taiKhoan = taiKhoan;
     }
 
     public String getAnh() {

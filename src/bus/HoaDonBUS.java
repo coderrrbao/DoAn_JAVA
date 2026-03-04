@@ -142,4 +142,8 @@ public class HoaDonBUS {
             return "HD" + System.currentTimeMillis();
         }
     }
+
+    public ArrayList<HoaDon> layDanhSachHoaDon() {
+        return hoaDonDAO.layDanhSachHoaDon();
+    }
 }

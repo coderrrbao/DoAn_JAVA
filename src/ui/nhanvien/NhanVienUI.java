@@ -19,7 +19,6 @@ import dto.NhanVien;
 
 public class NhanVienUI extends JPanel {
     private JButton btnTao, btnSua, btnXoa;
-    private JComboBox<String> cbChucVu;
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
@@ -33,10 +32,6 @@ public class NhanVienUI extends JPanel {
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        String[] dsChucVu = { "Tất cả", "Quản lý", "Nhân viên" };
-        cbChucVu = new JComboBox<>(dsChucVu);
-        cbChucVu.setPreferredSize(new Dimension(150, 30));
-        cbChucVu.setMaximumSize(new Dimension(150, 30));
 
         search_Item = new Search_Item(300, 30);
 
@@ -45,8 +40,6 @@ public class NhanVienUI extends JPanel {
 
         btnXoa = new JButton("Xóa");
 
-        top.add(cbChucVu);
-        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnTao);
@@ -60,7 +53,7 @@ public class NhanVienUI extends JPanel {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
                 // Nút sửa lùi xuống vị trí index 5
-                if (columnIndex == 5) {
+                if (columnIndex == 4) {
                     return JButton.class;
                 }
                 return Object.class;
@@ -68,25 +61,25 @@ public class NhanVienUI extends JPanel {
 
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 5; // Chỉ cho phép click vào cột Nút (index 5)
+                return column == 4; // Chỉ cho phép click vào cột Nút (index 5)
             }
         };
         model.addColumn("Mã NV"); // 0
         model.addColumn("Họ và tên"); // 1
         model.addColumn("Giới tính"); // 2
-        model.addColumn("Chức vụ"); // 3
         model.addColumn("Số điện thoại"); // 4
-        // Đã xóa cột "Trạng thái"
-        model.addColumn(""); // 5 (Cột chứa nút Sửa)
+        model.addColumn("");
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(5); // Set index 5 cho cột Nút
+        set.add(5);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
-
-        // Cập nhật index 5 cho Render và Editor
-        tableUI.getColumnModel().getColumn(5).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
-        tableUI.getColumnModel().getColumn(5).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
+        tableUI.setAutoCreateColumnsFromModel(false);
+        tableUI.getColumnModel().getColumn(4).setMinWidth(80);
+        tableUI.getColumnModel().getColumn(4).setMaxWidth(80);
+        tableUI.getColumnModel().getColumn(4).setPreferredWidth(80);
+        tableUI.getColumnModel().getColumn(4).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
+        tableUI.getColumnModel().getColumn(4).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
             String maNV = (String) model.getValueAt(row, 0);
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
             NhanVienBUS bus = NhanVienBUS.getNhanVienBUS();
@@ -129,13 +122,9 @@ public class NhanVienUI extends JPanel {
     private void locNhanVien() {
         listNhanVienLoc.clear();
 
-        String chucVuFilter = (String) cbChucVu.getSelectedItem();
         String keyword = search_Item.getTextSearch() != null ? search_Item.getTextSearch().trim().toUpperCase() : "";
 
         for (NhanVien nv : listNhanVien) {
-            boolean matchChucVu = "Tất cả".equals(chucVuFilter)
-                    || (nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen() != null
-                            && nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen().equals(chucVuFilter));
 
             boolean matchSearch = true;
             if (!keyword.isEmpty()) {
@@ -147,7 +136,7 @@ public class NhanVienUI extends JPanel {
                         || sdt.toUpperCase().contains(keyword);
             }
 
-            if (matchChucVu && matchSearch) {
+            if ( matchSearch) {
                 listNhanVienLoc.add(nv);
             }
         }
@@ -162,17 +151,13 @@ public class NhanVienUI extends JPanel {
                     nv.getMaNV(),
                     nv.getTenNV(),
                     nv.getGioiTinh(),
-                    nv.getTaiKhoan().getNhomQuyen().getTenNhomQuyen(),
                     nv.getSdt(),
                     null // Dành cho nút sửa ở index 5
             });
         }
-        tableUI.revalidate();
-        tableUI.repaint();
     }
 
     private void ganSuKienLocVaXoa() {
-        cbChucVu.addActionListener(e -> locNhanVien());
         search_Item.setEvent(this::locNhanVien);
 
         btnXoa.addActionListener(e -> {
@@ -213,10 +198,6 @@ public class NhanVienUI extends JPanel {
 
     public JButton getBtnXoa() {
         return btnXoa;
-    }
-
-    public JComboBox<String> getCbChucVu() {
-        return cbChucVu;
     }
 
     public Search_Item getSearch_Item() {

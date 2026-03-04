@@ -54,7 +54,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         TaoUI.setFixSize(xuatExbtn, 100, 30);
         buttonPanel.add(locNgay);
         buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
-        buttonPanel.add(xuatExbtn);
+        // buttonPanel.add(xuatExbtn);
         return buttonPanel;
     }
 

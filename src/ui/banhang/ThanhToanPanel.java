@@ -44,7 +44,7 @@ public class ThanhToanPanel extends JPanel {
         TaoUI.setFixSize(cbxKhuyenMai, 180, 30);
 
         btnMGG = new JButton("Áp dụng");
-        TaoUI.setFixSize(btnMGG, 100, 30);
+        TaoUI.setFixSize(btnMGG, 180, 30);
 
         TaoUI.addItem(rightPanel, lblMa, 3, false);
         TaoUI.addItem(rightPanel, cbxKhuyenMai, 3, false);

@@ -18,11 +18,12 @@ import ui.login.LoginUI;
 import ui.thongtinuser.ThongTinDialog;
 
 public class MenuPanel extends JPanel {
-  private List<MenuPanelItem> menuItems;
-  private LoginUI loginFrame;
-  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, JFrame frame, LoginUI loginUI) {
+  private ArrayList<MenuPanelItem> menuItems;
+  private LoginUI loginUI;
+
+  public MenuPanel(CardLayout cardLayout, JPanel cardPanel, LoginUI loginUI) {
     menuItems = new ArrayList<>();
-    loginFrame = loginUI;
+    this.loginUI = loginUI;
     setPreferredSize(new Dimension(200, 700));
     setMaximumSize(new Dimension(200, Integer.MAX_VALUE));
     setMinimumSize(new Dimension(200, 700));
@@ -42,6 +43,7 @@ public class MenuPanel extends JPanel {
     addMenuItem("Bán hàng", cardLayout, cardPanel);
     addMenuItem("Hóa đơn", cardLayout, cardPanel);
     addMenuItem("Khách hàng", cardLayout, cardPanel);
+    addMenuItem("Hạng thành viên", cardLayout, cardPanel);
     addMenuItem("Nhân viên", cardLayout, cardPanel);
     addMenuItem("Tài khoản", cardLayout, cardPanel);
     addMenuItem("Phân quyền", cardLayout, cardPanel);
@@ -57,15 +59,18 @@ public class MenuPanel extends JPanel {
 
     add(Box.createVerticalGlue());
 
-    addMenuItem("Đăng xuất", ()->{
+    addMenuItem("Đăng xuất", () -> {
       dangXuat();
     });
 
   }
 
   private void addMenuItem(String title, CardLayout cardLayout, JPanel cardPanel) {
-    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel);
+    MenuPanelItem item = new MenuPanelItem(title, cardLayout, cardPanel, menuItems);
     menuItems.add(item);
+    if (title.equals("Quản lý sản phẩm")) {
+      item.setMauChon();
+    }
     add(item);
     add(Box.createVerticalStrut(2));
   }
@@ -81,20 +86,21 @@ public class MenuPanel extends JPanel {
     return menuItems;
   }
 
-  private void dangXuat(){
+  private void dangXuat() {
     int confirm = JOptionPane.showConfirmDialog(
-            null,
-            "Bạn có chắc muốn đăng xuất?",
-            "Xác nhận",
-            JOptionPane.YES_NO_OPTION);
+        null,
+        "Bạn có chắc muốn đăng xuất?",
+        "Xác nhận",
+        JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
-      //xoa du lieu old
-      loginFrame.xoaDuLieu();
+      // xoa du lieu old
+      loginUI.lamMoi();
+      ;
       // đóng MainFrame
-      loginFrame.getMainFrame().setVisible(false);
+      loginUI.getMainFrame().setVisible(false);
       // mở lại màn hình đăng nhập
-      loginFrame.setVisible(true);
+      loginUI.setVisible(true);
     }
   }
 }

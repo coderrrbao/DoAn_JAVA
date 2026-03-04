@@ -1,31 +1,19 @@
 package dto;
 
-import java.sql.Date;
-
-public class MaGiamGia {
+public class KhuyenMai {
     private String maKM;
     private int phanTramGiam;
-    private Date tuNgay;
-    private Date denNgay;
-    private boolean trangThai;
+    private String tuNgay;  // Chuyển thành String
+    private String denNgay; // Chuyển thành String
 
-    public MaGiamGia() {
+    public KhuyenMai() {
     }
 
-    public MaGiamGia(String maKM, int phanTramGiam, Date tuNgay, Date denNgay, boolean trangThai) {
+    public KhuyenMai(String maKM, int phanTramGiam, String tuNgay, String denNgay) {
         this.maKM = maKM;
         this.phanTramGiam = phanTramGiam;
         this.tuNgay = tuNgay;
         this.denNgay = denNgay;
-        this.trangThai = trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
     }
 
     public String getMaKM() {
@@ -44,19 +32,19 @@ public class MaGiamGia {
         this.phanTramGiam = phanTramGiam;
     }
 
-    public Date getTuNgay() {
+    public String getTuNgay() {
         return tuNgay;
     }
 
-    public void setTuNgay(Date tuNgay) {
+    public void setTuNgay(String tuNgay) {
         this.tuNgay = tuNgay;
     }
 
-    public Date getDenNgay() {
+    public String getDenNgay() {
         return denNgay;
     }
 
-    public void setDenNgay(Date denNgay) {
+    public void setDenNgay(String denNgay) {
         this.denNgay = denNgay;
     }
 }

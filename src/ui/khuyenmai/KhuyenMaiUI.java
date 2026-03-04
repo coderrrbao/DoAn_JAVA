@@ -1,25 +1,31 @@
 package ui.khuyenmai;
 
+import bus.KhuyenMaiBUS;
+import dto.KhuyenMai;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Frame;
+import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
-import ui.component.Search_Item;
+import ui.component.LocNgay_Item;
 import util.TaoUI;
 
 public class KhuyenMaiUI extends JPanel {
     private JTable table;
     private DefaultTableModel model;
-    private Search_Item search_Item;
-    private JButton btnThem;
-    private JButton btnSua;
-    private JButton btnXoa;
+    private LocNgay_Item locNgay;
+    private JButton btnThem, btnSua, btnXoa;
+    
+    private KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
 
     public KhuyenMaiUI() {
         setLayout(new BorderLayout());
@@ -29,6 +35,9 @@ public class KhuyenMaiUI extends JPanel {
         centerContainer.add(taoPanelTable(), BorderLayout.CENTER);
 
         add(centerContainer, BorderLayout.CENTER);
+        
+        loadDataToTable();
+        addEvents();
     }
 
     private JPanel taoTopPanel() {
@@ -37,8 +46,9 @@ public class KhuyenMaiUI extends JPanel {
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        search_Item = new Search_Item(300, 35);
-        top.add(search_Item);
+        // Thay thế Search_Item bằng LocNgay_Item
+        locNgay = new LocNgay_Item(450, 35);
+        top.add(locNgay);
 
         btnThem = new JButton("Thêm");
         btnThem.setPreferredSize(new Dimension(80, 35));
@@ -58,27 +68,92 @@ public class KhuyenMaiUI extends JPanel {
     private JPanel taoPanelTable() {
         JPanel panel = new JPanel(new BorderLayout());
 
-        // Các cột tương ứng với DB: MaKM, PhanTramGiam, TuNgay, DenNgay, TrangThai
         String[] columns = { "Mã KM", "Phần trăm giảm", "Từ ngày", "Đến ngày", "Trạng thái" };
-        model = new DefaultTableModel(columns, 0);
-
-        // Dữ liệu mẫu (Giả lập hiển thị trạng thái BIT: 1=Đang áp dụng, 0=Kết thúc)
-        Object[][] data = {
-                { "KM001", "10%", "2024-01-01", "2024-01-31", "Đang áp dụng" },
-                { "KM002", "20%", "2024-02-14", "2024-02-14", "Chờ kích hoạt" },
-                { "KM003", "5%", "2023-12-01", "2023-12-31", "Đã kết thúc" },
-                { "KM004", "15%", "2024-03-08", "2024-03-08", "Chờ kích hoạt" },
-                { "KM005", "50%", "2024-01-20", "2024-01-25", "Đang áp dụng" }
+        model = new DefaultTableModel(columns, 0) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
         };
 
-        for (Object[] row : data) {
-            model.addRow(row);
-        }
-
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
-        table  = (JTable) scrollPane.getViewport().getView();
+        table = (JTable) scrollPane.getViewport().getView();
         panel.add(scrollPane, BorderLayout.CENTER);
 
         return panel;
+    }
+
+    // Gộp hàm thucHienTimKiem cũ vào đây và xử lý điều kiện lọc qua LocNgay_Item
+    public void loadDataToTable() {
+        model.setRowCount(0);
+        ArrayList<KhuyenMai> list = kmBUS.layListKhuyenMai();
+
+        for (KhuyenMai km : list) {
+            // Kiểm tra xem Từ ngày của khuyến mãi có nằm trong khoảng thời gian đã chọn không
+            if (locNgay.ngayTrongKhoan(km.getTuNgay())) {
+                model.addRow(new Object[] {
+                    km.getMaKM(),
+                    km.getPhanTramGiam() + "%",
+                    km.getTuNgay(),
+                    km.getDenNgay(),
+                    kmBUS.xacDinhTrangThai(km) 
+                });
+            }
+        }
+    }
+
+    private void addEvents() {
+        btnThem.addActionListener(e -> {
+            FormKhuyenMai form = new FormKhuyenMai((Frame) SwingUtilities.getWindowAncestor(this), null);
+            form.setVisible(true);
+            if (form.getKetQua() != null) {
+                if (kmBUS.themKhuyenMai(form.getKetQua())) {
+                    JOptionPane.showMessageDialog(this, "Thêm khuyến mãi thành công!");
+                    loadDataToTable();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Thêm thất bại!");
+                }
+            }
+        });
+
+        btnXoa.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần xóa!");
+                return;
+            }
+            String maKM = model.getValueAt(row, 0).toString();
+            int confirm = JOptionPane.showConfirmDialog(this, "Xác nhận xóa mã " + maKM + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+            if (confirm == JOptionPane.YES_OPTION) {
+                if (kmBUS.xoaKhuyenMai(maKM)) {
+                    JOptionPane.showMessageDialog(this, "Đã xóa thành công!");
+                    loadDataToTable();
+                }
+            }
+        });
+
+        btnSua.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row == -1) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn dòng cần sửa!");
+                return;
+            }
+            String maKM = model.getValueAt(row, 0).toString();
+            KhuyenMai kmCanSua = kmBUS.timKhuyenMai(maKM);
+            
+            FormKhuyenMai form = new FormKhuyenMai((Frame) SwingUtilities.getWindowAncestor(this), kmCanSua);
+            form.setVisible(true);
+            if (form.getKetQua() != null) {
+                if (kmBUS.capNhatKhuyenMai(form.getKetQua())) {
+                    JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
+                    loadDataToTable();
+                }
+            }
+        });
+
+        // Gán sự kiện khi bộ lọc ngày thay đổi giá trị
+        locNgay.setEvent(() -> {
+            loadDataToTable();
+        });
     }
 }

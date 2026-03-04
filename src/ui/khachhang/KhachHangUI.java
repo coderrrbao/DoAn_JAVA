@@ -90,7 +90,10 @@ public class KhachHangUI extends JPanel {
         set.add(6); // cột icon, không căn giữa hết
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
-
+        tableUI.setAutoCreateColumnsFromModel(false);
+        tableUI.getColumnModel().getColumn(6).setMinWidth(80);
+        tableUI.getColumnModel().getColumn(6).setMaxWidth(80);
+        tableUI.getColumnModel().getColumn(6).setPreferredWidth(80);
         tableUI.getColumnModel().getColumn(6).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
         tableUI.getColumnModel().getColumn(6).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
             String maKH = (String) model.getValueAt(row, 0);

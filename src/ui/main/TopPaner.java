@@ -68,7 +68,7 @@ public class TopPaner extends JPanel {
         ImageIcon anh = TaoUI.taoImageIcon(user.getAnh(), 70, 70);
         anhDaiDien.setIcon(anh);
         ten.setText(user.getTenNV());
-        chucVu.setText(user.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
+        chucVu.setText(PhienDangNhap.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());
         this.revalidate();
         this.repaint();
     }

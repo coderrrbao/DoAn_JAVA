@@ -170,7 +170,13 @@ public class TaiKhoanBUS {
     public TaiKhoan dangNhap(String tenDangNhap, String matKhau) {
         if (tenDangNhap == null || matKhau == null)
             return null;
-        return dao.dangNhap(tenDangNhap, matKhau);
+        TaiKhoan taiKhoan = dao.dangNhap(tenDangNhap, matKhau);
+        if (taiKhoan == null) {
+            return null;
+        }
+        NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+        taiKhoan.setNhomQuyen(nhomQuyenBUS.timNhomQuyen(taiKhoan.getNhomQuyen().getMaNQ()));
+        return taiKhoan;
     }
 
     public Boolean kiemTraUsernameTonTai(String username) {
@@ -187,8 +193,29 @@ public class TaiKhoanBUS {
         }
         return false;
     }
-    //lay ma tai khoan kha dung 
-    public String layMaTaiKhoanKhaDung(){
-        return dao.layMaTaiKhoanKhaDung();
+
+    public int getTongSoTrang(int pageSize) {
+        if (canUpdate || listTaiKhoan == null) {
+            khoitao();
+        }
+        return (int) Math.ceil((double) listTaiKhoan.size() / pageSize);
+    }
+
+    public ArrayList<TaiKhoan> layTrang(int page, int pageSize) {
+        if (canUpdate || listTaiKhoan == null) {
+            canUpdate = false;
+            khoitao();
+        }
+        ArrayList<TaiKhoan> kq = new ArrayList<>();
+        int start = (page - 1) * pageSize;
+        int end = Math.min(start + pageSize, listTaiKhoan.size());
+
+        if (start >= listTaiKhoan.size())
+            return kq;
+
+        for (int i = start; i < end; i++) {
+            kq.add(listTaiKhoan.get(i));
+        }
+        return kq;
     }
 }

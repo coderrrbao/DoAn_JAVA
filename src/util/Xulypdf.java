@@ -65,7 +65,7 @@ public class Xulypdf {
         HoaDon hd = new HoaDon("HD001", nv, "KH001", null, ngayBan, 0, 0, true);
 
         // 3. Vòng lặp tạo 20 Sản phẩm và 20 Chi tiết hóa đơn
-        for (int i = 1; i <= 20; i++) {
+        for (int i = 1; i <= 2; i++) {
             // Tạo mã và tên sp động: SP01, SP02...
             String maSP = String.format("SP%02d", i);
             String tenSP = "Sản phẩm thử nghiệm " + i;

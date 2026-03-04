@@ -5,17 +5,15 @@ public class HangThanhVien {
     private String tenHang;
     private int phanTramGiam;
     private double dieuKien;
-    private boolean trangThai;
 
     public HangThanhVien() {
     }
 
-    public HangThanhVien(String maHang, String tenHang, int phanTramGiam, double dieuKien, boolean trangThai) {
+    public HangThanhVien(String maHang, String tenHang, int phanTramGiam, double dieuKien) {
         this.maHang = maHang;
         this.tenHang = tenHang;
         this.phanTramGiam = phanTramGiam;
         this.dieuKien = dieuKien;
-        this.trangThai = trangThai;
     }
 
     public String getMaHang() {
@@ -48,13 +46,5 @@ public class HangThanhVien {
 
     public void setDieuKien(double dieuKien) {
         this.dieuKien = dieuKien;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
     }
 }

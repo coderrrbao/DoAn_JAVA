@@ -2,7 +2,7 @@ package ui.banhang;
 
 import bus.HoaDonBUS;
 import bus.KhachHangBUS;
-import bus.MaGiamGiaBUS;
+import bus.KhuyenMaiBUS;
 import bus.SanPhamBUS;
 import dto.*;
 import ui.component.BoLocListener;
@@ -23,15 +23,18 @@ public class BanHangUI extends JPanel {
     private SanPhamBUS sanPhamBUS = new SanPhamBUS();
     private Xulypdf xulyPDF = new Xulypdf();
 
-    private MaGiamGia maGiamGiaDangDung = null;
-    private double phanTramGiam = 0;
-    private double tienGiamGiaTrucTiep = 0;
+    private KhuyenMai maGiamGiaDangDung = null;
 
     private ThongTinKhachHangPanel thongTinKhachHangPanel;
     private ThanhToanPanel thanhToanPanel;
     private ThongTinHoaDonPanel thongTinHoaDonPanel;
     private ListSanPhamPanel listSanPhamPanel;
     private BoLocPanel boLocPanel;
+    private Runnable onThanhToanSuccess;
+
+    public void setOnThanhToanSuccess(Runnable onThanhToanSuccess) {
+        this.onThanhToanSuccess = onThanhToanSuccess;
+    }
 
     public BanHangUI() {
         setLayout(new GridLayout(1, 2, 0, 0));
@@ -162,10 +165,10 @@ public class BanHangUI extends JPanel {
     }
 
     private void loadDanhSachKhuyenMai() {
-        MaGiamGiaBUS kmBUS = new MaGiamGiaBUS();
-        ArrayList<MaGiamGia> ds = kmBUS.layDanhSachKhuyenMai();
+       KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
+        ArrayList<KhuyenMai> ds = kmBUS.layListKhuyenMai();
         if (ds != null) {
-            for (MaGiamGia mgg : ds) {
+            for (KhuyenMai mgg : ds) {
                 if (kmBUS.kiemTraTrangThaiHopLe(mgg).isEmpty()) {
                     thanhToanPanel.getCbxKhuyenMai().addItem(mgg.getMaKM() + " - Giảm " + mgg.getPhanTramGiam() + "%");
                 }
@@ -183,12 +186,11 @@ public class BanHangUI extends JPanel {
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khuyến mãi từ danh sách!");
                     return;
                 }
-
-                MaGiamGiaBUS maGiamGiaBUS = new MaGiamGiaBUS();
-                MaGiamGia mgg = maGiamGiaBUS.timMaGiamGia(inputCode);
+                KhuyenMaiBUS  khuyenMaiBUS =  KhuyenMaiBUS.getKhuyenMaiBUS();
+                KhuyenMai mgg = khuyenMaiBUS.timKhuyenMai(inputCode);
 
                 if (mgg != null) {
-                    String thongBaoLoi = maGiamGiaBUS.kiemTraTrangThaiHopLe(mgg);
+                    String thongBaoLoi = khuyenMaiBUS.kiemTraTrangThaiHopLe(mgg);
                     if (thongBaoLoi.isEmpty()) {
                         maGiamGiaDangDung = mgg;
                         lockMaGiamGia(true);
@@ -352,6 +354,10 @@ public class BanHangUI extends JPanel {
                 thongTinKhachHangPanel.getTxtTenKh().setText("");
                 resetGiamGia();
                 lockMaGiamGia(false);
+
+                if(onThanhToanSuccess != null) {
+                    onThanhToanSuccess.run();
+                }
 
             } else {
                 JOptionPane.showMessageDialog(this,

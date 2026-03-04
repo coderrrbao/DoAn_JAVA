@@ -1,32 +1,74 @@
 package bus;
 
+import java.util.ArrayList;
 import dao.QuyenDAO;
+import dto.PhanQuyen;
 import dto.Quyen;
 
 public class QuyenBUS {
-    QuyenDAO quyenDao = new QuyenDAO();
-    //them quyen
-    public boolean themQuyen_BUS(Quyen quyen){
-        if(quyen == null || quyen.getMaNQ() == null || quyen.getMaNQ().isEmpty() ||
-            quyen.getMaQuyen() == null || quyen.getMaQuyen().isEmpty() ||
-            quyen.getTenQuyen() == null || quyen.getTenQuyen().isEmpty()
-            ){
-            return false;
+    private static QuyenBUS quyenBUS;
+    private QuyenDAO quyenDao = new QuyenDAO();
+    private ArrayList<Quyen> listQuyen;
+    private boolean canUpdate = true;
+
+    public static QuyenBUS getQuyenBUS() {
+        if (quyenBUS == null) {
+            quyenBUS = new QuyenBUS();
         }
-        return quyenDao.themQuyen_Dao(quyen);
+        return quyenBUS;
     }
-    //xoa quyen
-    public boolean xoaQuyen_BUS(String maQuyen){
-        if(maQuyen == null || maQuyen.isEmpty()){
-            return false;
-        }
-        return quyenDao.xoaQuyen_Dao(maQuyen);
+
+    public QuyenBUS() {
+        khoiTao();
     }
-    //tim kiem 
-    public boolean timQuyen_BUS(String tenQuyen){
-        if(tenQuyen == null || tenQuyen.trim().isEmpty()){
-            return false;
+
+    public void khoiTao() {
+        listQuyen = quyenDao.layListQuyen();
+    }
+
+    public ArrayList<Quyen> layDanhSachQuyen() {
+        if (canUpdate || listQuyen == null) {
+            khoiTao();
+            canUpdate = false;
         }
-        return quyenDao.timQuyen_Dao(tenQuyen.trim());
+        return listQuyen;
+    }
+
+    public ArrayList<Quyen> layQuyenChoNhomQuyen(String maNQ) {
+        ArrayList<Quyen> listQuyen = new ArrayList<>();
+        PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
+        for (PhanQuyen phanQuyen : phanQuyenBUS.layDanhSachPhanQuyen()) {
+            if (phanQuyen.getMaNQ().equals(maNQ)) {
+                Quyen quyen = timTheoMa(phanQuyen.getMaQuyen());
+                listQuyen.add(quyen);
+            }
+        }
+        return listQuyen;
+    }
+
+    public Quyen timQuyenTheoTen(String tenQuyen) {
+        if (canUpdate || listQuyen == null) {
+            khoiTao();
+            canUpdate = false;
+        }
+        for (Quyen q : listQuyen) {
+            if (q.getTenQuyen().equals(tenQuyen)) {
+                return q;
+            }
+        }
+        return null;
+    }
+
+    public Quyen timTheoMa(String maQuyen) {
+        if (canUpdate || listQuyen == null) {
+            khoiTao();
+            canUpdate = false;
+        }
+        for (Quyen q : listQuyen) {
+            if (q.getMaQuyen().equals(maQuyen)) {
+                return q;
+            }
+        }
+        return null;
     }
 }
