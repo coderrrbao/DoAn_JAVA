@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import ui.component.LocNgay_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -69,7 +70,15 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
     add(scrollPane, BorderLayout.CENTER);
     loadDuLieu();
   }
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
 
+    // Kiểm tra quyền tạo phiếu xuất/hủy nguyên liệu (XK_TAO)
+    if (!listQuyen.contains("XK_TAO")) {
+        btnXuat.setVisible(false);
+        // Nút btnXemChiTiet vẫn để mặc định là true (hiển thị)
+    }
+}
   public void loadDuLieu() {
     model.setRowCount(0);
     ArrayList<PhieuHuyNguyenLieu> list =

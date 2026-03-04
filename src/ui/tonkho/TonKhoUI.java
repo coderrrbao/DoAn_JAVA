@@ -8,13 +8,17 @@ import javax.swing.JTabbedPane;
 public class TonKhoUI extends JPanel {
     private TonKhoNguyenLieuPanel tonKhoNguyenLieu;
     private TonKhoSanPhamPanel tonKhoSanPham;
-    public TonKhoUI(){
+
+    public TonKhoUI() {
         setLayout(new BorderLayout());
         tonKhoNguyenLieu = new TonKhoNguyenLieuPanel();
         tonKhoSanPham = new TonKhoSanPhamPanel();
         JTabbedPane tabbedPane = new JTabbedPane();
         tabbedPane.addTab("Sản phẩm", tonKhoSanPham);
         tabbedPane.addTab("Nguyên liệu", tonKhoNguyenLieu);
-        add(tabbedPane,BorderLayout.CENTER);
+        add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
     }
 }

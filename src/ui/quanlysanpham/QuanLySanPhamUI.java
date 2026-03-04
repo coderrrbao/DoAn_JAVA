@@ -12,8 +12,10 @@ import bus.DanhMucBUS;
 import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import dto.NhaCungCap;
+import dto.PhanQuyen;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -46,8 +48,20 @@ public class QuanLySanPhamUI extends JPanel {
         initTopBar();
         initMainContent();
         ganSuKienChoNut();
-
         loadDataFromDatabase();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+        if (!listQuyen.contains("QLSP_XOA")) {
+            xoaBtn.setVisible(false);
+        }
+        if (!listQuyen.contains("QLSP_TAO")) {
+            themSpBtn.setVisible(false);
+            xuaFileBtn.setVisible(false);
+        }
+        chiTietSanPhamDialog.suaLaiGiaoDienTheoQuyen();
+
     }
 
     private void initTopBar() {
@@ -57,7 +71,6 @@ public class QuanLySanPhamUI extends JPanel {
 
         cbLoaiNuoc = new JComboBox<>(loai);
         cbLoaiNuoc.setMaximumSize(new Dimension(90, 32));
-
 
         cbDanhMuc = new JComboBox<>(danhmuc);
         cbDanhMuc.setMaximumSize(new Dimension(90, 32));
@@ -235,7 +248,7 @@ public class QuanLySanPhamUI extends JPanel {
                 matchTrangThai = true;
             }
 
-            if ( matchLoai && matchDM && matchTrangThai && matchSearch) {
+            if (matchLoai && matchDM && matchTrangThai && matchSearch) {
                 listSanPhamLoc.add(sanPham);
             }
         }

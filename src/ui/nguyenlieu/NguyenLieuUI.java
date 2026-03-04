@@ -7,11 +7,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class NguyenLieuUI extends JPanel {
@@ -75,6 +78,22 @@ public class NguyenLieuUI extends JPanel {
 
     loadDataToTable();
     addEvents();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+
+    if (!listQuyen.contains("NL_TAO")) {
+      btnTao.setVisible(false);
+    }
+
+    if (!listQuyen.contains("NL_SUA")) {
+      btnSua.setVisible(false);
+    }
+
+    if (!listQuyen.contains("NL_XOA")) {
+      btnXoa.setVisible(false);
+    }
   }
 
   public void loadDataToTable() {

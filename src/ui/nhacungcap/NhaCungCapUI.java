@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import bus.NhaCungCapBUS;
 import dto.NhaCungCap;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -94,6 +95,18 @@ public class NhaCungCapUI extends JPanel {
                 model.addRow(new Object[] { nhaCungCap.getMaNCC(), nhaCungCap.getTenNCC(),
                         loaiCungCap, nhaCungCap.getSoDienThoai(), nhaCungCap.getDiaChi() });
             }
+        }
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("NCC_TAO")) {
+            btnTao.setVisible(false);
+        }
+
+        if (!listQuyen.contains("NCC_XOA")) {
+            btnXoa.setVisible(false);
         }
     }
 

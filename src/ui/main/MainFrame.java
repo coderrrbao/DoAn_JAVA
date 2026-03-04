@@ -9,6 +9,7 @@ import java.awt.*;
 public class MainFrame extends JFrame {
     private TopPaner topPaner;
     private ContentPaner contentPaner;
+    private MenuPanel menuPanel; 
 
     public MainFrame(LoginUI loginUI) {
         setSize(1400, 800);
@@ -23,7 +24,7 @@ public class MainFrame extends JFrame {
         add(contentPaner, BorderLayout.CENTER);
         CardLayout cardLayout = (CardLayout) contentPaner.getLayout();
         cardLayout.show(contentPaner, "Quản lý sản phẩm");
-        MenuPanel menuPanel = new MenuPanel(cardLayout, contentPaner, loginUI);
+        menuPanel = new MenuPanel(cardLayout, contentPaner, loginUI);
         add(menuPanel, BorderLayout.WEST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(false);
@@ -32,7 +33,9 @@ public class MainFrame extends JFrame {
     public TopPaner getTopPaner() {
         return topPaner;
     }
-
+    public MenuPanel getMenuPanel() {
+        return menuPanel;
+    }
     public ContentPaner getContentPaner() {
         return contentPaner;
     }

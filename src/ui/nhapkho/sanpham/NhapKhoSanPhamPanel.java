@@ -15,6 +15,7 @@ import bus.PhieuNhapSanPhamBUS;
 import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -58,6 +59,24 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
         loadDuLieu();
         ganSuKien();
+    }
+
+    /**
+     * Cập nhật hiển thị: Ẩn các nút Thêm, Xóa, Xem dựa trên danh sách quyền của
+     * user
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm mới phiếu nhập (NK_TAO)
+        if (!listQuyen.contains("NK_TAO")) {
+            nhapHangBtn.setVisible(false);
+        }
+
+        // 2. Quyền Xóa phiếu nhập (NK_XOA)
+        if (!listQuyen.contains("NK_XOA")) {
+            xoaBtn.setVisible(false);
+        }
     }
 
     private void ganSuKien() {

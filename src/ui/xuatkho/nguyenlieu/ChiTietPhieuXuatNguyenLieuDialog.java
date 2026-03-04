@@ -91,8 +91,21 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
 
     loadData();
     ganSuKien();
+    suaLaiGiaoDienTheoQuyen();
   }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
+    // Kiểm tra quyền SỬA (XK_SUA)
+    if (!listQuyen.contains("XK_SUA")) {
+        // Ẩn các nút thao tác chỉnh sửa
+        btnSua.setVisible(false);
+        btnLuu.setVisible(false);
+        
+        // Cập nhật tiêu đề để thông báo đây là chế độ chỉ đọc
+        this.setTitle("Chi Tiết Phiếu Hủy Nguyên Liệu (Chế độ chỉ đọc)");
+    }
+}
   private void loadData() {
     modelChiTiet.setRowCount(0);
     ArrayList<LoNguyenLieu> list = phieuHuy.getListLoNguyenLieuHuy();

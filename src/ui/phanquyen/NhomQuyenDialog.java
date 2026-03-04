@@ -52,22 +52,22 @@ public class NhomQuyenDialog extends JDialog {
             "Khuyến mãi"
     };
     private String[] danhSachMaChucNang = {
-            "QLSP", // Quản lý sản phẩm
-            "NL", // Nguyên liệu
-            "NCC", // Nhà cung cấp
-            "NK", // Nhập kho
-            "TK", // Tồn kho
-            "XK", // Xuất kho
-            "KK", // Kiểm kê
-            "BH", // Bán hàng
-            "HD", // Hóa đơn
-            "KH", // Khách hàng
-            "HTV", // Hạng thành viên
-            "NV", // Nhân viên
-            "TKHOAN", // Tài khoản (Để tránh trùng với TK - Tồn kho)
-            "PQ", // Phân quyền
-            "TKE", // Thống kê
-            "KM" // Khuyến mãi
+            "QLSP", // 1. Quản lý sản phẩm
+            "NL", // 2. Nguyên liệu
+            "NCC", // 3. Nhà cung cấp
+            "NK", // 4. Nhập kho
+            "TKHO", // 5. Tồn kho (Sửa từ TKho thành TKHO cho khớp SQL)
+            "XK", // 6. Xuất kho
+            "KK", // 7. Kiểm kê
+            "BH", // 8. Bán hàng
+            "HD", // 9. Hóa đơn
+            "KH", // 10. Khách hàng
+            "HTV", // 11. Hạng thành viên
+            "NV", // 12. Nhân viên
+            "TK", // 13. Tài khoản (Sửa từ TKHOAN thành TK cho khớp SQL)
+            "PQ", // 14. Phân quyền
+            "TKE", // 15. Thống kê
+            "KM" // 16. Khuyến mãi
     };
     private NhomQuyen nhomQuyen;
     private NhomQuyenUI nhomQuyenUI;
@@ -82,6 +82,46 @@ public class NhomQuyenDialog extends JDialog {
         initGUI();
         ganSuKien();
         setVisible(true);
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // 1. Trường hợp Thêm mới
+        if (nhomQuyen == null) {
+            if (!listQuyen.contains("PQ_THEM")) {
+                if (btnThem != null)
+                    btnThem.setEnabled(false);
+                tfTenNhomQuyen.setEditable(false);
+                setEnableAllCheckBoxes(false);
+                setTitle("Bạn không có quyền thêm nhóm quyền");
+            }
+        }
+        // 2. Trường hợp Xem/Sửa
+        else {
+            if (!listQuyen.contains("PQ_SUA")) {
+                if (btnSua != null)
+                    btnSua.setVisible(false); // Ẩn luôn nút Sửa
+                if (btnLuu != null)
+                    btnLuu.setVisible(false);
+                setTitle("Chi tiết nhóm quyền (Chỉ xem)");
+                // Đảm bảo mọi thứ bị khóa
+                setEnableAllCheckBoxes(false);
+            }
+        }
+    }
+
+    /**
+     * Hàm hỗ trợ bật/tắt nhanh tất cả checkbox
+     */
+    private void setEnableAllCheckBoxes(boolean status) {
+        for (JCheckBox[] boxes : mapCheckBoxes.values()) {
+            for (JCheckBox cb : boxes) {
+                if (cb != null)
+                    cb.setEnabled(status);
+            }
+        }
     }
 
     private void initGUI() {
@@ -139,6 +179,7 @@ public class NhomQuyenDialog extends JDialog {
                 NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
                 if (nhomQuyenBUS.capNhatNhomQuyen(nhomQuyen)) {
                     TaoTinNhan.showAutoCloseMessage("Cập nhật nhóm quyền thành công", "Thông báo", 1);
+                    nhomQuyen = nhomQuyenBUS.timNhomQuyen(nhomQuyen.getMaNQ());
                     loadDuLieu(nhomQuyen);
                     tacThaoTacSua();
                     nhomQuyenUI.loadDuLieu();
@@ -258,8 +299,8 @@ public class NhomQuyenDialog extends JDialog {
 
         JCheckBox[] boxes = new JCheckBox[4];
         ArrayList<String> chucNangChinh = new ArrayList<>();
-        chucNangChinh.add("_TAO");
         chucNangChinh.add("_XEM");
+        chucNangChinh.add("_TAO");
         chucNangChinh.add("_SUA");
         chucNangChinh.add("_XOA");
 

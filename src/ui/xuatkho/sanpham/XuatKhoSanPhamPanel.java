@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import ui.component.LocNgay_Item; // Thêm bộ lọc ngày cho đồng bộ
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -46,8 +47,7 @@ public class XuatKhoSanPhamPanel extends JPanel {
               }
             }
             if (selected != null) {
-              ChiTietPhieuXuatSanPhamDialog detail =
-                  new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
+              ChiTietPhieuXuatSanPhamDialog detail = new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
               detail.setVisible(true);
             }
           } else {
@@ -61,17 +61,25 @@ public class XuatKhoSanPhamPanel extends JPanel {
     top.add(xemChiTietBtn);
     add(top, BorderLayout.NORTH);
 
-    model =
-        new DefaultTableModel(
-            new String[] {
-              "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
-            },
-            0);
+    model = new DefaultTableModel(
+        new String[] {
+            "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
+        },
+        0);
     JScrollPane scrollPane = TaoUI.taoTableScroll(model);
     table = (JTable) scrollPane.getViewport().getView();
 
     add(scrollPane, BorderLayout.CENTER);
     loadDuLieu();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
+
+    if (!listQuyen.contains("NK_TAO")) {
+      xuatHangBtn.setVisible(false);
+    }
+
   }
 
   public void loadDuLieu() {
@@ -81,12 +89,12 @@ public class XuatKhoSanPhamPanel extends JPanel {
       if (locNgay_Item.ngayTrongKhoan(ph.getNgayHuy().toString())) {
         model.addRow(
             new Object[] {
-              ph.getMaPH(),
-              ph.getNgayHuy(),
-              ph.getMaNV(),
-              ph.getLyDo(),
-              String.format("%,.0f VNĐ", ph.getTongGiaTri()),
-              ph.getTrangThaiXuLy()
+                ph.getMaPH(),
+                ph.getNgayHuy(),
+                ph.getMaNV(),
+                ph.getLyDo(),
+                String.format("%,.0f VNĐ", ph.getTongGiaTri()),
+                ph.getTrangThaiXuLy()
             });
       }
     }

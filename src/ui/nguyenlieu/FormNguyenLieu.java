@@ -1,14 +1,18 @@
 package ui.nguyenlieu;
 
 import dto.NguyenLieu;
+import ui.login.PhienDangNhap;
+
 import java.awt.*;
+import java.util.HashSet;
+
 import javax.swing.*;
 
 public class FormNguyenLieu extends JDialog {
     private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
-  
+
     private JButton btnThem, btnSua, btnLuu, btnHuy;
-    
+
     private NguyenLieu ketQua = null;
     private boolean isEdit = false;
 
@@ -25,7 +29,7 @@ public class FormNguyenLieu extends JDialog {
 
         initLoaiDialog();
         ganSuKien(editNL);
-
+        suaLaiGiaoDienTheoQuyen();
         setLocationRelativeTo(owner);
     }
 
@@ -36,7 +40,7 @@ public class FormNguyenLieu extends JDialog {
         pnlMain.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         txtMa = new JTextField("Tự động");
-        txtMa.setEditable(false); 
+        txtMa.setEditable(false);
         txtTen = new JTextField();
         txtGia = new JTextField();
         txtDonVi = new JTextField();
@@ -61,7 +65,7 @@ public class FormNguyenLieu extends JDialog {
         }
 
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        
+
         // Khởi tạo các nút
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
@@ -91,6 +95,28 @@ public class FormNguyenLieu extends JDialog {
         }
     }
 
+    public void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Kiểm tra quyền THÊM
+        if (!listQuyen.contains("NL_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        // 2. Kiểm tra quyền SỬA
+        if (!listQuyen.contains("NL_SUA")) {
+            btnSua.setVisible(false);
+            btnLuu.setVisible(false);
+        }
+
+        // Nếu không có cả quyền thêm và sửa, người dùng chỉ được xem
+        if (!listQuyen.contains("NL_TAO") && !listQuyen.contains("NL_SUA")) {
+            this.setTitle("Chi tiết Nguyên Liệu (Chế độ xem)");
+            btnHuy.setText("Thoát");
+            btnHuy.setVisible(true); // Đảm bảo nút đóng luôn hiện để thoát
+        }
+    }
+
     private void setEditableForm(boolean status) {
         txtTen.setEditable(status);
         txtGia.setEditable(status);
@@ -112,7 +138,7 @@ public class FormNguyenLieu extends JDialog {
 
     private void ganSuKien(NguyenLieu editNL) {
         btnHuy.addActionListener(e -> dispose());
-        
+
         btnSua.addActionListener(e -> batThaoTacSua());
 
         // Sự kiện nút Thêm

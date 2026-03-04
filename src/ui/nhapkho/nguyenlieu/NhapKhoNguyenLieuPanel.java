@@ -1,6 +1,8 @@
 package ui.nhapkho.nguyenlieu;
 
 import java.awt.BorderLayout;
+import java.util.HashSet;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -13,6 +15,7 @@ import bus.PhieuNhapNguyenLieuBUS;
 import dto.NhaCungCap;
 import dto.PhieuNhapNguyenLieu;
 import ui.component.LocNgay_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -59,6 +62,18 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         ganSuKien();
     }
 
+
+    public void suaLaiGiaoDienTheoQuyen() {
+  
+    HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+    if (!listQuyen.contains("NK_TAO")) {
+        nhapHangBtn.setVisible(false);
+    }
+
+    if (!listQuyen.contains("NK_XOA")) {
+        xoaBtn.setVisible(false);
+    }
+}
     private void ganSuKien() {
         nhapHangBtn.addActionListener(e -> {
             JDialog dialogNhapHang = new NhapKhoNguyenLieuDialog(this);

@@ -120,7 +120,6 @@ BEGIN
         MaNQ VARCHAR(50) NOT NULL,
         MaQuyen VARCHAR(50) NOT NULL,
         TrangThai BIT DEFAULT 1,
-        PRIMARY KEY (MaNQ, MaQuyen)
     )
 
     INSERT INTO PhanQuyen
@@ -1223,17 +1222,30 @@ BEGIN
     ADD CONSTRAINT FK_CTNCC_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)
 END;
 
-/* =============================================
-   KHOÁ NGOẠI (Foreign Keys) - Giữ nguyên không đổi
-   ============================================= */
 
+-- 1. Bảng Phân Quyền
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhanQuyen_NhomQuyen')
+    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_NhomQuyen FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
 
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhanQuyen_Quyen')
+    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_Quyen FOREIGN KEY (MaQuyen) REFERENCES Quyen(MaQuyen);
+
+-- 2. Bảng Tài Khoản
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_TaiKhoan_NhomQuyen')
     ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhomQuyen FOREIGN KEY (maNQ) REFERENCES NhomQuyen(MaNQ);
 
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_TaiKhoan_NhanVien')
+    ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
+-- 3. Bảng Sản Phẩm
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_SanPham_DanhMuc')
@@ -1244,12 +1256,13 @@ FROM sys.foreign_keys
 WHERE name = 'FK_SanPham_NhaCungCap')
     ALTER TABLE SanPham ADD CONSTRAINT FK_SanPham_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC);
 
+-- 4. Bảng Size
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_Size_SanPham')
     ALTER TABLE Size ADD CONSTRAINT FK_Size_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP);
 
-
+-- 5. Bảng Công Thức & Chi Tiết Công Thức
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_CongThuc_SanPham')
@@ -1265,11 +1278,13 @@ FROM sys.foreign_keys
 WHERE name = 'FK_ChiTietCongThuc_NguyenLieu')
     ALTER TABLE ChiTietCongThuc ADD CONSTRAINT FK_ChiTietCongThuc_NguyenLieu FOREIGN KEY (MaNL) REFERENCES NguyenLieu(MaNL);
 
+-- 6. Bảng Khách Hàng
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_KhachHang_HangThanhVien')
     ALTER TABLE KhachHang ADD CONSTRAINT FK_KhachHang_HangThanhVien FOREIGN KEY (MaHang) REFERENCES HangThanhVien(MaHang);
 
+-- 7. Bảng Hóa Đơn & Chi Tiết Hóa Đơn
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_HoaDon_NhanVien')
@@ -1300,6 +1315,7 @@ FROM sys.foreign_keys
 WHERE name = 'FK_ChiTietHoaDon_Size')
     ALTER TABLE ChiTietHoaDon ADD CONSTRAINT FK_ChiTietHoaDon_Size FOREIGN KEY (MaSize) REFERENCES Size(MaSize);
 
+-- 8. Quản Lý Nhập Sản Phẩm
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_PhieuNhapSP_NhanVien')
@@ -1312,16 +1328,6 @@ WHERE name = 'FK_PhieuNhapSP_NCC')
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_PhieuNhapNL_NhanVien')
-    ALTER TABLE PhieuNhapNguyenLieu ADD CONSTRAINT FK_PhieuNhapNL_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhieuNhapNL_NCC')
-    ALTER TABLE PhieuNhapNguyenLieu ADD CONSTRAINT FK_PhieuNhapNL_NCC FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC);
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
 WHERE name = 'FK_LoSanPham_PhieuNhapSP')
     ALTER TABLE LoSanPham ADD CONSTRAINT FK_LoSanPham_PhieuNhapSP FOREIGN KEY (MaPN) REFERENCES PhieuNhapSanPham(MaPN);
 
@@ -1329,6 +1335,17 @@ IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_LoSanPham_SanPham')
     ALTER TABLE LoSanPham ADD CONSTRAINT FK_LoSanPham_SanPham FOREIGN KEY (MaSP) REFERENCES SanPham(MaSP);
+
+-- 9. Quản Lý Nhập Nguyên Liệu
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhieuNhapNL_NhanVien')
+    ALTER TABLE PhieuNhapNguyenLieu ADD CONSTRAINT FK_PhieuNhapNL_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_PhieuNhapNL_NCC')
+    ALTER TABLE PhieuNhapNguyenLieu ADD CONSTRAINT FK_PhieuNhapNL_NCC FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
@@ -1340,78 +1357,45 @@ FROM sys.foreign_keys
 WHERE name = 'FK_LoNguyenLieu_NguyenLieu')
     ALTER TABLE LoNguyenLieu ADD CONSTRAINT FK_LoNguyenLieu_NguyenLieu FOREIGN KEY (MaNL) REFERENCES NguyenLieu(MaNL);
 
-
-
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_PhieuHuyNL_NhanVien')
-    ALTER TABLE PhieuHuyNguyenLieu 
-    ADD CONSTRAINT FK_PhieuHuyNL_NhanVien 
-    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
-
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_CTPHNL_PhieuHuy')
-    ALTER TABLE ChiTietPhieuHuyNguyenLieu 
-    ADD CONSTRAINT FK_CTPHNL_PhieuHuy 
-    FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH);
-
-
-IF NOT EXISTS (SELECT *
-FROM sys.foreign_keys
-WHERE name = 'FK_CTPHNL_LoNL')
-    ALTER TABLE ChiTietPhieuHuyNguyenLieu 
-    ADD CONSTRAINT FK_CTPHNL_LoNL 
-    FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
-
-
-
+-- 10. Quản Lý Hủy (Sản Phẩm & Nguyên Liệu)
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_PhieuHuySP_NhanVien')
-    ALTER TABLE PhieuHuySanPham 
-    ADD CONSTRAINT FK_PhieuHuySP_NhanVien 
-    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
-
+    ALTER TABLE PhieuHuySanPham ADD CONSTRAINT FK_PhieuHuySP_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_CTPHSP_PhieuHuy')
-    ALTER TABLE ChiTietPhieuHuySanPham 
-    ADD CONSTRAINT FK_CTPHSP_PhieuHuy 
-    FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH);
+    ALTER TABLE ChiTietPhieuHuySanPham ADD CONSTRAINT FK_CTPHSP_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_CTPHSP_LoSP')
-    ALTER TABLE ChiTietPhieuHuySanPham 
-    ADD CONSTRAINT FK_CTPHSP_LoSP 
-    FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP);
-
+    ALTER TABLE ChiTietPhieuHuySanPham ADD CONSTRAINT FK_CTPHSP_LoSP FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_PhanQuyen_NhomQuyen')
-    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_NhomQuyen 
-    FOREIGN KEY (MaNQ) REFERENCES NhomQuyen(MaNQ);
+WHERE name = 'FK_PhieuHuyNL_NhanVien')
+    ALTER TABLE PhieuHuyNguyenLieu ADD CONSTRAINT FK_PhieuHuyNL_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_PhanQuyen_Quyen')
-    ALTER TABLE PhanQuyen ADD CONSTRAINT FK_PhanQuyen_Quyen 
-    FOREIGN KEY (MaQuyen) REFERENCES Quyen(MaQuyen);
+WHERE name = 'FK_CTPHNL_PhieuHuy')
+    ALTER TABLE ChiTietPhieuHuyNguyenLieu ADD CONSTRAINT FK_CTPHNL_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH);
 
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
-WHERE name = 'FK_TaiKhoan_NhanVien')
-    ALTER TABLE TaiKhoan ADD CONSTRAINT FK_TaiKhoan_NhanVien 
-    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+WHERE name = 'FK_CTPHNL_LoNL')
+    ALTER TABLE ChiTietPhieuHuyNguyenLieu ADD CONSTRAINT FK_CTPHNL_LoNL FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL);
 
+-- 11. Bảng Kiểm Kê
 IF NOT EXISTS (SELECT *
 FROM sys.foreign_keys
 WHERE name = 'FK_PhieuKiemKe_NhanVien')
-    ALTER TABLE PhieuKiemKe ADD CONSTRAINT FK_PhieuKiemKe_NhanVien 
-    FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
+    ALTER TABLE PhieuKiemKe ADD CONSTRAINT FK_PhieuKiemKe_NhanVien FOREIGN KEY (MaNV) REFERENCES NhanVien(MaNV);
 
+-- 12. Bảng Chi Tiết Nhà Cung Cấp
+IF NOT EXISTS (SELECT *
+FROM sys.foreign_keys
+WHERE name = 'FK_CTNCC_NhaCungCap')
+    ALTER TABLE ChiTietNhaCungCap ADD CONSTRAINT FK_CTNCC_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC);

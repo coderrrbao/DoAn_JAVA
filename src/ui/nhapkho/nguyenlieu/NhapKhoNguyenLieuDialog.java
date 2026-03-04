@@ -306,6 +306,30 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         txtNhanVien.setEditable(false);
         ganSuKien();
         loadDuLieu();
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    /**
+     * Cập nhật hiển thị: Ẩn hoàn toàn các nút tác vụ nếu không có quyền THÊM phiếu
+     * nhập
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // Đối với Dialog này, quyền quan trọng nhất là NK_TAO (quyền lập phiếu)
+        if (!listQuyen.contains("NK_TAO")) {
+            // Ẩn nút xác nhận nhập hàng cuối cùng
+            btnNhapHang.setVisible(false);
+
+            // Ẩn nút thêm nguyên liệu vào danh sách chờ nhập
+            themNlPNHBtn.setVisible(false);
+
+            // Ẩn nút xóa khỏi danh sách chờ nhập
+            xoaCTBtn.setVisible(false);
+
+            // Đổi tiêu đề để người dùng biết họ chỉ đang ở chế độ xem
+            this.setTitle("Xem thông tin nhập kho (Chế độ chỉ đọc)");
+        }
     }
 
     public void loadDuLieu() {

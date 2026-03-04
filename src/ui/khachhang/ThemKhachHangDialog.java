@@ -31,6 +31,7 @@ public class ThemKhachHangDialog extends JDialog {
         setSize(400, 260);
         setLocationRelativeTo(owner);
         setResizable(false);
+        suaLaiGiaoDienTheoQuyen();
     }
 
     public ThemKhachHangDialog(JFrame owner, KhachHangUI khUI, KhachHang khachHang) {
@@ -42,6 +43,33 @@ public class ThemKhachHangDialog extends JDialog {
         setSize(400, 280);
         setLocationRelativeTo(owner);
         setResizable(false);
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    /**
+     * Phân quyền cho Dialog Khách hàng:
+     * - Nếu là thêm mới: Ẩn nút "Thêm" nếu không có quyền KH_THEM.
+     * - Nếu là xem/sửa: Ẩn nút "Sửa" nếu không có quyền KH_SUA.
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // TH 1: Chế độ thêm mới (khachHang == null)
+        if (khachHang == null) {
+            if (!listQuyen.contains("KH_THEM")) {
+                btnThem.setVisible(false);
+                setFieldsEnabled(false); // Khóa luôn không cho nhập
+                this.setTitle("Thông tin khách hàng (Chỉ xem)");
+            }
+        }
+        // TH 2: Chế độ xem/sửa (khachHang != null)
+        else {
+            if (!listQuyen.contains("KH_SUA")) {
+                btnSua.setVisible(false);
+                btnLuu.setVisible(false); // Đảm bảo nút Lưu cũng không hiện
+                this.setTitle("Chi tiết khách hàng (Chế độ chỉ đọc)");
+            }
+        }
     }
 
     private void initUI() {

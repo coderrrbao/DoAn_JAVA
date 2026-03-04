@@ -17,6 +17,7 @@ import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -39,6 +40,25 @@ public class KiemKeUI extends JPanel {
         loaiDuLieu();
         ganSuKien();
     }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
+
+    // 1. Quyền Thêm phiếu kiểm kê (KK_THEM)
+    if (!listQuyen.contains("KK_THEM")) {
+        btnThem.setVisible(false);
+    }
+
+    // 2. Quyền Sửa phiếu kiểm kê (KK_SUA)
+    if (!listQuyen.contains("KK_SUA")) {
+        btnSua.setVisible(false);
+    }
+
+    // 3. Quyền Xóa phiếu kiểm kê (KK_XOA)
+    if (!listQuyen.contains("KK_XOA")) {
+        btnXoa.setVisible(false);
+    }
+}
 
     private void ganSuKien() {
         btnThem.addActionListener(e -> {

@@ -16,6 +16,7 @@ import dto.KhachHang;
 import ui.component.IconButtonEditor;
 import ui.component.IconButtonRender;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class KhachHangUI extends JPanel {
@@ -118,7 +119,31 @@ public class KhachHangUI extends JPanel {
         ganSuKien();
         loadDataFromDatabase();
     }
+    public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
 
+    // 1. Quyền Thêm khách hàng (KH_THEM)
+    if (!listQuyen.contains("KH_THEM")) {
+        btnTao.setVisible(false);
+    }
+
+    // 2. Quyền Xóa khách hàng (KH_XOA)
+    if (!listQuyen.contains("KH_XOA")) {
+        btnXoa.setVisible(false);
+    }
+
+    // 3. Quyền Sửa khách hàng (KH_SUA)
+    if (!listQuyen.contains("KH_SUA")) {
+        // Ẩn nút sửa (nếu có dùng)
+        btnSua.setVisible(false);
+        
+        // Vô hiệu hóa cột "Sửa" (cột số 6) trong Table
+        // Cách triệt để nhất là ẩn luôn cột này đi
+        tableUI.getColumnModel().getColumn(6).setMinWidth(0);
+        tableUI.getColumnModel().getColumn(6).setMaxWidth(0);
+        tableUI.getColumnModel().getColumn(6).setPreferredWidth(0);
+    }
+}
     private void ganSuKien() {
         btnTao.addActionListener(e -> {
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);

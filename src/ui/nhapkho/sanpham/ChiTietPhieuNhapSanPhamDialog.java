@@ -132,6 +132,24 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
         ganSuKien();
         loadDuLieu();
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    /**
+     * Cập nhật hiển thị: Ẩn hoàn toàn các nút Sửa và Lưu nếu không có quyền NK_SUA
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // Kiểm tra quyền SỬA phiếu nhập kho sản phẩm
+        if (!listQuyen.contains("NK_SUA")) {
+            // Ẩn hoàn toàn các nút tác vụ sửa đổi để giao diện sạch hơn
+            btnSua.setVisible(false);
+            btnLuu.setVisible(false);
+
+            // Đổi tiêu đề để thông báo người dùng chỉ đang ở chế độ xem
+            this.setTitle("Chi Tiết Phiếu Nhập Sản Phẩm (Chế độ chỉ đọc)");
+        }
     }
 
     public void loadDuLieu() {
@@ -205,8 +223,6 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
             dispose();
 
         });
-
-        
 
     }
 

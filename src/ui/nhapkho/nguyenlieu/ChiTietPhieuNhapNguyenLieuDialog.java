@@ -134,6 +134,21 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
         ganSuKien();
         loadDuLieu();
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // Kiểm tra quyền SỬA phiếu nhập (NK_SUA)
+        if (!listQuyen.contains("NK_SUA")) {
+            // Ẩn hoàn toàn các nút tác vụ sửa đổi
+            btnSua.setVisible(false);
+            btnLuu.setVisible(false);
+
+            // Đổi tiêu đề sang chế độ xem để người dùng dễ nhận biết
+            this.setTitle("Chi Tiết Phiếu Nhập (Chế độ chỉ đọc)");
+        }
     }
 
     public void loadDuLieu() {

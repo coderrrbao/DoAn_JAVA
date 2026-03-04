@@ -48,8 +48,24 @@ public class ThemTaiKhoanDialog extends JDialog {
         setSize(400, 300);
         setLocationRelativeTo(jFrame);
         setResizable(false);
+        suaLaiGiaoDienTheoQuyen();
     }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
+    if (!listQuyen.contains("TK_THEM")) {
+        // Khóa các trường nhập liệu
+        txtUser.setEditable(false);
+        txtPass.setEditable(false);
+        cbQuyen.setEnabled(false);
+        cbNVBox.setEnabled(false);
+        
+        // Ẩn nút thực thi
+        // Lưu ý: Cần chuyển btnThem thành biến thành viên (private) nếu muốn truy cập ở đây
+        // Hoặc tìm cách lấy reference của nó.
+        this.setTitle("Thông báo: Bạn không có quyền thêm tài khoản");
+    }
+}
     private void initUI() {
         // PANEL CHÍNH
         JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 180);

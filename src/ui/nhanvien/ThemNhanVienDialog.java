@@ -147,6 +147,34 @@ public class ThemNhanVienDialog extends JDialog {
 
         initLoaiDialog();
         ganSuKien();
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    /**
+     * Phân quyền cho Dialog Nhân viên:
+     * - Nếu thêm mới: Ẩn nút "Thêm" và khóa Form nếu không có quyền NV_THEM.
+     * - Nếu xem/sửa: Ẩn nút "Sửa" và nút "Chọn ảnh" nếu không có quyền NV_SUA.
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // TRƯỜNG HỢP 1: Chế độ thêm mới (nhanVien == null)
+        if (nhanVien == null) {
+            if (!listQuyen.contains("NV_THEM")) {
+                btnThem.setVisible(false);
+                setEditableForm(false); // Khóa toàn bộ form nhập liệu
+                this.setTitle("Thông tin nhân viên mới (Chỉ xem)");
+            }
+        }
+        // TRƯỜNG HỢP 2: Chế độ xem hoặc sửa (nhanVien != null)
+        else {
+            if (!listQuyen.contains("NV_SUA")) {
+                btnSua.setVisible(false);
+                btnLuu.setVisible(false);
+                btnChonAnh.setVisible(false); // Không cho phép thay đổi ảnh nếu không có quyền sửa
+                this.setTitle("Chi tiết nhân viên (Chế độ chỉ đọc)");
+            }
+        }
     }
 
     private void initLoaiDialog() {

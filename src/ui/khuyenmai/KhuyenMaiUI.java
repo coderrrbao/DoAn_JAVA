@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.LocNgay_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class KhuyenMaiUI extends JPanel {
@@ -39,7 +40,24 @@ public class KhuyenMaiUI extends JPanel {
         loadDataToTable();
         addEvents();
     }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
 
+    // 1. Quyền Thêm khuyến mãi mới
+    if (!listQuyen.contains("KM_THEM")) {
+        btnThem.setVisible(false);
+    }
+
+    // 2. Quyền Sửa chương trình khuyến mãi
+    if (!listQuyen.contains("KM_SUA")) {
+        btnSua.setVisible(false);
+    }
+
+    // 3. Quyền Xóa (kết thúc sớm) khuyến mãi
+    if (!listQuyen.contains("KM_XOA")) {
+        btnXoa.setVisible(false);
+    }
+}
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
         top.setPreferredSize(new Dimension(100, 45));

@@ -14,6 +14,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class TaiKhoanUI extends JPanel {
@@ -90,7 +91,24 @@ public class TaiKhoanUI extends JPanel {
 
         add(tableContainer, BorderLayout.CENTER);
     }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
 
+    // 1. Quyền Thêm tài khoản
+    if (!listQuyen.contains("TK_THEM")) {
+        btnTao.setVisible(false);
+    }
+
+    // 2. Quyền Xóa tài khoản
+    if (!listQuyen.contains("TK_XOA")) {
+        btnXoa.setVisible(false);
+    }
+
+    // 3. Quyền Đặt lại mật khẩu (Sửa tài khoản)
+    if (!listQuyen.contains("TK_SUA")) {
+        btnResetMatKhau.setVisible(false);
+    }
+}
     // open them tai khoan dialog
     private void openThemTaiKhoanDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);

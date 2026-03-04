@@ -5,6 +5,7 @@ import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.Box;
 import javax.swing.JButton;
@@ -21,7 +22,10 @@ import dto.ChiTietCongThuc;
 import dto.CongThuc;
 import dto.NguyenLieu;
 import dto.SanPham;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
+import ui.login.PhienDangNhap;
+import java.util.HashSet;
 
 public class XemCongThucDialog extends JDialog {
     private JButton btnXoa, btnThem, btnSua;
@@ -42,6 +46,25 @@ public class XemCongThucDialog extends JDialog {
         initGUI();
         capNhapDuLieu(sanPham);
         ganSuKien();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+
+        // Kiểm tra quyền THÊM công thức
+        if (!listQuyen.contains("QLSP_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        // Kiểm tra quyền XÓA công thức
+        if (!listQuyen.contains("QLSP_XOA")) {
+            btnXoa.setVisible(false);
+        }
+
+        // Kiểm tra quyền SỬA công thức
+        if (!listQuyen.contains("QLSP_SUA")) {
+            btnSua.setVisible(false);
+        }
     }
 
     private void initGUI() {

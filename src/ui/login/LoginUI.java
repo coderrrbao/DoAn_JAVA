@@ -3,6 +3,7 @@ package ui.login;
 import bus.NhanVienBUS;
 import bus.TaiKhoanBUS;
 import dto.NhanVien;
+import dto.Quyen;
 import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
@@ -120,9 +121,10 @@ public class LoginUI extends JFrame {
 
   // logic dang nhap
   public void xuLyDangNhap() {
-    String user = txtuser.getText().trim();
-    String pass = new String(txtpass.getPassword()).trim();
-
+    // String user = txtuser.getText().trim();
+    // String pass = new String(txtpass.getPassword()).trim();
+    String user = "admin";
+    String pass = "123456";
     // kiem tra du lieu lay tu form
     if (user.isEmpty()) {
       JOptionPane.showMessageDialog(
@@ -142,8 +144,15 @@ public class LoginUI extends JFrame {
       NhanVien nv = nhanVienBUS.timNhanVien(taiKhoan.getMaNV());
       PhienDangNhap.setUser(nv);
       PhienDangNhap.setTaiKhoan(taiKhoan);
+      for (Quyen quyen : PhienDangNhap.getTaiKhoan().getNhomQuyen().getListQuyen()) {
+        System.out.println(quyen.getTenQuyen());
+        PhienDangNhap.themQuyen(quyen.getTenQuyen());
+      }
       TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
       mainFrame.getTopPaner().capNhapThongTin(nv);
+      mainFrame.getContentPaner().suaLaiGiaoDienTheoQuyen();
+      mainFrame.getMenuPanel().suaLaiGiaoDienTheoQuyen();
+
       mainFrame.setVisible(true);
       this.dispose();
 

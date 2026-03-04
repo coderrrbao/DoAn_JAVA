@@ -12,6 +12,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class HangThanhVienUI extends JPanel {
@@ -74,8 +75,26 @@ public class HangThanhVienUI extends JPanel {
 
         loadDataToTable();
         addEvents();
+        suaLaiGiaoDienTheoQuyen();
+    }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
+
+    // 1. Quyền Thêm hạng mới (HTV_THEM)
+    if (!listQuyen.contains("HTV_THEM")) {
+        btnTao.setVisible(false);
     }
 
+    // 2. Quyền Sửa hạng (HTV_SUA)
+    if (!listQuyen.contains("HTV_SUA")) {
+        btnSua.setVisible(false);
+    }
+
+    // 3. Quyền Xóa hạng (HTV_XOA)
+    if (!listQuyen.contains("HTV_XOA")) {
+        btnXoa.setVisible(false);
+    }
+}
     public void loadDataToTable() {
         thucHienTimKiem("");
     }
