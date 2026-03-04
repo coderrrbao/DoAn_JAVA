@@ -9,6 +9,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dto.SanPham;
+import dto.TaiKhoan;
 
 public class XuLyExcel {
     
@@ -80,6 +81,86 @@ public class XuLyExcel {
                 JOptionPane.showMessageDialog(null, "Lỗi khi ghi file: " + e.getMessage());
             }
         }
+        return false;
+    }
+    //xuất tài khoản 
+    public static boolean xuatFileTaiKhoan(ArrayList<TaiKhoan> list) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file");
+        fileChooser.setSelectedFile(new File("DanhSachTaiKhoan.xlsx"));
+
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+
+            File fileToSave = fileChooser.getSelectedFile();
+
+            try (Workbook workbook = new XSSFWorkbook()) {
+
+                Sheet sheet = workbook.createSheet("Tài Khoản");
+
+                // ===== 1. Tạo Header =====
+                String[] headers = {
+                        "Mã TK",
+                        "Mã Nhân Viên",
+                        "Tên Đăng Nhập",
+                        "Mật Khẩu",
+                        "Nhóm Quyền",
+                        "Trạng Thái Xử Lý"
+                };
+
+                Row headerRow = sheet.createRow(0);
+
+                // Style in đậm
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font font = workbook.createFont();
+                font.setBold(true);
+                headerStyle.setFont(font);
+
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                // ===== 2. Đổ dữ liệu =====
+                int rowNum = 1;
+
+                for (TaiKhoan tk : list) {
+
+                    Row row = sheet.createRow(rowNum++);
+
+                    row.createCell(0).setCellValue(tk.getMaTK());
+                    row.createCell(1).setCellValue(tk.getMaNV());
+                    row.createCell(2).setCellValue(tk.getTenDangNhap());
+                    row.createCell(3).setCellValue(tk.getMatKhau());
+
+                    // Kiểm tra null để tránh lỗi
+                    String tenNhomQuyen = (tk.getNhomQuyen() != null)
+                            ? tk.getNhomQuyen().getTenNhomQuyen()
+                            : "Chưa có";
+
+                    row.createCell(4).setCellValue(tenNhomQuyen);
+
+                    row.createCell(5).setCellValue(tk.getTrangThaiXuLy());
+                }
+
+                // ===== 3. Auto size cột =====
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+
+                // ===== 4. Ghi file =====
+                try (FileOutputStream out = new FileOutputStream(fileToSave)) {
+                    workbook.write(out);
+                    JOptionPane.showMessageDialog(null, "Xuất tài khoản thành công!");
+                    return true;
+                }
+
+            } catch (Exception e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file: " + e.getMessage());
+            }
+        }
+
         return false;
     }
 }

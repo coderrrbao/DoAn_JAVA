@@ -38,7 +38,6 @@ public class LoginUI extends JFrame {
     initUI(mainFrame);
 
     setLocationRelativeTo(null);
-    setResizable(false);
 
     setVisible(true);
   }
@@ -51,9 +50,28 @@ public class LoginUI extends JFrame {
     Image backgroundImage = icon.getImage();
     JPanel centerPanel = new JPanel() {
       @Override
-      protected void paintComponent(Graphics g) {
+       protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        int panelWidth = getWidth();
+        int panelHeight = getHeight();
+
+        int imgWidth = backgroundImage.getWidth(this);
+        int imgHeight = backgroundImage.getHeight(this);
+
+        // Tính scale giữ nguyên tỉ lệ
+        double scale = Math.max(
+                (double) panelWidth / imgWidth,
+                (double) panelHeight / imgHeight
+        );
+
+        int newWidth = (int) (imgWidth * scale);
+        int newHeight = (int) (imgHeight * scale);
+
+        // Căn giữa ảnh
+        int x = (panelWidth - newWidth) / 2;
+        int y = (panelHeight - newHeight) / 2;
+
+        g.drawImage(backgroundImage, x, y, newWidth, newHeight, this);
       }
     };
 
@@ -73,14 +91,6 @@ public class LoginUI extends JFrame {
     txtpass = new JPasswordField();
     JPanel passJPanel = TaoUI.taoFieldText("Mật Khẩu", 90, 230, 30, 10, txtpass);
 
-    // quen mat khau
-    JPanel quenMKPanel = new JPanel();
-    JLabel quenMKJLabel = new JLabel("Quên mật khẩu?");
-    quenMKPanel.setLayout(new BoxLayout(quenMKPanel, BoxLayout.X_AXIS));
-    quenMKPanel.setMaximumSize(new Dimension(320, 25));
-    quenMKPanel.add(javax.swing.Box.createHorizontalGlue());
-    quenMKPanel.add(quenMKJLabel);
-
     // button
     JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
@@ -98,8 +108,6 @@ public class LoginUI extends JFrame {
     centerPanel.add(userJPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(10));
     centerPanel.add(passJPanel);
-    centerPanel.add(javax.swing.Box.createVerticalStrut(10));
-    centerPanel.add(quenMKPanel);
     centerPanel.add(javax.swing.Box.createVerticalStrut(30));
     centerPanel.add(buttonPanel);
 
@@ -114,7 +122,6 @@ public class LoginUI extends JFrame {
 
     userJPanel.setOpaque(false);
     passJPanel.setOpaque(false);
-    quenMKPanel.setOpaque(false);
     buttonPanel.setOpaque(false);
   }
 
