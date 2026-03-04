@@ -1,9 +1,6 @@
 package ui.hoadon;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Font;
+import java.awt.*;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +9,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import bus.HoaDonBUS;
+import dto.ChiTietHoaDon;
 import dto.HoaDon;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
@@ -40,8 +38,6 @@ public class HoaDonUI extends JPanel {
 
         top.add(locNgay);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
-        top.add(search_Item);
-        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
@@ -55,22 +51,57 @@ public class HoaDonUI extends JPanel {
                 return false;
             }
         };
-        model.addColumn("Mã HD");
-        model.addColumn("Ngày tạo");
-        model.addColumn("Mã nhân viên");
-        model.addColumn("Mã khách hàng");
-        model.addColumn("Tổng tiền");
 
-        loadData();;
+        model.addColumn("Mã Hóa Đơn");
+        model.addColumn("Thời Gian Tạo");
+        model.addColumn("Thu Ngân");
+        model.addColumn("Khách Hàng");
+        model.addColumn("Tổng Thanh Toán");
+
+        loadData();
 
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
-        table  = (JTable) scrollPane.getViewport().getView();
-        
+        table = (JTable) scrollPane.getViewport().getView();
+
+        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
+        table.getTableHeader().setBackground(new Color(230, 240, 250));
+        table.getTableHeader().setOpaque(false);
+        table.setRowHeight(35);
+        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
+
+        javax.swing.table.DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
+        rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
+        table.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
+
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
+        tableContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);
+
+        btnXemChiTiet.addActionListener(e -> {
+            int row = table.getSelectedRow();
+            if (row < 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 hóa đơn để xem chi tiết!");
+                return;
+            }
+
+            String maHD = model.getValueAt(row, 0).toString();
+
+            HoaDon hdFull = hoaDonBUS.timHoaDonTheoMa(maHD);
+            if (hdFull == null) {
+                hdFull = new HoaDon();
+                hdFull.setMaHD(maHD);
+            }
+
+            bus.ChiTietHoaDonBUS ctBus = new bus.ChiTietHoaDonBUS();
+            ArrayList<ChiTietHoaDon> dsChiTiet = ctBus.layChiTietTheoMaHD(maHD);
+
+            Frame parent = (Frame) SwingUtilities.getWindowAncestor(this);
+            ChiTietHoaDonDialog dialog = new ChiTietHoaDonDialog(parent, hdFull, dsChiTiet);
+            dialog.setVisible(true);
+        });
     }
 
     public void loadData() {
@@ -91,7 +122,8 @@ public class HoaDonUI extends JPanel {
          }
     }
 
-    public JButton getBtnXemChiTiet() { return btnXemChiTiet; }
+
+    public JTable getTable() { return table; }
     public JButton getBtnXoa() { return btnXoa; }
     public Search_Item getSearch_Item() { return search_Item; }
     public DefaultTableModel getModel() { return model; }
