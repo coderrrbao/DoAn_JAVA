@@ -2,6 +2,7 @@ package bus;
 
 import dao.PhieuHuyNguyenLieuDAO;
 import dao.conection.DBConnection;
+import dto.LoNguyenLieu;
 import dto.PhieuHuyNguyenLieu;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -47,7 +48,6 @@ public class PhieuHuyNguyenLieuBUS {
 
         // Sử dụng đúng hàm themChiTietHuy của bạn
         if (!dao.themChiTietHuy(maPH, maLo, soLuong, gia, conn)) throw new SQLException();
-        if (!dao.truKhoLoNguyenLieu(maLo, soLuong, conn)) throw new SQLException();
       }
       conn.commit();
       this.canUpdate = true;
@@ -69,12 +69,35 @@ public class PhieuHuyNguyenLieuBUS {
 
   public boolean capNhatPhieuHuy(PhieuHuyNguyenLieu ph) {
     Connection conn = DBConnection.getConnection();
-    boolean check = dao.capNhatPhieuHuy(ph, conn);
-    if (check) this.canUpdate = true;
     try {
-      conn.close();
-    } catch (Exception e) {
+      conn.setAutoCommit(false);
+      if (!dao.capNhatPhieuHuy(ph, conn)) throw new SQLException("Câp nhật thất bại");
+      if ("Đã xác nhận".equalsIgnoreCase(ph.getTrangThaiXuLy().trim())) {
+        ArrayList<LoNguyenLieu> chiTiet = dao.layChiTietHuyTheoMaPH(ph.getMaPH());
+        if (chiTiet == null) throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
+        for (LoNguyenLieu Lo : chiTiet) {
+          if (!dao.truKhoLoNguyenLieu(Lo.getMaLoNL(), Lo.getSoLuong(), conn))
+            throw new SQLException("Trừ kho thất bại");
+        }
+      }
+      conn.commit();
+      this.canUpdate = true;
+      khoiTao();
+      bus.LoNguyenLieuBUS.getLoNguyenLieuBUS().khoitao();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      try {
+        if (conn != null) conn.rollback();
+      } catch (Exception ex) {
+      }
+      return false;
+    } finally {
+      try {
+        conn.setAutoCommit(true);
+        conn.close();
+      } catch (Exception e) {
+      }
     }
-    return check;
   }
 }
