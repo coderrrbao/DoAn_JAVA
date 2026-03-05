@@ -49,6 +49,7 @@ public class TaiKhoanUI extends JPanel {
         btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
 
         bntNhapExcel = new JButton("Nhập exc");
+    bntNhapExcel.addActionListener(e -> {taiKhoanBUS.nhapTuExcel();hienThiDanhSachTaiKhoan();});
 
         btnSuaThongTin = new JButton("Sửa thông tin");
         btnSuaThongTin.addActionListener(e -> openSuaTaiKhoanDialog());
