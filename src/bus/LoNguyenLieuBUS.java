@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import dao.LoNguyenLieuDAO;
 import dao.conection.DBConnection;
 import dto.LoNguyenLieu;
+import dto.NguyenLieu;
 
 public class LoNguyenLieuBUS {
 
@@ -122,10 +123,10 @@ public class LoNguyenLieuBUS {
         }
     }
 
-    public int laySoLuongNguyenLieuTrongKho(String maNL) {
-        int tong = 0;
+    public double laySoLuongNguyenLieuTrongKho(String ma) {
+        double tong = 0;
         for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
-            if (loNguyenLieu.getMaNL().equals(maNL)) {
+            if (loNguyenLieu.getMaNL().equals(ma)) {
                 tong += loNguyenLieu.getSoLuong();
             }
         }

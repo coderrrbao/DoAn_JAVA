@@ -32,7 +32,8 @@ public class TonKhoSanPhamPanel extends JPanel {
     private JButton btnXemLo;
     private JTable tableUI;
     private DefaultTableModel model;
-    private ThongKeTonKhoSP thongKeTonKho;
+    private ThongKeTonKhoSP thongKeTonKho; 
+
 
     public TonKhoSanPhamPanel() {
 
