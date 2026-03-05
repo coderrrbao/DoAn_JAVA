@@ -20,7 +20,7 @@ public class TaiKhoanDao {
             ps.setString(3, tk.getTenDangNhap());
             ps.setString(4, tk.getMatKhau());
             ps.setString(5, tk.getNhomQuyen() != null ? tk.getNhomQuyen().getMaNQ() : null);
-            ps.setString(6,  "Đã xác nhận");
+            ps.setString(6,  "Đang hoạt động");
             ps.setInt(7, 1); 
 
             return ps.executeUpdate() > 0;
