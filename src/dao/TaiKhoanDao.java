@@ -203,8 +203,7 @@ public class TaiKhoanDao {
             ps.setString(4, tk.getMatKhau());
             ps.setString(5, tk.getNhomQuyen().getMaNQ());
             ps.setString(6, "Đang hoạt động");
-            ps.setInt(7, 1); // Quan trọng
-
+            ps.setInt(7, 1);
             ps.executeUpdate();
         }
     }

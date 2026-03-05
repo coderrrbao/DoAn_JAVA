@@ -136,7 +136,17 @@ public class TaiKhoanBUS {
             }
         }
     }
-
+    //lay ma tk
+    public String layMaTaiKhoanKhaDung() {
+        String ma = "";
+        try (Connection conn = DBConnection.getConnection()) {
+            ma = dao.layMaTaiKhoanKhaDung(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ma;
+    }
+    //
     public boolean suaMatKhau(String tenDangNhap, String matKhauMoi) {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
                 matKhauMoi == null || matKhauMoi.trim().isEmpty()) {
@@ -239,30 +249,6 @@ public class TaiKhoanBUS {
         return false;
     }
 
-    public int getTongSoTrang(int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            khoitao();
-        }
-        return (int) Math.ceil((double) listTaiKhoan.size() / pageSize);
-    }
-
-    public ArrayList<TaiKhoan> layTrang(int page, int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            canUpdate = false;
-            khoitao();
-        }
-        ArrayList<TaiKhoan> kq = new ArrayList<>();
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, listTaiKhoan.size());
-
-        if (start >= listTaiKhoan.size())
-            return kq;
-
-        for (int i = start; i < end; i++) {
-            kq.add(listTaiKhoan.get(i));
-        }
-        return kq;
-    }
     //xuat exc
     public boolean xuatExc(){
         return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
@@ -292,18 +278,24 @@ public class TaiKhoanBUS {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
+            String maHienTai = dao.layMaTaiKhoanKhaDung(conn);
+            int so = 1;
+            if (maHienTai != null && !maHienTai.isEmpty()) {
+                so = Integer.parseInt(maHienTai.substring(2));
+            }
             for (TaiKhoan tk : list) {
+                so++;
+                String maMoi = String.format("TK%02d", so);
+                tk.setMaTK(maMoi);
 
-                // Map theo MaNQ (ĐÚNG với file của em)
                 tk.setNhomQuyen(
-                    nhomQuyenBUS.timNhomQuyen(tk.getNhomQuyen().getMaNQ())
+                    nhomQuyenBUS.timNhomQuyenTheoTen(tk.getNhomQuyen().getTenNhomQuyen())
                 );
 
                 if (tk.getNhomQuyen() == null) {
-                    throw new Exception("Nhóm quyền không tồn tại: " + tk.getMaTK());
+                    throw new Exception("Nhóm quyền không tồn tại: " + tk.getTenDangNhap());
                 }
 
-                // Kiểm tra trùng username
                 if (dao.kiemTraTrungUsername(conn, tk.getTenDangNhap())) {
                     throw new Exception("Username đã tồn tại: " + tk.getTenDangNhap());
                 }
