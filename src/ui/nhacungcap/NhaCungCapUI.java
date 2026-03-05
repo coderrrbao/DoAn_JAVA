@@ -23,11 +23,11 @@ public class NhaCungCapUI extends JPanel {
     public NhaCungCapUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
 
@@ -35,9 +35,9 @@ public class NhaCungCapUI extends JPanel {
 
         btnXoa = new JButton("Xóa");
 
-        TaoUI.setFixSize(btnTao, 100, 30);
-        TaoUI.setFixSize(btnXemChiTiet, 150, 30);
-        TaoUI.setFixSize(btnXoa, 100, 30);
+        TaoUI.setFixSize(btnTao, 100, 32);
+        TaoUI.setFixSize(btnXemChiTiet, 150, 32);
+        TaoUI.setFixSize(btnXoa, 100, 32);
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

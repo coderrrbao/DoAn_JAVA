@@ -69,7 +69,7 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         btnLuuThayDoi = new JButton("Lưu");
         btnSua = new JButton("Sửa");
-        btnXemCongThuc = new JButton("Xem công thức");
+        btnXemCongThuc = new JButton("Công thức");
         btnXoaSize = new JButton("Xóa");
         btnThemSize = new JButton("Thêm");
         btnSuaSize = new JButton("Sửa");
@@ -292,8 +292,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSize.setEnabled(false);
         btnSuaSize.setEnabled(false);
         btnXoaSize.setEnabled(false);
-        btnXemCongThuc.setEnabled(false);
-
+        xemCongThucDialog.tacThaoTacSua();
     }
 
     private void batThaoTacSua() {
@@ -312,7 +311,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSize.setEnabled(true);
         btnSuaSize.setEnabled(true);
         btnXoaSize.setEnabled(true);
-        btnXemCongThuc.setEnabled(true);
+        xemCongThucDialog.batThaoTacSua();
     }
 
     private void ganSuKien() {
@@ -522,8 +521,12 @@ public class ChiTietSanPhamDialog extends JDialog {
         this.repaint();
     }
 
+    public JButton getBtnSua() {
+        return btnSua;
+    }
+
     public static void main(String[] args) {
-        SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP01");
+        SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP02");
         ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(sanPham, null);
         chiTietSanPhamDialog.setVisible(true);
     }

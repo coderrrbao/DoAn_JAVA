@@ -76,7 +76,7 @@ public class ChiTietCTDialog extends JDialog {
 
     private void initGUI() {
         JPanel center = TaoUI.taoPanelBorderLayout(400, 300);
-        search_Item = new Search_Item(400, 30);
+        search_Item = new Search_Item(400, 32);
         model = new DefaultTableModel();
         model.addColumn("Mã NL");
         model.addColumn("Tên NL");

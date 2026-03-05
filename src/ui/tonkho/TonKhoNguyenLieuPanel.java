@@ -45,7 +45,7 @@ public class TonKhoNguyenLieuPanel extends JPanel {
         btnLoc.setPreferredSize(new Dimension(btnLoc.getPreferredSize().width, 35));
         top.add(btnLoc);
 
-        search_Item = new Search_Item(300, 35);
+        search_Item = new Search_Item(300, 32);
         top.add(search_Item);
 
         btnNhapHang = new JButton("Nhập");
@@ -83,9 +83,8 @@ public class TonKhoNguyenLieuPanel extends JPanel {
             model.addRow(row);
         }
 
-
         JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
-        table  = (JTable) scrollPaneTable.getViewport().getView();
+        table = (JTable) scrollPaneTable.getViewport().getView();
         panel.add(scrollPaneTable, BorderLayout.CENTER);
 
         return panel;

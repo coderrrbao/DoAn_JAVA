@@ -117,7 +117,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
         top.setBackground(new Color(225, 235, 245));
-        String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
+        String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelSP = new DefaultTableModel(columns, 0);
         JScrollPane table = TaoUI.taoTableScroll(modelSP);
@@ -164,7 +164,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
         top.setBackground(new Color(225, 235, 245));
-        String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Nhân viên tạo phiếu", "Ghi chú", "Nhà cung cấp" };
+        String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelNL = new DefaultTableModel(columns, 0);
         JScrollPane table = TaoUI.taoTableScroll(modelNL);

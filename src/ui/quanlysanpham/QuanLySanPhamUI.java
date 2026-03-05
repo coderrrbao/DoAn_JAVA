@@ -24,14 +24,12 @@ public class QuanLySanPhamUI extends JPanel {
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
-    private JFrame owner;
     private ArrayList<SanPham> listSanPham;
     private ArrayList<SanPham> listSanPhamLoc;
     private int stt = 0;
     private DefaultTableModel model;
     private JScrollPane scrollPane;
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
-    private String[] ncc = new String[0];
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
 
@@ -39,7 +37,6 @@ public class QuanLySanPhamUI extends JPanel {
     private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
 
     public QuanLySanPhamUI(JFrame owner) {
-        this.owner = owner;
         this.listSanPham = new ArrayList<>();
         this.listSanPhamLoc = new ArrayList<>();
 

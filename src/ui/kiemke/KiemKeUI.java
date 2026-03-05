@@ -122,23 +122,23 @@ public class KiemKeUI extends JPanel {
 
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
-        top.setPreferredSize(new Dimension(100, 35));
+        top.setPreferredSize(new Dimension(100, 45));
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        locNgay = new LocNgay_Item(450, 35);
+        locNgay = new LocNgay_Item(400, 32);
         top.add(locNgay);
 
         btnThem = new JButton("Thêm");
-        btnThem.setPreferredSize(new Dimension(80, 35));
+        btnThem.setPreferredSize(new Dimension(80, 32));
         top.add(btnThem);
 
         btnSua = new JButton("Sửa");
-        btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 35));
+        btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 32));
         top.add(btnSua);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setPreferredSize(new Dimension(80, 35));
+        btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
         return top;
     }

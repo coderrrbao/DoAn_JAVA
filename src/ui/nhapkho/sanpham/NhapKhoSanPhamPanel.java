@@ -1,8 +1,11 @@
 package ui.nhapkho.sanpham;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Frame;
 
+import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -27,20 +30,25 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
     public NhapKhoSanPhamPanel() {
         setLayout(new BorderLayout());
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 30);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
+        top.setBackground(Color.WHITE);
         nhapHangBtn = new JButton("Thêm");
         xemChiTietBtn = new JButton("Xem Chi tiết");
         xoaBtn = new JButton("Xóa");
 
-        TaoUI.setFixSize(nhapHangBtn, 100, 30);
-        TaoUI.setFixSize(xemChiTietBtn, 150, 30);
-        TaoUI.setFixSize(xoaBtn, 100, 30);
+        TaoUI.setFixSize(nhapHangBtn, 100, 32);
+        TaoUI.setFixSize(xemChiTietBtn, 150, 32);
+        TaoUI.setFixSize(xoaBtn, 100, 32);
 
-        locNgay_Item = new LocNgay_Item(300, 30);
+        locNgay_Item = new LocNgay_Item(400, 32);
         top.add(locNgay_Item);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(nhapHangBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(xemChiTietBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(xoaBtn);
+        top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
 
