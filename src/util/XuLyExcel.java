@@ -12,6 +12,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import bus.NhomQuyenBUS;
+import bus.TaiKhoanBUS;
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
@@ -19,7 +20,6 @@ import dto.SanPham;
 import dto.TaiKhoan;
 
 public class XuLyExcel {
-    private TaiKhoanDao taiKhoanDao = new TaiKhoanDao();
     public static boolean xuatFile(ArrayList<SanPham> list) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file");
@@ -185,14 +185,11 @@ public class XuLyExcel {
                 if (row == null) continue;
 
                 TaiKhoan tk = new TaiKhoan();
-
-                tk.setMaTK(getStringCell(row.getCell(0)));       // Đọc MaTK
                 tk.setMaNV(getStringCell(row.getCell(1)));
                 tk.setTenDangNhap(getStringCell(row.getCell(2)));
                 tk.setMatKhau(getStringCell(row.getCell(3)));
 
-                NhomQuyen nq = new NhomQuyen();
-                nq.setMaNQ(getStringCell(row.getCell(4)));
+                NhomQuyen nq = NhomQuyenBUS.getNhomQuyenBUS().timNhomQuyenTheoTen(getStringCell(row.getCell(4)));
                 tk.setNhomQuyen(nq);
 
                 danhSach.add(tk);
