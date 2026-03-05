@@ -29,10 +29,13 @@ import java.util.HashSet;
 
 public class XemCongThucDialog extends JDialog {
     private JButton btnXoa, btnThem, btnSua;
+    private JButton btnBatSua, btnHuy;
     private SanPham sanPham;
     DefaultTableModel model;
     private CongThuc congThuc;
     private JTable table;
+    private JPanel buttonPanel;
+    private ChiTietSanPhamDialog chiTietSanPhamDialog;
 
     public XemCongThucDialog(JDialog ouner, SanPham sanPham) {
         super(ouner, "Xem chi tiết");
@@ -40,6 +43,7 @@ public class XemCongThucDialog extends JDialog {
         if (sanPham != null) {
             this.congThuc = sanPham.getCongThuc();
         }
+        chiTietSanPhamDialog = (ChiTietSanPhamDialog) ouner;
         setSize(600, 300);
         setLocationRelativeTo(ouner);
         setLayout(new BorderLayout());
@@ -80,6 +84,16 @@ public class XemCongThucDialog extends JDialog {
         table = (JTable) scrollPane.getViewport().getView();
         table.removeColumn(table.getColumnModel().getColumn(0));
         add(scrollPane, BorderLayout.CENTER);
+
+        buttonPanel = TaoUI.taoPanelCanGiua(600, 30);
+        btnBatSua = new JButton("Sửa");
+        btnHuy = new JButton("Hủy");
+        TaoUI.addItem(buttonPanel, btnBatSua, 10, true);
+        TaoUI.addItem(buttonPanel, btnHuy, 10, true);
+        if (sanPham != null) {
+            add(buttonPanel, BorderLayout.SOUTH);
+            tacThaoTacSua();
+        }
     }
 
     public void capNhapDuLieu(SanPham sanPham) {
@@ -164,6 +178,27 @@ public class XemCongThucDialog extends JDialog {
                         JOptionPane.WARNING_MESSAGE);
             }
         });
+        btnBatSua.addActionListener(e -> {
+            chiTietSanPhamDialog.getBtnSua().doClick();
+            batThaoTacSua();
+        });
+        btnHuy.addActionListener(e->{
+            setVisible(false);
+        });
+    }
+
+    public void batThaoTacSua() {
+        btnSua.setEnabled(true);
+        btnThem.setEnabled(true);
+        btnXoa.setEnabled(true);
+        btnBatSua.setEnabled(false);
+    }
+
+    public void tacThaoTacSua() {
+        btnBatSua.setEnabled(true);
+        btnSua.setEnabled(false);
+        btnThem.setEnabled(false);
+        btnXoa.setEnabled(false);
     }
 
     public CongThuc dongGoiCongThuc() {

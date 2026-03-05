@@ -57,7 +57,7 @@ public class LoNguyenLieuDAO {
             return false;
         }
     }
-
+    
     public boolean truNguyenLieu(Connection conn, String maNL, double soLuongCanTru) throws SQLException {
         String sqlGet = "SELECT MaLoNL, SoLuong FROM LoNguyenLieu WHERE MaNL = ? AND SoLuong > 0 ORDER BY HanSuDung ASC ";
         String sqlUpdate = "UPDATE LoNguyenLieu SET SoLuong = SoLuong - ? WHERE MaLoNL = ? AND TrangThai=1";

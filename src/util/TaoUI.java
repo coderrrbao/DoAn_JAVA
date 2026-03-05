@@ -538,7 +538,8 @@ public class TaoUI {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 38));
         table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
-
+        table.getTableHeader().setBackground(new Color(230, 240, 250));
+        table.getTableHeader().setOpaque(false);
         // 4. Căn giữa dữ liệu cho tất cả các cột
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -565,7 +566,8 @@ public class TaoUI {
         table.setShowGrid(true);
         table.setGridColor(new Color(230, 230, 230));
         table.setFillsViewportHeight(true); // Luôn lấp đầy vùng nhìn thấy
-
+        table.getTableHeader().setBackground(new Color(230, 240, 250));
+        table.getTableHeader().setOpaque(false);
         // 3. Tùy chỉnh Tiêu đề cột (Header)
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));

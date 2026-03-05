@@ -19,14 +19,15 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
   public XuatKhoSanPhamPanel() {
     setLayout(new BorderLayout());
-    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
+    top.setBackground(Color.WHITE);
 
     xuatHangBtn = new JButton("Tạo Phiếu Hủy");
     xemChiTietBtn = new JButton("Xem Chi Tiết");
-    locNgay_Item = new LocNgay_Item(300, 30);
+    locNgay_Item = new LocNgay_Item(400, 32);
 
-    TaoUI.setFixSize(xuatHangBtn, 150, 30);
-    TaoUI.setFixSize(xemChiTietBtn, 150, 30);
+    TaoUI.setFixSize(xuatHangBtn, 150, 32);
+    TaoUI.setFixSize(xemChiTietBtn, 150, 32);
 
     xuatHangBtn.addActionListener(
         e -> {
@@ -57,8 +58,11 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
     locNgay_Item.setEvent(() -> loadDuLieu());
     top.add(locNgay_Item);
+    top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(xuatHangBtn);
+    top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(xemChiTietBtn);
+    top.add(Box.createHorizontalGlue());
     add(top, BorderLayout.NORTH);
 
     model = new DefaultTableModel(

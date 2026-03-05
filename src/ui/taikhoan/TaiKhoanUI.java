@@ -26,7 +26,7 @@ public class TaiKhoanUI extends JPanel {
     public TaiKhoanUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
 
         String[] quyen = { "Quản lý", "Nhân viên bán hàng" };
@@ -34,25 +34,31 @@ public class TaiKhoanUI extends JPanel {
         cbNhomQuyen.setPreferredSize(new Dimension(150, 30));
         cbNhomQuyen.setMaximumSize(new Dimension(150, 30));
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
         btnTao.addActionListener(e -> openThemTaiKhoanDialog());
+        TaoUI.setFixSize(btnTao, 80, 32);
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
         btnResetMatKhau.addActionListener(e -> openDoiMatKhauDialog());
+        TaoUI.setFixSize(btnResetMatKhau, 140, 32);
 
         btnXoa = new JButton("Xóa");
         btnXoa.addActionListener(e -> XoaTaiKhoan_Ui());
+        TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất exc");
         btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
+        TaoUI.setFixSize(btnXuatExcel, 100, 32);
 
         bntNhapExcel = new JButton("Nhập exc");
+        TaoUI.setFixSize(bntNhapExcel, 100, 32);
     bntNhapExcel.addActionListener(e -> {taiKhoanBUS.nhapTuExcel();hienThiDanhSachTaiKhoan();});
 
         btnSuaThongTin = new JButton("Sửa thông tin");
         btnSuaThongTin.addActionListener(e -> openSuaTaiKhoanDialog());
+        TaoUI.setFixSize(btnSuaThongTin, 120, 32);
 
         top.add(cbNhomQuyen);
         top.add(Box.createRigidArea(new Dimension(10, 0)));

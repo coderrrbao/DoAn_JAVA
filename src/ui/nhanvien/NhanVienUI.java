@@ -29,11 +29,11 @@ public class NhanVienUI extends JPanel {
     public NhanVienUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
         btnTao.addActionListener(e -> openThemNhanVienDialog());

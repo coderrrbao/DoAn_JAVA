@@ -69,19 +69,19 @@ public class KhuyenMaiUI extends JPanel {
         top.setBackground(Color.WHITE);
 
         // Thay thế Search_Item bằng LocNgay_Item
-        locNgay = new LocNgay_Item(450, 35);
+        locNgay = new LocNgay_Item(400, 32);
         top.add(locNgay);
 
         btnThem = new JButton("Thêm");
-        btnThem.setPreferredSize(new Dimension(80, 35));
+        btnThem.setPreferredSize(new Dimension(80, 32));
         top.add(btnThem);
 
         btnSua = new JButton("Sửa");
-        btnSua.setPreferredSize(new Dimension(80, 35));
+        btnSua.setPreferredSize(new Dimension(80, 32));
         top.add(btnSua);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setPreferredSize(new Dimension(80, 35));
+        btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
 
         return top;

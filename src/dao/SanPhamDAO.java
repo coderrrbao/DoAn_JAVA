@@ -46,7 +46,24 @@ public class SanPhamDAO {
 
         return listSanPham;
     }
-
+    public boolean capNhatMucCanhBao(SanPham sanPham) {
+    String sql = "UPDATE SanPham SET MucCanhBao = ? WHERE MaSP = ?";
+    
+    try (Connection conn = DBConnection.getConnection();
+         PreparedStatement pst = conn.prepareStatement(sql)) {
+        
+        pst.setInt(1, sanPham.getMucCanhBao());
+        pst.setString(2, sanPham.getMaSP());
+        
+        int rowsAffected = pst.executeUpdate();
+        return rowsAffected > 0;
+        
+    } catch (Exception e) {
+        e.printStackTrace();
+        System.out.println("Lỗi khi cập nhật mức cảnh báo: " + e.getMessage());
+        return false;
+    }
+}
     public boolean themSanPham(SanPham sanPham, Connection conn) {
         String sql = "INSERT INTO SanPham (MaSP, TenSP, MaDM, GiaBan, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThaiXuLy, TrangThai) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";

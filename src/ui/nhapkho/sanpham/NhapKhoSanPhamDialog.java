@@ -98,7 +98,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
         tblKhoHang.getColumnModel().getColumn(3).setPreferredWidth(70);
 
         listSpPanel.add(scroll, BorderLayout.CENTER);
-        search_Item = new Search_Item(Integer.MAX_VALUE, 30);
+        search_Item = new Search_Item(Integer.MAX_VALUE, 32);
         listSpPanel.add(search_Item, BorderLayout.NORTH);
 
         JPanel chiTietSp = TaoUI.taoPanelBoxLayoutDoc(3000, 3000);

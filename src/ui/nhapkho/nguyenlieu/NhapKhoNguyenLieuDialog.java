@@ -96,7 +96,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         tblKhoHang.getColumnModel().getColumn(3).setPreferredWidth(70);
 
         listNlPanel.add(scroll, BorderLayout.CENTER);
-        search_Item = new Search_Item(Integer.MAX_VALUE, 30);
+        search_Item = new Search_Item(Integer.MAX_VALUE, 32);
         listNlPanel.add(search_Item, BorderLayout.NORTH);
 
         JPanel chiTietNl = TaoUI.taoPanelBoxLayoutDoc(3000, 3000);

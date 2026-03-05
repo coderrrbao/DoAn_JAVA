@@ -28,18 +28,18 @@ public class NguyenLieuUI extends JPanel {
     setLayout(new BorderLayout());
 
     // --- GIAO DIỆN PHẦN TRÊN ---
-    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
     top.setBackground(Color.WHITE);
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-    search_Item = new Search_Item(300, 30);
+    search_Item = new Search_Item(300, 32);
     btnTao = new JButton("Thêm");
     btnSua = new JButton("Sửa");
     btnXoa = new JButton("Xóa");
 
-    TaoUI.setFixSize(btnTao, 80, 30);
-    TaoUI.setFixSize(btnXoa, 80, 30);
-    TaoUI.setFixSize(btnSua, 80, 30);
+    TaoUI.setFixSize(btnTao, 80, 32);
+    TaoUI.setFixSize(btnXoa, 80, 32);
+    TaoUI.setFixSize(btnSua, 80, 32);
 
     top.add(search_Item);
     top.add(Box.createRigidArea(new Dimension(10, 0)));

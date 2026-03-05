@@ -2,6 +2,7 @@ package bus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import dao.LoNguyenLieuDAO;
 import dao.conection.DBConnection;
@@ -49,6 +50,76 @@ public class LoNguyenLieuBUS {
             }
         }
         return null;
+    }
+
+    public int layTongLoChoNguyenLieu(String maNL) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        int tong = 0;
+        for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+            if (loNguyenLieu.getMaNL().equals(maNL)) {
+                tong++;
+            }
+        }
+        return tong;
+    }
+
+    public int layTongLoHetHangChoNguyenLieu(String maNL) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        int tong = 0;
+        try {
+            for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+                LocalDate ngayHetHang = LocalDate.parse(loNguyenLieu.getHanSuDung());
+                if (loNguyenLieu.getMaNL().equals(maNL) && ngayHetHang.isBefore(LocalDate.now())) {
+                    tong++;
+                }
+            }
+            return tong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public ArrayList<LoNguyenLieu> layLoChoNguyenLieu(String maNL) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+
+        ArrayList<LoNguyenLieu> list = new ArrayList<>();
+        for (LoNguyenLieu lo : listLoNguyenLieu) {
+            if (lo.getMaNL().equals(maNL)) {
+                list.add(lo);
+            }
+        }
+
+        return list;
+    }
+
+    public int layTongLoHetHan() {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        int tong = 0;
+        try {
+            for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+                LocalDate ngayHetHang = LocalDate.parse(loNguyenLieu.getHanSuDung());
+                if (ngayHetHang.isBefore(LocalDate.now())) {
+                    tong++;
+                }
+            }
+            return tong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     public int laySoLuongNguyenLieuTrongKho(String maNL) {
@@ -142,8 +213,10 @@ public class LoNguyenLieuBUS {
 
     public boolean xacNhanLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
         try {
-            // Lưu ý: conn.setAutoCommit(false) và conn.commit() đã được xử lý ở PhieuNhapBUS,
-            // nhưng mình vẫn giữ cấu trúc try-catch giống với LoSanPhamBUS của bạn để đồng bộ.
+            // Lưu ý: conn.setAutoCommit(false) và conn.commit() đã được xử lý ở
+            // PhieuNhapBUS,
+            // nhưng mình vẫn giữ cấu trúc try-catch giống với LoSanPhamBUS của bạn để đồng
+            // bộ.
             conn.setAutoCommit(false);
 
             if (!loNguyenLieuDAO.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
