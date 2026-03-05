@@ -303,9 +303,9 @@ BEGIN
     INSERT INTO TaiKhoan
         (MaTK,MaNV, TenDangNhap, MatKhau, maNQ,TrangThaiXuLy, TrangThai)
     VALUES
-        ('TK01', 'NV01', 'admin', '123456', 'AD', N'Đã xác nhận', 1),
-        ('TK02', 'NV02', 'NV01', '123456', 'QL', N'Đã xác nhận', 1),
-        ('TK03', 'NV01', 'NV02', '123456', 'QL', N'Đã xác nhận', 1)
+        ('TK01', 'NV01', 'admin', '123456', 'AD', N'Đang hoạt động', 1),
+        ('TK02', 'NV02', 'NV01', '123456', 'QL', N'Đang hoạt động', 1),
+        ('TK03', 'NV01', 'NV02', '123456', 'QL', N'Đang hoạt động', 1)
 END;
 
 /* =============================================

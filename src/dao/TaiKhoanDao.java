@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.conection.DBConnection;
@@ -20,7 +21,7 @@ public class TaiKhoanDao {
             ps.setString(3, tk.getTenDangNhap());
             ps.setString(4, tk.getMatKhau());
             ps.setString(5, tk.getNhomQuyen() != null ? tk.getNhomQuyen().getMaNQ() : null);
-            ps.setString(6,  "Đã xác nhận");
+            ps.setString(6,  "Đang hoạt động");
             ps.setInt(7, 1); 
 
             return ps.executeUpdate() > 0;
@@ -173,5 +174,39 @@ public class TaiKhoanDao {
             return false;
         }
     }
+    //nhap excel
+    public boolean kiemTraTrungUsername(Connection conn, String username) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM taikhoan WHERE tenDangNhap = ?";
 
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+
+        return false;
+    }
+
+    public void insertTaiKhoan(Connection conn, TaiKhoan tk) throws SQLException {
+        String sql = "INSERT INTO TaiKhoan "
+                + "(MaTK, MaNV, TenDangNhap, MatKhau, MaNQ, TrangThaiXuLy, TrangThai) "
+                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, tk.getMaTK());
+            ps.setString(2, tk.getMaNV());
+            ps.setString(3, tk.getTenDangNhap());
+            ps.setString(4, tk.getMatKhau());
+            ps.setString(5, tk.getNhomQuyen().getMaNQ());
+            ps.setString(6, "Đang hoạt động");
+            ps.setInt(7, 1); // Quan trọng
+
+            ps.executeUpdate();
+        }
+    }
+    //
 }

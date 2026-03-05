@@ -60,6 +60,21 @@ public class NhomQuyenBUS {
         return null;
     }
 
+    public NhomQuyen timNhomQuyenTheoTen(String ten) {
+
+        if (canUpdate || listNhomQuyen == null) {
+            khoiTao();
+            canUpdate = false;
+        }
+
+        for (NhomQuyen nq : listNhomQuyen) {
+            if (nq.getTenNhomQuyen().equals(ten)) {
+                return nq;
+            }
+        }
+        return null;
+    }
+
     public boolean themNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -105,7 +120,7 @@ public class NhomQuyenBUS {
         this.canUpdate = true;
         return true;
     }
-
+    
     public boolean capNhatNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {

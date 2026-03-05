@@ -1,8 +1,12 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
@@ -12,6 +16,7 @@ import util.XuLyExcel;
 public class TaiKhoanBUS {
 
     // 1. Áp dụng Singleton Pattern
+
     private static TaiKhoanBUS instance = null;
 
     public static TaiKhoanBUS getTaiKhoanBUS() {
@@ -20,7 +25,7 @@ public class TaiKhoanBUS {
         }
         return instance;
     }
-
+    private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
     private TaiKhoanDao dao = new TaiKhoanDao();
     private ArrayList<TaiKhoan> listTaiKhoan;
     private boolean canUpdate = false;
@@ -261,5 +266,80 @@ public class TaiKhoanBUS {
     //xuat exc
     public boolean xuatExc(){
         return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
+    }
+
+    //nhap excel
+    public boolean nhapTuExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
+
+        if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+            return false;
+        }
+
+        File file = fileChooser.getSelectedFile();
+
+        ArrayList<TaiKhoan> list = XuLyExcel.nhapFileTaiKhoan(file);
+
+        if (list == null || list.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "File không có dữ liệu!");
+            return false;
+        }
+
+        Connection conn = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (TaiKhoan tk : list) {
+
+                // Map theo MaNQ (ĐÚNG với file của em)
+                tk.setNhomQuyen(
+                    nhomQuyenBUS.timNhomQuyen(tk.getNhomQuyen().getMaNQ())
+                );
+
+                if (tk.getNhomQuyen() == null) {
+                    throw new Exception("Nhóm quyền không tồn tại: " + tk.getMaTK());
+                }
+
+                // Kiểm tra trùng username
+                if (dao.kiemTraTrungUsername(conn, tk.getTenDangNhap())) {
+                    throw new Exception("Username đã tồn tại: " + tk.getTenDangNhap());
+                }
+
+                dao.insertTaiKhoan(conn, tk);
+            }
+
+            conn.commit();
+            JOptionPane.showMessageDialog(null, "Nhập Excel thành công!");
+            canUpdate = true;
+            return true;
+
+        } catch (Exception e) {
+
+            try {
+                if (conn != null) conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Nhập Excel thất bại!\n" + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+
+            return false;
+
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
