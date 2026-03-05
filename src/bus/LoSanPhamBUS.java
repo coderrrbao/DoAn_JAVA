@@ -2,6 +2,7 @@ package bus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import dao.LoSanPhamDAO;
 import dao.conection.DBConnection;
@@ -52,13 +53,93 @@ public class LoSanPhamBUS {
     }
 
     public int laySoLuongSanPhamTrongKho(String maSP) {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        try {
+            int tong = 0;
+            for (LoSanPham loSanPham : listLoSanPham) {
+                if (loSanPham.getMaSP().equals(maSP)) {
+                    LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
+                    if (ngayHetHang.isBefore(LocalDate.now())) {
+                        tong += loSanPham.getSoLuong();
+                    }
+                }
+            }
+            return tong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int layTongLoChoSanPham(String maSP) {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
         int tong = 0;
         for (LoSanPham loSanPham : listLoSanPham) {
             if (loSanPham.getMaSP().equals(maSP)) {
-                tong += loSanPham.getSoLuong();
+                tong++;
             }
         }
         return tong;
+    }
+
+    public ArrayList<LoSanPham> layLoChoSanPham(String maSP) {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<LoSanPham> list = new ArrayList<>();
+        for (LoSanPham loSanPham : listLoSanPham) {
+            if (loSanPham.getMaSP().equals(maSP)) {
+                list.add(loSanPham);
+            }
+        }
+        return list;
+    }
+
+    public int layTongLoHetHangChoSanPham(String maSP) {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        int tong = 0;
+        try {
+            for (LoSanPham loSanPham : listLoSanPham) {
+                LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
+                if (loSanPham.getMaSP().equals(maSP) && ngayHetHang.isBefore(LocalDate.now())) {
+                    tong++;
+                }
+            }
+            return tong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
+
+    public int layTongLoHetHan() {
+        if (canUpdate || listLoSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        int tong = 0;
+        try {
+            for (LoSanPham loSanPham : listLoSanPham) {
+                LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
+                if (ngayHetHang.isBefore(LocalDate.now())) {
+                    tong++;
+                }
+            }
+            return tong;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
     }
 
     public boolean capNhapLoSanPham(LoSanPham loSanPham) {

@@ -39,6 +39,10 @@ public class NguyenLieuBUS {
     }
   }
 
+  public boolean suaCanhBao(NguyenLieu nguyenLieu) {
+    return nguyenLieuDAO.capNhatMucCanhBao(nguyenLieu);
+  }
+
   public ArrayList<NguyenLieu> layListNguyenLieu() {
     if (canUpdate || listNguyenLieu == null) {
       khoitao();
