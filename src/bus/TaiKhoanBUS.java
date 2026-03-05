@@ -14,9 +14,6 @@ import dto.TaiKhoan;
 import util.XuLyExcel;
 
 public class TaiKhoanBUS {
-
-    // 1. Áp dụng Singleton Pattern
-
     private static TaiKhoanBUS instance = null;
 
     public static TaiKhoanBUS getTaiKhoanBUS() {
@@ -106,7 +103,6 @@ public class TaiKhoanBUS {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty()) {
             return false;
         }
-
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);

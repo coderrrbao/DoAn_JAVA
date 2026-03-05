@@ -132,10 +132,9 @@ public class LoginUI extends JFrame {
 
   // logic dang nhap
   public void xuLyDangNhap() {
-    // String user = txtuser.getText().trim();
-    // String pass = new String(txtpass.getPassword()).trim();
-    String user = "admin";
-    String pass = "123456";
+    String user = txtuser.getText().trim();
+    String pass = new String(txtpass.getPassword()).trim();
+
     // kiem tra du lieu lay tu form
     if (user.isEmpty()) {
       JOptionPane.showMessageDialog(
@@ -149,6 +148,11 @@ public class LoginUI extends JFrame {
     }
     // xu ly dang nhap
     TaiKhoan taiKhoan = taiKhoanBUS.dangNhap(user, pass);
+    if(taiKhoan.getTrangThaiXuLy().equals("Đã khóa")){
+      JOptionPane.showMessageDialog( 
+        this, "Tài khoản đã bị khóa", "Thông báo", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
     if (taiKhoan != null) {
       // luu phien dang nhap
       NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
