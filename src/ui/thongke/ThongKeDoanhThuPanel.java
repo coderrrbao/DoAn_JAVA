@@ -23,7 +23,6 @@ import org.jfree.data.category.DefaultCategoryDataset;
 import com.toedter.calendar.JDateChooser;
 
 import bus.HoaDonBUS;
-import bus.ThongKeBUS;
 import util.TaoUI;
 
 public class ThongKeDoanhThuPanel extends JPanel {
@@ -177,7 +176,7 @@ public class ThongKeDoanhThuPanel extends JPanel {
         tongDTPanel.setBackground(Color.white);
         JLabel titleTongDT = new JLabel("Tổng doanh thu : ");
         titleTongDT.setFont(new Font(null, Font.BOLD, 18));
-        lbTongDoanhThu = new JLabel("99999999đ");
+        lbTongDoanhThu = new JLabel("0đ");
         lbTongDoanhThu.setFont(new Font(null, Font.BOLD, 18));
         lbTongDoanhThu.setForeground(Color.red);
         TaoUI.addItem(tongDTPanel, titleTongDT, 5, true);

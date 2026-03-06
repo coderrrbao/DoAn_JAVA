@@ -18,8 +18,6 @@ import dto.HoaDon;
 import dto.Size;
 import ui.thongke.ThongKeValue;
 
-import javax.swing.*;
-
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonDAO chiTietHoaDonDAO = new ChiTietHoaDonDAO();
@@ -138,9 +136,6 @@ public class HoaDonBUS {
     }
 
     public ArrayList<ThongKeValue> getThongKeTheoThang(int thang, int nam) {
-        if (thang < 1 || thang > 12 || nam < 0) {
-            return new ArrayList<>();
-        }
         return hoaDonDAO.layKetQuaThongKeTheoThang(thang, nam);
     }
 
@@ -181,5 +176,12 @@ public class HoaDonBUS {
 
     public boolean xoaHoaDon(String maHD) {
         return hoaDonDAO.xoaHoaDon(maHD);
+    }
+
+    public boolean xuatExcel(ArrayList<HoaDon> dsHoaDonCanXuat) {
+        if (dsHoaDonCanXuat == null || dsHoaDonCanXuat.isEmpty()) {
+            return false;
+        }
+        return util.XuLyExcel.xuatFileHoaDon(dsHoaDonCanXuat);
     }
 }

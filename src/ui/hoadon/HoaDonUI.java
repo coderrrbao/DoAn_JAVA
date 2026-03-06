@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import bus.HoaDonBUS;
@@ -16,7 +17,7 @@ import ui.component.Search_Item;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
-    private JButton btnXemChiTiet, btnXoa;
+    private JButton btnXemChiTiet, btnXoa, btnXuatExcel;
     private HoaDonBUS hoaDonBUS = new HoaDonBUS();
     private Search_Item search_Item;
     private JTable table;
@@ -34,17 +35,22 @@ public class HoaDonUI extends JPanel {
         locNgay.setEvent(() -> {
             loadData();
         });
+
         btnXemChiTiet = new JButton("Chi tiết");
         TaoUI.setFixSize(btnXemChiTiet, 100, 32);
 
         btnXoa = new JButton("Xóa");
         TaoUI.setFixSize(btnXoa, 80, 32);
 
+        btnXuatExcel = new JButton("Xuất Exc");
+        TaoUI.setFixSize(btnXuatExcel, 80, 32);
         top.add(locNgay);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -65,13 +71,7 @@ public class HoaDonUI extends JPanel {
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
 
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        table.getTableHeader().setBackground(new Color(230, 240, 250));
-        table.getTableHeader().setOpaque(false);
-        table.setRowHeight(35);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        javax.swing.table.DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
+        DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
         table.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
 
@@ -133,6 +133,17 @@ public class HoaDonUI extends JPanel {
         });
 
         loadData();
+
+        btnXuatExcel.addActionListener(e -> {
+            ArrayList<HoaDon> dsXuat = layDuLieuTuBang();
+
+            if (dsXuat.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có dữ liệu hóa đơn nào để xuất!");
+                return;
+            }
+
+            hoaDonBUS.xuatExcel(dsXuat);
+        });
     }
 
     public void loadData() {
@@ -168,6 +179,18 @@ public class HoaDonUI extends JPanel {
 
     public JButton getBtnXoa() {
         return btnXoa;
+    }
+
+    private ArrayList<HoaDon> layDuLieuTuBang() {
+        ArrayList<HoaDon> list = new ArrayList<>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String maHD = model.getValueAt(i, 0).toString();
+            HoaDon hd = hoaDonBUS.timHoaDonTheoMa(maHD);
+            if (hd != null) {
+                list.add(hd);
+            }
+        }
+        return list;
     }
 
     public Search_Item getSearch_Item() {
