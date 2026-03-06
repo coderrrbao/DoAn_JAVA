@@ -16,7 +16,7 @@ import ui.component.Search_Item;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
-    private JButton btnXemChiTiet, btnXoa;
+    private JButton btnXemChiTiet, btnXoa, btnXuatExcel;
     private HoaDonBUS hoaDonBUS = new HoaDonBUS();
     private Search_Item search_Item;
     private JTable table;
@@ -31,16 +31,20 @@ public class HoaDonUI extends JPanel {
 
         locNgay = new LocNgay_Item(350, 27);
         search_Item = new Search_Item(300, 30);
-        
+
         btnXemChiTiet = new JButton("Chi tiết");
-        
+
         btnXoa = new JButton("Xóa");
+
+        btnXuatExcel = new JButton("Xuất Exc");
 
         top.add(locNgay);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -131,6 +135,17 @@ public class HoaDonUI extends JPanel {
                 }
             }
         });
+
+        btnXuatExcel.addActionListener(e -> {
+            ArrayList<HoaDon> dsXuat = layDuLieuTuBang();
+
+            if (dsXuat.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Không có dữ liệu hóa đơn nào để xuất!");
+                return;
+            }
+
+            hoaDonBUS.xuatExcel(dsXuat);
+        });
     }
 
     public void loadData() {
@@ -156,6 +171,18 @@ public class HoaDonUI extends JPanel {
                 }
             }
         }
+    }
+
+    private ArrayList<HoaDon> layDuLieuTuBang() {
+        ArrayList<HoaDon> list = new ArrayList<>();
+        for (int i = 0; i < model.getRowCount(); i++) {
+            String maHD = model.getValueAt(i, 0).toString();
+            HoaDon hd = hoaDonBUS.timHoaDonTheoMa(maHD);
+            if (hd != null) {
+                list.add(hd);
+            }
+        }
+        return list;
     }
 
 

@@ -13,6 +13,7 @@ import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.HoaDon;
+import util.XuLyExcel;
 
 
 import javax.swing.*;
@@ -153,5 +154,12 @@ public class HoaDonBUS {
 
     public boolean xoaHoaDon(String maHD) {
         return hoaDonDAO.xoaHoaDon(maHD);
+    }
+
+    public boolean xuatExcel(ArrayList<HoaDon> dsHoaDonCanXuat) {
+        if (dsHoaDonCanXuat == null || dsHoaDonCanXuat.isEmpty()) {
+            return false;
+        }
+        return util.XuLyExcel.xuatFileHoaDon(dsHoaDonCanXuat);
     }
 }
