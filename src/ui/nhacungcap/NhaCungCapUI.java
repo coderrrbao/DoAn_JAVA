@@ -10,6 +10,7 @@ import javax.swing.table.DefaultTableModel;
 import bus.NhaCungCapBUS;
 import dto.NhaCungCap;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -22,11 +23,11 @@ public class NhaCungCapUI extends JPanel {
     public NhaCungCapUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
 
@@ -34,9 +35,9 @@ public class NhaCungCapUI extends JPanel {
 
         btnXoa = new JButton("Xóa");
 
-        TaoUI.setFixSize(btnTao, 100, 30);
-        TaoUI.setFixSize(btnXemChiTiet, 150, 30);
-        TaoUI.setFixSize(btnXoa, 100, 30);
+        TaoUI.setFixSize(btnTao, 100, 32);
+        TaoUI.setFixSize(btnXemChiTiet, 150, 32);
+        TaoUI.setFixSize(btnXoa, 100, 32);
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -95,6 +96,20 @@ public class NhaCungCapUI extends JPanel {
                         loaiCungCap, nhaCungCap.getSoDienThoai(), nhaCungCap.getDiaChi() });
             }
         }
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("NCC_TAO")) {
+            btnTao.setVisible(false);
+        }
+
+        if (!listQuyen.contains("NCC_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     public void ganSuKien() {

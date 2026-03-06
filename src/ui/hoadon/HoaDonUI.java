@@ -26,15 +26,21 @@ public class HoaDonUI extends JPanel {
     public HoaDonUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
 
-        locNgay = new LocNgay_Item(350, 27);
-        search_Item = new Search_Item(300, 30);
+        locNgay = new LocNgay_Item(400, 32);
+        search_Item = new Search_Item(300, 32);
+        locNgay.setEvent(() -> {
+            loadData();
+        });
 
         btnXemChiTiet = new JButton("Chi tiết");
+        TaoUI.setFixSize(btnXemChiTiet, 100, 32);
+
 
         btnXoa = new JButton("Xóa");
+        TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất Exc");
 
@@ -62,12 +68,6 @@ public class HoaDonUI extends JPanel {
         model.addColumn("Khách Hàng");
         model.addColumn("Tổng Thanh Toán");
 
-        loadData();
-
-        locNgay.setEvent(() -> {
-            loadData();
-        });
-
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
 
@@ -83,7 +83,6 @@ public class HoaDonUI extends JPanel {
 
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBackground(new Color(238, 238, 238));
-        tableContainer.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         tableContainer.add(scrollPane, BorderLayout.CENTER);
 
         add(tableContainer, BorderLayout.CENTER);
@@ -114,7 +113,8 @@ public class HoaDonUI extends JPanel {
         btnXoa.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row < 0) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 hóa đơn để xóa!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 hóa đơn để xóa!", "Thông báo",
+                        JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -128,13 +128,17 @@ public class HoaDonUI extends JPanel {
 
             if (confirm == JOptionPane.YES_OPTION) {
                 if (hoaDonBUS.xoaHoaDon(maHD)) {
-                    JOptionPane.showMessageDialog(this, "Đã xóa hóa đơn thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Đã xóa hóa đơn thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
                     loadData();
                 } else {
-                    JOptionPane.showMessageDialog(this, "Lỗi: Không thể xóa hóa đơn này!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Lỗi: Không thể xóa hóa đơn này!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+
+        loadData();
 
         btnXuatExcel.addActionListener(e -> {
             ArrayList<HoaDon> dsXuat = layDuLieuTuBang();
@@ -161,7 +165,9 @@ public class HoaDonUI extends JPanel {
                     String ngayCheck = sdfCheck.format(hd.getNgayBan());
 
                     if (locNgay.ngayTrongKhoan(ngayCheck)) {
-                        String maNV = (hd.getNhanVien() != null) && hd.getNhanVien().getMaNV() != null ? hd.getNhanVien().getMaNV() : "";
+                        String maNV = (hd.getNhanVien() != null) && hd.getNhanVien().getMaNV() != null
+                                ? hd.getNhanVien().getMaNV()
+                                : "";
                         String maKH = (hd.getMaKH() != null) ? hd.getMaKH() : "Khách vãng lai";
                         String NgayTao = sdfDisplay.format(hd.getNgayBan());
                         String TongTien = df.format(hd.getTongTien());
@@ -173,6 +179,13 @@ public class HoaDonUI extends JPanel {
         }
     }
 
+    public JTable getTable() {
+        return table;
+    }
+
+    public JButton getBtnXoa() {
+        return btnXoa;
+    }
     private ArrayList<HoaDon> layDuLieuTuBang() {
         ArrayList<HoaDon> list = new ArrayList<>();
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -186,8 +199,11 @@ public class HoaDonUI extends JPanel {
     }
 
 
-    public JTable getTable() { return table; }
-    public JButton getBtnXoa() { return btnXoa; }
-    public Search_Item getSearch_Item() { return search_Item; }
-    public DefaultTableModel getModel() { return model; }
+    public Search_Item getSearch_Item() {
+        return search_Item;
+    }
+
+    public DefaultTableModel getModel() {
+        return model;
+    }
 }

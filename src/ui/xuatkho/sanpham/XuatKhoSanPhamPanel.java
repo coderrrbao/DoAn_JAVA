@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import ui.component.LocNgay_Item; // Thêm bộ lọc ngày cho đồng bộ
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -18,14 +19,15 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
   public XuatKhoSanPhamPanel() {
     setLayout(new BorderLayout());
-    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
+    top.setBackground(Color.WHITE);
 
     xuatHangBtn = new JButton("Tạo Phiếu Hủy");
     xemChiTietBtn = new JButton("Xem Chi Tiết");
-    locNgay_Item = new LocNgay_Item(300, 30);
+    locNgay_Item = new LocNgay_Item(400, 32);
 
-    TaoUI.setFixSize(xuatHangBtn, 150, 30);
-    TaoUI.setFixSize(xemChiTietBtn, 150, 30);
+    TaoUI.setFixSize(xuatHangBtn, 150, 32);
+    TaoUI.setFixSize(xemChiTietBtn, 150, 32);
 
     xuatHangBtn.addActionListener(
         e -> {
@@ -46,8 +48,7 @@ public class XuatKhoSanPhamPanel extends JPanel {
               }
             }
             if (selected != null) {
-              ChiTietPhieuXuatSanPhamDialog detail =
-                  new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
+              ChiTietPhieuXuatSanPhamDialog detail = new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
               detail.setVisible(true);
             }
           } else {
@@ -57,21 +58,33 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
     locNgay_Item.setEvent(() -> loadDuLieu());
     top.add(locNgay_Item);
+    top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(xuatHangBtn);
+    top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(xemChiTietBtn);
+    top.add(Box.createHorizontalGlue());
     add(top, BorderLayout.NORTH);
 
-    model =
-        new DefaultTableModel(
-            new String[] {
-              "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
-            },
-            0);
+    model = new DefaultTableModel(
+        new String[] {
+            "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
+        },
+        0);
     JScrollPane scrollPane = TaoUI.taoTableScroll(model);
     table = (JTable) scrollPane.getViewport().getView();
 
     add(scrollPane, BorderLayout.CENTER);
     loadDuLieu();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = PhienDangNhap.getListQuyen();
+
+    if (!listQuyen.contains("NK_TAO")) {
+      xuatHangBtn.setVisible(false);
+    }
+    this.revalidate();
+    this.repaint();
   }
 
   public void loadDuLieu() {
@@ -81,12 +94,12 @@ public class XuatKhoSanPhamPanel extends JPanel {
       if (locNgay_Item.ngayTrongKhoan(ph.getNgayHuy().toString())) {
         model.addRow(
             new Object[] {
-              ph.getMaPH(),
-              ph.getNgayHuy(),
-              ph.getMaNV(),
-              ph.getLyDo(),
-              String.format("%,.0f VNĐ", ph.getTongGiaTri()),
-              ph.getTrangThaiXuLy()
+                ph.getMaPH(),
+                ph.getNgayHuy(),
+                ph.getMaNV(),
+                ph.getLyDo(),
+                String.format("%,.0f VNĐ", ph.getTongGiaTri()),
+                ph.getTrangThaiXuLy()
             });
       }
     }

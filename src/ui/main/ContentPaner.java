@@ -2,6 +2,8 @@ package ui.main;
 
 import java.awt.CardLayout;
 import java.awt.Color;
+import java.util.HashSet;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import ui.banhang.BanHangUI;
@@ -10,6 +12,7 @@ import ui.hoadon.HoaDonUI;
 import ui.khachhang.KhachHangUI;
 import ui.khuyenmai.KhuyenMaiUI;
 import ui.kiemke.KiemKeUI;
+import ui.login.PhienDangNhap;
 import ui.nguyenlieu.NguyenLieuUI;
 import ui.nhacungcap.NhaCungCapUI;
 import ui.nhanvien.NhanVienUI;
@@ -41,7 +44,6 @@ public class ContentPaner extends JPanel {
   private NguyenLieuUI nguyenLieuUI;
   private HangThanhVienUI hangThanhVienUI;
   private CardLayout cardLayout;
-
 
   public ContentPaner(JFrame owner) {
     cardLayout = new CardLayout();
@@ -85,9 +87,9 @@ public class ContentPaner extends JPanel {
           add(hangThanhVienUI, "Hạng thành viên");
 
           banHangUI.setOnThanhToanSuccess(() -> {
-              if(hoaDonUI != null) {
-                    hoaDonUI.loadData();
-              }
+            if (hoaDonUI != null) {
+              hoaDonUI.loadData();
+            }
           });
 
           revalidate();
@@ -99,53 +101,37 @@ public class ContentPaner extends JPanel {
     cardLayout.show(this, name);
   }
 
-  public QuanLySanPhamUI getQuanLySanPhamUI() {
-    return quanLySanPhamUI;
-  }
+  public void suaLaiGiaoDienTheoQuyen() {
 
-  public NhaCungCapUI getNhaCungCapUI() {
-    return nhaCungCapUI;
+    if (quanLySanPhamUI != null)
+      quanLySanPhamUI.suaLaiGiaoDienTheoQuyen();
+    if (nhaCungCapUI != null)
+      nhaCungCapUI.suaLaiGiaoDienTheoQuyen();
+    if (nguyenLieuUI != null)
+      nguyenLieuUI.suaLaiGiaoDienTheoQuyen();
+    if (nhapKhoUI != null)
+      nhapKhoUI.suaLaiGiaoDienTheoQuyen();
+    if (khachHangUI != null)
+      khachHangUI.suaLaiGiaoDienTheoQuyen();
+    // if (hoaDonUI != null)
+    // hoaDonUI.suaLaiGiaoDienTheoQuyen();
+    if (nhanVienUI != null)
+      nhanVienUI.suaLaiGiaoDienTheoQuyen();
+    if (taiKhoanUI != null)
+      taiKhoanUI.suaLaiGiaoDienTheoQuyen();
+    if (xuatKhoUI != null)
+      xuatKhoUI.suaLaiGiaoDienTheoQuyen();
+    if (tonKhoUI != null)
+      tonKhoUI.suaLaiGiaoDienTheoQuyen();
+    if (khuyenMaiUI != null)
+      khuyenMaiUI.suaLaiGiaoDienTheoQuyen();
+    if (phanQuyenUI != null)
+      phanQuyenUI.suaLaiGiaoDienTheoQuyen();
+    if (kiemKeUI != null)
+      kiemKeUI.suaLaiGiaoDienTheoQuyen();
+    if (hangThanhVienUI != null)
+      hangThanhVienUI.suaLaiGiaoDienTheoQuyen();
+    this.revalidate();
+    this.repaint();
   }
-
-  public NhapKhoUI getNhapKhoUI() {
-    return nhapKhoUI;
-  }
-
-  public ThongKeUI getThongKeUI() {
-    return thongKeUI;
-  }
-
-  public BanHangUI getBanHangUI() {
-    return banHangUI;
-  }
-
-  public KhachHangUI getKhachHangUI() {
-    return khachHangUI;
-  }
-
-  public HoaDonUI getHoaDonUI() {
-    return hoaDonUI;
-  }
-
-  public NhanVienUI getNhanVienUI() {
-    return nhanVienUI;
-  }
-
-  public TaiKhoanUI getTaiKhoanUI() {
-    return taiKhoanUI;
-  }
-
-  public XuatKhoUI getXuatKhoUI() {
-    return xuatKhoUI;
-  }
-
-  public TonKhoUI getTonKhoUI() {
-    return tonKhoUI;
-  }
-
-  public NguyenLieuUI getNguyenLieuUI() {
-    return nguyenLieuUI;
-  }
-
-  public void loadAll() {}
 }

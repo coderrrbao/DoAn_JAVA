@@ -98,7 +98,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
         tblKhoHang.getColumnModel().getColumn(3).setPreferredWidth(70);
 
         listSpPanel.add(scroll, BorderLayout.CENTER);
-        search_Item = new Search_Item(Integer.MAX_VALUE, 30);
+        search_Item = new Search_Item(Integer.MAX_VALUE, 32);
         listSpPanel.add(search_Item, BorderLayout.NORTH);
 
         JPanel chiTietSp = TaoUI.taoPanelBoxLayoutDoc(3000, 3000);
@@ -318,6 +318,33 @@ public class NhapKhoSanPhamDialog extends JDialog {
         txtNhanVien.setEditable(false);
         ganSuKien();
         loadDuLieu();
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    /**
+     * Cập nhật hiển thị: Ẩn hoàn toàn các nút tác vụ nếu không có quyền THÊM phiếu
+     * nhập sản phẩm
+     */
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // Kiểm tra quyền lập phiếu nhập kho (NK_TAO)
+        if (!listQuyen.contains("NK_TAO")) {
+            // Ẩn nút xác nhận nhập hàng (bước cuối cùng)
+            if (btnNhapHang != null)
+                btnNhapHang.setVisible(false);
+
+            // Ẩn nút thêm sản phẩm vào danh sách chờ nhập
+            if (themSpPNHBtn != null)
+                themSpPNHBtn.setVisible(false);
+
+            // Ẩn nút xóa sản phẩm khỏi danh sách chờ nhập
+            if (xoaCTBtn != null)
+                xoaCTBtn.setVisible(false);
+
+            // Cập nhật tiêu đề để người dùng biết họ chỉ có thể xem dữ liệu
+            this.setTitle("Xem thông tin nhập kho sản phẩm (Chế độ chỉ đọc)");
+        }
     }
 
     public void loadDuLieu() {

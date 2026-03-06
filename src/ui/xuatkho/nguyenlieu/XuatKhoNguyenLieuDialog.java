@@ -83,8 +83,29 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
     ganSuKien();
     loadDataKhoNL();
+    suaLaiGiaoDienTheoQuyen();
   }
+/**
+ * Cập nhật hiển thị: Ẩn các nút thao tác nếu không có quyền THÊM phiếu hủy nguyên liệu
+ */
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
+    // Kiểm tra quyền tạo phiếu xuất/hủy (XK_TAO)
+    if (!listQuyen.contains("XK_TAO")) {
+        // Ẩn nút thêm vào danh sách tạm bên phải
+        if (btnThem != null) btnThem.setVisible(false);
+        
+        // Ẩn nút xác nhận hủy & trừ kho cuối cùng
+        if (btnXacNhan != null) btnXacNhan.setVisible(false);
+        
+        // Chuyển các ô nhập liệu sang chế độ không thể chỉnh sửa để tránh nhầm lẫn
+        txtSoLuong.setEditable(false);
+        txtLyDo.setEditable(false);
+
+        this.setTitle("Xem thông tin hủy nguyên liệu (Chế độ chỉ đọc)");
+    }
+}
   private void loadDataKhoNL() {
     modelKho.setRowCount(0);
     java.util.ArrayList<LoNguyenLieu> listLo =

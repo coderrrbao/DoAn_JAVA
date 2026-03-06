@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.util.Map;
 
+import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -29,24 +30,21 @@ public class ThongKeSanPhamPanel extends JPanel {
 
     public ThongKeSanPhamPanel() {
         setLayout(new BorderLayout());
-        JPanel thongKeSp = new JPanel();
-        thongKeSp.setLayout(new BoxLayout(thongKeSp, BoxLayout.Y_AXIS));
+        
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(1200, 100);
-        top.add(new ThongKeChungSpPanel());
-        thongKeSp.add(top);
+        JPanel top = TaoUI.taoPanelBorderLayout(3000, 450);
+        top.add(new ThongKeChungSpPanel(),BorderLayout.NORTH);
+        add(top,BorderLayout.NORTH);
 
-        JPanel mid = TaoUI.taoPanelBoxLayoutNgang(1200, 400);
-        thongKeSp.add(mid);
-        JPanel ctnMid = TaoUI.taoPanelBorderLayout(1200, 400);
-        mid.add(ctnMid);
-        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(350, 400);
-        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(800, 400);
-        ctnMid.add(bieuDoTron, BorderLayout.WEST);
-        ctnMid.add(bieuDoCot, BorderLayout.CENTER);
-        bieuDoCot.setBackground(Color.red);
-        bieuDoTron.setBackground(Color.ORANGE);
-
+        JPanel bieuDoPanel = new JPanel();
+        bieuDoPanel.setBackground(Color.white);
+        bieuDoPanel.setLayout(new BoxLayout(bieuDoPanel, BoxLayout.X_AXIS));
+        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(400, 350);
+        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(700, 350);
+        bieuDoPanel.add(bieuDoTron);
+        bieuDoPanel.add(Box.createHorizontalGlue());
+        bieuDoPanel.add(bieuDoCot);
+        top.add(bieuDoPanel,BorderLayout.CENTER);
         datasetCot = new DefaultCategoryDataset();
         bieuDoCot.add(TaoUI.taoBieuDoCot("Top 5 sản phẩm bán chạy", "Số lượng", "Sản phẩm", datasetCot),
                 BorderLayout.CENTER);
@@ -55,20 +53,13 @@ public class ThongKeSanPhamPanel extends JPanel {
 
         bieuDoTron.add(TaoUI.taoBieuDoTron("Số sản phẩm bán ra theo danh mục", datasetTron), BorderLayout.CENTER);
 
-        JPanel bottom = TaoUI.taoPanelBorderLayout(1200, 200);
-        bottom.setBackground(Color.cyan);
-        thongKeSp.add(bottom);
 
         model = new DefaultTableModel();
         model.addColumn("Mã sản phẩm");
         model.addColumn("Tên sản phẩm");
         model.addColumn("Số lượng mua");
-        JScrollPane scrollPaneTb = TaoUI.taoTableScroll(model);
-        bottom.add(scrollPaneTb);
-
-        JScrollPane scrollPane = TaoUI.taoScrollPane(thongKeSp);
+        JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         add(scrollPane, BorderLayout.CENTER);
-
         loaiDuLieu();
         ganSuKien();
     }

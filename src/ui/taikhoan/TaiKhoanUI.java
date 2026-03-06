@@ -12,6 +12,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class TaiKhoanUI extends JPanel {
@@ -25,7 +26,7 @@ public class TaiKhoanUI extends JPanel {
     public TaiKhoanUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
 
         String[] quyen = { "Quản lý", "Nhân viên bán hàng" };
@@ -33,24 +34,31 @@ public class TaiKhoanUI extends JPanel {
         cbNhomQuyen.setPreferredSize(new Dimension(150, 30));
         cbNhomQuyen.setMaximumSize(new Dimension(150, 30));
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
         btnTao.addActionListener(e -> openThemTaiKhoanDialog());
+        TaoUI.setFixSize(btnTao, 80, 32);
 
         btnResetMatKhau = new JButton("Đặt lại mật khẩu");
         btnResetMatKhau.addActionListener(e -> openDoiMatKhauDialog());
+        TaoUI.setFixSize(btnResetMatKhau, 140, 32);
 
         btnXoa = new JButton("Xóa");
         btnXoa.addActionListener(e -> XoaTaiKhoan_Ui());
+        TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất exc");
         btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
+        TaoUI.setFixSize(btnXuatExcel, 100, 32);
 
         bntNhapExcel = new JButton("Nhập exc");
+        TaoUI.setFixSize(bntNhapExcel, 100, 32);
+    bntNhapExcel.addActionListener(e -> {taiKhoanBUS.nhapTuExcel();hienThiDanhSachTaiKhoan();});
 
         btnSuaThongTin = new JButton("Sửa thông tin");
-        btnSuaThongTin.addActionListener(e -> openSuaTaiKhoanDialog());
+        btnSuaThongTin.addActionListener(e -> {openSuaTaiKhoanDialog();});
+        TaoUI.setFixSize(btnSuaThongTin, 120, 32);
 
         top.add(cbNhomQuyen);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -104,13 +112,35 @@ public class TaiKhoanUI extends JPanel {
         add(tableContainer, BorderLayout.CENTER);
     }
 
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm tài khoản
+        if (!listQuyen.contains("TK_TAO")) {
+            btnTao.setVisible(false);
+        }
+
+        // 2. Quyền Xóa tài khoản
+        if (!listQuyen.contains("TK_XOA")) {
+            btnXoa.setVisible(false);
+        }
+
+        // 3. Quyền Đặt lại mật khẩu (Sửa tài khoản)
+        if (!listQuyen.contains("TK_SUA")) {
+            btnResetMatKhau.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
+    }
+
     // open them tai khoan dialog
     private void openThemTaiKhoanDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
-        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame, this,null);
+        ThemTaiKhoanDialog dia = new ThemTaiKhoanDialog(parentFrame, this, null);
         dia.setVisible(true);
     }
-    //open sua tai khoan dialog
+
+    // open sua tai khoan dialog
     private void openSuaTaiKhoanDialog() {
         int chonDong = tableUI.getSelectedRow();
         if (chonDong == -1) {
@@ -144,8 +174,7 @@ public class TaiKhoanUI extends JPanel {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
 
         // GỌI CONSTRUCTOR SỬA
-        ThemTaiKhoanDialog dialog =
-                new ThemTaiKhoanDialog(parentFrame, this, taiKhoanChon);
+        ThemTaiKhoanDialog dialog = new ThemTaiKhoanDialog(parentFrame, this, taiKhoanChon);
 
         dialog.setVisible(true);
     }
@@ -170,12 +199,12 @@ public class TaiKhoanUI extends JPanel {
         model.setRowCount(0);
 
         for (TaiKhoan tk : taiKhoanBUS.layDanhSachTaiKhoan()) {
-                model.addRow(new Object[] {
-                        tk.getMaNV(),
-                        tk.getTenDangNhap(),
-                        tk.getNhomQuyen().getTenNhomQuyen(),
-                        tk.getTrangThaiXuLy()
-                });
+            model.addRow(new Object[] {
+                    tk.getMaNV(),
+                    tk.getTenDangNhap(),
+                    tk.getNhomQuyen().getTenNhomQuyen(),
+                    tk.getTrangThaiXuLy()
+            });
         }
     }
 

@@ -10,9 +10,10 @@ import ui.nhapkho.sanpham.NhapKhoSanPhamPanel;
 public class NhapKhoUI extends JPanel {
     private NhapKhoSanPhamPanel nhapKhoSanPham;
     private NhapKhoNguyenLieuPanel nhapKhoNguyenLieu;
+
     public NhapKhoUI() {
         setLayout(new BorderLayout());
-        
+
         nhapKhoNguyenLieu = new NhapKhoNguyenLieuPanel();
         nhapKhoSanPham = new NhapKhoSanPhamPanel();
 
@@ -20,6 +21,13 @@ public class NhapKhoUI extends JPanel {
         tabbedPane.addTab("Sản phẩm", nhapKhoSanPham);
         tabbedPane.addTab("Nguyên liệu", nhapKhoNguyenLieu);
 
-        add(tabbedPane,BorderLayout.CENTER);
+        add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        nhapKhoNguyenLieu.suaLaiGiaoDienTheoQuyen();
+        nhapKhoSanPham.suaLaiGiaoDienTheoQuyen();
+        this.revalidate();
+        this.repaint();
     }
 }

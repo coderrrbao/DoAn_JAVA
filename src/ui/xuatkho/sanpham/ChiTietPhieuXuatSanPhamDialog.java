@@ -91,6 +91,23 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
 
     loadData();
     ganSuKien();
+    suaLaiGiaoDienTheoQuyen();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+    // Kiểm tra quyền SỬA phiếu xuất/hủy kho sản phẩm
+    if (!listQuyen.contains("XK_SUA")) {
+      // Ẩn hoàn toàn các nút có khả năng thay đổi dữ liệu
+      btnSua.setVisible(false);
+      btnLuu.setVisible(false);
+
+      // Cập nhật tiêu đề để người dùng biết họ đang ở chế độ chỉ đọc
+      this.setTitle("Chi Tiết Phiếu Hủy Sản Phẩm (Chế độ chỉ đọc)");
+    }
+    this.revalidate();
+    this.repaint();
   }
 
   private void loadData() {

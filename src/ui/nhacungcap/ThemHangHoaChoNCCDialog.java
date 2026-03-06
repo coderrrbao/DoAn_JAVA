@@ -58,7 +58,7 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
 
     private void khoiTaoUI() {
         JPanel pnTop = TaoUI.taoPanelBoxLayoutNgang(600, 30);
-        search_Item = new Search_Item(300, 29);
+        search_Item = new Search_Item(300, 32);
 
         String[] loaiHang = { "Sản phẩm", "Nguyên liệu" };
         cbLoaiHang = new JComboBox<>(loaiHang);

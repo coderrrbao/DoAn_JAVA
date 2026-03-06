@@ -12,7 +12,9 @@ import dao.LoSanPhamDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
+import dto.CongThuc;
 import dto.HoaDon;
+import dto.Size;
 import util.XuLyExcel;
 
 
@@ -39,14 +41,15 @@ public class HoaDonBUS {
                 }
             }
             else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
-                ArrayList<ChiTietCongThuc> lstNguyenLieu = congThucDAO.layCongThucPhaChe(maSP, maSize);
+                CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
+                CongThuc congThuc = congThucBUS.timCongThucChoSP(maSP);
 
-                if (lstNguyenLieu.isEmpty()) {
+                if (congThuc.getListChiTietCongThuc().isEmpty()) {
                     System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
                     continue;
                 }
 
-                for (ChiTietCongThuc ctct : lstNguyenLieu) {
+                for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                     double canDung = ctct.getSoLuong() * soLuongMua;
                     if (!loNguyenLieuDAO.kiemTraDuNguyenLieu(ctct.getNguyenLieu().getMaNL(), canDung)) {
                         return "Nguyên liệu " + ctct.getNguyenLieu().getTenNL() + " không đủ để pha chế!";
@@ -74,7 +77,7 @@ public class HoaDonBUS {
 
                 String loaiNuoc = ct.getSanPham().getLoaiNuoc();
                 String maSP = ct.getSanPham().getMaSP();
-                String maSize = (ct.getSize() != null) ? ct.getSize().getMaSize() : null;
+                Size size = ct.getSize();
                 int soLuongMua = ct.getSoLuong();
 
                 if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
@@ -84,14 +87,17 @@ public class HoaDonBUS {
                     }
                 }
                 else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
-                    ArrayList<ChiTietCongThuc> lstNguyenLieuCan = congThucDAO.layCongThucPhaChe(maSP, maSize);
-                    if (lstNguyenLieuCan.isEmpty()) {
-                        System.out.println("LỖI NGHIÊM TRỌNG: Món " + maSP + " (" + maSize + ") chưa được cấu hình công thức!");
+                    CongThuc congThuc = CongThucBUS.getCongThucBUS().timCongThucChoSP(maSP);
+                    if (congThuc.getListChiTietCongThuc().isEmpty()) {
+                        System.out.println("LỖI NGHIÊM TRỌNG: Món " + maSP + " chưa được cấu hình công thức!");
                         conn.rollback();
                         return false;
                     }
-                    for (ChiTietCongThuc ctct : lstNguyenLieuCan) {
+                    for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                         double canTru = ctct.getSoLuong() * soLuongMua;
+                        if (size!=null){
+                            canTru=canTru+canTru*((double)size.getPhanTramNL()/100);
+                        }
                         String maNL = ctct.getNguyenLieu().getMaNL();
                         boolean ketQuaTru = loNguyenLieuDAO.truNguyenLieu(conn, maNL, canTru);
 

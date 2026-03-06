@@ -1,7 +1,10 @@
 package util;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -11,11 +14,15 @@ import dto.HoaDon;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import bus.NhomQuyenBUS;
+import bus.TaiKhoanBUS;
+import dao.TaiKhoanDao;
+import dao.conection.DBConnection;
+import dto.NhomQuyen;
 import dto.SanPham;
 import dto.TaiKhoan;
 
 public class XuLyExcel {
-    
     public static boolean xuatFile(ArrayList<SanPham> list) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file");
@@ -250,4 +257,48 @@ public class XuLyExcel {
         }
         return false;
     }
+    //nhap excel tk
+    public static ArrayList<TaiKhoan> nhapFileTaiKhoan(File file) {
+        ArrayList<TaiKhoan> danhSach = new ArrayList<>();
+
+        try (FileInputStream fis = new FileInputStream(file);
+            Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                TaiKhoan tk = new TaiKhoan();
+                tk.setMaNV(getStringCell(row.getCell(1)));
+                tk.setTenDangNhap(getStringCell(row.getCell(2)));
+                tk.setMatKhau(getStringCell(row.getCell(3)));
+
+                NhomQuyen nq = NhomQuyenBUS.getNhomQuyenBUS().timNhomQuyenTheoTen(getStringCell(row.getCell(4)));
+                tk.setNhomQuyen(nq);
+
+                danhSach.add(tk);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return danhSach;
+    }
+    private static String getStringCell(Cell cell) {
+        if (cell == null) return "";
+
+        switch (cell.getCellType()) {
+            case STRING:
+                return cell.getStringCellValue().trim();
+            case NUMERIC:
+                return String.valueOf((long) cell.getNumericCellValue());
+            default:
+                return "";
+        }
+    }
+
 }

@@ -29,16 +29,14 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
     JPanel left = TaoUI.taoPanelBorderLayout(450, 600);
-    modelTonKho =
-        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0);
+    modelTonKho = new DefaultTableModel(new String[] { "Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập" }, 0);
     tblTonKho = new JTable(modelTonKho);
     left.add(new JScrollPane(tblTonKho), BorderLayout.CENTER);
 
     JPanel right = new JPanel(new BorderLayout());
     JPanel form = TaoUI.taoPanelBoxLayoutDoc(400, 320);
 
-    txtMaNV =
-        new JTextField(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
+    txtMaNV = new JTextField(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
     txtMaNV.setEditable(false);
     txtMaSP = new JTextField();
     txtMaSP.setEditable(false);
@@ -62,8 +60,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
     form.add(Box.createVerticalStrut(10));
     form.add(btnThem);
 
-    modelChoXuat =
-        new DefaultTableModel(new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập"}, 0);
+    modelChoXuat = new DefaultTableModel(new String[] { "Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập" }, 0);
     tblChoXuat = new JTable(modelChoXuat);
 
     btnXacNhan = new JButton("XÁC NHẬN");
@@ -80,6 +77,31 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
     loadData();
     ganSuKien();
+    suaLaiGiaoDienTheoQuyen();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+    // Kiểm tra quyền tạo phiếu hủy/xuất kho (XK_TAO)
+    if (!listQuyen.contains("XK_TAO")) {
+      // Ẩn nút thêm vào danh sách tạm
+      if (btnThem != null)
+        btnThem.setVisible(false);
+
+      // Ẩn nút xác nhận hủy cuối cùng
+      if (btnXacNhan != null)
+        btnXacNhan.setVisible(false);
+
+      // Vô hiệu hóa ô nhập lý do và số lượng để tránh nhầm lẫn
+      txtSoLuongXuat.setEditable(false);
+      txtLyDo.setEditable(false);
+
+      // Cập nhật tiêu đề thông báo chế độ chỉ đọc
+      this.setTitle("Xem thông tin tạo phiếu hủy (Chế độ chỉ đọc)");
+    }
+    this.revalidate();
+    this.repaint();
   }
 
   private void loadData() {
@@ -89,7 +111,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
       if (lo.getSoLuong() > 0)
         modelTonKho.addRow(
             new Object[] {
-              lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
             });
     }
   }
@@ -111,15 +133,16 @@ public class XuatKhoSanPhamDialog extends JDialog {
           try {
             int r = tblTonKho.getSelectedRow();
             double sl = Double.parseDouble(txtSoLuongXuat.getText());
-            if (sl <= 0 || sl > Double.parseDouble(modelTonKho.getValueAt(r, 3).toString())) return;
+            if (sl <= 0 || sl > Double.parseDouble(modelTonKho.getValueAt(r, 3).toString()))
+              return;
             SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaSP.getText(),
-                  (sp != null ? sp.getTenSP() : "SP"),
-                  sl,
-                  txtMaLo.getText(),
-                  modelTonKho.getValueAt(r, 4)
+                    txtMaSP.getText(),
+                    (sp != null ? sp.getTenSP() : "SP"),
+                    sl,
+                    txtMaLo.getText(),
+                    modelTonKho.getValueAt(r, 4)
                 });
           } catch (Exception ex) {
           }
@@ -134,10 +157,10 @@ public class XuatKhoSanPhamDialog extends JDialog {
           double tongTien = 0;
           Object[][] data = new Object[modelChoXuat.getRowCount()][5];
           for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
-            tongTien +=
-                Double.parseDouble(data[i][2].toString())
-                    * Double.parseDouble(data[i][4].toString());
+            for (int j = 0; j < 5; j++)
+              data[i][j] = modelChoXuat.getValueAt(i, j);
+            tongTien += Double.parseDouble(data[i][2].toString())
+                * Double.parseDouble(data[i][4].toString());
           }
           PhieuHuySanPham ph = new PhieuHuySanPham();
           ph.setMaNV(txtMaNV.getText());

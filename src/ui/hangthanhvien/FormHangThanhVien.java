@@ -8,7 +8,7 @@ import dto.HangThanhVien;
 public class FormHangThanhVien extends JDialog {
     private JTextField txtMa, txtTen, txtPhanTram, txtDieuKien;
     private JButton btnThem, btnSua, btnLuu, btnHuy;
-    
+
     private HangThanhVien ketQua = null;
     private boolean isEdit = false;
 
@@ -27,6 +27,7 @@ public class FormHangThanhVien extends JDialog {
         ganSuKien(editHTV);
 
         setLocationRelativeTo(owner);
+        suaLaiGiaoDienTheoQuyen();
     }
 
     private void initUI() {
@@ -36,7 +37,7 @@ public class FormHangThanhVien extends JDialog {
         pnlMain.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         txtMa = new JTextField("Tự động");
-        txtMa.setEditable(false); 
+        txtMa.setEditable(false);
         txtTen = new JTextField();
         txtPhanTram = new JTextField();
         txtDieuKien = new JTextField();
@@ -60,7 +61,7 @@ public class FormHangThanhVien extends JDialog {
         }
 
         JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        
+
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
         btnLuu = new JButton("Lưu");
@@ -73,6 +74,27 @@ public class FormHangThanhVien extends JDialog {
 
         add(pnlMain, BorderLayout.CENTER);
         add(pnlButtons, BorderLayout.SOUTH);
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // TRƯỜNG HỢP 1: Chế độ thêm mới (isEdit == false)
+        if (!isEdit) {
+            if (!listQuyen.contains("HTV_TAO")) {
+                btnThem.setVisible(false);
+                setEditableForm(false); // Khóa không cho nhập liệu
+                this.setTitle("Thông tin hạng (Chỉ xem)");
+            }
+        }
+        // TRƯỜNG HỢP 2: Chế độ xem/sửa (isEdit == true)
+        else {
+            if (!listQuyen.contains("HTV_SUA")) {
+                btnSua.setVisible(false);
+                btnLuu.setVisible(false);
+                this.setTitle("Chi tiết hạng (Chế độ chỉ đọc)");
+            }
+        }
     }
 
     private void initLoaiDialog() {
@@ -120,7 +142,7 @@ public class FormHangThanhVien extends JDialog {
 
         btnLuu.addActionListener(e -> {
             if (kiemTraHopLe()) {
-                ketQua = editHTV; 
+                ketQua = editHTV;
                 ganDuLieu(ketQua);
                 dispose();
             }
@@ -132,7 +154,7 @@ public class FormHangThanhVien extends JDialog {
         txtTen.setText(editHTV.getTenHang());
         txtPhanTram.setText(String.valueOf(editHTV.getPhanTramGiam()));
         // Loại bỏ số thập phân thừa nếu không cần thiết khi hiển thị
-        txtDieuKien.setText(String.format("%.0f", editHTV.getDieuKien())); 
+        txtDieuKien.setText(String.format("%.0f", editHTV.getDieuKien()));
     }
 
     private boolean kiemTraHopLe() {

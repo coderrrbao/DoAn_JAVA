@@ -167,7 +167,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
                 for (ChiTietNhaCungCap ct : nhaCungCap.getListChiTietNhaCungCap()) {
                     if (ct.getLoaiDoiTuong().equals("Sản phẩm")) {
                         SanPham sp = sanPhamBUS.timSanPham(ct.getMaDoiTuong());
-                        if (sp != null) {
+                        if (sp != null && sp.getLoaiNuoc().equals("Có sẵn")) {
                             modelSP.addRow(new Object[] { ct.getMaCTNCC(), sp.getMaSP(), sp.getTenSP(), "Sản phẩm",
                                     ct.getGiaNhap() });
                         }

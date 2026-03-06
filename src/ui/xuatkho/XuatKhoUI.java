@@ -23,4 +23,11 @@ public class XuatKhoUI extends JPanel {
 
     add(tabbedPane, BorderLayout.CENTER);
   }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    xuatKhoNguyenLieu.suaLaiGiaoDienTheoQuyen();
+    xuatKhoSanPham.suaLaiGiaoDienTheoQuyen();
+    this.revalidate();
+    this.repaint();
+  }
 }

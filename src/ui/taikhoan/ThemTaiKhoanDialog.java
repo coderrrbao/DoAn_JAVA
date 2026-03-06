@@ -52,8 +52,29 @@ public class ThemTaiKhoanDialog extends JDialog {
         setSize(400, 330);
         setLocationRelativeTo(jFrame);
         setResizable(false);
+        suaLaiGiaoDienTheoQuyen();
         ganDuLieu();
         ganSuKien();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("TK_TAO")) {
+            // Khóa các trường nhập liệu
+            txtUser.setEditable(false);
+            txtPass.setEditable(false);
+            cbQuyen.setEnabled(false);
+            cbNVBox.setEnabled(false);
+
+            // Ẩn nút thực thi
+            // Lưu ý: Cần chuyển btnThem thành biến thành viên (private) nếu muốn truy cập ở
+            // đây
+            // Hoặc tìm cách lấy reference của nó.
+            this.setTitle("Thông báo: Bạn không có quyền thêm tài khoản");
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     private void initUI() {
@@ -98,7 +119,6 @@ public class ThemTaiKhoanDialog extends JDialog {
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
         TaoUI.addItem(buttonPanel, btnSua, 5, true);
         TaoUI.addItem(buttonPanel, btnLuu, 5, true);
-        
 
         // COMBOBOX quyen
         JPanel cbJPanel = new JPanel();
@@ -130,7 +150,7 @@ public class ThemTaiKhoanDialog extends JDialog {
         lbTrangThai.setMinimumSize(new Dimension(110, 30));
         lbTrangThai.setMaximumSize(new Dimension(110, 30));
 
-        String[] trangThaiArr = {"Đang hoạt động", "Đã khóa"};
+        String[] trangThaiArr = { "Đang hoạt động", "Đã khóa" };
         cbTrangThai = new JComboBox<>(trangThaiArr);
 
         cbTrangThaiPanel.add(lbTrangThai);
@@ -201,14 +221,14 @@ public class ThemTaiKhoanDialog extends JDialog {
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
             cbTrangThaiPanel.setVisible(false);
-            setSize(new Dimension(400,300));
+            setSize(new Dimension(400, 300));
         }
     }
 
     private void ganSuKien() {
         btnThem.addActionListener(e -> {
             if (txtUser.getText().trim().isEmpty()
-                || txtPass.getPassword().length == 0) {
+                    || txtPass.getPassword().length == 0) {
 
                 JOptionPane.showMessageDialog(this,
                         "Vui lòng nhập đầy đủ Username và Password!");
@@ -232,8 +252,8 @@ public class ThemTaiKhoanDialog extends JDialog {
 
         btnSua.addActionListener(e -> {
             if (txtUser.getText().trim().isEmpty()
-                || txtPass.getPassword().length == 0)
-            txtPass.setEditable(true);
+                    || txtPass.getPassword().length == 0)
+                txtPass.setEditable(true);
             txtUser.setEditable(true);
             cbNVBox.setEnabled(true);
             cbQuyen.setEnabled(true);
@@ -257,16 +277,16 @@ public class ThemTaiKhoanDialog extends JDialog {
 
     private TaiKhoan dongGoiTaiKhoan() {
         TaiKhoan tk = new TaiKhoan();
-        //set tk mk
+        // set tk mk
         tk.setTenDangNhap(txtUser.getText());
         tk.setMatKhau(new String(txtPass.getPassword()));
 
         int indexNV = cbNVBox.getSelectedIndex();
         int indexNQ = cbQuyen.getSelectedIndex();
 
-        //set manv
+        // set manv
         tk.setMaNV(dsNhanVien.get(indexNV).getMaNV());
-        //set nhom quyen
+        // set nhom quyen
         NhomQuyen nq = new NhomQuyen();
         nq.setMaNQ(dsNhomQuyen.get(indexNQ).getMaNQ());
         tk.setNhomQuyen(nq);

@@ -107,6 +107,32 @@ public class ThemPhieuKiemDialog extends JDialog {
             btnLuu.setVisible(false);
             cbXacNhan.setVisible(false);
         }
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // TRƯỜNG HỢP 1: Đang tạo phiếu mới (phieuKiemKe == null)
+        if (phieuKiemKe == null) {
+            if (!listQuyen.contains("KK_TAO")) {
+                btnThem.setVisible(false);
+                btnLamMoi.setVisible(false);
+                tfSoLuong.setEditable(false);
+                textArea.setEditable(false);
+                this.setTitle("Xem danh sách lô (Chế độ chỉ đọc)");
+            }
+        }
+        // TRƯỜNG HỢP 2: Đang xem/sửa phiếu cũ (phieuKiemKe != null)
+        else {
+            if (!listQuyen.contains("KK_SUA")) {
+                btnSua.setVisible(false);
+                btnLuu.setVisible(false);
+                this.setTitle("Chi tiết phiếu kiểm kê (Chế độ chỉ đọc)");
+            }
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     private void loaiDuLieu() {
@@ -187,7 +213,6 @@ public class ThemPhieuKiemDialog extends JDialog {
                 TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thất bại", "Thông báo", 1);
             }
         });
-
 
         locNgay_Item.setEvent(() -> {
             loaiDuLieu();

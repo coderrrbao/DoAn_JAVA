@@ -14,6 +14,7 @@ import bus.NhanVienBUS;
 import ui.component.IconButtonEditor;
 import ui.component.IconButtonRender;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 import dto.NhanVien;
 
@@ -28,12 +29,11 @@ public class NhanVienUI extends JPanel {
     public NhanVienUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
         btnTao.addActionListener(e -> openThemNhanVienDialog());
@@ -103,6 +103,22 @@ public class NhanVienUI extends JPanel {
         layDanhSachNhanVien();
     }
 
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm nhân viên (NV_TAO)
+        if (!listQuyen.contains("NV_TAO")) {
+            btnTao.setVisible(false);
+        }
+
+        // 2. Quyền Xóa nhân viên (NV_XOA)
+        if (!listQuyen.contains("NV_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
+    }
+
     private void openThemNhanVienDialog() {
         JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
         ThemNhanVienDialog dia = new ThemNhanVienDialog(parentFrame, this);
@@ -136,7 +152,7 @@ public class NhanVienUI extends JPanel {
                         || sdt.toUpperCase().contains(keyword);
             }
 
-            if ( matchSearch) {
+            if (matchSearch) {
                 listNhanVienLoc.add(nv);
             }
         }

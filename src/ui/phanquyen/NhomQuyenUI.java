@@ -15,6 +15,7 @@ import javax.swing.table.DefaultTableModel;
 import bus.NhomQuyenBUS;
 import dto.NhomQuyen;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -40,25 +41,39 @@ public class NhomQuyenUI extends JPanel {
         loadDuLieu();
     }
 
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("PQ_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        if (!listQuyen.contains("PQ_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
+    }
+
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
         top.setPreferredSize(new Dimension(100, 45));
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        search_Item = new Search_Item(300, 35);
+        search_Item = new Search_Item(300, 32);
         top.add(search_Item);
 
         btnThem = new JButton("Thêm");
-        btnThem.setPreferredSize(new Dimension(80, 35));
+        btnThem.setPreferredSize(new Dimension(80, 32));
         top.add(btnThem);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setPreferredSize(new Dimension(80, 35));
+        btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
 
         btnXemChiTiet = new JButton("Xem chi tiết quyền");
-        btnXemChiTiet.setPreferredSize(new Dimension(150, 35));
+        btnXemChiTiet.setPreferredSize(new Dimension(150, 32));
         top.add(btnXemChiTiet);
 
         return top;

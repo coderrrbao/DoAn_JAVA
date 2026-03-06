@@ -29,13 +29,12 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     setLayout(new BorderLayout(10, 10));
 
     // CHỈNH SỬA: Chặn edit table cell
-    modelChiTiet =
-        new DefaultTableModel(new String[] {"Mã Lô", "Tên NL", "Số lượng", "Giá"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    modelChiTiet = new DefaultTableModel(new String[] { "Mã Lô", "Tên NL", "Số lượng", "Giá" }, 0) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
 
     tblChiTiet = new JTable(modelChiTiet);
     tblChiTiet.getTableHeader().setReorderingAllowed(false);
@@ -51,11 +50,11 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     txtNV = new JTextField(ph.getMaNV());
     txtLyDo = new JTextField(ph.getLyDo());
     txtTong = new JTextField(String.format("%,.0f VNĐ", ph.getTongTien()));
-    cbTrangThai = new JComboBox<>(new String[] {"Đang xử lý", "Đã xác nhận"});
+    cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
     cbTrangThai.setSelectedItem(ph.getTrangThaiXuLy());
 
     // CHỈNH SỬA: Chặn focus các ô text
-    JTextField[] fields = {txtMaPH, txtNgay, txtNV, txtLyDo, txtTong};
+    JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong };
     for (JTextField f : fields) {
       f.setEditable(false);
       f.setBackground(Color.WHITE);
@@ -82,15 +81,31 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     btnSua = new JButton("Sửa");
     btnLuu = new JButton("Lưu");
     btnLuu.setEnabled(false);
-    if (!"Đã xác nhận".equals(ph.getTrangThaiXuLy())){
+    if (!"Đã xác nhận".equals(ph.getTrangThaiXuLy())) {
       add(pnBtn, BorderLayout.SOUTH);
     }
     pnBtn.add(btnSua);
     pnBtn.add(btnLuu);
-    
 
     loadData();
     ganSuKien();
+    suaLaiGiaoDienTheoQuyen();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+    // Kiểm tra quyền SỬA (XK_SUA)
+    if (!listQuyen.contains("XK_SUA")) {
+      // Ẩn các nút thao tác chỉnh sửa
+      btnSua.setVisible(false);
+      btnLuu.setVisible(false);
+
+      // Cập nhật tiêu đề để thông báo đây là chế độ chỉ đọc
+      this.setTitle("Chi Tiết Phiếu Hủy Nguyên Liệu (Chế độ chỉ đọc)");
+    }
+    this.revalidate();
+    this.repaint();
   }
 
   private void loadData() {
@@ -101,7 +116,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
         NguyenLieu nl = NguyenLieuBUS.getNguyenLieuBUS().timNguyenLieu(lo.getMaNL());
         modelChiTiet.addRow(
             new Object[] {
-              lo.getMaLoNL(), (nl != null ? nl.getTenNL() : "N/A"), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaLoNL(), (nl != null ? nl.getTenNL() : "N/A"), lo.getSoLuong(), lo.getGiaNhap()
             });
       }
     }

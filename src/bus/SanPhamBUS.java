@@ -158,7 +158,9 @@ public class SanPhamBUS {
     public String layMaSanPhamKhaDung() {
         return sanPhamDAO.layMaSanPhamKhaDung(null);
     }
-
+    public boolean suaCanhBao(SanPham sanPham){
+        return sanPhamDAO.capNhatMucCanhBao(sanPham);
+    }
     public Boolean XoaSanPham(String maSp) {
         if (!sanPhamDAO.xoaSanPham(maSp)) {
             return false;

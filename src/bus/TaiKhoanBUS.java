@@ -1,8 +1,12 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
@@ -10,8 +14,6 @@ import dto.TaiKhoan;
 import util.XuLyExcel;
 
 public class TaiKhoanBUS {
-
-    // 1. Áp dụng Singleton Pattern
     private static TaiKhoanBUS instance = null;
 
     public static TaiKhoanBUS getTaiKhoanBUS() {
@@ -20,7 +22,7 @@ public class TaiKhoanBUS {
         }
         return instance;
     }
-
+    private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
     private TaiKhoanDao dao = new TaiKhoanDao();
     private ArrayList<TaiKhoan> listTaiKhoan;
     private boolean canUpdate = false;
@@ -101,7 +103,6 @@ public class TaiKhoanBUS {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty()) {
             return false;
         }
-
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
@@ -131,7 +132,17 @@ public class TaiKhoanBUS {
             }
         }
     }
-
+    //lay ma tk
+    public String layMaTaiKhoanKhaDung() {
+        String ma = "";
+        try (Connection conn = DBConnection.getConnection()) {
+            ma = dao.layMaTaiKhoanKhaDung(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ma;
+    }
+    //
     public boolean suaMatKhau(String tenDangNhap, String matKhauMoi) {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
                 matKhauMoi == null || matKhauMoi.trim().isEmpty()) {
@@ -234,32 +245,89 @@ public class TaiKhoanBUS {
         return false;
     }
 
-    public int getTongSoTrang(int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            khoitao();
-        }
-        return (int) Math.ceil((double) listTaiKhoan.size() / pageSize);
-    }
-
-    public ArrayList<TaiKhoan> layTrang(int page, int pageSize) {
-        if (canUpdate || listTaiKhoan == null) {
-            canUpdate = false;
-            khoitao();
-        }
-        ArrayList<TaiKhoan> kq = new ArrayList<>();
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, listTaiKhoan.size());
-
-        if (start >= listTaiKhoan.size())
-            return kq;
-
-        for (int i = start; i < end; i++) {
-            kq.add(listTaiKhoan.get(i));
-        }
-        return kq;
-    }
     //xuat exc
     public boolean xuatExc(){
         return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
+    }
+
+    //nhap excel
+    public boolean nhapTuExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel");
+
+        if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
+            return false;
+        }
+
+        File file = fileChooser.getSelectedFile();
+
+        ArrayList<TaiKhoan> list = XuLyExcel.nhapFileTaiKhoan(file);
+
+        if (list == null || list.isEmpty()) {
+            JOptionPane.showMessageDialog(null, "File không có dữ liệu!");
+            return false;
+        }
+
+        Connection conn = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            String maHienTai = dao.layMaTaiKhoanKhaDung(conn);
+            int so = 1;
+            if (maHienTai != null && !maHienTai.isEmpty()) {
+                so = Integer.parseInt(maHienTai.substring(2));
+            }
+            for (TaiKhoan tk : list) {
+                so++;
+                String maMoi = String.format("TK%02d", so);
+                tk.setMaTK(maMoi);
+
+                tk.setNhomQuyen(
+                    nhomQuyenBUS.timNhomQuyenTheoTen(tk.getNhomQuyen().getTenNhomQuyen())
+                );
+
+                if (tk.getNhomQuyen() == null) {
+                    throw new Exception("Nhóm quyền không tồn tại: " + tk.getTenDangNhap());
+                }
+
+                if (dao.kiemTraTrungUsername(conn, tk.getTenDangNhap())) {
+                    throw new Exception("Username đã tồn tại: " + tk.getTenDangNhap());
+                }
+
+                dao.insertTaiKhoan(conn, tk);
+            }
+
+            conn.commit();
+            JOptionPane.showMessageDialog(null, "Nhập Excel thành công!");
+            canUpdate = true;
+            return true;
+
+        } catch (Exception e) {
+
+            try {
+                if (conn != null) conn.rollback();
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+
+            JOptionPane.showMessageDialog(null,
+                    "Nhập Excel thất bại!\n" + e.getMessage(),
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+
+            return false;
+
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dao.conection.DBConnection;
+
 public class NguyenLieuDAO {
   public ArrayList<NguyenLieu> layListNguyenLieu(Connection conn) {
     ArrayList<NguyenLieu> listNguyenLieu = new ArrayList<>();
@@ -30,7 +32,20 @@ public class NguyenLieuDAO {
     }
     return listNguyenLieu;
   }
-
+public boolean capNhatMucCanhBao(NguyenLieu nguyenLieu) {
+        Connection conn = DBConnection.getConnection();
+        String sql = "UPDATE NguyenLieu SET mucCanhBao = ? WHERE maNL = ?";
+        try {
+            PreparedStatement ps = conn.prepareStatement(sql);
+            ps.setInt(1, nguyenLieu.getMucCanhBao());
+            ps.setString(2, nguyenLieu.getMaNL());
+            
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
   public boolean themNguyenLieu(NguyenLieu nl, Connection conn) {
     // Cập nhật lại số lượng dấu ? cho khớp với logic không có NCC
     String sql =

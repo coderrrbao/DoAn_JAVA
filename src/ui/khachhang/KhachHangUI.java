@@ -16,6 +16,7 @@ import dto.KhachHang;
 import ui.component.IconButtonEditor;
 import ui.component.IconButtonRender;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class KhachHangUI extends JPanel {
@@ -31,7 +32,7 @@ public class KhachHangUI extends JPanel {
     public KhachHangUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
@@ -47,11 +48,14 @@ public class KhachHangUI extends JPanel {
         cbHangThanhVien.setPreferredSize(new Dimension(150, 30));
         cbHangThanhVien.setMaximumSize(new Dimension(150, 30));
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
+        TaoUI.setFixSize(btnTao, 80, 32);
         btnSua = new JButton("Sửa");
+        TaoUI.setFixSize(btnSua, 80, 32);
         btnXoa = new JButton("Xóa");
+        TaoUI.setFixSize(btnXoa, 80, 32);
 
         top.add(cbHangThanhVien);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -117,6 +121,25 @@ public class KhachHangUI extends JPanel {
 
         ganSuKien();
         loadDataFromDatabase();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm khách hàng (KH_TAO)
+        if (!listQuyen.contains("KH_TAO")) {
+            btnTao.setVisible(false);
+        }
+
+        // 2. Quyền Xóa khách hàng (KH_XOA)
+        if (!listQuyen.contains("KH_XOA")) {
+            btnXoa.setVisible(false);
+        }
+
+        // 3. Quyền Sửa khách hàng (KH_SUA)
+        if (!listQuyen.contains("KH_SUA")) {
+            btnSua.setVisible(false);
+        }
     }
 
     private void ganSuKien() {

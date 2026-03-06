@@ -17,6 +17,7 @@ import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -38,6 +39,27 @@ public class KiemKeUI extends JPanel {
         add(centerContainer, BorderLayout.CENTER);
         loaiDuLieu();
         ganSuKien();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        // 1. Quyền Thêm phiếu kiểm kê (KK_TAO)
+        if (!listQuyen.contains("KK_TAO")) {
+            btnThem.setVisible(false);
+        }
+
+        // 2. Quyền Sửa phiếu kiểm kê (KK_SUA)
+        if (!listQuyen.contains("KK_SUA")) {
+            btnSua.setVisible(false);
+        }
+
+        // 3. Quyền Xóa phiếu kiểm kê (KK_XOA)
+        if (!listQuyen.contains("KK_XOA")) {
+            btnXoa.setVisible(false);
+        }
+        this.revalidate();
+        this.repaint();
     }
 
     private void ganSuKien() {
@@ -100,23 +122,23 @@ public class KiemKeUI extends JPanel {
 
     private JPanel taoTopPanel() {
         JPanel top = new JPanel();
-        top.setPreferredSize(new Dimension(100, 35));
+        top.setPreferredSize(new Dimension(100, 45));
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        locNgay = new LocNgay_Item(450, 35);
+        locNgay = new LocNgay_Item(400, 32);
         top.add(locNgay);
 
         btnThem = new JButton("Thêm");
-        btnThem.setPreferredSize(new Dimension(80, 35));
+        btnThem.setPreferredSize(new Dimension(80, 32));
         top.add(btnThem);
 
         btnSua = new JButton("Sửa");
-        btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 35));
+        btnSua.setPreferredSize(new Dimension(btnSua.getPreferredSize().width, 32));
         top.add(btnSua);
 
         btnXoa = new JButton("Xóa");
-        btnXoa.setPreferredSize(new Dimension(80, 35));
+        btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
         return top;
     }

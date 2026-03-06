@@ -3,6 +3,7 @@ package ui.login;
 import bus.NhanVienBUS;
 import bus.TaiKhoanBUS;
 import dto.NhanVien;
+import dto.Quyen;
 import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
@@ -26,10 +27,12 @@ import util.TaoTinNhan;
 import util.TaoUI;
 
 public class LoginUI extends JFrame {
+
+  private static LoginUI loginUI = null;
   private JTextField txtuser;
   private JPasswordField txtpass;
   private TaiKhoanBUS taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
-  private MainFrame mainFrame = new MainFrame(this);
+  private MainFrame mainFrame = new MainFrame();
 
   public LoginUI() {
     setSize(700, 400);
@@ -40,6 +43,7 @@ public class LoginUI extends JFrame {
     setLocationRelativeTo(null);
 
     setVisible(true);
+    LoginUI.setLoginUI(this);
   }
 
   private void initUI(JFrame mainFrame) {
@@ -50,7 +54,7 @@ public class LoginUI extends JFrame {
     Image backgroundImage = icon.getImage();
     JPanel centerPanel = new JPanel() {
       @Override
-       protected void paintComponent(Graphics g) {
+      protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         int panelWidth = getWidth();
         int panelHeight = getHeight();
@@ -60,9 +64,8 @@ public class LoginUI extends JFrame {
 
         // Tính scale giữ nguyên tỉ lệ
         double scale = Math.max(
-                (double) panelWidth / imgWidth,
-                (double) panelHeight / imgHeight
-        );
+            (double) panelWidth / imgWidth,
+            (double) panelHeight / imgHeight);
 
         int newWidth = (int) (imgWidth * scale);
         int newHeight = (int) (imgHeight * scale);
@@ -114,6 +117,8 @@ public class LoginUI extends JFrame {
     // left panel
     JPanel leftJPanel = TaoUI.taoPanelBoxLayoutDoc(300, 400);
     JLabel anh = TaoUI.taoJlabelAnh("/assets/img/login.png", 300, 400);
+    Color customBlue = new Color(31, 177, 190);
+    leftJPanel.setBackground(customBlue);
     leftJPanel.add(anh);
     getContentPane().setBackground(new Color(245, 247, 250));
     // add vao frame chinh
@@ -143,14 +148,25 @@ public class LoginUI extends JFrame {
     }
     // xu ly dang nhap
     TaiKhoan taiKhoan = taiKhoanBUS.dangNhap(user, pass);
+    if(taiKhoan.getTrangThaiXuLy().equals("Đã khóa")){
+      JOptionPane.showMessageDialog( 
+        this, "Tài khoản đã bị khóa", "Thông báo", JOptionPane.ERROR_MESSAGE);
+      return;
+    }
     if (taiKhoan != null) {
       // luu phien dang nhap
       NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
       NhanVien nv = nhanVienBUS.timNhanVien(taiKhoan.getMaNV());
       PhienDangNhap.setUser(nv);
       PhienDangNhap.setTaiKhoan(taiKhoan);
+      for (Quyen quyen : PhienDangNhap.getTaiKhoan().getNhomQuyen().getListQuyen()) {
+        PhienDangNhap.themQuyen(quyen.getTenQuyen());
+      }
       TaoTinNhan.showAutoCloseMessage("Đăng nhập thành công", "thông báo", 1);
       mainFrame.getTopPaner().capNhapThongTin(nv);
+      mainFrame.getContentPaner().suaLaiGiaoDienTheoQuyen();
+      mainFrame.getMenuPanel().suaLaiGiaoDienTheoQuyen();
+
       mainFrame.setVisible(true);
       this.dispose();
 
@@ -167,6 +183,14 @@ public class LoginUI extends JFrame {
   public void lamMoi() {
     txtpass.setText("");
     txtuser.setText("");
+  }
+
+  public static LoginUI getLoginUI() {
+    return loginUI;
+  }
+
+  public static void setLoginUI(LoginUI loginUI) {
+    LoginUI.loginUI = loginUI;
   }
 
   public static void main(String[] args) {

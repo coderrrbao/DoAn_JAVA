@@ -31,8 +31,30 @@ public class FormKhuyenMai extends JDialog {
         ganSuKien(editKM);
 
         setLocationRelativeTo(owner);
+        suaLaiGiaoDienTheoQuyen();
     }
+public void suaLaiGiaoDienTheoQuyen() {
+    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
+    // 1. Trường hợp Thêm mới
+    if (!isEdit) {
+        if (!listQuyen.contains("KM_TAO")) {
+            btnThem.setEnabled(false);
+            setEditableForm(false);
+            setTitle("Thông báo: Bạn không có quyền thêm khuyến mãi");
+        }
+    } 
+    // 2. Trường hợp Sửa/Chi tiết
+    else {
+        if (!listQuyen.contains("KM_SUA")) {
+            btnSua.setVisible(false); // Ẩn nút sửa để họ chỉ được xem
+            btnLuu.setVisible(false);
+            setTitle("Chi tiết khuyến mãi (Chỉ xem)");
+            // Luôn khóa form nếu không có quyền sửa
+            anThaoTacSua(); 
+        }
+    }
+}
     private void initUI() {
         setLayout(new BorderLayout());
         JPanel pnlMain = new JPanel();

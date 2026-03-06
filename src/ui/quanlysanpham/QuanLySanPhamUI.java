@@ -12,8 +12,10 @@ import bus.DanhMucBUS;
 import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import dto.NhaCungCap;
+import dto.PhanQuyen;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -22,14 +24,12 @@ public class QuanLySanPhamUI extends JPanel {
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
-    private JFrame owner;
     private ArrayList<SanPham> listSanPham;
     private ArrayList<SanPham> listSanPhamLoc;
     private int stt = 0;
     private DefaultTableModel model;
     private JScrollPane scrollPane;
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
-    private String[] ncc = new String[0];
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
 
@@ -37,7 +37,6 @@ public class QuanLySanPhamUI extends JPanel {
     private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
 
     public QuanLySanPhamUI(JFrame owner) {
-        this.owner = owner;
         this.listSanPham = new ArrayList<>();
         this.listSanPhamLoc = new ArrayList<>();
 
@@ -46,8 +45,21 @@ public class QuanLySanPhamUI extends JPanel {
         initTopBar();
         initMainContent();
         ganSuKienChoNut();
-
         loadDataFromDatabase();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+        if (!listQuyen.contains("QLSP_XOA")) {
+            xoaBtn.setVisible(false);
+        }
+        if (!listQuyen.contains("QLSP_TAO")) {
+            themSpBtn.setVisible(false);
+            xuaFileBtn.setVisible(false);
+        }
+        chiTietSanPhamDialog.suaLaiGiaoDienTheoQuyen();
+        this.revalidate();
+        this.repaint();
     }
 
     private void initTopBar() {
@@ -57,7 +69,6 @@ public class QuanLySanPhamUI extends JPanel {
 
         cbLoaiNuoc = new JComboBox<>(loai);
         cbLoaiNuoc.setMaximumSize(new Dimension(90, 32));
-
 
         cbDanhMuc = new JComboBox<>(danhmuc);
         cbDanhMuc.setMaximumSize(new Dimension(90, 32));
@@ -235,7 +246,7 @@ public class QuanLySanPhamUI extends JPanel {
                 matchTrangThai = true;
             }
 
-            if ( matchLoai && matchDM && matchTrangThai && matchSearch) {
+            if (matchLoai && matchDM && matchTrangThai && matchSearch) {
                 listSanPhamLoc.add(sanPham);
             }
         }

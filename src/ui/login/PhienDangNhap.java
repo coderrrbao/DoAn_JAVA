@@ -1,11 +1,14 @@
 package ui.login;
 
+import java.util.HashSet;
+
 import dto.NhanVien;
 import dto.TaiKhoan;
 
 public class PhienDangNhap {
     private static NhanVien user;
     private static TaiKhoan taiKhoan;
+    private static HashSet<String> listQuyen = new HashSet<>();
 
     public static void setUser(NhanVien nv) {
         user = nv;
@@ -21,6 +24,18 @@ public class PhienDangNhap {
 
     public static void setTaiKhoan(TaiKhoan taiKhoan) {
         PhienDangNhap.taiKhoan = taiKhoan;
+    }
+
+    public static HashSet<String> getListQuyen() {
+        return listQuyen;
+    }
+
+    public static void themQuyen(String tenQuyen) {
+        listQuyen.add(tenQuyen);
+    }
+
+    public static void setListQuyen(HashSet<String> listQuyen) {
+        PhienDangNhap.listQuyen = listQuyen;
     }
 
     public static void dangXuat() {

@@ -7,11 +7,14 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.util.ArrayList;
+import java.util.HashSet;
+
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class NguyenLieuUI extends JPanel {
@@ -25,18 +28,18 @@ public class NguyenLieuUI extends JPanel {
     setLayout(new BorderLayout());
 
     // --- GIAO DIỆN PHẦN TRÊN ---
-    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+    JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
     top.setBackground(Color.WHITE);
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
-    search_Item = new Search_Item(300, 30);
+    search_Item = new Search_Item(300, 32);
     btnTao = new JButton("Thêm");
     btnSua = new JButton("Sửa");
     btnXoa = new JButton("Xóa");
 
-    TaoUI.setFixSize(btnTao, 80, 30);
-    TaoUI.setFixSize(btnXoa, 80, 30);
-    TaoUI.setFixSize(btnSua, 80, 30);
+    TaoUI.setFixSize(btnTao, 80, 32);
+    TaoUI.setFixSize(btnXoa, 80, 32);
+    TaoUI.setFixSize(btnSua, 80, 32);
 
     top.add(search_Item);
     top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -75,6 +78,22 @@ public class NguyenLieuUI extends JPanel {
 
     loadDataToTable();
     addEvents();
+  }
+
+  public void suaLaiGiaoDienTheoQuyen() {
+    HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+
+    if (!listQuyen.contains("NL_TAO")) {
+      btnTao.setVisible(false);
+    }
+
+    if (!listQuyen.contains("NL_SUA")) {
+      btnSua.setVisible(false);
+    }
+
+    if (!listQuyen.contains("NL_XOA")) {
+      btnXoa.setVisible(false);
+    }
   }
 
   public void loadDataToTable() {

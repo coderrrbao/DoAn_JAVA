@@ -2,6 +2,7 @@ package ui.quanlysanpham;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -18,6 +19,7 @@ import dto.DanhMuc;
 import dto.NhaCungCap;
 import dto.SanPham;
 import dto.Size;
+import ui.login.PhienDangNhap;
 import util.Anh;
 import util.TaoUI;
 
@@ -67,7 +69,7 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         btnLuuThayDoi = new JButton("Lưu");
         btnSua = new JButton("Sửa");
-        btnXemCongThuc = new JButton("Xem công thức");
+        btnXemCongThuc = new JButton("Công thức");
         btnXoaSize = new JButton("Xóa");
         btnThemSize = new JButton("Thêm");
         btnSuaSize = new JButton("Sửa");
@@ -99,7 +101,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             thongTin2.add(TaoUI.taoFieldText("Mã sản phẩm", 80, 80, 30, 5, tfMaSanPham));
         }
         thongTin2.add(Box.createHorizontalGlue());
-        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 60,100, 30, 5, tfCanhBao));
+        thongTin2.add(TaoUI.taoFieldText("Cảnh báo", 60, 100, 30, 5, tfCanhBao));
 
         JPanel thongTin3 = TaoUI.taoPanelBoxLayoutNgang(400, 35);
         thongTin3.add(TaoUI.taoFieldText("Dung tích(ml)", 80, 80, 30, 5, tfDungTich));
@@ -290,8 +292,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSize.setEnabled(false);
         btnSuaSize.setEnabled(false);
         btnXoaSize.setEnabled(false);
-        btnXemCongThuc.setEnabled(false);
-
+        xemCongThucDialog.tacThaoTacSua();
     }
 
     private void batThaoTacSua() {
@@ -310,7 +311,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSize.setEnabled(true);
         btnSuaSize.setEnabled(true);
         btnXoaSize.setEnabled(true);
-        btnXemCongThuc.setEnabled(true);
+        xemCongThucDialog.batThaoTacSua();
     }
 
     private void ganSuKien() {
@@ -496,8 +497,36 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
         return listSize;
     }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+        if (!listQuyen.contains("QLSP_SUA")) {
+            btnSua.setVisible(false);
+            btnLuuThayDoi.setVisible(false);
+            btnSuaSize.setVisible(false);
+            btnChonAnh.setVisible(false);
+        }
+
+        if (!listQuyen.contains("QLSP_TAO")) {
+            btnThemSp.setVisible(false);
+            btnThemSize.setVisible(false);
+            btnLamMoi.setVisible(false);
+        }
+
+        if (!listQuyen.contains("QLSP_XOA")) {
+            btnXoaSize.setVisible(false);
+        }
+        xemCongThucDialog.suaLaiGiaoDienTheoQuyen();
+        this.revalidate();
+        this.repaint();
+    }
+
+    public JButton getBtnSua() {
+        return btnSua;
+    }
+
     public static void main(String[] args) {
-        SanPham  sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP01");
+        SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP02");
         ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(sanPham, null);
         chiTietSanPhamDialog.setVisible(true);
     }

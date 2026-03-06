@@ -1,6 +1,7 @@
 package ui.quanlysanpham;
 
 import java.awt.BorderLayout;
+import java.util.HashSet;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -9,6 +10,7 @@ import javax.swing.JTextField;
 
 import bus.SizeBUS;
 import dto.Size;
+import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class SizeDialog extends JDialog {
@@ -47,6 +49,21 @@ public class SizeDialog extends JDialog {
         loadDuLieu();
         ganSuKien();
         setVisible(true);
+        suaLaiGiaoDienTheoQuyen();
+    }
+
+    private void suaLaiGiaoDienTheoQuyen() {
+        HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("QLSP_TAO")) {
+            themBtn.setVisible(false);
+            lamMoiBtn.setVisible(false);
+        }
+
+        if (!listQuyen.contains("QLSP_SUA")) {
+            suaBtn.setVisible(false);
+            luuBtn.setVisible(false);
+        }
     }
 
     private void loadDuLieu() {

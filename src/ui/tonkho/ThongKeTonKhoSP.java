@@ -1,0 +1,64 @@
+package ui.tonkho;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Font;
+
+import javax.swing.Box;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+
+import bus.LoSanPhamBUS;
+import bus.SanPhamBUS;
+import dto.LoSanPham;
+import dto.SanPham;
+import util.TaoUI;
+
+public class ThongKeTonKhoSP extends JPanel {
+
+    private JLabel lbSoSp, lbTongLo, lbTongLoHetHan;
+
+    private JPanel taoTheThongKe(String iconPath, String tieuDe, Color mauNen, JLabel lblSo) {
+        JPanel card = TaoUI.taoPanelCanGiua(280, 100);
+        card.setBackground(mauNen);
+
+        JLabel icon = TaoUI.taoJlabelAnh(iconPath, 70, 70);
+        TaoUI.addItem(card, icon, 10, true);
+
+        JPanel info = new JPanel(new BorderLayout());
+        info.setOpaque(false);
+        lblSo.setFont(new Font("Arial", Font.BOLD, 25));
+        info.add(lblSo, BorderLayout.CENTER);
+
+        JLabel lblTitle = new JLabel(tieuDe);
+        lblTitle.setFont(new Font("Arial", Font.PLAIN, 15));
+        info.add(lblTitle, BorderLayout.SOUTH);
+
+        TaoUI.addItem(card, info, 10, true);
+        return card;
+    }
+
+    public void loadDuLieu() {
+        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
+        LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
+        lbSoSp.setText(String.valueOf(sanPhamBUS.layListSanPham().size()));
+        lbTongLo.setText(String.valueOf(loSanPhamBUS.layListLoSanPham().size()));
+        lbTongLoHetHan.setText(String.valueOf(loSanPhamBUS.layTongLoHetHan()));
+    }
+
+    public ThongKeTonKhoSP() {
+        lbSoSp = new JLabel();
+        lbTongLo = new JLabel();
+        lbTongLoHetHan = new JLabel();
+
+        TaoUI.taoPanelBoxLayoutNgang(this, 3000, 100);
+        add(taoTheThongKe("/assets/img/logo.png", "Sản phẩm", new Color(187, 222, 251), lbSoSp));
+        add(Box.createRigidArea(new Dimension(25, 0)));
+        add(taoTheThongKe("/assets/img/logo.png", "Lô sản phẩm", new Color(255, 249, 196), lbTongLo));
+        add(Box.createRigidArea(new Dimension(25, 0)));
+        add(taoTheThongKe("/assets/img/logo.png", "Lô hết hạn", new Color(255, 205, 210), lbTongLoHetHan));
+        add(Box.createRigidArea(new Dimension(25, 0)));
+    }
+
+}
