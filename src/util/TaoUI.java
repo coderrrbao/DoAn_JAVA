@@ -32,6 +32,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -127,7 +128,6 @@ public class TaoUI {
             JTextField input) {
 
         JPanel ctn = new JPanel();
-
         ctn.setLayout(new BoxLayout(ctn, BoxLayout.X_AXIS));
 
         ctn.setPreferredSize(new Dimension(widthInput + widthLabel + gap, height));
@@ -552,6 +552,7 @@ public class TaoUI {
 
         // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
+        table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
     }
 
@@ -588,6 +589,7 @@ public class TaoUI {
 
         // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
+        table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
     }
 

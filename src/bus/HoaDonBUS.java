@@ -1,4 +1,5 @@
 package bus;
+
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.sql.Connection;
@@ -15,6 +16,7 @@ import dto.ChiTietHoaDon;
 import dto.CongThuc;
 import dto.HoaDon;
 import dto.Size;
+import ui.thongke.ThongKeValue;
 
 import javax.swing.*;
 
@@ -37,8 +39,7 @@ public class HoaDonBUS {
                 if (!loSanPhamDAO.kiemTraDuHang(maSP, soLuongMua)) {
                     return "Sản phẩm " + ct.getSanPham().getTenSP() + " không đủ hàng!";
                 }
-            }
-            else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
+            } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                 CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
                 CongThuc congThuc = congThucBUS.timCongThucChoSP(maSP);
 
@@ -83,8 +84,7 @@ public class HoaDonBUS {
                         conn.rollback();
                         return false;
                     }
-                }
-                else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
+                } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                     CongThuc congThuc = CongThucBUS.getCongThucBUS().timCongThucChoSP(maSP);
                     if (congThuc.getListChiTietCongThuc().isEmpty()) {
                         System.out.println("LỖI NGHIÊM TRỌNG: Món " + maSP + " chưa được cấu hình công thức!");
@@ -93,8 +93,8 @@ public class HoaDonBUS {
                     }
                     for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                         double canTru = ctct.getSoLuong() * soLuongMua;
-                        if (size!=null){
-                            canTru=canTru+canTru*((double)size.getPhanTramNL()/100);
+                        if (size != null) {
+                            canTru = canTru + canTru * ((double) size.getPhanTramNL() / 100);
                         }
                         String maNL = ctct.getNguyenLieu().getMaNL();
                         boolean ketQuaTru = loNguyenLieuDAO.truNguyenLieu(conn, maNL, canTru);
@@ -114,18 +114,41 @@ public class HoaDonBUS {
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                if (conn != null) conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
             return false;
         } finally {
             try {
-                if (conn != null) conn.close();
+                if (conn != null)
+                    conn.close();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoNgay(String ngay) {
+        if (ngay == null || ngay.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return hoaDonDAO.layKeQuaThongKeTheoNgay(ngay);
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoThang(int thang, int nam) {
+        if (thang < 1 || thang > 12 || nam < 0) {
+            return new ArrayList<>();
+        }
+        return hoaDonDAO.layKetQuaThongKeTheoThang(thang, nam);
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoNam(int nam) {
+        if (nam < 0) {
+            return new ArrayList<>();
+        }
+        return hoaDonDAO.layKetQuaThongKeTheoNam(nam);
     }
 
     public String taoMaHoaDonMoi() {

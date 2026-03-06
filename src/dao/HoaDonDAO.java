@@ -8,6 +8,7 @@ import dao.conection.DBConnection;
 import dto.HoaDon;
 import dto.KhuyenMai;
 import dto.NhanVien;
+import ui.thongke.ThongKeValue;
 
 public class HoaDonDAO {
 
@@ -16,7 +17,7 @@ public class HoaDonDAO {
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, hd.getMaHD());
             if (hd.getNhanVien() != null) {
@@ -48,12 +49,84 @@ public class HoaDonDAO {
         }
     }
 
+    public ArrayList<ThongKeValue> layKeQuaThongKeTheoNgay(String ngay) {
+        ArrayList<ThongKeValue> list = new ArrayList<>();
+        String sql = "SELECT DATEPART(HOUR, NgayBan) AS GIO,SUM(TongTien) AS TongTien FROM HoaDon WHERE CAST(NgayBan AS DATE)=? GROUP BY DATEPART(HOUR, NgayBan) ORDER BY GIO";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, ngay);
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                ThongKeValue thongKeValue = new ThongKeValue();
+                thongKeValue.setTongTien(rs.getDouble("TongTien"));
+                thongKeValue.setThoiGian(rs.getString("GIO") + ":00");
+                list.add(thongKeValue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<ThongKeValue> layKetQuaThongKeTheoThang(int thang, int nam) {
+        ArrayList<ThongKeValue> list = new ArrayList<>();
+        String sql = "SELECT DAY(NgayBan) AS NGAY, SUM(TongTien) AS TongTien " +
+                "FROM HoaDon " +
+                "WHERE MONTH(NgayBan) = ? AND YEAR(NgayBan) = ? " +
+                "GROUP BY DAY(NgayBan) " +
+                "ORDER BY NGAY";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, thang);
+            pst.setInt(2, nam);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                ThongKeValue thongKeValue = new ThongKeValue();
+                thongKeValue.setTongTien(rs.getDouble("TongTien"));
+                thongKeValue.setThoiGian("Ngày " + rs.getInt("NGAY"));
+                list.add(thongKeValue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public ArrayList<ThongKeValue> layKetQuaThongKeTheoNam(int nam) {
+        ArrayList<ThongKeValue> list = new ArrayList<>();
+        String sql = "SELECT MONTH(NgayBan) AS THANG, SUM(TongTien) AS TongTien " +
+                "FROM HoaDon " +
+                "WHERE YEAR(NgayBan) = ? " +
+                "GROUP BY MONTH(NgayBan) " +
+                "ORDER BY THANG";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setInt(1, nam);
+            ResultSet rs = pst.executeQuery();
+
+            while (rs.next()) {
+                ThongKeValue thongKeValue = new ThongKeValue();
+                thongKeValue.setTongTien(rs.getDouble("TongTien"));
+                thongKeValue.setThoiGian("Tháng " + rs.getInt("THANG"));
+                list.add(thongKeValue);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public ArrayList<HoaDon> layDanhSachHoaDon() {
         ArrayList<HoaDon> list = new ArrayList<>();
         String sql = "SELECT * FROM HoaDon WHERE TrangThai = 1 ORDER BY MaHD DESC";
         try (Connection conn = DBConnection.getConnection();
-            PreparedStatement pst = conn.prepareStatement(sql);
-            ResultSet rs = pst.executeQuery()) {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
             while (rs.next()) {
                 HoaDon hd = new HoaDon();
                 hd.setMaHD(rs.getString("MaHD"));
@@ -89,8 +162,8 @@ public class HoaDonDAO {
         String sql = "SELECT TOP 1 MaHD FROM HoaDon ORDER BY MaHD DESC";
 
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
 
             if (rs.next()) {
                 return rs.getString("MaHD");
@@ -104,7 +177,7 @@ public class HoaDonDAO {
     public HoaDon timHoaDonTheoMa(String maHD) {
         String sql = "SELECT * FROM HoaDon WHERE MaHD = ?";
         try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+                java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, maHD);
 
@@ -146,7 +219,7 @@ public class HoaDonDAO {
     public boolean xoaHoaDon(String maHD) {
         String sql = "UPDATE HoaDon SET TrangThai = 0 WHERE MaHD = ?";
         try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+                java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, maHD);
             return pst.executeUpdate() > 0;
         } catch (Exception e) {

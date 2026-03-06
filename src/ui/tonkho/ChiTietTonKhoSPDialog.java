@@ -62,7 +62,7 @@ public class ChiTietTonKhoSPDialog extends JDialog {
         loadDuLieu();
     }
 
-    private void loadDuLieu() {
+    public void loadDuLieu() {
         if (sanPham == null) {
             return;
         }
@@ -86,14 +86,10 @@ public class ChiTietTonKhoSPDialog extends JDialog {
             }
         }
         if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+            setTitle("Danh sách tồn kho nguyên liệu cho sản phẩm : "+sanPham.getTenSP());
             center.add(scrollPanePhaChe, BorderLayout.CENTER);
             modelPhaChe.setRowCount(0);
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
-            if (sanPham.getCongThuc() == null) {
-                TaoTinNhan.showAutoCloseMessage("Sản phẩm chưa có công thức", "Thông báo", 1);
-                dispose();
-                return;
-            }
             for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
                 NguyenLieu nguyenLieu = chiTietCongThuc.getNguyenLieu();
                 double soLuong = loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL());

@@ -25,6 +25,7 @@ public class ChiTietTonKhoNLDialog extends JDialog {
     private JTable tableNL;
     private DefaultTableModel modelNL;
     private NguyenLieu nguyenLieu;
+ 
 
     public ChiTietTonKhoNLDialog(JFrame owner, NguyenLieu nguyenLieu) {
         super(owner, "Chi tiết lô hàng - " + nguyenLieu.getTenNL(), true);
