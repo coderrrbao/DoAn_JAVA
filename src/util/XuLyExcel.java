@@ -13,6 +13,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import bus.NhomQuyenBUS;
 import dto.NhomQuyen;
+import dto.PhanQuyen;
 import dto.SanPham;
 import dto.TaiKhoan;
 
@@ -100,8 +101,6 @@ public class XuLyExcel {
             try (Workbook workbook = new XSSFWorkbook()) {
 
                 Sheet sheet = workbook.createSheet("Tài Khoản");
-
-                // ===== 1. Tạo Header =====
                 String[] headers = {
                         "Mã TK",
                         "Mã Nhân Viên",
@@ -110,10 +109,8 @@ public class XuLyExcel {
                         "Nhóm Quyền",
                         "Trạng Thái Xử Lý"
                 };
-
                 Row headerRow = sheet.createRow(0);
 
-                // Style in đậm
                 CellStyle headerStyle = workbook.createCellStyle();
                 Font font = workbook.createFont();
                 font.setBold(true);
@@ -124,48 +121,128 @@ public class XuLyExcel {
                     cell.setCellValue(headers[i]);
                     cell.setCellStyle(headerStyle);
                 }
-
-                // ===== 2. Đổ dữ liệu =====
                 int rowNum = 1;
-
                 for (TaiKhoan tk : list) {
-
                     Row row = sheet.createRow(rowNum++);
-
                     row.createCell(0).setCellValue(tk.getMaTK());
                     row.createCell(1).setCellValue(tk.getMaNV());
                     row.createCell(2).setCellValue(tk.getTenDangNhap());
                     row.createCell(3).setCellValue(tk.getMatKhau());
 
-                    // Kiểm tra null để tránh lỗi
                     String tenNhomQuyen = (tk.getNhomQuyen() != null)
                             ? tk.getNhomQuyen().getTenNhomQuyen()
                             : "Chưa có";
 
                     row.createCell(4).setCellValue(tenNhomQuyen);
-
                     row.createCell(5).setCellValue(tk.getTrangThaiXuLy());
                 }
-
-                // ===== 3. Auto size cột =====
                 for (int i = 0; i < headers.length; i++) {
                     sheet.autoSizeColumn(i);
                 }
-
-                // ===== 4. Ghi file =====
                 try (FileOutputStream out = new FileOutputStream(fileToSave)) {
                     workbook.write(out);
                     JOptionPane.showMessageDialog(null, "Xuất tài khoản thành công!");
                     return true;
                 }
-
             } catch (Exception e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Lỗi khi xuất file: " + e.getMessage());
             }
         }
+        return false;
+    }
+    
+    public static boolean xuatFileNhomQuyen(ArrayList<NhomQuyen> list) {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file");
+        fileChooser.setSelectedFile(new File("DanhSachNhomQuyen.xlsx"));
+        
+        if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase().endsWith(".xlsx")) {
+                fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".xlsx");
+            }
+
+            try (Workbook workbook = new XSSFWorkbook()) {
+                Sheet sheet = workbook.createSheet("Nhóm Quyền");
+                String[] headers = {
+                        "Mã nhóm quyền",
+                        "Tên nhóm quyền",
+                        "Tổng số quyền"
+                };
+                Row headerRow = sheet.createRow(0);
+                CellStyle headerStyle = workbook.createCellStyle();
+                Font font = workbook.createFont();
+                font.setBold(true);
+                headerStyle.setFont(font);
+                for (int i = 0; i < headers.length; i++) {
+                    Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+                int rowNum = 1;
+
+                for (NhomQuyen nq : list) {
+                    Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(nq.getMaNQ());
+                    row.createCell(1).setCellValue(nq.getTenNhomQuyen());
+                    row.createCell(2).setCellValue(nq.getListQuyen().size());
+                }
+
+                for (int i = 0; i < headers.length; i++) {
+                    sheet.autoSizeColumn(i);
+                }
+                try (FileOutputStream out = new FileOutputStream(fileToSave)) {
+                    workbook.write(out);
+                    JOptionPane.showMessageDialog(null,
+                            "Xuất danh sách nhóm quyền thành công!");
+                    return true;
+                }
+
+            } catch (Exception e) {
+
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null,
+                        "Lỗi khi xuất file: " + e.getMessage());
+            }
+        }
 
         return false;
+    }
+    
+    //nhap exc phan quyen nhom quyen
+    public static Object[] nhapFilePhanQuyen(File file) {
+        ArrayList<NhomQuyen> listNhomQuyen = new ArrayList<>();
+        ArrayList<PhanQuyen> listPhanQuyen = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+            Workbook workbook = new XSSFWorkbook(fis)) {
+            
+            Sheet sheet1 = workbook.getSheetAt(0);
+            for (int i = 1; i <= sheet1.getLastRowNum(); i++) {
+                Row row = sheet1.getRow(i);
+                if (row == null) continue;
+
+                NhomQuyen nq = new NhomQuyen();
+
+                nq.setMaNQ(getStringCell(row.getCell(0)));
+                nq.setTenNhomQuyen(getStringCell(row.getCell(1)));
+
+                listNhomQuyen.add(nq);
+            }
+
+            Sheet sheet2 = workbook.getSheetAt(1);
+            for (int i = 1; i <= sheet2.getLastRowNum(); i++) {
+                Row row = sheet2.getRow(i);
+                if (row == null) continue;
+                PhanQuyen pq = new PhanQuyen();
+                pq.setMaNQ(getStringCell(row.getCell(0)));
+                pq.setMaQuyen(getStringCell(row.getCell(1)));
+                listPhanQuyen.add(pq);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new Object[]{listNhomQuyen, listPhanQuyen};
     }
 
     public static boolean xuatFileHoaDon(ArrayList<HoaDon> list) {
