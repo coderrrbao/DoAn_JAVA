@@ -26,7 +26,7 @@ public class NhanVienBUS {
     private ArrayList<NhanVien> listNhanVien;
     private boolean canUpdate = false;
 
-    private NhanVienBUS() {
+    public NhanVienBUS() {
         khoitao();
     }
 
@@ -40,6 +40,11 @@ public class NhanVienBUS {
             khoitao();
         }
         return listNhanVien;
+    }
+
+    /** Gọi khi dữ liệu thay đổi bên ngoài BUS (vd: import Excel qua DAO) để lần gọi sau layDanhSachNhanVien() sẽ load lại từ DB. */
+    public void yeuCauCapNhat() {
+        this.canUpdate = true;
     }
 
     public String themNhanVien(NhanVien nv) {

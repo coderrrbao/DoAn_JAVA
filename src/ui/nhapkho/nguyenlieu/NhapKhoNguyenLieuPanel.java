@@ -3,30 +3,43 @@ package ui.nhapkho.nguyenlieu;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.util.HashSet;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
+import bus.NhanVienBUS;
 import bus.PhieuNhapNguyenLieuBUS;
+import dao.NhanVienDAO;
+import dao.PhieuNhapNguyenLieuDAO;
+import dao.conection.DBConnection;
 import dto.NhaCungCap;
+import dto.NhanVien;
 import dto.PhieuNhapNguyenLieu;
 import ui.component.LocNgay_Item;
 import ui.login.PhienDangNhap;
+import util.ExcelUtil;
+import util.NhapKhoUtil;
 import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhapKhoNguyenLieuPanel extends JPanel {
-    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn;
+    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn, NhapExcelBtn, XuatExcelBtn;
     private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
+    private PhieuNhapNguyenLieuBUS bus = new PhieuNhapNguyenLieuBUS();
 
     public NhapKhoNguyenLieuPanel() {
         setLayout(new BorderLayout());
@@ -36,10 +49,14 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         nhapHangBtn = new JButton("Thêm");
         xemChiTietBtn = new JButton("Xem Chi tiết");
         xoaBtn = new JButton("Xóa");
+        NhapExcelBtn = new JButton("Nhập Excel");
+        XuatExcelBtn = new JButton("Xuất Excel");
 
         TaoUI.setFixSize(nhapHangBtn, 100, 32);
-        TaoUI.setFixSize(xemChiTietBtn, 150, 32);
+        TaoUI.setFixSize(xemChiTietBtn, 120, 32);
         TaoUI.setFixSize(xoaBtn, 100, 32);
+        TaoUI.setFixSize(NhapExcelBtn, 120, 32);
+        TaoUI.setFixSize(XuatExcelBtn, 120, 32);
 
         locNgay_Item = new LocNgay_Item(400, 32);
         top.add(locNgay_Item);
@@ -49,6 +66,10 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         top.add(xemChiTietBtn);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(xoaBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(NhapExcelBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(XuatExcelBtn);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -121,6 +142,11 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", 1);
             }
         });
+
+        XuatExcelBtn.addActionListener(
+                e -> ExcelUtil.export(bus.layListPhieuNhapNguyenLieu(), "DanhSachNhapKhoNguyenLieu"));
+
+        NhapExcelBtn.addActionListener(e -> importFile());
         locNgay_Item.setEvent(() -> {
             loadDuLieu();
         });
@@ -141,6 +167,113 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
                         nhaCungCap != null ? nhaCungCap.getTenNCC() : "",
                         phieuNhapNguyenLieu.getTrangThaiXuLy()
                 });
+            }
+        }
+    }
+
+    private void importFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File selectedFile = fileChooser.getSelectedFile();
+
+        if (!selectedFile.getName().toLowerCase().endsWith(".xlsx")) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Định dạng file không hợp lệ (.xlsx)",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        List<PhieuNhapNguyenLieu> list;
+
+        try {
+            list = ExcelUtil.importFile(selectedFile, row -> {
+
+                String maPN = ExcelUtil.getNullableString(row, 0);
+                String ngayNhap = ExcelUtil.getNullableString(row, 1);
+                String maNV = ExcelUtil.getNullableString(row, 2);
+                String GhiChu = ExcelUtil.getNullableString(row, 3);
+                String MaNCC = ExcelUtil.getNullableString(row, 4);
+                String trangThaiStr = ExcelUtil.getNullableString(row, 5);
+
+                PhieuNhapNguyenLieu pn = new PhieuNhapNguyenLieu();
+                pn.setMaPN(maPN);
+                pn.setNgayNhap(ngayNhap);
+                pn.setMaNV(maNV);
+                pn.setGhiChu(GhiChu);
+                pn.setMaNCC(MaNCC);
+                pn.setTrangThaiXuLy(trangThaiStr != null ? trangThaiStr : "Đang xử lý");
+                return pn;
+            });
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Lỗi đọc file Excel!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Connection conn = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            PhieuNhapNguyenLieuDAO dao = new PhieuNhapNguyenLieuDAO();
+
+            for (PhieuNhapNguyenLieu pn : list) {
+                String maPN = pn.getMaPN();
+                if (maPN == null || maPN.trim().isEmpty()) {
+                    continue;
+                }
+                if (dao.exist(maPN, conn)) {
+                    continue;
+                }
+                if (pn.getTrangThaiXuLy() == null || pn.getTrangThaiXuLy().trim().isEmpty()) {
+                    pn.setTrangThaiXuLy("Đang xử lý");
+                }
+                pn.setTongTien(0);
+                dao.themPhieuNhapNguyenLieu(pn, conn);
+            }
+
+            conn.commit();
+
+            loadDuLieu();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Import Thành công:",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+        } catch (Exception e) {
+            try {
+                if (conn != null)
+                    conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "Import thất bại!\nCó dữ liệu trùng hoặc sai.\nĐã rollback toàn bộ.",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
     }

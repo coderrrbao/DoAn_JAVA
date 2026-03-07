@@ -1,22 +1,30 @@
 package ui.hangthanhvien;
 
 import bus.HangThanhVienBUS;
+import dao.HangThanhVienDAO;
+import dao.conection.DBConnection;
 import dto.HangThanhVien;
+import dto.HangThanhVien;
+
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.util.ArrayList;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
+import util.ExcelUtil;
 import util.TaoUI;
 
 public class HangThanhVienUI extends JPanel {
-    private JButton btnTao, btnXoa, btnSua;
+    private JButton btnTao, btnXoa, btnSua, btnXuatExcel, btnNhapExcel;
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
@@ -34,10 +42,14 @@ public class HangThanhVienUI extends JPanel {
         btnTao = new JButton("Thêm Hạng");
         btnSua = new JButton("Sửa");
         btnXoa = new JButton("Xóa");
+        btnNhapExcel = new JButton("Nhập Excel");
+        btnXuatExcel = new JButton("Xuất Excel");
 
         TaoUI.setFixSize(btnTao, 120, 32);
         TaoUI.setFixSize(btnXoa, 80, 32);
         TaoUI.setFixSize(btnSua, 80, 32);
+        TaoUI.setFixSize(btnNhapExcel, 120, 32);
+        TaoUI.setFixSize(btnXuatExcel, 120, 32);
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -46,6 +58,10 @@ public class HangThanhVienUI extends JPanel {
         top.add(btnSua);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnNhapExcel);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(Box.createHorizontalGlue());
 
@@ -154,6 +170,9 @@ public class HangThanhVienUI extends JPanel {
                         }
                     }
                 });
+        btnXuatExcel.addActionListener(e -> ExcelUtil.export(htvBUS.layListHangThanhVien(), "DanhSachHangThanhVien"));
+
+        btnNhapExcel.addActionListener(e -> importFile());
 
         search_Item.getSearchText().getDocument().addDocumentListener(new DocumentListener() {
             @Override
@@ -183,6 +202,101 @@ public class HangThanhVienUI extends JPanel {
                     htv.getPhanTramGiam(),
                     String.format("%,.0f", htv.getDieuKien()) // Định dạng tiền tệ cho đẹp mắt
             });
+        }
+        model.fireTableDataChanged();
+        tableUI.revalidate();
+        tableUI.repaint();
+    }
+
+    private void importFile() {
+        JFileChooser fileChooser = new JFileChooser();
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+
+        File selectedFile = fileChooser.getSelectedFile();
+
+        if (!selectedFile.getName().toLowerCase().endsWith(".xlsx")) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Định dạng file không hợp lệ (.xlsx)",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        List<HangThanhVien> list;
+
+        try {
+            list = ExcelUtil.importFile(selectedFile, row -> {
+
+                String maHang = ExcelUtil.getNullableString(row, 0);
+                String tenHang = ExcelUtil.getNullableString(row, 1);
+                Integer phanTram = ExcelUtil.getIntCell(row, 2);
+                Double dieuKienVal = ExcelUtil.getDoubleCell(row, 3);
+
+                int phanTramGiam = phanTram != null ? phanTram : 0;
+                double dieuKien = dieuKienVal != null ? dieuKienVal : 0;
+
+                return new HangThanhVien(
+                        maHang, tenHang, phanTramGiam, dieuKien);
+            });
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Lỗi đọc file Excel!",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Connection conn = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            HangThanhVienDAO dao = new HangThanhVienDAO();
+
+            for (HangThanhVien nv : list) {
+                if (!dao.exists(conn, nv.getMaHang())) {
+                    dao.insert(conn, nv);
+                }
+            }
+
+            conn.commit();
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Import Thành công!",
+                    "Thông báo",
+                    JOptionPane.INFORMATION_MESSAGE);
+
+            loadDataToTable();
+        } catch (Exception e) {
+            try {
+                if (conn != null)
+                    conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+
+            JOptionPane.showMessageDialog(this,
+                    "Import thất bại!\nCó dữ liệu trùng hoặc sai.\nĐã rollback toàn bộ.",
+                    "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
