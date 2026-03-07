@@ -1,7 +1,6 @@
 package ui.quanlysanpham;
 
 import java.awt.BorderLayout;
-import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.util.ArrayList;
@@ -24,8 +23,6 @@ import dto.NguyenLieu;
 import dto.SanPham;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
-import ui.login.PhienDangNhap;
-import java.util.HashSet;
 
 public class XemCongThucDialog extends JDialog {
     private JButton btnXoa, btnThem, btnSua;

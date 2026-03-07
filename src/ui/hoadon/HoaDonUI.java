@@ -6,6 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import bus.HoaDonBUS;
@@ -38,12 +39,11 @@ public class HoaDonUI extends JPanel {
         btnXemChiTiet = new JButton("Chi tiết");
         TaoUI.setFixSize(btnXemChiTiet, 100, 32);
 
-
         btnXoa = new JButton("Xóa");
         TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất Exc");
-
+        TaoUI.setFixSize(btnXuatExcel, 80, 32);
         top.add(locNgay);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXemChiTiet);
@@ -71,13 +71,7 @@ public class HoaDonUI extends JPanel {
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
 
-        table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
-        table.getTableHeader().setBackground(new Color(230, 240, 250));
-        table.getTableHeader().setOpaque(false);
-        table.setRowHeight(35);
-        table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-
-        javax.swing.table.DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
+        DefaultTableCellRenderer rightRenderer = new javax.swing.table.DefaultTableCellRenderer();
         rightRenderer.setHorizontalAlignment(JLabel.RIGHT);
         table.getColumnModel().getColumn(4).setCellRenderer(rightRenderer);
 
@@ -186,6 +180,7 @@ public class HoaDonUI extends JPanel {
     public JButton getBtnXoa() {
         return btnXoa;
     }
+
     private ArrayList<HoaDon> layDuLieuTuBang() {
         ArrayList<HoaDon> list = new ArrayList<>();
         for (int i = 0; i < model.getRowCount(); i++) {
@@ -197,7 +192,6 @@ public class HoaDonUI extends JPanel {
         }
         return list;
     }
-
 
     public Search_Item getSearch_Item() {
         return search_Item;

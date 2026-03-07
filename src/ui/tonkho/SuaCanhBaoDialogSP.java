@@ -3,7 +3,6 @@ package ui.tonkho;
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
-import bus.NguyenLieuBUS;
 import bus.SanPhamBUS;
 import dto.SanPham;
 

@@ -30,7 +30,7 @@ import java.util.Locale;
 
 public class ThongKeNhapHangPanel extends JPanel {
     private ThongKeChungNhapPanel thongKeChungNH;
-    private JButton xuatExbtn;
+    private JButton xuatExbtn, xemChiTietBtn;
     private LocNgay_Item locNgay;
     private DefaultTableModel modelSP, modelNL;
 
@@ -42,19 +42,23 @@ public class ThongKeNhapHangPanel extends JPanel {
 
     public ThongKeNhapHangPanel() {
         setLayout(new BorderLayout());
-
+        TaoUI.suaBorderChoPanel(this, 0, 10,0, 10);
+        setBackground(Color.white);
         initGUI();
         loadDuLieu();
     }
 
     private JPanel buttonPanel() {
-        JPanel buttonPanel = TaoUI.taoPanelBoxLayoutNgang(880, 30);
-        locNgay = new LocNgay_Item(400, 30);
+        JPanel buttonPanel = TaoUI.taoPanelBoxLayoutNgang(880, 42);
+        locNgay = new LocNgay_Item(400, 32);
         xuatExbtn = new JButton("Xuất exel");
-        TaoUI.setFixSize(xuatExbtn, 100, 30);
+        xemChiTietBtn = new JButton("Xem chi tiết");
+        buttonPanel.setBackground(Color.white);
+        TaoUI.setFixSize(xemChiTietBtn, 100, 32);
+        TaoUI.setFixSize(xuatExbtn, 100, 32);
         buttonPanel.add(locNgay);
         buttonPanel.add(Box.createRigidArea(new Dimension(5, 0)));
-        // buttonPanel.add(xuatExbtn);
+        buttonPanel.add(xuatExbtn);
         return buttonPanel;
     }
 
@@ -68,6 +72,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         top.add(buttonPanel(), BorderLayout.CENTER);
 
         JPanel tablePanel = new JPanel(new GridLayout(0, 2, 10, 10));
+        tablePanel.setBackground(Color.white);
         TaoUI.setFixSize(tablePanel, 880, 600);
         tablePanel.add(thongKeSpPanel());
         tablePanel.add(thongKeNguyenLieu());
@@ -89,7 +94,8 @@ public class ThongKeNhapHangPanel extends JPanel {
         for (PhieuNhapNguyenLieu phieuNhapNguyenLieu : listPhieuNhapNguyenLieu) {
             NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapNguyenLieu.getMaNCC());
             modelNL.addRow(new Object[] { phieuNhapNguyenLieu.getMaPN(), phieuNhapNguyenLieu.getNgayNhap(),
-                    phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(), nhaCungCap==null?"":nhaCungCap.getTenNCC()});
+                    phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(),
+                    nhaCungCap == null ? "" : nhaCungCap.getTenNCC() });
             giaNhapNL += phieuNhapNguyenLieu.getTongTien();
         }
         for (PhieuNhapSanPham phieuNhapSanPham : listPhieuNhapSanPham) {
@@ -111,7 +117,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
     private JPanel thongKeSpPanel() {
         JPanel thongKeLoSp = new JPanel(new BorderLayout());
-
+        thongKeLoSp.setBackground(Color.white);
         JPanel top = TaoUI.taoPanelCanGiua(880, 40);
         JLabel jLabel = new JLabel("Danh sách nhập sản phẩm");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
@@ -124,6 +130,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
         // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
+        bottom.setBackground(Color.white);
         soLoSP = new JLabel("Số lượng: 10 lô");
         JLabel tongTienNhapTitle = new JLabel("Tiền nhập sản phẩm: ");
         tongTienNhapSP = new JLabel("999.999.999đ");
@@ -158,7 +165,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
     private JPanel thongKeNguyenLieu() {
         JPanel thongKeLoNL = new JPanel(new BorderLayout());
-
+        thongKeLoNL.setBackground(Color.white);
         JPanel top = TaoUI.taoPanelCanGiua(880, 40);
         JLabel jLabel = new JLabel("Danh sách nhập nguyên liệu");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
@@ -171,6 +178,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
         // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
+        bottom.setBackground(Color.white);
         soLoNL = new JLabel("Số lượng: 10 lô");
         JLabel tongTienNhapTitle = new JLabel("Tiền nhập nguyên liệu: ");
         tongTienNhapNL = new JLabel("50.500.000đ");
@@ -193,6 +201,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
     public JPanel tongChungPanel() {
         JPanel tongChungPanel = TaoUI.taoPanelBoxLayoutNgang(880, 40);
+        tongChungPanel.setBackground(Color.white);
         JLabel tongTienNhapTitle = new JLabel("TỔNG TIỀN NHẬP CHUNG: ");
         tongTienNhapChung = new JLabel("1.050.499.999đ");
         tongTienNhapChung.setFont(new Font(null, Font.BOLD, 18));

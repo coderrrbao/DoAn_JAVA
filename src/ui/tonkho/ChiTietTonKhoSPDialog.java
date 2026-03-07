@@ -5,13 +5,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.time.LocalDate;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -22,17 +20,13 @@ import dto.ChiTietCongThuc;
 import dto.LoSanPham;
 import dto.NguyenLieu;
 import dto.SanPham;
-import util.TaoTinNhan;
 import util.TaoUI;
 
 public class ChiTietTonKhoSPDialog extends JDialog {
-    private JTable tableSP, tableNL;
     private DefaultTableModel modelCoSan, modelPhaChe;
     private SanPham sanPham;
     private JPanel center;
     private JScrollPane scrollPaneCoSan, scrollPanePhaChe;
-    private JButton btnXemLo;
-
     public ChiTietTonKhoSPDialog(JFrame owner, SanPham sanPham) {
         super(owner, "Chi tiết lô hàng - " + sanPham.getTenSP(), true);
         setSize(600, 400);
@@ -54,15 +48,13 @@ public class ChiTietTonKhoSPDialog extends JDialog {
         center = new JPanel(new BorderLayout());
         center.add(titlePanel, BorderLayout.NORTH);
         scrollPaneCoSan = TaoUI.taoTableScroll(modelCoSan);
-        tableSP = (JTable) scrollPaneCoSan.getViewport().getView();
         scrollPanePhaChe = TaoUI.taoTableScroll(modelPhaChe);
-        tableNL = (JTable) scrollPanePhaChe.getViewport().getView();
         center.add(scrollPaneCoSan, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
         loadDuLieu();
     }
 
-    private void loadDuLieu() {
+    public void loadDuLieu() {
         if (sanPham == null) {
             return;
         }
@@ -86,14 +78,10 @@ public class ChiTietTonKhoSPDialog extends JDialog {
             }
         }
         if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+            setTitle("Danh sách tồn kho nguyên liệu cho sản phẩm : "+sanPham.getTenSP());
             center.add(scrollPanePhaChe, BorderLayout.CENTER);
             modelPhaChe.setRowCount(0);
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
-            if (sanPham.getCongThuc() == null) {
-                TaoTinNhan.showAutoCloseMessage("Sản phẩm chưa có công thức", "Thông báo", 1);
-                dispose();
-                return;
-            }
             for (ChiTietCongThuc chiTietCongThuc : sanPham.getCongThuc().getListChiTietCongThuc()) {
                 NguyenLieu nguyenLieu = chiTietCongThuc.getNguyenLieu();
                 double soLuong = loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL());

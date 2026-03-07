@@ -1,7 +1,5 @@
 package dto;
 
-import java.time.LocalDate;
-
 public class PhieuKiemKe {
     private String maKK;
     private String ngayKiem;

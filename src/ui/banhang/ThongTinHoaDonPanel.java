@@ -3,7 +3,6 @@ package ui.banhang;
 import java.awt.Color;
 import java.util.HashSet;
 
-import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
@@ -13,7 +12,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import dto.SanPham;
-import ui.quanlysanpham.NutHienThiSP;
 import util.TaoUI;
 
 public class ThongTinHoaDonPanel extends JPanel {

@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
-import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import dto.NhanVien;

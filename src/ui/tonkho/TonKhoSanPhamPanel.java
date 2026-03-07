@@ -4,24 +4,19 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.image.SampleModel;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import bus.LoSanPhamBUS;
 import bus.SanPhamBUS;
-import dto.LoSanPham;
 import dto.SanPham;
-import ui.component.Search_Item;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class TonKhoSanPhamPanel extends JPanel {
@@ -30,10 +25,8 @@ public class TonKhoSanPhamPanel extends JPanel {
     private JButton btnXuatEx;
     private JButton btnSua;
     private JButton btnXemLo;
-    private JTable tableUI;
     private DefaultTableModel model;
-    private ThongKeTonKhoSP thongKeTonKho; 
-
+    private ThongKeTonKhoSP thongKeTonKho;
 
     public TonKhoSanPhamPanel() {
 
@@ -99,15 +92,19 @@ public class TonKhoSanPhamPanel extends JPanel {
             }
             String maSP = model.getValueAt(dongChon, 0).toString();
             SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham(maSP);
-            if (sanPham==null){
+            if (sanPham == null) {
                 JOptionPane.showMessageDialog(this,
                         "Không tìm thấy thông tin sản phẩm: " + maSP,
                         "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
-            }
-            else{
-                ChiTietTonKhoSPDialog chiTietTonKhoSPDialog = new ChiTietTonKhoSPDialog(null, sanPham);
-                chiTietTonKhoSPDialog.setVisible(true);
+            } else {
+                if (sanPham.getLoaiNuoc().equals("Pha chế") && (sanPham.getCongThuc() == null
+                        || sanPham.getCongThuc().getListChiTietCongThuc().isEmpty())) {
+                    TaoTinNhan.showAutoCloseMessage("Sản phẩm chưa có công thức", "Thông báo", 1);
+                } else {
+                    ChiTietTonKhoSPDialog chiTietTonKhoSPDialog = new ChiTietTonKhoSPDialog(null, sanPham);
+                    chiTietTonKhoSPDialog.setVisible(true);
+                }
             }
         });
 
