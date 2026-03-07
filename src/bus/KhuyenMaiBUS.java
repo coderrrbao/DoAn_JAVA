@@ -188,8 +188,39 @@ public class KhuyenMaiBUS {
             return "Lỗi định dạng ngày tháng (Yêu cầu: yyyy-MM-dd)!";
         }
 
-        // Trả về chuỗi rỗng nếu tất cả đều hợp lệ
         return "";
+    }
+
+    public boolean xuatExcel(java.util.ArrayList<dto.KhuyenMai> dsXuat) {
+        if (dsXuat == null || dsXuat.isEmpty()) return false;
+        return util.XuLyExcel.xuatFileKhuyenMai(dsXuat);
+    }
+
+    public String nhapExcel() {
+        java.util.ArrayList<dto.KhuyenMai> dsNhap = util.XuLyExcel.nhapFileKhuyenMai();
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return "Không có dữ liệu hoặc bạn đã hủy chọn file!";
+        }
+
+        int thanhCong = 0;
+        int thatBai = 0;
+
+        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection()) {
+
+            for (dto.KhuyenMai km : dsNhap) {
+                if (khuyenMaiDAO.themKhuyenMai(km, conn)) {
+                    thanhCong++;
+                } else {
+                    thatBai++;
+                }
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "Lỗi kết nối Cơ sở dữ liệu trong quá trình nhập!";
+        }
+
+        return "Kết quả Nhập Excel:\n- Thành công: " + thanhCong + " dòng\n- Thất bại/Trùng mã: " + thatBai + " dòng";
     }
 
     private void dongKetNoi(Connection conn) {

@@ -24,7 +24,7 @@ public class KhuyenMaiUI extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
-    private JButton btnThem, btnSua, btnXoa;
+    private JButton btnThem, btnSua, btnXoa, btnNhapExc, btnXuatExc;
 
     private KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
 
@@ -83,6 +83,14 @@ public class KhuyenMaiUI extends JPanel {
         btnXoa = new JButton("Xóa");
         btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
+
+        btnNhapExc = new JButton("Nhập Excel");
+        btnNhapExc.setPreferredSize(new Dimension(80, 32));
+        top.add(btnNhapExc);
+
+        btnXuatExc = new JButton("Xuất Excel");
+        btnXuatExc.setPreferredSize(new Dimension(80, 32));
+        top.add(btnXuatExc);
 
         return top;
     }
@@ -175,7 +183,35 @@ public class KhuyenMaiUI extends JPanel {
             }
         });
 
-        // Gán sự kiện khi bộ lọc ngày thay đổi giá trị
+        btnXuatExc.addActionListener(e -> {
+            java.util.ArrayList<KhuyenMai> dsXuat = new java.util.ArrayList<>();
+            for (int i = 0; i < table.getRowCount(); i++) {
+                String maKM = table.getValueAt(i, 0).toString();
+                KhuyenMai km = kmBUS.timKhuyenMai(maKM);
+                if (km != null) {
+                    dsXuat.add(km);
+                }
+            }
+
+            if (dsXuat.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Bảng dữ liệu trống, không có gì để xuất!");
+                return;
+            }
+            kmBUS.xuatExcel(dsXuat);
+        });
+
+        btnNhapExc.addActionListener(e -> {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Lưu ý: File nhập phải đúng định dạng cột như file Xuất ra.\nBạn có muốn tiếp tục?",
+                    "Xác nhận Nhập Excel", JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                String ketQua = kmBUS.nhapExcel();
+                JOptionPane.showMessageDialog(this, ketQua);
+                loadDataToTable();
+            }
+        });
+
         locNgay.setEvent(() -> {
             loadDataToTable();
         });
