@@ -417,6 +417,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
         });
 
         themSpPNHBtn.addActionListener(e -> {
+            if (!kiemTraThemSanPham()) {
+                return;
+            }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             String ngaySx = (txtNgaySx.getDate() != null) ? sdf.format(txtNgaySx.getDate()) : "";
@@ -440,6 +443,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
         });
 
         btnNhapHang.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             PhieuNhapSanPham phieuNhapSanPham = dongGoiPhieuNhapSanPham();
             PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
 
@@ -466,7 +472,67 @@ public class NhapKhoSanPhamDialog extends JDialog {
         }
     }
 
+    private boolean kiemTraThemSanPham() {
+        if (txtMaSp.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm từ danh sách bên trái!");
+            return false;
+        }
+
+        try {
+            double sl = Double.parseDouble(txtSoLuong.getText().trim());
+            if (sl <= 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng nhập phải lớn hơn 0!");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Số lượng phải là một con số!");
+            return false;
+        }
+
+        if (txtNgaySx.getDate() == null || txtHanSuDung.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ Ngày sản xuất và Hạn sử dụng!");
+            return false;
+        }
+
+        if (txtHanSuDung.getDate().before(txtNgaySx.getDate())) {
+            JOptionPane.showMessageDialog(this, "Hạn sử dụng không thể trước Ngày sản xuất!");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean kiemTraDuLieu() {
+        // Kiểm tra nhà cung cấp
+        if (cbNhaCungCap.getSelectedItem() == null
+                || cbNhaCungCap.getSelectedItem().toString().equals("Nhà cung cấp")) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp!");
+            return false;
+        }
+
+        // Kiểm tra nhân viên nhập
+        if (txtNhanVien.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nhân viên nhập không được để trống!");
+            return false;
+        }
+
+        // Kiểm tra có sản phẩm trong danh sách nhập không
+        if (modelChiTietPhieuNhap.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng thêm ít nhất một sản phẩm vào phiếu nhập!");
+            return false;
+        }
+
+        // Kiểm tra tổng tiền
+        double tongTien = tinhTongTienNhap();
+        if (tongTien <= 0) {
+            JOptionPane.showMessageDialog(this, "Tổng tiền phải lớn hơn 0!");
+            return false;
+        }
+
+        return true;
+    }
+
     public PhieuNhapSanPham dongGoiPhieuNhapSanPham() {
+
         PhieuNhapSanPham phieuNhapSanPham = new PhieuNhapSanPham();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();

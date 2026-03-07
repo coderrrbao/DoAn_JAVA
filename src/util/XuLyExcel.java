@@ -3,21 +3,15 @@ package util;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
-import dto.ChiTietHoaDon;
 import dto.HoaDon;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import bus.NhomQuyenBUS;
-import bus.TaiKhoanBUS;
-import dao.TaiKhoanDao;
-import dao.conection.DBConnection;
 import dto.NhomQuyen;
 import dto.SanPham;
 import dto.TaiKhoan;

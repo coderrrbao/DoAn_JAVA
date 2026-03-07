@@ -16,7 +16,6 @@ import javax.swing.table.DefaultTableModel;
 import bus.PhieuKiemKeBUS;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
-import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -26,7 +25,7 @@ public class KiemKeUI extends JPanel {
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
     private JButton btnThem;
-    private JButton btnSua, btnXoa;
+    private JButton btnSua, btnXoa, btnXemCt;
     private PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
 
     public KiemKeUI() {
@@ -67,6 +66,7 @@ public class KiemKeUI extends JPanel {
             ThemPhieuKiemDialog them = new ThemPhieuKiemDialog(this, null);
             them.setVisible(true);
         });
+
         btnSua.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
@@ -86,6 +86,17 @@ public class KiemKeUI extends JPanel {
         });
         locNgay.setEvent(() -> {
             loaiDuLieu();
+        });
+
+        btnXemCt.addActionListener(e -> {
+            int dongChon = table.getSelectedRow();
+            if (dongChon >= 0) {
+                PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 1).toString());
+                ChiTietKiemKeDialog chiTietKiemKeDialog = new ChiTietKiemKeDialog(null, phieuKiemKe);
+                chiTietKiemKeDialog.setVisible(true);
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn dòng để xem chi tiết", "Thông báo", 1);
+            }
         });
 
         btnXoa.addActionListener(e -> {
@@ -140,6 +151,11 @@ public class KiemKeUI extends JPanel {
         btnXoa = new JButton("Xóa");
         btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
+
+        btnXemCt = new JButton("Xem chi tiết");
+        btnXemCt.setPreferredSize(new Dimension(100, 32));
+        top.add(btnXemCt);
+
         return top;
     }
 

@@ -1,10 +1,7 @@
 package ui.taikhoan;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Panel;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;

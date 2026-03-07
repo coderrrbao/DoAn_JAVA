@@ -15,7 +15,6 @@ import util.TaoUI;
 public class SanPhamBhItemPanel extends JPanel {
 
 
-    private SanPhamClickListener listener;
     private SanPham sanPham;
 
 
@@ -62,9 +61,6 @@ public class SanPhamBhItemPanel extends JPanel {
         setBackground(Color.white);
 
         this.sanPham = sanPham;
-        this.listener = listener;
-
-
         this.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

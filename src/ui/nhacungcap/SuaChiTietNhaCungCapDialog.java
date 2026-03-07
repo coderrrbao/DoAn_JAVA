@@ -8,7 +8,6 @@ import util.TaoUI;
 public class SuaChiTietNhaCungCapDialog extends JDialog {
     private JTextField txtMa, txtTen, txtGiaNhap;
     private JButton btnLuu, btnHuy;
-    private boolean isUpdated = false;
     private ChiTietNhaCungCap chiTiet;
     private ChiTietNhaCungCapDialog chiTietNhaCungCapDialog;
     private int dong;

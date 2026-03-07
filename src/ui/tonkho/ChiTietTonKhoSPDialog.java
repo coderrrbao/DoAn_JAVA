@@ -5,13 +5,11 @@ import java.awt.Color;
 import java.awt.Font;
 import java.time.LocalDate;
 
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -22,17 +20,13 @@ import dto.ChiTietCongThuc;
 import dto.LoSanPham;
 import dto.NguyenLieu;
 import dto.SanPham;
-import util.TaoTinNhan;
 import util.TaoUI;
 
 public class ChiTietTonKhoSPDialog extends JDialog {
-    private JTable tableSP, tableNL;
     private DefaultTableModel modelCoSan, modelPhaChe;
     private SanPham sanPham;
     private JPanel center;
     private JScrollPane scrollPaneCoSan, scrollPanePhaChe;
-    private JButton btnXemLo;
-
     public ChiTietTonKhoSPDialog(JFrame owner, SanPham sanPham) {
         super(owner, "Chi tiết lô hàng - " + sanPham.getTenSP(), true);
         setSize(600, 400);
@@ -54,9 +48,7 @@ public class ChiTietTonKhoSPDialog extends JDialog {
         center = new JPanel(new BorderLayout());
         center.add(titlePanel, BorderLayout.NORTH);
         scrollPaneCoSan = TaoUI.taoTableScroll(modelCoSan);
-        tableSP = (JTable) scrollPaneCoSan.getViewport().getView();
         scrollPanePhaChe = TaoUI.taoTableScroll(modelPhaChe);
-        tableNL = (JTable) scrollPanePhaChe.getViewport().getView();
         center.add(scrollPaneCoSan, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
         loadDuLieu();

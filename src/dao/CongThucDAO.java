@@ -5,11 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 
-import bus.CongThucBUS;
 import dao.conection.DBConnection;
-import dto.ChiTietCongThuc;
 import dto.CongThuc;
-import dto.NguyenLieu;
 
 
 public class CongThucDAO {

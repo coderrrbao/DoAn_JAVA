@@ -87,15 +87,13 @@ public class NguyenLieuUI extends JPanel {
 
     loadDataToTable();
     addEvents();
-    suaLaiGiaoDienTheoQuyen();
   }
 
   public void suaLaiGiaoDienTheoQuyen() {
     HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
-
     if (!listQuyen.contains("NL_TAO")) {
       btnTao.setVisible(false);
-      btnNhapExcel.setVisible(false); // Thường quyền tạo đi kèm quyền nhập liệu hàng loạt
+      btnNhapExcel.setVisible(false);
     }
 
     if (!listQuyen.contains("NL_SUA")) {

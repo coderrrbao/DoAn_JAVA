@@ -1,13 +1,9 @@
 package ui.kiemke;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.ScrollPane;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JComboBox;

@@ -3,19 +3,16 @@ package ui.main;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.BorderFactory;
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import bus.TaiKhoanBUS;
 import dto.NhanVien;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
@@ -49,7 +46,7 @@ public class TopPaner extends JPanel {
         thongTinUser.add(anhDaiDien, BorderLayout.CENTER);
         thongTinUser.setBackground(Color.white);
 
-        JPanel tenVaChucVu = TaoUI.taoPanelCanGiua(200, 80);
+        JPanel tenVaChucVu = TaoUI.taoPanelCanGiua(150, 80);
         tenVaChucVu.setBackground(Color.white);
         ten = new JLabel();
         chucVu = new JLabel();
@@ -65,7 +62,8 @@ public class TopPaner extends JPanel {
     }
 
     public void capNhapThongTin(NhanVien user) {
-        ImageIcon anh = TaoUI.taoImageIcon(user.getAnh(), 70, 70);
+        ImageIcon anh = TaoUI.taoImageIcon(user.getAnh(), 50, 50);
+        anh = TaoUI.taoAnhBoTron(anh);
         anhDaiDien.setIcon(anh);
         ten.setText(user.getTenNV());
         chucVu.setText(PhienDangNhap.getTaiKhoan().getNhomQuyen().getTenNhomQuyen());

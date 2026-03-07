@@ -42,15 +42,13 @@ import util.TaoUI;
 public class NhapKhoNguyenLieuDialog extends JDialog {
     Search_Item search_Item;
     private JTextField txtMaNl;
-    private JTextField txtTenNl;
+    private JTextField txtTenNl; // Giữ lại Tên NL
     private JTextField txtGiaNhap;
     private JTextField txtSoLuong;
     private JDateChooser txtNgaySx;
     private JDateChooser txtHanSuDung;
 
-    private JTextField txtNhanVien;
     private JComboBox<String> cbNhaCungCap;
-
     private JLabel lblTongTienHienThi;
     private JButton btnNhapHang;
 
@@ -235,22 +233,8 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         TaoUI.suaBorderChoPanel(xacNhanNH, 0, 10, 0, 10);
         center.add(xacNhanNH, BorderLayout.CENTER);
 
-        xacNhanNH.add(Box.createRigidArea(new Dimension(0, 80)));
-
-        JPanel infoNH2 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
-        xacNhanNH.add(infoNH2);
-        xacNhanNH.add(Box.createVerticalStrut(10));
-
-        JPanel nvNhapInput = TaoUI.taoPanelBoxLayoutDoc(380 - gap, 65);
-        JPanel titleNVNhap = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-        titleNVNhap.add(new JLabel("Nhân viên nhập"));
-        nvNhapInput.add(titleNVNhap);
-
-        txtNhanVien = new JTextField();
-        txtNhanVien.setText(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
-        TaoUI.setFixSize(txtNhanVien, 380 - gap, 40);
-        nvNhapInput.add(txtNhanVien);
-        infoNH2.add(nvNhapInput);
+        // Đẩy phần Nhà Cung Cấp xuống 1 chút sau khi bỏ ô Nhân viên
+        xacNhanNH.add(Box.createRigidArea(new Dimension(0, 100))); 
 
         JPanel infoNH3 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
         xacNhanNH.add(infoNH3);
@@ -296,38 +280,24 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         panelBtn.add(btnNhapHang);
         infoNH4.add(panelBtn);
 
-        JTextField[] nonEditFields = { txtTenNl, txtGiaNhap };
-
+        JTextField[] nonEditFields = { txtMaNl, txtTenNl, txtGiaNhap };
         for (JTextField field : nonEditFields) {
             field.setEditable(false);
             field.setBackground(Color.WHITE);
         }
-        txtMaNl.setEditable(false);
-        txtNhanVien.setEditable(false);
+
         ganSuKien();
         loadDuLieu();
         suaLaiGiaoDienTheoQuyen();
     }
 
-    /**
-     * Cập nhật hiển thị: Ẩn hoàn toàn các nút tác vụ nếu không có quyền THÊM phiếu
-     * nhập
-     */
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // Đối với Dialog này, quyền quan trọng nhất là NK_TAO (quyền lập phiếu)
         if (!listQuyen.contains("NK_TAO")) {
-            // Ẩn nút xác nhận nhập hàng cuối cùng
             btnNhapHang.setVisible(false);
-
-            // Ẩn nút thêm nguyên liệu vào danh sách chờ nhập
             themNlPNHBtn.setVisible(false);
-
-            // Ẩn nút xóa khỏi danh sách chờ nhập
             xoaCTBtn.setVisible(false);
-
-            // Đổi tiêu đề để người dùng biết họ chỉ đang ở chế độ xem
             this.setTitle("Xem thông tin nhập kho (Chế độ chỉ đọc)");
         }
     }
@@ -349,7 +319,6 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
                                         chiTietNhaCungCap.getGiaNhap(),
                                         loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) });
                     }
-
                 }
             }
         }
@@ -358,8 +327,8 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
     private void lamMoi() {
         txtGiaNhap.setText("");
         txtMaNl.setText("");
-        txtSoLuong.setText("");
         txtTenNl.setText("");
+        txtSoLuong.setText("");
         modelChiTietPhieuNhap.setRowCount(0);
         lblTongTienHienThi.setText("0 VNĐ");
     }
@@ -399,6 +368,9 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         });
 
         themNlPNHBtn.addActionListener(e -> {
+            if (!kiemTraThemSanPham()) {
+                return;
+            }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
             String ngaySx = (txtNgaySx.getDate() != null) ? sdf.format(txtNgaySx.getDate()) : "";
@@ -421,6 +393,9 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         });
 
         btnNhapHang.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             PhieuNhapNguyenLieu phieuNhapNguyenLieu = dongGoiPhieuNhapNguyenLieu();
             PhieuNhapNguyenLieuBUS phieuNhapNguyenLieuBUS = PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS();
 
@@ -438,12 +413,54 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         });
     }
 
-    private Double layTongChiPhi(String tien) {
-        try {
-            return Double.parseDouble(tien.substring(0, tien.length() - 4));
-        } catch (Exception e) {
-            return 0.0;
+    private boolean kiemTraThemSanPham() {
+        if (txtMaNl.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm từ danh sách bên trái!");
+            return false;
         }
+
+        try {
+            double sl = Double.parseDouble(txtSoLuong.getText().trim());
+            if (sl <= 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng nhập phải lớn hơn 0!");
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Số lượng phải là một con số!");
+            return false;
+        }
+
+        if (txtNgaySx.getDate() == null || txtHanSuDung.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn đầy đủ Ngày sản xuất và Hạn sử dụng!");
+            return false;
+        }
+
+        if (txtHanSuDung.getDate().before(txtNgaySx.getDate())) {
+            JOptionPane.showMessageDialog(this, "Hạn sử dụng không thể trước Ngày sản xuất!");
+            return false;
+        }
+        return true;
+    }
+
+    private boolean kiemTraDuLieu() {
+        if (cbNhaCungCap.getSelectedItem() == null
+                || cbNhaCungCap.getSelectedItem().toString().equals("Nhà cung cấp")) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp!");
+            return false;
+        }
+
+        if (modelChiTietPhieuNhap.getRowCount() == 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng thêm ít nhất một nguyên liệu vào phiếu nhập!");
+            return false;
+        }
+
+        double tongTien = tinhTongTienNhap();
+        if (tongTien <= 0) {
+            JOptionPane.showMessageDialog(this, "Tổng tiền phải lớn hơn 0!");
+            return false;
+        }
+
+        return true;
     }
 
     public PhieuNhapNguyenLieu dongGoiPhieuNhapNguyenLieu() {
@@ -452,8 +469,13 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
 
         phieuNhapNguyenLieu.setNgayNhap(sdf.format(new Date()));
-        phieuNhapNguyenLieu.setMaNV(txtNhanVien.getText());
-        phieuNhapNguyenLieu.setTongTien(layTongChiPhi(lblTongTienHienThi.getText()));
+        
+        // Lấy Mã Nhân Viên trực tiếp từ Session (Không qua giao diện)
+        String maNV = PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "";
+        phieuNhapNguyenLieu.setMaNV(maNV);
+        
+        phieuNhapNguyenLieu.setTongTien(tinhTongTienNhap());
+        
         NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
         phieuNhapNguyenLieu.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
         phieuNhapNguyenLieu.setTrangThaiXuLy("Đang xử lý");

@@ -6,14 +6,13 @@ import javax.swing.table.DefaultTableModel;
 import bus.NguyenLieuBUS;
 import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
-import dto.ChiTietNhaCungCap;
-import dto.NguyenLieu;
-import dto.NhaCungCap;
-import dto.SanPham;
+import dto.*;
 import util.TaoTinNhan;
 import util.TaoUI;
 
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
 public class ChiTietNhaCungCapDialog extends JDialog {
@@ -21,8 +20,6 @@ public class ChiTietNhaCungCapDialog extends JDialog {
     private JComboBox<String> cbLoaiHang;
     private JTextField txtMaNCC, txtTenNCC, txtSoDienThoai, txtDiaChi;
     private JButton btnLuu, btnDong, btnThem, btnSua;
-
-    // Khai báo thêm các component cho phần Top
     private JButton btnThemHang, btnXoaHang, btnSuaHang;
     private JTable tblHangHoa;
     private DefaultTableModel modelSP, modelNL;
@@ -35,16 +32,14 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
     public ChiTietNhaCungCapDialog(Frame parent, NhaCungCap nhaCungCap, NhaCungCapUI nhaCungCapUI) {
         super(parent, "Quản lý Nhà Cung Cấp", true);
-        setSize(480, 600); // Tăng kích thước để có không gian chứa JTable
+        setSize(480, 600);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
         this.nhaCungCapUI = nhaCungCapUI;
         this.nhaCungCap = nhaCungCap;
-        // ==================== PHẦN TOP ====================
         JPanel pnTop = new JPanel(new BorderLayout(5, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
-        // --- Dòng 1: Thêm, Xóa, ComboBox ---
         JPanel pnRow1 = TaoUI.taoPanelBoxLayoutNgang(480, 30);
         btnThemHang = new JButton("Thêm");
         btnXoaHang = new JButton("Xóa");
@@ -61,7 +56,6 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         pnRow1.add(Box.createHorizontalGlue());
         pnRow1.add(cbLoaiHang);
 
-        // --- Dòng 2: JTable ---
         String[] columnNames = { "MaCTNCC", "Mã", "Tên", "Loại", "Giá nhập" };
 
         modelSP = new DefaultTableModel(columnNames, 0);
@@ -80,19 +74,24 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         add(pnTop, BorderLayout.NORTH);
 
-        // ==================== PHẦN FORM (CENTER) ====================
         JPanel pnForm = new JPanel();
         pnForm.setLayout(new BoxLayout(pnForm, BoxLayout.Y_AXIS));
         pnForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
 
-        // Khởi tạo TextFields
         txtMaNCC = new JTextField();
         txtTenNCC = new JTextField();
         txtSoDienThoai = new JTextField();
+        txtSoDienThoai.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+                    e.consume();
+                }
+            }
+        });
         txtDiaChi = new JTextField();
         txtMaNCC.setEnabled(false);
 
-        // Thêm các thành phần theo cấu trúc: 1 dòng Label - 1 dòng TextField
         pnForm.add(taoDong(new JLabel("Mã Nhà Cung Cấp:")));
         pnForm.add(taoDong(txtMaNCC));
 
@@ -107,7 +106,6 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         add(pnForm, BorderLayout.CENTER);
 
-        // ==================== PHẦN BOTTOM (NÚT BẤM) ====================
         JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnLuu = new JButton("Lưu");
         btnDong = new JButton("Đóng");
@@ -158,7 +156,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         if (cbLoaiHang.getSelectedItem().toString().equals("Sản phẩm")) {
 
             tblHangHoa.setModel(modelSP);
-            if (tblHangHoa.getColumnModel().getColumnCount()==5) {
+            if (tblHangHoa.getColumnModel().getColumnCount() == 5) {
                 tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
             }
 
@@ -177,7 +175,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         } else if (cbLoaiHang.getSelectedItem().toString().equals("Nguyên liệu")) {
             tblHangHoa.setModel(modelNL);
-            if (tblHangHoa.getColumnModel().getColumnCount()==5) {
+            if (tblHangHoa.getColumnModel().getColumnCount() == 5) {
                 tblHangHoa.getColumnModel().removeColumn(tblHangHoa.getColumnModel().getColumn(0));
             }
 
@@ -273,6 +271,9 @@ public class ChiTietNhaCungCapDialog extends JDialog {
 
         btnThem.addActionListener(e -> {
             NhaCungCap nhaCungCap = dongGoiNhaCungCap();
+            if (nhaCungCap == null) {
+                return;
+            }
             NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
             if (nhaCungCapBUS.themNhaCungCap(nhaCungCap)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm nhà cung cấp thành công", "Thông báo", 1);
@@ -349,7 +350,9 @@ public class ChiTietNhaCungCapDialog extends JDialog {
     }
 
     public NhaCungCap dongGoiNhaCungCap() {
-
+        if (!kiemTraDuLieu()) {
+            return null;
+        }
         String maNCC = txtMaNCC.getText().trim();
         String tenNCC = txtTenNCC.getText().trim();
         String sdt = txtSoDienThoai.getText().trim();
@@ -376,6 +379,50 @@ public class ChiTietNhaCungCapDialog extends JDialog {
         }
         nhaCungCap.setListChiTietNhaCungCap(dsChiTiet);
         return nhaCungCap;
+    }
+
+    private boolean kiemTraDuLieu() {
+        String tenNCC = txtTenNCC.getText().trim();
+        String sdt = txtSoDienThoai.getText().trim();
+        String diaChi = txtDiaChi.getText().trim();
+
+        if (tenNCC.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên nhà cung cấp không được để trống!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            txtTenNCC.requestFocus();
+            return false;
+        }
+
+        if (sdt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            txtSoDienThoai.requestFocus();
+            return false;
+        }
+
+        if (!sdt.matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ (phải có 10 chữ số và bắt đầu bằng số 0)!",
+                    "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            txtSoDienThoai.requestFocus();
+            txtSoDienThoai.selectAll();
+            return false;
+        }
+
+        if (diaChi.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            txtDiaChi.requestFocus();
+            return false;
+        }
+
+        if (modelSP.getRowCount() == 0 && modelNL.getRowCount() == 0) {
+            int confirm = JOptionPane.showConfirmDialog(this,
+                    "Nhà cung cấp này chưa có hàng hóa nào. Bạn vẫn muốn tiếp tục?", "Xác nhận",
+                    JOptionPane.YES_NO_OPTION);
+            if (confirm != JOptionPane.YES_OPTION) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public static void main(String[] args) {

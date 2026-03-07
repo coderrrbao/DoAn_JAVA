@@ -9,10 +9,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import bus.DanhMucBUS;
-import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
-import dto.NhaCungCap;
-import dto.PhanQuyen;
 import dto.SanPham;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
