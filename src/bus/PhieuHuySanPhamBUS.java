@@ -4,9 +4,14 @@ import dao.PhieuHuySanPhamDAO;
 import dao.conection.DBConnection;
 import dto.LoSanPham;
 import dto.PhieuHuySanPham;
+import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 public class PhieuHuySanPhamBUS {
   private static PhieuHuySanPhamBUS instance;
@@ -100,5 +105,165 @@ public class PhieuHuySanPhamBUS {
       } catch (Exception e) {
       }
     }
+  }
+
+  public boolean xuatExcel(String filePath) {
+    ArrayList<PhieuHuySanPham> dsPhieu = layListPhieuHuy(); // Lấy từ listPhieuHuy có sẵn trong BUS
+
+    try (Workbook workbook = new XSSFWorkbook()) {
+      // --- SHEET 1: THÔNG TIN PHIẾU ---
+      Sheet sheetPhieu = workbook.createSheet("Danh Sách Phiếu Hủy");
+      String[] headerPhieu = {"Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền"};
+      createHeader(workbook, sheetPhieu, headerPhieu);
+
+      // --- SHEET 2: CHI TIẾT SẢN PHẨM HỦY ---
+      Sheet sheetChiTiet = workbook.createSheet("Chi Tiết Lô Sản Phẩm");
+      String[] headerCT = {"Mã Phiếu", "Mã Lô SP", "Số Lượng", "Đơn Giá"};
+      createHeader(workbook, sheetChiTiet, headerCT);
+
+      int rowPhieuIdx = 1;
+      int rowCTIdx = 1;
+
+      for (PhieuHuySanPham phieu : dsPhieu) {
+        // Ghi dữ liệu vào Sheet 1
+        Row rowP = sheetPhieu.createRow(rowPhieuIdx++);
+        rowP.createCell(0).setCellValue(phieu.getMaPH());
+        rowP.createCell(1).setCellValue(phieu.getMaNV());
+        rowP.createCell(2).setCellValue(phieu.getNgayHuy().toString());
+        rowP.createCell(3).setCellValue(phieu.getLyDo());
+        rowP.createCell(4).setCellValue(phieu.getTongGiaTri());
+
+        // Lấy danh sách chi tiết lô từ thuộc tính listSP trong đối tượng PhieuHuySanPham
+        ArrayList<LoSanPham> dsChiTiet = phieu.getListLoSanPhamHuy();
+
+        if (dsChiTiet != null) {
+          for (LoSanPham ct : dsChiTiet) {
+            // Ghi dữ liệu vào Sheet 2
+            Row rowCT = sheetChiTiet.createRow(rowCTIdx++);
+            rowCT.createCell(0).setCellValue(phieu.getMaPH()); // Liên kết với Sheet 1
+            rowCT.createCell(1).setCellValue(ct.getMaLoSP());
+            rowCT.createCell(2).setCellValue(ct.getSoLuong());
+            rowCT.createCell(3).setCellValue(ct.getGiaNhap());
+          }
+        }
+      }
+
+      // Tự động căn chỉnh cột
+      for (int i = 0; i < headerPhieu.length; i++) sheetPhieu.autoSizeColumn(i);
+      for (int i = 0; i < headerCT.length; i++) sheetChiTiet.autoSizeColumn(i);
+
+      try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
+        workbook.write(fileOut);
+      }
+      return true;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
+
+  private void createHeader(Workbook workbook, Sheet sheet, String[] headers) {
+    Row headerRow = sheet.createRow(0);
+    CellStyle style = workbook.createCellStyle();
+    Font font = workbook.createFont();
+    font.setBold(true);
+    style.setFont(font);
+
+    for (int i = 0; i < headers.length; i++) {
+      Cell cell = headerRow.createCell(i);
+      cell.setCellValue(headers[i]);
+      cell.setCellStyle(style);
+    }
+  }
+
+  public boolean nhapExcel(String filePath) {
+    Connection conn = DBConnection.getConnection();
+    try (FileInputStream fis = new FileInputStream(filePath);
+        Workbook workbook = new XSSFWorkbook(fis)) {
+
+      Sheet sheetPhieu = workbook.getSheetAt(0);
+      Sheet sheetChiTiet = workbook.getSheetAt(1);
+
+      // Map lưu trữ: <Mã cũ trong Excel, DTO Phiếu với dữ liệu thô>
+      Map<String, PhieuHuySanPham> mapPhieu = new HashMap<>();
+
+      // 1. Đọc Sheet 1: Lưu tạm dữ liệu phiếu (Chưa gán mã mới ở đây)
+      for (int i = 1; i <= sheetPhieu.getLastRowNum(); i++) {
+        Row row = sheetPhieu.getRow(i);
+        if (row == null) continue;
+
+        String maCu = getCellValueAsString(row.getCell(0));
+        PhieuHuySanPham phieuMoi = new PhieuHuySanPham();
+        phieuMoi.setMaNV(getCellValueAsString(row.getCell(1)));
+        phieuMoi.setLyDo(getCellValueAsString(row.getCell(3)));
+        phieuMoi.setTrangThaiXuLy("Chờ xử lý");
+        phieuMoi.setListLoSanPhamHuy(new ArrayList<>());
+
+        mapPhieu.put(maCu, phieuMoi);
+      }
+
+      // 2. Đọc Sheet 2: Gán lô sản phẩm vào đúng phiếu tạm
+      for (int i = 1; i <= sheetChiTiet.getLastRowNum(); i++) {
+        Row row = sheetChiTiet.getRow(i);
+        if (row == null) continue;
+
+        String maPhieuLienKet = getCellValueAsString(row.getCell(0));
+        if (mapPhieu.containsKey(maPhieuLienKet)) {
+          LoSanPham lo = new LoSanPham();
+          lo.setMaLoSP(getCellValueAsString(row.getCell(1)));
+          lo.setSoLuong(row.getCell(2).getNumericCellValue());
+          lo.setGiaNhap(row.getCell(3).getNumericCellValue());
+          mapPhieu.get(maPhieuLienKet).getListLoSanPhamHuy().add(lo);
+        }
+      }
+
+      // 3. Ghi vào Database với Transaction
+      conn.setAutoCommit(false);
+      for (PhieuHuySanPham phieu : mapPhieu.values()) {
+        // QUAN TRỌNG: Lấy mã mới ngay tại đây để tránh trùng lặp
+        String maMoi = dao.layMaPhieuHuySPKhaDung(conn);
+        phieu.setMaPH(maMoi);
+
+        double tongTien = 0;
+        for (LoSanPham lo : phieu.getListLoSanPhamHuy()) {
+          tongTien += lo.getSoLuong() * lo.getGiaNhap();
+        }
+        phieu.setTongGiaTri(tongTien);
+
+        // Lưu phiếu chính
+        if (!dao.themPhieuHuy(phieu, conn)) throw new SQLException();
+
+        // Lưu chi tiết lô
+        for (LoSanPham lo : phieu.getListLoSanPhamHuy()) {
+          if (!dao.themChiTietHuy(
+              phieu.getMaPH(), lo.getMaLoSP(), lo.getSoLuong(), lo.getGiaNhap(), conn))
+            throw new SQLException();
+        }
+      }
+      conn.commit();
+      canUpdate = true;
+      khoiTao();
+      return true;
+    } catch (Exception e) {
+      try {
+        if (conn != null) conn.rollback();
+      } catch (SQLException ex) {
+      }
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (conn != null) conn.close();
+      } catch (SQLException e) {
+      }
+    }
+  }
+
+  private String getCellValueAsString(Cell cell) {
+    if (cell == null) return "";
+    if (cell.getCellType() == CellType.STRING) return cell.getStringCellValue().trim();
+    if (cell.getCellType() == CellType.NUMERIC)
+      return String.valueOf((int) cell.getNumericCellValue());
+    return "";
   }
 }

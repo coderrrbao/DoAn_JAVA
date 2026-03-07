@@ -87,7 +87,7 @@ public class NguyenLieuUI extends JPanel {
 
     loadDataToTable();
     addEvents();
-    suaLaiGiaoDienTheoQuyen(); // Giữ logic phân quyền
+    suaLaiGiaoDienTheoQuyen();
   }
 
   public void suaLaiGiaoDienTheoQuyen() {
