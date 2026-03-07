@@ -3,8 +3,8 @@ package bus;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
 import dao.PhanQuyenDAO;
-import dao.conection.DBConnection;
 import dto.PhanQuyen;
 
 public class PhanQuyenBUS {

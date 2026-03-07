@@ -26,7 +26,7 @@ public class FormNguyenLieu extends JDialog {
 
     initLoaiDialog();
     ganSuKien(editNL);
-    suaLaiGiaoDienTheoQuyen(); // Giữ logic phân quyền từ HEAD
+    suaLaiGiaoDienTheoQuyen();
 
     setLocationRelativeTo(owner);
   }
@@ -45,9 +45,9 @@ public class FormNguyenLieu extends JDialog {
     txtMucCanhBao = new JTextField();
 
     String[] labels = {
-      "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:"
+        "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:"
     };
-    JTextField[] fields = {txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao};
+    JTextField[] fields = { txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao };
 
     for (int i = 0; i < labels.length; i++) {
       Box row = Box.createHorizontalBox();
@@ -109,7 +109,6 @@ public class FormNguyenLieu extends JDialog {
       btnLuu.setVisible(false);
     }
 
-    // Nếu không có cả quyền thêm và sửa, đặt chế độ xem thuần túy
     if (!listQuyen.contains("NL_TAO") && !listQuyen.contains("NL_SUA")) {
       this.setTitle("Chi tiết Nguyên Liệu (Chế độ xem)");
       btnHuy.setText("Thoát");
@@ -144,7 +143,7 @@ public class FormNguyenLieu extends JDialog {
     // Sự kiện nút Thêm
     btnThem.addActionListener(
         e -> {
-          if (kiemTraHopLe()) {
+          if (kiemTraDuLieu()) {
             ketQua = new NguyenLieu();
             ganDuLieu(ketQua);
             dispose();
@@ -154,7 +153,7 @@ public class FormNguyenLieu extends JDialog {
     // Sự kiện nút Lưu (khi Sửa)
     btnLuu.addActionListener(
         e -> {
-          if (kiemTraHopLe()) {
+          if (kiemTraDuLieu()) {
             ketQua = editNL; // Cập nhật trên đối tượng cũ
             ganDuLieu(ketQua);
             dispose();
@@ -170,14 +169,40 @@ public class FormNguyenLieu extends JDialog {
     txtMucCanhBao.setText(String.valueOf(editNL.getMucCanhBao()));
   }
 
-  private boolean kiemTraHopLe() {
+  private boolean kiemTraDuLieu() {
     if (txtTen.getText().trim().isEmpty()) {
       JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nguyên liệu!");
       return false;
     }
+
+    if (txtGia.getText().trim().isEmpty()) {
+      JOptionPane.showMessageDialog(this, "Vui lòng nhập giá!");
+      return false;
+    }
+
+    if (txtDonVi.getText().trim().isEmpty()) {
+      JOptionPane.showMessageDialog(this, "Vui lòng nhập đơn vị tính!");
+      return false;
+    }
+
+    if (txtMucCanhBao.getText().trim().isEmpty()) {
+      JOptionPane.showMessageDialog(this, "Vui lòng nhập mức cảnh báo!");
+      return false;
+    }
+
     try {
-      Double.parseDouble(txtGia.getText().trim());
-      Integer.parseInt(txtMucCanhBao.getText().trim());
+      double gia = Double.parseDouble(txtGia.getText().trim());
+      if (gia <= 0) {
+        JOptionPane.showMessageDialog(this, "Giá phải lớn hơn 0!");
+        return false;
+      }
+
+      int mucCanhBao = Integer.parseInt(txtMucCanhBao.getText().trim());
+      if (mucCanhBao < 0) {
+        JOptionPane.showMessageDialog(this, "Mức cảnh báo phải >= 0!");
+        return false;
+      }
+
       return true;
     } catch (NumberFormatException ex) {
       JOptionPane.showMessageDialog(this, "Giá và Mức cảnh báo phải là số hợp lệ!");

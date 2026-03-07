@@ -169,7 +169,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         txtMaNCC.setText(phieuNhapSanPham.getMaNCC());
         txtMaNV.setText(phieuNhapSanPham.getMaNV());
         txtMaPN.setText(phieuNhapSanPham.getMaPN());
-        txtNgayNhap.setText(phieuNhapSanPham.getMaPN());
+        txtNgayNhap.setText(phieuNhapSanPham.getNgayNhap());
         txtTongTien.setText(String.valueOf(phieuNhapSanPham.getTongTien()));
         cbTrangThai.setSelectedItem(phieuNhapSanPham.getTrangThaiXuLy());
         txaGhiChu.setText(phieuNhapSanPham.getGhiChu());
@@ -206,24 +206,27 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         });
 
         btnLuu.addActionListener(e -> {
-            if (phieuNhapSanPham.getTrangThaiXuLy().equals("Đang xử lý")
-                    && cbTrangThai.getSelectedItem().toString().equals("Đã xác nhận")) {
-                int luaChon = JOptionPane.showConfirmDialog(null, "Xác nhận phiếu nhập kho sản phẩm?", "Xác nhận",
-                        JOptionPane.YES_NO_CANCEL_OPTION);
-                if (!(luaChon == JOptionPane.YES_OPTION)) {
-                    return;
-                }
-            }
-            PhieuNhapSanPham phieuNhapSanPham = dongGoiPhieuNhapSanPham();
-            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
-            if (phieuNhapSanPhamBUS.capNhapPhieuNhapSanPham(phieuNhapSanPham)) {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu nhập sản phẩm thành công", "Thông báo", 1);
-                nhapKhoSanPhamPanel.loadDuLieu();
-            } else {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu nhập sản phẩm thất bại", "Thông báo", 1);
-            }
-            dispose();
+            String trangThaiMoi = cbTrangThai.getSelectedItem().toString();
+            String trangThaiCu = phieuNhapSanPham.getTrangThaiXuLy();
 
+            if (trangThaiCu.equals("Đang xử lý") && trangThaiMoi.equals("Đã xác nhận")) {
+                int luaChon = JOptionPane.showConfirmDialog(this,
+                        "Sau khi xác nhận, số lượng hàng sẽ được cộng vào kho và không thể sửa.",
+                        "Xác nhận nhập kho",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (luaChon != JOptionPane.YES_OPTION)
+                    return;
+            }
+
+            PhieuNhapSanPham pnh = dongGoiPhieuNhapSanPham();
+            if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().capNhapPhieuNhapSanPham(pnh)) {
+                TaoTinNhan.showAutoCloseMessage("Cập nhật thành công!", "Thông báo", 1);
+                nhapKhoSanPhamPanel.loadDuLieu();
+                dispose();
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Cập nhật thất bại!", "Lỗi", 1);
+            }
         });
 
     }

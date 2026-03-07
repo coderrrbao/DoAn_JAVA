@@ -11,8 +11,6 @@ import javax.swing.JPanel;
 
 import bus.LoSanPhamBUS;
 import bus.SanPhamBUS;
-import dto.LoSanPham;
-import dto.SanPham;
 import util.TaoUI;
 
 public class ThongKeTonKhoSP extends JPanel {
@@ -23,7 +21,7 @@ public class ThongKeTonKhoSP extends JPanel {
         JPanel card = TaoUI.taoPanelCanGiua(280, 100);
         card.setBackground(mauNen);
 
-        JLabel icon = TaoUI.taoJlabelAnh(iconPath, 70, 70);
+        JLabel icon = TaoUI.taoJlabelAnh_Svg(iconPath, 70, 70);
         TaoUI.addItem(card, icon, 10, true);
 
         JPanel info = new JPanel(new BorderLayout());
@@ -53,11 +51,11 @@ public class ThongKeTonKhoSP extends JPanel {
         lbTongLoHetHan = new JLabel();
 
         TaoUI.taoPanelBoxLayoutNgang(this, 3000, 100);
-        add(taoTheThongKe("/assets/img/logo.png", "Sản phẩm", new Color(187, 222, 251), lbSoSp));
+        add(taoTheThongKe("/assets/icon/thesp.svg", "Sản phẩm", new Color(187, 222, 251), lbSoSp));
         add(Box.createRigidArea(new Dimension(25, 0)));
-        add(taoTheThongKe("/assets/img/logo.png", "Lô sản phẩm", new Color(255, 249, 196), lbTongLo));
+        add(taoTheThongKe("/assets/icon/thelosp.svg", "Lô sản phẩm", new Color(255, 249, 196), lbTongLo));
         add(Box.createRigidArea(new Dimension(25, 0)));
-        add(taoTheThongKe("/assets/img/logo.png", "Lô hết hạn", new Color(255, 205, 210), lbTongLoHetHan));
+        add(taoTheThongKe("/assets/icon/thelohethan.svg", "Lô hết hạn", new Color(255, 205, 210), lbTongLoHetHan));
         add(Box.createRigidArea(new Dimension(25, 0)));
     }
 

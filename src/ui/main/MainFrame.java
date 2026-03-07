@@ -2,8 +2,6 @@ package ui.main;
 
 import javax.swing.JFrame;
 
-import ui.login.LoginUI;
-
 import java.awt.*;
 
 public class MainFrame extends JFrame {

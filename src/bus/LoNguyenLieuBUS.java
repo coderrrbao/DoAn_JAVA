@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import dao.LoNguyenLieuDAO;
 import dao.conection.DBConnection;
 import dto.LoNguyenLieu;
-import dto.NguyenLieu;
 
 public class LoNguyenLieuBUS {
 

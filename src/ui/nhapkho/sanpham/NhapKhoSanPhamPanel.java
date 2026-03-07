@@ -3,8 +3,6 @@ package ui.nhapkho.sanpham;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Frame;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -109,21 +107,26 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
         xoaBtn.addActionListener(e -> {
             int dongChon = table.getSelectedRow();
-            PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
-            if (dongChon >= 0) {
-                if (model.getValueAt(dongChon, 5).toString().equals("Đang xử lý")) {
-                    if (phieuNhapSanPhamBUS.xoaPhieuNhapSanPham(
-                            phieuNhapSanPhamBUS.timPhieuNhapSanPham(model.getValueAt(dongChon, 0).toString()))) {
-                        TaoTinNhan.showAutoCloseMessage("Xóa phiếu nhập sản phẩm thành công", "Thông báo",
-                                dongChon);
-                        loadDuLieu();
-                    }
-                } else {
-                    TaoTinNhan.showAutoCloseMessage("Phiếu nhập sản phẩm đã xác nhận, không thể xóa", "Thông báo",
-                            dongChon);
+            if (dongChon < 0) {
+                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", 1);
+                return;
+            }
+            if (!model.getValueAt(dongChon, 5).toString().equals("Đang xử lý")) {
+                TaoTinNhan.showAutoCloseMessage("Phiếu nhập đã xác nhận, không thể xóa", "Thông báo", 1);
+                return;
+            }
+
+            int confirm = javax.swing.JOptionPane.showConfirmDialog(this,
+                    "Bạn có chắc chắn muốn xóa phiếu nhập này?", "Xác nhận xóa",
+                    javax.swing.JOptionPane.YES_NO_OPTION);
+
+            if (confirm == javax.swing.JOptionPane.YES_OPTION) {
+                PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS();
+                String maPN = model.getValueAt(dongChon, 0).toString();
+                if (phieuNhapSanPhamBUS.xoaPhieuNhapSanPham(phieuNhapSanPhamBUS.timPhieuNhapSanPham(maPN))) {
+                    TaoTinNhan.showAutoCloseMessage("Xóa thành công!", "Thông báo", 1);
+                    loadDuLieu();
                 }
-            } else {
-                TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu nhập để xóa", "Thông báo", dongChon);
             }
         });
 

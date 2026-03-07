@@ -152,9 +152,6 @@ public class TaiKhoanUI extends JPanel {
             return;
         }
 
-        // Lấy MaNV từ bảng
-        String maNV = model.getValueAt(chonDong, 0).toString();
-
         // Tìm tài khoản tương ứng trong BUS
         String tenDangNhap = model.getValueAt(chonDong, 1).toString();
 

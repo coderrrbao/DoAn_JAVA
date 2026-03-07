@@ -11,7 +11,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.border.MatteBorder;
 import javax.swing.table.DefaultTableModel;
@@ -22,7 +21,6 @@ import dto.NguyenLieu;
 import util.TaoUI;
 
 public class ChiTietTonKhoNLDialog extends JDialog {
-    private JTable tableNL;
     private DefaultTableModel modelNL;
     private NguyenLieu nguyenLieu;
  
@@ -52,7 +50,6 @@ public class ChiTietTonKhoNLDialog extends JDialog {
         
         // Sử dụng hàm tạo Table của bạn
         JScrollPane scrollPane = TaoUI.taoTableScroll(modelNL);
-        tableNL = (JTable) scrollPane.getViewport().getView(); 
         
         center.add(scrollPane, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);

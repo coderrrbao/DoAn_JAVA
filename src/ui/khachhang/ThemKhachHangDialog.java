@@ -2,6 +2,8 @@ package ui.khachhang;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import bus.KhachHangBUS;
 import dto.KhachHang;
@@ -13,9 +15,8 @@ public class ThemKhachHangDialog extends JDialog {
     private JComboBox<String> cbGioiTinh;
     private JLabel lblHangThanhVien;
 
-    // Tách riêng 4 nút rõ ràng
     private JButton btnLuu;
-    private JButton btnHuy; // Đóng
+    private JButton btnHuy;
     private JButton btnSua;
     private JButton btnThem;
 
@@ -49,19 +50,16 @@ public class ThemKhachHangDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // TH 1: Chế độ thêm mới (khachHang == null)
         if (khachHang == null) {
             if (!listQuyen.contains("KH_TAO")) {
                 btnThem.setVisible(false);
-                setFieldsEnabled(false); // Khóa luôn không cho nhập
+                setFieldsEnabled(false);
                 this.setTitle("Thông tin khách hàng (Chỉ xem)");
             }
-        }
-        // TH 2: Chế độ xem/sửa (khachHang != null)
-        else {
+        } else {
             if (!listQuyen.contains("KH_SUA")) {
                 btnSua.setVisible(false);
-                btnLuu.setVisible(false); // Đảm bảo nút Lưu cũng không hiện
+                btnLuu.setVisible(false);
                 this.setTitle("Chi tiết khách hàng (Chế độ chỉ đọc)");
             }
         }
@@ -76,6 +74,15 @@ public class ThemKhachHangDialog extends JDialog {
 
         txtPhone = new JTextField();
         JPanel phoneField = TaoUI.taoFieldText("Số điện thoại", 110, 210, 30, 10, txtPhone);
+
+        txtPhone.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+                    e.consume();
+                }
+            }
+        });
 
         JPanel cbGTPanel = new JPanel();
         cbGTPanel.setLayout(new BoxLayout(cbGTPanel, BoxLayout.X_AXIS));
@@ -105,7 +112,6 @@ public class ThemKhachHangDialog extends JDialog {
 
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
-        // Khởi tạo 4 nút
         btnSua = new JButton("Sửa");
         btnThem = new JButton("Thêm");
         btnLuu = new JButton("Lưu");
@@ -128,10 +134,7 @@ public class ThemKhachHangDialog extends JDialog {
 
         add(mainPanel, BorderLayout.CENTER);
 
-        // Khởi tạo trạng thái ẩn/hiện ban đầu
         initLoaiDialog();
-
-        // Gán sự kiện cho các nút
         ganSuKien();
     }
 
@@ -141,7 +144,7 @@ public class ThemKhachHangDialog extends JDialog {
             btnThem.setVisible(false);
             anThaoTacSua();
         } else {
-            // Chế độ Thêm mới: Ẩn Sửa/Lưu, hiện Thêm
+
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
             btnThem.setVisible(true);
@@ -149,18 +152,16 @@ public class ThemKhachHangDialog extends JDialog {
         }
     }
 
-    // Trạng thái: Tắc Sửa (khi mới mở hoặc vừa lưu xong)
     private void anThaoTacSua() {
-        btnSua.setEnabled(true); // Cho phép nhấn Sửa
-        btnLuu.setEnabled(false); // Khóa nút Lưu
-        setFieldsEnabled(false); // Khóa nhập liệu
+        btnSua.setEnabled(true);
+        btnLuu.setEnabled(false);
+        setFieldsEnabled(false);
     }
 
-    // Trạng thái: Bật Sửa (khi nhấn vào nút Sửa)
     private void batThaoTacSua() {
-        btnSua.setEnabled(false); // Khóa nút Sửa (đã nhấn rồi)
-        btnLuu.setEnabled(true); // Bật nút Lưu để người dùng bấm
-        setFieldsEnabled(true); // Mở khóa nhập liệu
+        btnSua.setEnabled(false);
+        btnLuu.setEnabled(true);
+        setFieldsEnabled(true);
     }
 
     private void setFieldsEnabled(boolean status) {
@@ -174,8 +175,10 @@ public class ThemKhachHangDialog extends JDialog {
 
         btnSua.addActionListener(e -> batThaoTacSua());
 
-        // Sự kiện riêng biệt cho nút Thêm
         btnThem.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             String name = txtName.getText().trim();
             String phone = txtPhone.getText().trim();
             String gt = (String) cbGioiTinh.getSelectedItem();
@@ -203,8 +206,10 @@ public class ThemKhachHangDialog extends JDialog {
             }
         });
 
-        // Sự kiện riêng biệt cho nút Lưu (khi sửa)
         btnLuu.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             if (khachHang == null) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
@@ -254,5 +259,35 @@ public class ThemKhachHangDialog extends JDialog {
             case "HTV05" -> "Thành Viên Kim Cương";
             default -> "Thành Viên Mới";
         };
+    }
+
+    private boolean kiemTraDuLieu() {
+        String name = txtName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String gt = (String) cbGioiTinh.getSelectedItem();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (!phone.matches("\\d{10,11}")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10-11 chữ số!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (gt == null || gt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 }

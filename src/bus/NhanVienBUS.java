@@ -1,14 +1,9 @@
 package bus;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
-import org.apache.poi.hssf.record.DBCellRecord;
-
 import dao.NhanVienDAO;
-import dao.conection.DBConnection;
 import dto.NhanVien;
-import util.XuLyExcel; // Giả định bạn dùng class này giống bên SanPhamBUS
 
 public class NhanVienBUS {
 

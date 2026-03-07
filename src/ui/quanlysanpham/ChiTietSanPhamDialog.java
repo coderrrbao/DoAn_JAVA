@@ -1,22 +1,33 @@
 package ui.quanlysanpham;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
-import java.awt.*;
 
 import bus.DanhMucBUS;
-import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
-import bus.SizeBUS;
-import dto.ChiTietCongThuc;
 import dto.CongThuc;
 import dto.DanhMuc;
-import dto.NhaCungCap;
 import dto.SanPham;
 import dto.Size;
 import ui.login.PhienDangNhap;
@@ -32,7 +43,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             btnLamMoi;
     private JLabel lblAnh;
     private JFileChooser fileChooser;
-    private JComboBox cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy;
+    private JComboBox<String> cbLoaiNuoc, cbDanhMuc, cbTrangThaiXuLy;
     private SanPham sanPham;
 
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
@@ -117,10 +128,10 @@ public class ChiTietSanPhamDialog extends JDialog {
         luaChonLoaiNuoc.add("-- Loại nước --");
         luaChonLoaiNuoc.add("Có sẵn");
         luaChonLoaiNuoc.add("Pha chế");
-        cbDanhMuc = new JComboBox<>(luaChonDanhMuc.toArray());
+        cbDanhMuc = new JComboBox<>(luaChonDanhMuc.toArray(new String[0]));
         cbDanhMuc.setFont(cbDanhMuc.getFont().deriveFont(11.0f));
         TaoUI.setFixSize(cbDanhMuc, 100, 35);
-        cbLoaiNuoc = new JComboBox<>(luaChonLoaiNuoc.toArray());
+        cbLoaiNuoc = new JComboBox<>(luaChonLoaiNuoc.toArray(new String[0]));
         cbLoaiNuoc.setFont(cbLoaiNuoc.getFont().deriveFont(11.0f));
         TaoUI.setFixSize(cbLoaiNuoc, 100, 35);
         thongTin5.add(new JLabel("Loại nước"));
@@ -137,7 +148,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         luaChonTrangThaiXuLy.add("Đã xác nhận");
         luaChonTrangThaiXuLy.add("Chờ xử lý");
         luaChonTrangThaiXuLy.add("Ẩn");
-        cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray());
+        cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray(new String[0]));
         cbTrangThaiXuLy.setFont(cbTrangThaiXuLy.getFont().deriveFont(11.0f));
         thongTin5_1.add(new JLabel("Trạng thái"));
         thongTin5_1.add(Box.createRigidArea(new Dimension(25, 0)));
@@ -370,8 +381,9 @@ public class ChiTietSanPhamDialog extends JDialog {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);
                 }
+                dispose();
             }
-            dispose();
+
         });
 
         btnThemSize.addActionListener(e -> {
@@ -434,30 +446,66 @@ public class ChiTietSanPhamDialog extends JDialog {
     }
 
     private boolean kiemTraDuLieu() {
-        // if (tfTenSanPham.getText().isEmpty()) {
-        // JOptionPane.showMessageDialog(this, "Vui lòng nhập tên sản phẩm!", "Lỗi",
-        // JOptionPane.ERROR_MESSAGE);
-        // return false;
-        // }
-        // if (cbDanhMuc.getSelectedIndex() == 0) {
-        // JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục!", "Lỗi",
-        // JOptionPane.ERROR_MESSAGE);
-        // return false;
-        // }
-        // if (cbLoaiNuoc.getSelectedIndex() == 0) {
-        // JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước!", "Lỗi",
-        // JOptionPane.ERROR_MESSAGE);
-        // return false;
-        // }
-        // try {
-        // Long.parseLong(tfGiaBan.getText());
-        // Long.parseLong(tfDungTich.getText());
-        // } catch (NumberFormatException ex) {
-        // JOptionPane.showMessageDialog(this, "Giá nhập, giá bán, dung tích phải là
-        // số!", "Lỗi",
-        // JOptionPane.ERROR_MESSAGE);
-        // return false;
-        // }
+        String tenSP = tfTenSanPham.getText().trim();
+        if (tenSP.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên sản phẩm không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            tfTenSanPham.requestFocus();
+            return false;
+        }
+
+        if (cbDanhMuc.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục phù hợp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+        if (cbLoaiNuoc.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn loại nước (Có sẵn hoặc Pha chế)!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        try {
+            long giaBan = Long.parseLong(tfGiaBan.getText().trim());
+            int dungTich = Integer.parseInt(tfDungTich.getText().trim());
+            int canhBao = Integer.parseInt(tfCanhBao.getText().trim());
+
+            if (giaBan < 0) {
+                JOptionPane.showMessageDialog(this, "Giá bán không được là số âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if (dungTich <= 0) {
+                JOptionPane.showMessageDialog(this, "Dung tích phải lớn hơn 0!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+            if (canhBao < 0) {
+                JOptionPane.showMessageDialog(this, "Mức cảnh báo không được âm!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return false;
+            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Giá bán, dung tích và mức cảnh báo phải là số nguyên!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (cbLoaiNuoc.getSelectedItem().toString().equals("Pha chế")) {
+            if (modelSize.getRowCount() == 0) {
+                int result = JOptionPane.showConfirmDialog(this,
+                        "Sản phẩm pha chế chưa có bảng Size. Bạn có chắc chắn muốn tiếp tục?",
+                        "Xác nhận", JOptionPane.YES_NO_OPTION);
+                if (result == JOptionPane.NO_OPTION)
+                    return false;
+            }
+
+            if (xemCongThucDialog != null) {
+                CongThuc ct = xemCongThucDialog.dongGoiCongThuc();
+                if (ct == null || ct.getListChiTietCongThuc() == null || ct.getListChiTietCongThuc().isEmpty()) {
+                    JOptionPane.showMessageDialog(this,
+                            "Sản phẩm pha chế phải có ít nhất một nguyên liệu trong công thức!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                    return false;
+                }
+            }
+        }
+
         return true;
     }
 
@@ -526,7 +574,7 @@ public class ChiTietSanPhamDialog extends JDialog {
     }
 
     public static void main(String[] args) {
-        SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP02");
+        SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP0sds2");
         ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(sanPham, null);
         chiTietSanPhamDialog.setVisible(true);
     }

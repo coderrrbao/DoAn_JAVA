@@ -5,10 +5,10 @@ import java.util.HashSet;
 
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import bus.SizeBUS;
 import dto.Size;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
@@ -112,12 +112,57 @@ public class SizeDialog extends JDialog {
         add(buttonPanel, BorderLayout.SOUTH);
     }
 
+    private boolean kiemTraDuLieu() {
+        String tenSize = tfTenSize.getText().trim();
+        if (tenSize.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên size không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            tfTenSize.requestFocus();
+            return false;
+        }
+
+        // 2. Kiểm tra % Nguyên liệu thêm
+        try {
+            int nlThem = Integer.parseInt(tfNLThem.getText().trim());
+            if (nlThem < 0) {
+                JOptionPane.showMessageDialog(this, "% Nguyên liệu thêm không được là số âm!", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                tfNLThem.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "% Nguyên liệu thêm phải là số nguyên!", "Lỗi định dạng",
+                    JOptionPane.ERROR_MESSAGE);
+            tfNLThem.requestFocus();
+            return false;
+        }
+
+        // 3. Kiểm tra % Giá thêm
+        try {
+            int giaThem = Integer.parseInt(tfGiaThem.getText().trim());
+            if (giaThem < 0) {
+                JOptionPane.showMessageDialog(this, "% Giá thêm không được là số âm!", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                tfGiaThem.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "% Giá thêm phải là số nguyên!", "Lỗi định dạng",
+                    JOptionPane.ERROR_MESSAGE);
+            tfGiaThem.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
     private void ganSuKien() {
         themBtn.addActionListener(e -> {
-            Size size = new Size("", "", tfTenSize.getText(), Integer.parseInt(tfGiaThem.getText()),
-                    Integer.parseInt(tfNLThem.getText()));
-            chiTietSanPhamDialog.themSizeVaoBang(size);
-            dispose();
+            if (kiemTraDuLieu()) {
+                Size size = new Size("", "", tfTenSize.getText(), Integer.parseInt(tfGiaThem.getText()),
+                        Integer.parseInt(tfNLThem.getText()));
+                chiTietSanPhamDialog.themSizeVaoBang(size);
+                dispose();
+            }
         });
 
         lamMoiBtn.addActionListener(e -> {

@@ -1,13 +1,10 @@
 package bus;
 
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.sql.Connection;
+import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
-import dao.CongThucDAO;
 import dao.HoaDonDAO;
-import dao.SanPhamDAO;
 import dao.LoNguyenLieuDAO;
 import dao.LoSanPhamDAO;
 import dao.conection.DBConnection;
@@ -21,16 +18,13 @@ import ui.thongke.ThongKeValue;
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonDAO chiTietHoaDonDAO = new ChiTietHoaDonDAO();
-    private SanPhamDAO sanPhamDAO = new SanPhamDAO();
     private LoSanPhamDAO loSanPhamDAO = new LoSanPhamDAO();
-    private CongThucDAO congThucDAO = new CongThucDAO();
     private LoNguyenLieuDAO loNguyenLieuDAO = new LoNguyenLieuDAO();
 
     public String kiemTraTonKho(HoaDon hd) {
         for (ChiTietHoaDon ct : hd.getListChiTietHoaDon()) {
             String loaiNuoc = ct.getSanPham().getLoaiNuoc();
             String maSP = ct.getSanPham().getMaSP();
-            String maSize = (ct.getSize() != null) ? ct.getSize().getMaSize() : null;
             int soLuongMua = ct.getSoLuong();
 
             if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
@@ -55,6 +49,15 @@ public class HoaDonBUS {
             }
         }
         return null;
+    }
+
+    public double layTongDanhThu() {
+        double tong = 0;
+        ArrayList<HoaDon> listHoaDon = hoaDonDAO.layDanhSachHoaDon();
+        for (HoaDon hoaDon : listHoaDon) {
+            tong += hoaDon.getTongTien();
+        }
+        return tong;
     }
 
     public boolean ThanhToan(HoaDon hd) {

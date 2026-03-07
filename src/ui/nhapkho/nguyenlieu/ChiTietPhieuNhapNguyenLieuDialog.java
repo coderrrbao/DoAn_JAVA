@@ -15,8 +15,6 @@ import java.awt.*;
 
 public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
-    // Các thành phần phần Top
-    private JTable tblNguyenLieuNhap;
     private DefaultTableModel modelNguyenLieu;
 
     // Các thành phần phần Form
@@ -52,7 +50,6 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
         modelNguyenLieu = new DefaultTableModel(columnNames, 0);
 
         JScrollPane scrollTable = TaoUI.taoTableScroll(modelNguyenLieu);
-        tblNguyenLieuNhap = (JTable) scrollTable.getViewport().getView();
         scrollTable.setPreferredSize(new Dimension(500, 180));
         pnTop.add(scrollTable, BorderLayout.CENTER);
 

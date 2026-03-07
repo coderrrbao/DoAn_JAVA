@@ -3,11 +3,9 @@ package ui.nhanvien;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import com.toedter.calendar.JDateChooser;
@@ -86,6 +84,16 @@ public class ThemNhanVienDialog extends JDialog {
 
         txtPhone = new JTextField();
         JPanel phoneField = TaoUI.taoFieldText("Số điện thoại", 100, 220, 30, 10, txtPhone);
+
+        // Chỉ cho phép nhập số cho số điện thoại
+        txtPhone.addKeyListener(new KeyAdapter() {
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
+                    e.consume(); // Loại bỏ ký tự không phải số
+                }
+            }
+        });
 
         txtAddress = new JTextField();
         JPanel addressField = TaoUI.taoFieldText("Địa chỉ", 100, 220, 30, 10, txtAddress);
@@ -220,6 +228,9 @@ public class ThemNhanVienDialog extends JDialog {
 
         // XỬ LÝ THÊM NHÂN VIÊN
         btnThem.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             NhanVien nv = getFormDinhDang();
             if (nv == null)
                 return;
@@ -247,6 +258,9 @@ public class ThemNhanVienDialog extends JDialog {
 
         // XỬ LÝ LƯU (CẬP NHẬT)
         btnLuu.addActionListener(e -> {
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             if (nhanVien == null)
                 return;
 
@@ -312,11 +326,6 @@ public class ThemNhanVienDialog extends JDialog {
     }
 
     private NhanVien getFormDinhDang() {
-        if (date.getDate() == null) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Thông báo", JOptionPane.WARNING_MESSAGE);
-            return null;
-        }
-
         NhanVien nv = new NhanVien();
         nv.setTenNV(txtName.getText().trim());
         nv.setSdt(txtPhone.getText().trim());
@@ -356,6 +365,46 @@ public class ThemNhanVienDialog extends JDialog {
         } catch (Exception e) {
             date.setDate(new Date());
         }
+    }
+
+    private boolean kiemTraDuLieu() {
+        String name = txtName.getText().trim();
+        String phone = txtPhone.getText().trim();
+        String address = txtAddress.getText().trim();
+        String gt = (String) cbGioiTinh.getSelectedItem();
+
+        if (name.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Tên nhân viên không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (phone.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (!phone.matches("\\d{10,11}")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10-11 chữ số!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (address.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Địa chỉ không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (gt == null || gt.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (date.getDate() == null) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn ngày sinh!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        return true;
     }
 
     public static void main(String[] args) {

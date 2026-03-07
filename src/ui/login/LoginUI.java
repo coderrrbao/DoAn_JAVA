@@ -8,11 +8,9 @@ import dto.TaiKhoan;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
-import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
@@ -151,13 +149,12 @@ public class LoginUI extends JFrame {
     }
     // xu ly dang nhap
     TaiKhoan taiKhoan = taiKhoanBUS.dangNhap(user, pass);
-    if(taiKhoan.getTrangThaiXuLy().equals("Đã khóa")){
-      JOptionPane.showMessageDialog( 
-        this, "Tài khoản đã bị khóa", "Thông báo", JOptionPane.ERROR_MESSAGE);
-      return;
-    }
     if (taiKhoan != null) {
-      // luu phien dang nhap
+      if (taiKhoan.getTrangThaiXuLy().equals("Đã khóa")) {
+        JOptionPane.showMessageDialog(
+            this, "Tài khoản đã bị khóa", "Thông báo", JOptionPane.ERROR_MESSAGE);
+        return;
+      }
       NhanVienBUS nhanVienBUS = NhanVienBUS.getNhanVienBUS();
       NhanVien nv = nhanVienBUS.timNhanVien(taiKhoan.getMaNV());
       PhienDangNhap.setUser(nv);

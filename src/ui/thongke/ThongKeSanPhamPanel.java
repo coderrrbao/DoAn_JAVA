@@ -1,13 +1,13 @@
 package ui.thongke;
 
 import java.awt.BorderLayout;
-import java.awt.Color;
+import java.awt.GridLayout;
 import java.util.Map;
 
-import javax.swing.Box;
-import javax.swing.BoxLayout;
+import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import org.jfree.data.category.DefaultCategoryDataset;
@@ -24,27 +24,25 @@ public class ThongKeSanPhamPanel extends JPanel {
     DefaultTableModel model;
     DefaultPieDataset datasetTron;
 
-
-
     private ThongKeBUS thongKeBUS = new ThongKeBUS();
+    private ThongKeChungSpPanel thongKeChungSpPanel;
 
     public ThongKeSanPhamPanel() {
         setLayout(new BorderLayout());
-        
-
+        // setBackground(Color.white);
         JPanel top = TaoUI.taoPanelBorderLayout(3000, 450);
-        top.add(new ThongKeChungSpPanel(),BorderLayout.NORTH);
-        add(top,BorderLayout.NORTH);
+        thongKeChungSpPanel = new ThongKeChungSpPanel();
+        top.add(thongKeChungSpPanel, BorderLayout.NORTH);
+        add(top, BorderLayout.NORTH);
 
-        JPanel bieuDoPanel = new JPanel();
-        bieuDoPanel.setBackground(Color.white);
-        bieuDoPanel.setLayout(new BoxLayout(bieuDoPanel, BoxLayout.X_AXIS));
-        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(400, 350);
-        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(700, 350);
+        JPanel bieuDoPanel = new JPanel(new GridLayout(1, 2, 10, 10));
+        JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(570, 320);
+        TaoUI.suaBorderChoPanel(top, 10, 0, 10, 0);
+        JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(700, 320);
+        // TaoUI.suaBorderChoPanel(bieuDoCot, 10, 10, 10, 10);
         bieuDoPanel.add(bieuDoTron);
-        bieuDoPanel.add(Box.createHorizontalGlue());
         bieuDoPanel.add(bieuDoCot);
-        top.add(bieuDoPanel,BorderLayout.CENTER);
+        top.add(bieuDoPanel, BorderLayout.CENTER);
         datasetCot = new DefaultCategoryDataset();
         bieuDoCot.add(TaoUI.taoBieuDoCot("Top 5 sản phẩm bán chạy", "Số lượng", "Sản phẩm", datasetCot),
                 BorderLayout.CENTER);
@@ -52,16 +50,16 @@ public class ThongKeSanPhamPanel extends JPanel {
         datasetTron = new DefaultPieDataset();
 
         bieuDoTron.add(TaoUI.taoBieuDoTron("Số sản phẩm bán ra theo danh mục", datasetTron), BorderLayout.CENTER);
-
-
         model = new DefaultTableModel();
         model.addColumn("Mã sản phẩm");
         model.addColumn("Tên sản phẩm");
         model.addColumn("Số lượng mua");
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
+        JTable table = (JTable) scrollPane.getViewport().getView();
+        table.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
+        TaoUI.suaBorderChoPanel(this, 0, 10, 0, 10);
         loaiDuLieu();
-        ganSuKien();
     }
 
     private void themPhanTuVaoBieuDoTron(String tenDanhMuc, int soLuong) {
@@ -89,21 +87,19 @@ public class ThongKeSanPhamPanel extends JPanel {
             themPhanTuVaoBieuDoCot(entry.getKey().getTenSP(), entry.getValue());
         }
     }
-    private void loadTable(){
-        Map<SanPham,Integer> laySpBanChay = thongKeBUS.laySL_SP_BanRaGiamDan();
-         for (Map.Entry<SanPham, Integer> entry : laySpBanChay.entrySet()) {
+
+    private void loadTable() {
+        Map<SanPham, Integer> laySpBanChay = thongKeBUS.laySL_SP_BanRaGiamDan();
+        for (Map.Entry<SanPham, Integer> entry : laySpBanChay.entrySet()) {
             themPhanTuVaoTable(entry.getKey(), entry.getValue());
-         }
-    }
-
-    private void ganSuKien() {
-
+        }
     }
 
     private void loaiDuLieu() {
         loadBieuDoTron();
         loadBieuDoCot();
         loadTable();
+        thongKeChungSpPanel.loadDuLieu();
     }
 
 }
