@@ -372,4 +372,106 @@ public class XuLyExcel {
         }
     }
 
+    public static boolean xuatFileKhuyenMai(java.util.ArrayList<dto.KhuyenMai> list) {
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu file Excel Khuyến Mãi");
+        fileChooser.setSelectedFile(new java.io.File("DanhSachKhuyenMai.xlsx"));
+
+        if (fileChooser.showSaveDialog(null) == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File fileToSave = fileChooser.getSelectedFile();
+            if (!fileToSave.getName().toLowerCase().endsWith(".xlsx")) {
+                fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".xlsx");
+            }
+
+            try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+                org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Khuyến Mãi");
+
+                String[] headers = { "Mã KM", "Phần Trăm Giảm", "Ngày Bắt Đầu", "Ngày Kết Thúc" };
+
+                org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
+                org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
+                org.apache.poi.ss.usermodel.Font font = workbook.createFont();
+                font.setBold(true);
+                headerStyle.setFont(font);
+
+                for (int i = 0; i < headers.length; i++) {
+                    org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
+                    cell.setCellValue(headers[i]);
+                    cell.setCellStyle(headerStyle);
+                }
+
+                int rowNum = 1;
+                for (dto.KhuyenMai km : list) {
+                    org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+                    row.createCell(0).setCellValue(km.getMaKM());
+                    row.createCell(1).setCellValue(km.getPhanTramGiam());
+                    row.createCell(2).setCellValue(km.getTuNgay() != null ? km.getTuNgay() : "");
+                    row.createCell(3).setCellValue(km.getDenNgay() != null ? km.getDenNgay() : "");
+                }
+
+                for (int i = 0; i < headers.length; i++) sheet.autoSizeColumn(i);
+
+                try (java.io.FileOutputStream out = new java.io.FileOutputStream(fileToSave)) {
+                    workbook.write(out);
+                    javax.swing.JOptionPane.showMessageDialog(null, "Xuất danh sách Khuyến Mãi thành công!");
+                    return true;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(null, "Lỗi xuất file: " + e.getMessage());
+            }
+        }
+        return false;
+    }
+
+    public static java.util.ArrayList<dto.KhuyenMai> nhapFileKhuyenMai() {
+        java.util.ArrayList<dto.KhuyenMai> ds = new java.util.ArrayList<>();
+        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel Khuyến Mãi để nhập");
+
+        if (fileChooser.showOpenDialog(null) == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File file = fileChooser.getSelectedFile();
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(file);
+                 org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook(fis)) {
+
+                org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
+                java.util.Iterator<org.apache.poi.ss.usermodel.Row> rowIterator = sheet.iterator();
+                org.apache.poi.ss.usermodel.DataFormatter formatter = new org.apache.poi.ss.usermodel.DataFormatter();
+                java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("dd/MM/yyyy");
+
+                if (rowIterator.hasNext()) rowIterator.next();
+
+                while (rowIterator.hasNext()) {
+                    org.apache.poi.ss.usermodel.Row row = rowIterator.next();
+                    if (row.getCell(0) == null || formatter.formatCellValue(row.getCell(0)).trim().isEmpty()) {
+                        continue;
+                    }
+
+                    dto.KhuyenMai km = new dto.KhuyenMai();
+                    km.setMaKM(formatter.formatCellValue(row.getCell(0)));
+                    try { km.setPhanTramGiam(Integer.parseInt(formatter.formatCellValue(row.getCell(1)))); } catch (Exception e) { km.setPhanTramGiam(0); }
+
+                    String start = formatter.formatCellValue(row.getCell(2));
+                    if (!start.isEmpty()) {
+                        km.setTuNgay(start);
+
+                    }
+
+                    String end = formatter.formatCellValue(row.getCell(3));
+                    if (!end.isEmpty()) {
+                        km.setDenNgay(end);
+                    }
+
+                    ds.add(km);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                javax.swing.JOptionPane.showMessageDialog(null, "Lỗi đọc file Excel: File không đúng định dạng!");
+            }
+        }
+        return ds;
+    }
+
+
+
 }

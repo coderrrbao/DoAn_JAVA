@@ -46,7 +46,6 @@ public class KhuyenMaiDAO {
             pst.setString(1, km.getMaKM());
             pst.setInt(2, km.getPhanTramGiam());
             
-            // Chuyển String từ Java sang Date để lưu xuống DB
             pst.setDate(3, Date.valueOf(km.getTuNgay()));
             pst.setDate(4, Date.valueOf(km.getDenNgay()));
             pst.setInt(5, 1); 
