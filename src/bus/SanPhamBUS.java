@@ -7,10 +7,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dao.ChiTietCongThucDAO;
+import dao.CongThucDAO;
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
+import dao.SizeDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
+import dto.CongThuc;
 import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
@@ -297,7 +301,6 @@ public class SanPhamBUS {
     }
 
     public boolean nhapExcel(File file) {
-        // 1. Lấy dữ liệu thô từ Util
         ArrayList<SanPham> dsNhap = XuLyExcel.nhapFileSanPham(file);
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
@@ -305,48 +308,72 @@ public class SanPhamBUS {
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); // Bắt đầu Transaction
+            conn.setAutoCommit(false); 
 
-            DanhMucDao danhMucDao = new DanhMucDao(); // Để tra cứu danh mục
+         
+            SizeDAO sizeDao = new SizeDAO();
+            CongThucDAO congThucDao = new CongThucDAO();
+            ChiTietCongThucDAO ctctDao = new ChiTietCongThucDAO();
+            DanhMucDao danhMucDao = new DanhMucDao(); 
+
             int count = 0;
 
             for (SanPham sp : dsNhap) {
-                // Kiểm tra mã rỗng hoặc trùng lặp
-                if (sp.getMaSP() != null && !sp.getMaSP().isEmpty() && !sanPhamDAO.exists(conn, sp.getMaSP())) {
+      
+                if (sp.getDanhMuc() != null && sp.getDanhMuc().getTenDM() != null) {
+                    DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
+                    if (dmFull != null) {
+                        sp.setDanhMuc(dmFull); 
+                    } else {
+                
+                        throw new SQLException("Lỗi: Danh mục '" + sp.getDanhMuc().getTenDM()
+                                + "' không tồn tại trong hệ thống. Vui lòng thêm danh mục này trước khi import!");
+                    }
+                } else {
+                    throw new SQLException("Lỗi: Sản phẩm '" + sp.getMaSP() + "' thiếu thông tin Danh Mục!");
+                }
+        
+           
+                if (!sanPhamDAO.themSanPham(sp, conn)) {
+                    throw new SQLException("Lỗi thêm Sản phẩm: " + sp.getMaSP());
+                }
 
-                    // Tìm đối tượng Danh Mục chuẩn từ Database dựa vào tên lấy từ Excel
-                    if (sp.getDanhMuc() != null) {
-                        DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
-                        sp.setDanhMuc(dmFull);
-
-                        // Chú ý: Cần chắc chắn danh mục tồn tại mới thêm
-                        if (dmFull != null) {
-                            if (!sanPhamDAO.themSanPham(sp, conn)) {
-                                throw new SQLException("Lỗi khi Insert Sản phẩm: " + sp.getMaSP());
-                            }
-                            count++;
+                if (sp.getListSize() != null) {
+                    for (Size s : sp.getListSize()) {
+                        if (!sizeDao.themSize(s, conn)) {
+                            throw new SQLException("Lỗi thêm Size: " + s.getMaSize());
                         }
                     }
                 }
+
+             
+                if (sp.getCongThuc() != null) {
+                    CongThuc ct = sp.getCongThuc();
+                    if (!congThucDao.themCongThuc(ct, conn)) {
+                        throw new SQLException("Lỗi thêm Công thức cho SP: " + sp.getMaSP());
+                    }
+
+                    if (ct.getListChiTietCongThuc() != null) {
+                        for (ChiTietCongThuc ctct : ct.getListChiTietCongThuc()) {
+                            if (!ctctDao.themCTCT(ctct, conn)) {
+                                throw new SQLException("Lỗi thêm CTCT cho mã CT: " + ct.getMaCT());
+                            }
+                        }
+                    }
+                }
+                count++;
             }
 
-            // Nếu không có sản phẩm nào hợp lệ để thêm
-            if (count == 0) {
-                conn.rollback();
-                return false;
-            }
-
-            // Nếu mọi thứ trơn tru, lưu vào DB
+         
             conn.commit();
-            this.canUpdate = true; // Cờ hiệu để load lại Table
-            return true;
+            this.canUpdate = true;
+            return count > 0;
 
         } catch (Exception e) {
             e.printStackTrace();
-            // LỖI -> ROLLBACK TOÀN BỘ
             try {
                 if (conn != null)
-                    conn.rollback();
+                    conn.rollback(); 
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }

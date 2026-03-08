@@ -31,9 +31,6 @@ import util.TaoUI;
 
 public class TonKhoSanPhamPanel extends JPanel {
     private JTable table;
-
-    private JButton btnXuatEx;
-    private JButton btnNhapExcel;
     private JButton btnSua;
     private JButton btnXemLo;
     private DefaultTableModel model;
@@ -49,15 +46,6 @@ public class TonKhoSanPhamPanel extends JPanel {
         topContent.setPreferredSize(new Dimension(100, 45));
         topContent.setLayout(new FlowLayout(FlowLayout.LEFT));
         topContent.setBackground(Color.WHITE);
-
-        btnXuatEx = new JButton("Xuất excel");
-        btnXuatEx.setPreferredSize(new Dimension(120, 35));
-        topContent.add(btnXuatEx);
-
-        btnNhapExcel = new JButton("Nhập Excel");
-        btnNhapExcel.setPreferredSize(new Dimension(120, 35));
-        topContent.add(btnNhapExcel);
-
         btnXemLo = new JButton("Xem lô");
         btnXemLo.setPreferredSize(new Dimension(80, 35));
         topContent.add(btnXemLo);

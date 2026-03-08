@@ -126,7 +126,7 @@ public class NhomQuyenBUS {
         this.canUpdate = true;
         return true;
     }
-    
+
     public boolean capNhatNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -226,61 +226,68 @@ public class NhomQuyenBUS {
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
     }
-    //xuat exc nhom quyen
-    public boolean XuatExc(){
-        return XuLyExcel.xuatFileNhomQuyen(listNhomQuyen);
+
+    // xuat exc nhom quyen
+    public boolean XuatExc() {
+        PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
+        return XuLyExcel.xuatFileNhomQuyen(layDanhSachNhomQuyen(), phanQuyenBUS.layDanhSachPhanQuyen());
     }
 
-    // nhập excel nhóm quyền + phân quyền
-    public boolean nhapExcelPhanQuyen() {
-        JFileChooser chooser = new JFileChooser();
-        chooser.setDialogTitle("Chọn file Excel");
-        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
-            File file = chooser.getSelectedFile();
+    public boolean nhapExcelPhanQuyen(File file) {
+        if (file == null || !file.exists()) {
+            JOptionPane.showMessageDialog(null, "File không hợp lệ!");
+            return false;
+        }
+
+        // 1. Đọc dữ liệu từ file Excel thông qua lớp xử lý Excel
+        Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
+        if (data == null || data.length < 2) {
+            JOptionPane.showMessageDialog(null, "Dữ liệu file Excel không đúng định dạng!");
+            return false;
+        }
+
+        ArrayList<NhomQuyen> listNQExcel = (ArrayList<NhomQuyen>) data[0];
+        ArrayList<PhanQuyen> listPQExcel = (ArrayList<PhanQuyen>) data[1];
+
+        this.khoiTao();
+        HashSet<String> dsMaHienTai = new HashSet<>();
+        for (NhomQuyen nq : this.listNhomQuyen) {
+            dsMaHienTai.add(nq.getMaNQ());
+        }
+
+        for (NhomQuyen nq : listNQExcel) {
+            if (!this.themNhomQuyen(nq)) {
+                return false;
+            }
+
             Connection conn = DBConnection.getConnection();
+            PhanQuyenDAO pqDAO = new PhanQuyenDAO();
             try {
                 conn.setAutoCommit(false);
-                Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
-                ArrayList<NhomQuyen> listNQ = (ArrayList<NhomQuyen>) data[0];
-                ArrayList<PhanQuyen> listPQ = (ArrayList<PhanQuyen>) data[1];
-                PhanQuyenDAO pqDAO = new PhanQuyenDAO();
-
-                for (NhomQuyen nq : listNQ) {
-
-                    if (!nhomQuyenDAO.themNhomQuyen(nq, conn)) {
-                        throw new Exception("Lỗi thêm nhóm quyền");
-                    }
-                }
-
-                for (PhanQuyen pq : listPQ) {
-
-                    if (!pqDAO.themPhanQuyen(pq, conn)) {
-                        throw new Exception("Lỗi thêm phân quyền");
+                for (PhanQuyen pq : listPQExcel) {
+                    if (pqDAO.themPhanQuyen(pq, conn)) {
                     }
                 }
                 conn.commit();
-                this.canUpdate = true;
-                JOptionPane.showMessageDialog(null, "Nhập Excel thành công!");
-                return true;
             } catch (Exception e) {
                 try {
                     conn.rollback();
-                } catch (Exception ex) {
+                } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null, "Nhập Excel thất bại!");
             } finally {
-
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                } catch (Exception e) {
+                } catch (SQLException e) {
                     e.printStackTrace();
                 }
             }
-        }
 
-        return false;
+            // 5. Thông báo kết quả
+            this.canUpdate = true;
+        }
+        return true;
     }
 }

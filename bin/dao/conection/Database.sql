@@ -329,12 +329,10 @@ BEGIN
         ('DM01', N'Cà Phê', 1),
         ('DM02', N'Trà Sữa', 1),
         ('DM03', N'Nước Ngọt', 1),
-        ('DM04', N'Đồ Ăn Nhẹ', 1),
         ('DM05', N'Sinh Tố & Nước Ép', 1),
         ('DM06', N'Đá Xay', 1),
         ('DM07', N'Trà Trái Cây', 1),
         ('DM08', N'Sữa Chua', 1),
-        ('DM09', N'Bánh Ngọt', 1),
         ('DM10', N'Topping', 1)
 END;
 
@@ -389,7 +387,6 @@ BEGIN
     INSERT INTO SanPham
         (MaSP, TenSP, MaDM, GiaBan, LoaiNuoc, Anh, TheTich, MucCanhBao, TrangThai, TrangThaiXuLy)
     VALUES
-        -- 10 Món Pha Chế
         ('SP01', N'Cà Phê Đen Đá', 'DM01', 25000, N'Pha chế', '/assets/img/SP01.png', 500, 10, 1, N'Đã xác nhận'),
         ('SP02', N'Cà Phê Sữa Đá', 'DM01', 30000, N'Pha chế', '/assets/img/SP02.png', 500, 10, 1, N'Đã xác nhận'),
         ('SP03', N'Bạc Xỉu', 'DM01', 35000, N'Pha chế', '/assets/img/SP03.png', 500, 10, 1, N'Đã xác nhận'),
@@ -401,31 +398,34 @@ BEGIN
         ('SP09', N'Matcha Đá Xay', 'DM06', 55000, N'Pha chế', '/assets/img/SP09.png', 500, 5, 1, N'Đã xác nhận'),
         ('SP10', N'Sữa Chua Trân Châu', 'DM08', 40000, N'Pha chế', '/assets/img/SP10.png', 350, 10, 1, N'Đã xác nhận'),
 
-        -- 20 Món Có Sẵn
+        -- 10 Món Có Sẵn (Đóng lon/chai)
         ('SP11', N'Pepsi Lon', 'DM03', 15000, N'Có sẵn', '/assets/img/SP11.png', 330, 20, 1, N'Đã xác nhận'),
         ('SP12', N'Coca Cola Lon', 'DM03', 15000, N'Có sẵn', '/assets/img/SP12.png', 330, 20, 1, N'Đã xác nhận'),
         ('SP13', N'7Up Lon', 'DM03', 15000, N'Có sẵn', '/assets/img/SP13.png', 330, 20, 1, N'Đã xác nhận'),
         ('SP14', N'Sting Dâu', 'DM03', 18000, N'Có sẵn', '/assets/img/SP14.png', 330, 15, 1, N'Đã xác nhận'),
         ('SP15', N'Redbull Thái', 'DM03', 20000, N'Có sẵn', '/assets/img/SP15.png', 250, 15, 1, N'Đã xác nhận'),
         ('SP16', N'Nước Suối Dasani', 'DM03', 10000, N'Có sẵn', '/assets/img/SP16.png', 500, 30, 1, N'Đã xác nhận'),
-        ('SP17', N'Bánh Mì Que', 'DM04', 15000, N'Có sẵn', '/assets/img/SP17.png', 100, 10, 1, N'Đã xác nhận'),
-        ('SP18', N'Khô Gà Lá Chanh', 'DM04', 50000, N'Có sẵn', '/assets/img/SP18.png', 200, 10, 1, N'Đã xác nhận'),
-        ('SP19', N'Hạt Hướng Dương', 'DM04', 25000, N'Có sẵn', '/assets/img/SP19.png', 150, 20, 1, N'Đã xác nhận'),
-        ('SP20', N'Bánh Tiramisu', 'DM09', 45000, N'Có sẵn', '/assets/img/SP20.png', 150, 5, 1, N'Đã xác nhận'),
-        ('SP21', N'Mousse Chanh Dây', 'DM09', 45000, N'Có sẵn', '/assets/img/SP21.png', 150, 5, 1, N'Đã xác nhận'),
-        ('SP22', N'Bánh Croissant', 'DM09', 30000, N'Có sẵn', '/assets/img/SP22.png', 100, 10, 1, N'Đã xác nhận'),
-        ('SP23', N'Bánh Flan', 'DM09', 20000, N'Có sẵn', '/assets/img/SP23.png', 100, 15, 1, N'Đã xác nhận'),
-        ('SP24', N'Sữa Chua Dẻo', 'DM08', 25000, N'Có sẵn', '/assets/img/SP24.png', 150, 10, 1, N'Đã xác nhận'),
-        ('SP25', N'Kẹo Cao Su Doublemint', 'DM04', 10000, N'Có sẵn', '/assets/img/SP25.png', 50, 30, 1, N'Đã xác nhận'),
-        ('SP26', N'Snack Khoai Tây Lay''s', 'DM04', 20000, N'Có sẵn', '/assets/img/SP26.png', 100, 15, 1, N'Đã xác nhận'),
+        ('SP17', N'Mirinda Cam', 'DM03', 15000, N'Có sẵn', '/assets/img/SP17.png', 330, 20, 1, N'Đã xác nhận'),
+        ('SP18', N'Mountain Dew', 'DM03', 18000, N'Có sẵn', '/assets/img/SP18.png', 330, 20, 1, N'Đã xác nhận'),
+        ('SP19', N'Nước Khoáng Revive', 'DM03', 20000, N'Có sẵn', '/assets/img/SP19.png', 500, 20, 1, N'Đã xác nhận'),
+        ('SP20', N'Nước Thể Thao Aquarius', 'DM03', 20000, N'Có sẵn', '/assets/img/SP20.png', 500, 20, 1, N'Đã xác nhận'),
+
+        -- 10 Món Nước Bổ Sung Thêm (Để đủ 30 SP)
+        ('SP21', N'Trà Sữa Khoai Môn', 'DM02', 45000, N'Pha chế', '/assets/img/SP21.png', 500, 10, 1, N'Đã xác nhận'),
+        ('SP22', N'Trà Vải Hạt Chia', 'DM07', 45000, N'Pha chế', '/assets/img/SP22.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP23', N'Trà Dâu Tây Tươi', 'DM07', 45000, N'Pha chế', '/assets/img/SP23.png', 700, 10, 1, N'Đã xác nhận'),
+        ('SP24', N'Sữa Chua Dẻo', 'DM08', 25000, N'Có sẵn', '/assets/img/SP24.png', 150, 15, 1, N'Đã xác nhận'),
+        ('SP25', N'Sinh Tố Dâu', 'DM05', 55000, N'Pha chế', '/assets/img/SP25.png', 500, 5, 1, N'Đã xác nhận'),
+        ('SP26', N'Nước Ép Dưa Hấu', 'DM05', 40000, N'Pha chế', '/assets/img/SP26.png', 350, 10, 1, N'Đã xác nhận'),
         ('SP27', N'Nước Trái Cây Nutriboost', 'DM03', 20000, N'Có sẵn', '/assets/img/SP27.png', 300, 15, 1, N'Đã xác nhận'),
         ('SP28', N'Trà Ô Long Tea+', 'DM03', 18000, N'Có sẵn', '/assets/img/SP28.png', 450, 20, 1, N'Đã xác nhận'),
-        ('SP29', N'Bánh Quy Danisa', 'DM09', 60000, N'Có sẵn', '/assets/img/SP29.png', 200, 5, 1, N'Đã xác nhận'),
-        ('SP30', N'Xúc Xích Tiệt Trùng', 'DM04', 15000, N'Có sẵn', '/assets/img/SP30.png', 150, 20, 1, N'Đã xác nhận'),
+        ('SP29', N'Trà Xanh Không Độ', 'DM03', 18000, N'Có sẵn', '/assets/img/SP29.png', 450, 20, 1, N'Đã xác nhận'),
+        ('SP30', N'Cà Phê Muối', 'DM01', 35000, N'Pha chế', '/assets/img/SP30.png', 500, 10, 1, N'Đã xác nhận'),
 
-        ('SP_TOP01', N'Trân Châu Đen', 'DM10', 5000, N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận'),
-        ('SP_TOP02', N'Thạch Phô Mai', 'DM10', 7000, N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận'),
-        ('SP_TOP03', N'Kem Cheese', 'DM10', 10000, N'Pha chế', '/assets/img/pepsi.png', 0, 10, 1, N'Đã xác nhận')
+        -- 3 Món Topping
+        ('SP_TOP01', N'Trân Châu Đen', 'DM10', 5000, N'Pha chế', '/assets/img/SP_TOP01.png', 0, 10, 1, N'Đã xác nhận'),
+        ('SP_TOP02', N'Thạch Phô Mai', 'DM10', 7000, N'Pha chế', '/assets/img/SP_TOP02.png', 0, 10, 1, N'Đã xác nhận'),
+        ('SP_TOP03', N'Kem Cheese', 'DM10', 10000, N'Pha chế', '/assets/img/SP_TOP03.png', 0, 10, 1, N'Đã xác nhận')
 END;
 
 /* =============================================
@@ -853,13 +853,10 @@ BEGIN
     INSERT INTO PhieuNhapSanPham
         (MaPN, NgayNhap, MaNV, TongTien, MaNCC,GhiChu ,TrangThaiXuLy, TrangThai)
     VALUES
-        ('PNSP01', '2024-01-10', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP02', '2024-01-11', 'NV03', 5000000, 'NCC04', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP03', '2024-01-15', 'NV03', 2000000, 'NCC02', N'Đã xác nhận', N'Đã xác nhận', 1),
-        -- Đã sửa NCC10 thành NCC02
-        ('PNSP04', '2024-02-01', 'NV03', 8000000, 'NCC01', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNSP05', '2024-02-05', 'NV03', 1500000, 'NCC03', N'Đã xác nhận', N'Đã xác nhận', 1)
--- Đã sửa NCC11 thành NCC03
+        ('PNSP01', '2024-01-10', 'NV03', 225000000, 'NCC01', N'Nhập hàng Tết đợt 1', N'Đã xác nhận', 1),
+        ('PNSP02', '2024-01-15', 'NV03', 180000000, 'NCC01', N'Nhập hàng Tết đợt 2', N'Đã xác nhận', 1),
+        ('PNSP03', '2024-02-01', 'NV03', 150000000, 'NCC04', N'Nhập kho đầu tháng', N'Đã xác nhận', 1),
+        ('PNSP04', '2024-02-15', 'NV03', 200000000, 'NCC01', N'Nhập bổ sung', N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -885,11 +882,26 @@ BEGIN
     INSERT INTO LoSanPham
         (MaLoSP, MaPN, MaSP, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy,TrangThai)
     VALUES
-        ('LOSP01', 'PNSP01', 'SP11', 1000, '2024-01-10', '2024-01-01', '2025-01-01', 8000000, N'Đã xác nhận', 1),
-        ('LOSP02', 'PNSP02', 'SP12', 500, '2024-01-11', '2024-01-01', '2024-12-31', 4000000, N'Đã xác nhận', 1),
-        ('LOSP03', 'PNSP03', 'SP17', 250, '2024-01-15', '2024-01-14', '2024-01-20', 2000000, N'Đã xác nhận', 1),
-        ('LOSP04', 'PNSP04', 'SP13', 1000, '2024-02-01', '2024-01-15', '2025-01-15', 8000000, N'Đã xác nhận', 1),
-        ('LOSP05', 'PNSP05', 'SP20', 100, '2024-02-05', '2024-02-04', '2024-02-10', 1500000, N'Đã xác nhận', 1)
+        ('LOSP01', 'PNSP01', 'SP11', 5000, '2024-01-10', '2024-01-01', '2025-01-01', 9000, N'Đã xác nhận', 1),
+        ('LOSP02', 'PNSP01', 'SP12', 5000, '2024-01-10', '2024-01-01', '2025-01-01', 9000, N'Đã xác nhận', 1),
+        ('LOSP03', 'PNSP01', 'SP13', 5000, '2024-01-10', '2024-01-01', '2025-01-01', 9000, N'Đã xác nhận', 1),
+
+        -- PNSP02: Nhập nước tăng lực và nước suối
+        ('LOSP04', 'PNSP02', 'SP14', 5000, '2024-01-15', '2024-01-05', '2025-01-05', 12000, N'Đã xác nhận', 1),
+        ('LOSP05', 'PNSP02', 'SP15', 3000, '2024-01-15', '2024-01-05', '2025-01-05', 14000, N'Đã xác nhận', 1),
+        ('LOSP06', 'PNSP02', 'SP16', 10000, '2024-01-15', '2024-01-10', '2026-01-10', 4000, N'Đã xác nhận', 1),
+
+        -- PNSP03: Nhập nước trái cây, thể thao
+        ('LOSP07', 'PNSP03', 'SP17', 3000, '2024-02-01', '2024-01-20', '2025-01-20', 9000, N'Đã xác nhận', 1),
+        ('LOSP08', 'PNSP03', 'SP18', 3000, '2024-02-01', '2024-01-20', '2025-01-20', 10000, N'Đã xác nhận', 1),
+        ('LOSP09', 'PNSP03', 'SP19', 3000, '2024-02-01', '2024-01-20', '2025-01-20', 12000, N'Đã xác nhận', 1),
+        ('LOSP10', 'PNSP03', 'SP20', 3000, '2024-02-01', '2024-01-20', '2025-01-20', 12000, N'Đã xác nhận', 1),
+
+        -- PNSP04: Nhập trà đóng chai & sữa chua dẻo
+        ('LOSP11', 'PNSP04', 'SP24', 2000, '2024-02-15', '2024-02-10', '2024-08-10', 15000, N'Đã xác nhận', 1),
+        ('LOSP12', 'PNSP04', 'SP27', 4000, '2024-02-15', '2024-02-01', '2025-02-01', 13000, N'Đã xác nhận', 1),
+        ('LOSP13', 'PNSP04', 'SP28', 5000, '2024-02-15', '2024-02-05', '2025-02-05', 11000, N'Đã xác nhận', 1),
+        ('LOSP14', 'PNSP04', 'SP29', 5000, '2024-02-15', '2024-02-05', '2025-02-05', 11000, N'Đã xác nhận', 1)
 END;
 
 /* =============================================
@@ -913,11 +925,10 @@ BEGIN
     INSERT INTO PhieuNhapNguyenLieu
         (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
-        ('PNNL01', '2024-01-12', 'NV03', 5000000, 'NCC02', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNNL02', '2024-01-13', 'NV02', 3000000, 'NCC03', N'Đã xác nhận', N'Đã xác nhận', 1),
-        ('PNNL03', '2024-01-20', 'NV03', 10000000, 'NCC04', N'Đã xác nhận', N'Đã xác nhận', 1),
-        -- Đã sửa NCC08 thành NCC04
-        ('PNNL04', '2024-02-01', 'NV02', 2000000, 'NCC05', N'Đã xác nhận', N'Đã xác nhận', 1)
+        ('PNNL01', '2024-01-12', 'NV03', 150000000, 'NCC02', N'Đã xác nhận', N'Nhập trà, cà phê số lượng lớn', 1),
+        ('PNNL02', '2024-01-13', 'NV02', 200000000, 'NCC03', N'Đã xác nhận', N'Nhập sữa và chế phẩm sữa', 1),
+        ('PNNL03', '2024-01-20', 'NV03', 120000000, 'NCC05', N'Đã xác nhận', N'Nhập topping và phụ liệu', 1),
+        ('PNNL04', '2024-02-01', 'NV02', 80000000, 'NCC04', N'Đã xác nhận', N'Nhập trái cây và đá', 1)
 END;
 
 /* =============================================
@@ -944,27 +955,42 @@ BEGIN
     INSERT INTO LoNguyenLieu
         (MaLoNL, MaPN, MaNL, SoLuong, NgayNhap, NgaySanXuat, HanSuDung, GiaNhap, TrangThaiXuLy, TrangThai)
     VALUES
-        ('LONL01', 'PNNL01', 'NL01', 25.0, '2024-01-12', '2024-01-01', '2024-06-01', 150000, N'Đã xác nhận', 1),
-        -- Cà phê
-        ('LONL02', 'PNNL02', 'NL02', 120.0, '2024-01-13', '2024-01-01', '2024-07-01', 250000, N'Đã xác nhận', 1),
-        -- Sữa đặc
-        ('LONL03', 'PNNL03', 'NL05', 20.5, '2024-01-20', '2023-12-01', '2024-12-01', 800000, N'Đã xác nhận', 1),
-        -- Matcha (Có số thập phân)
-        ('LONL04', 'PNNL03', 'NL06', 250.0, '2024-01-20', '2024-01-15', '2024-03-15', 300000, N'Đã xác nhận', 1),
-        -- Trân châu
-        ('LONL05', 'PNNL04', 'NL07', 15.0, '2024-02-01', '2024-01-01', '2025-01-01', 120000, N'Đã xác nhận', 1),
-        -- Nguyên liệu (test)
-        ('LONL_NL04', 'PNNL01', 'NL04', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 30000, N'Đã xác nhận', 1),
-        -- Sữa tươi
-        ('LONL_NL05', 'PNNL01', 'NL05', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 50000, N'Đã xác nhận', 1),
-        -- Matcha/Trà
-        ('LONL_NL08', 'PNNL01', 'NL08', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 80000, N'Đã xác nhận', 1),
-        -- Trà đen
-        ('LONL_NL09', 'PNNL01', 'NL09', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 60000, N'Đã xác nhận', 1),
-        -- Kem béo
-        ('LONL_NL11', 'PNNL01', 'NL11', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 500, N'Đã xác nhận', 1),
-        -- Ly nhựa
-        ('LONL_NL13', 'PNNL01', 'NL13', 10000, '2024-01-01', '2024-01-01', '2030-12-31', 20000, N'Đã xác nhận', 1)
+        ('LONL01', 'PNNL01', 'NL01', 500.0, '2024-01-12', '2024-01-01', '2025-01-01', 150000, N'Đã xác nhận', 1),
+        -- Cà phê (500 kg)
+        ('LONL02', 'PNNL01', 'NL03', 1000.0, '2024-01-12', '2024-01-05', '2026-01-05', 16000, N'Đã xác nhận', 1),
+        -- Đường (1000 kg)
+        ('LONL03', 'PNNL01', 'NL05', 300.0, '2024-01-12', '2024-01-05', '2025-01-05', 120000, N'Đã xác nhận', 1),
+        -- Bột trà sữa (300 kg)
+        ('LONL04', 'PNNL01', 'NL06', 200.0, '2024-01-12', '2024-01-05', '2025-01-05', 140000, N'Đã xác nhận', 1),
+        -- Bột trà Thái (200 kg)
+        ('LONL05', 'PNNL01', 'NL07', 500.0, '2024-01-12', '2024-01-05', '2026-01-05', 35000, N'Đã xác nhận', 1),
+        -- Trà đào túi lọc (500 hộp)
+
+        -- PNNL02: Sữa các loại
+        ('LONL06', 'PNNL02', 'NL02', 2000.0, '2024-01-13', '2024-01-01', '2025-01-01', 20000, N'Đã xác nhận', 1),
+        -- Sữa đặc (2000 hộp)
+        ('LONL07', 'PNNL02', 'NL04', 3000.0, '2024-01-13', '2024-01-10', '2024-07-10', 28000, N'Đã xác nhận', 1),
+        -- Sữa tươi (3000 lít)
+        ('LONL08', 'PNNL02', 'NL13', 5000.0, '2024-01-13', '2024-01-10', '2024-03-10', 5000, N'Đã xác nhận', 1),
+        -- Sữa chua (5000 hộp)
+
+        -- PNNL03: Topping, Syrup, Ly nhựa, Matcha
+        ('LONL09', 'PNNL03', 'NL08', 300.0, '2024-01-20', '2024-01-01', '2025-01-01', 150000, N'Đã xác nhận', 1),
+        -- Syrup đào (300 chai)
+        ('LONL10', 'PNNL03', 'NL11', 100.0, '2024-01-20', '2023-12-15', '2024-12-15', 400000, N'Đã xác nhận', 1),
+        -- Matcha (100 kg)
+        ('LONL11', 'PNNL03', 'NL12', 1500.0, '2024-01-20', '2024-01-15', '2024-07-15', 35000, N'Đã xác nhận', 1),
+        -- Trân châu (1500 kg)
+        ('LONL12', 'PNNL03', 'NL15', 100000.0, '2024-01-20', '2024-01-01', '2030-01-01', 500, N'Đã xác nhận', 1),
+        -- Ly nhựa (100,000 cái)
+
+        -- PNNL04: Trái cây tươi & Đá
+        ('LONL13', 'PNNL04', 'NL09', 200.0, '2024-02-01', '2024-01-30', '2024-02-15', 30000, N'Đã xác nhận', 1),
+        -- Bơ sáp (200 kg)
+        ('LONL14', 'PNNL04', 'NL10', 300.0, '2024-02-01', '2024-01-30', '2024-02-15', 20000, N'Đã xác nhận', 1),
+        -- Cam sành (300 kg)
+        ('LONL15', 'PNNL04', 'NL14', 2000.0, '2024-02-01', '2024-02-01', '2024-02-05', 15000, N'Đã xác nhận', 1)
+-- Đá viên (2000 bao)
 -- Đá viên
 -- Syrup
 END;

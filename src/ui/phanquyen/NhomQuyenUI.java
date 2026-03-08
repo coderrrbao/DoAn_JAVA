@@ -4,9 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -149,7 +151,17 @@ public class NhomQuyenUI extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhóm quyền để xóa", "Thông báo", 1);
             }
         });
-        btnXuatExc.addActionListener(e -> {NhomQuyenBUS.getNhomQuyenBUS().XuatExc();});
-        btnNhapExc.addActionListener(e->{NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen();});
+        btnXuatExc.addActionListener(e -> {
+            NhomQuyenBUS.getNhomQuyenBUS().XuatExc();
+        });
+        btnNhapExc.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setDialogTitle("Chọn file Excel để nhập");
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = chooser.getSelectedFile();
+                // Gọi hàm và truyền file vào
+                NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen(selectedFile);
+            }
+        });
     }
 }

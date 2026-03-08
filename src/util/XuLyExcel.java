@@ -16,13 +16,16 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import bus.NhomQuyenBUS;
 import bus.ChiTietHoaDonBUS;
+import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.ChiTietNhaCungCap;
+import dto.CongThuc;
 import dto.DanhMuc;
 import dto.HoaDon;
 import dto.KhuyenMai;
 import dto.LoNguyenLieu;
 import dto.LoSanPham;
+import dto.NguyenLieu;
 import dto.NhaCungCap;
 import dto.NhanVien;
 import dto.NhomQuyen;
@@ -30,6 +33,7 @@ import dto.PhanQuyen;
 import dto.PhieuNhapNguyenLieu;
 import dto.PhieuNhapSanPham;
 import dto.SanPham;
+import dto.Size;
 import dto.TaiKhoan;
 import ui.login.PhienDangNhap;
 
@@ -99,10 +103,10 @@ public class XuLyExcel {
         return false;
     }
 
-    public static boolean xuatFileNhomQuyen(ArrayList<NhomQuyen> list) {
+    public static boolean xuatFileNhomQuyen(ArrayList<NhomQuyen> listNhomQuyen, ArrayList<PhanQuyen> listPhanQuyen) {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu file");
-        fileChooser.setSelectedFile(new File("DanhSachNhomQuyen.xlsx"));
+        fileChooser.setSelectedFile(new File("DanhSachPhanQuyen.xlsx"));
 
         if (fileChooser.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
             File fileToSave = fileChooser.getSelectedFile();
@@ -111,49 +115,67 @@ public class XuLyExcel {
             }
 
             try (Workbook workbook = new XSSFWorkbook()) {
-                Sheet sheet = workbook.createSheet("Nhóm Quyền");
-                String[] headers = {
-                        "Mã nhóm quyền",
-                        "Tên nhóm quyền",
-                        "Tổng số quyền"
-                };
-                Row headerRow = sheet.createRow(0);
+                // --- Cấu hình Style cho Header ---
                 CellStyle headerStyle = workbook.createCellStyle();
                 Font font = workbook.createFont();
                 font.setBold(true);
                 headerStyle.setFont(font);
-                for (int i = 0; i < headers.length; i++) {
-                    Cell cell = headerRow.createCell(i);
-                    cell.setCellValue(headers[i]);
+
+                // ================= SHEET 1: NHÓM QUYỀN =================
+                Sheet sheet1 = workbook.createSheet("Nhóm Quyền");
+                String[] headers1 = { "Mã nhóm quyền", "Tên nhóm quyền", "Tổng số quyền" };
+
+                Row headerRow1 = sheet1.createRow(0);
+                for (int i = 0; i < headers1.length; i++) {
+                    Cell cell = headerRow1.createCell(i);
+                    cell.setCellValue(headers1[i]);
                     cell.setCellStyle(headerStyle);
                 }
-                int rowNum = 1;
 
-                for (NhomQuyen nq : list) {
-                    Row row = sheet.createRow(rowNum++);
+                int rowNum1 = 1;
+                for (NhomQuyen nq : listNhomQuyen) {
+                    Row row = sheet1.createRow(rowNum1++);
                     row.createCell(0).setCellValue(nq.getMaNQ());
                     row.createCell(1).setCellValue(nq.getTenNhomQuyen());
-                    row.createCell(2).setCellValue(nq.getListQuyen().size());
+                    // Kiểm tra null để tránh lỗi nếu listQuyen chưa được khởi tạo
+                    int size = (nq.getListQuyen() != null) ? nq.getListQuyen().size() : 0;
+                    row.createCell(2).setCellValue(size);
+                }
+                for (int i = 0; i < headers1.length; i++)
+                    sheet1.autoSizeColumn(i);
+
+                // ================= SHEET 2: CHI TIẾT PHÂN QUYỀN =================
+                Sheet sheet2 = workbook.createSheet("Chi Tiết Phân Quyền");
+                String[] headers2 = { "Mã nhóm quyền", "Mã quyền" };
+
+                Row headerRow2 = sheet2.createRow(0);
+                for (int i = 0; i < headers2.length; i++) {
+                    Cell cell = headerRow2.createCell(i);
+                    cell.setCellValue(headers2[i]);
+                    cell.setCellStyle(headerStyle);
                 }
 
-                for (int i = 0; i < headers.length; i++) {
-                    sheet.autoSizeColumn(i);
+                int rowNum2 = 1;
+                for (PhanQuyen pq : listPhanQuyen) {
+                    Row row = sheet2.createRow(rowNum2++);
+                    row.createCell(0).setCellValue(pq.getMaNQ());
+                    row.createCell(1).setCellValue(pq.getMaQuyen());
                 }
+                for (int i = 0; i < headers2.length; i++)
+                    sheet2.autoSizeColumn(i);
+
+                // --- Ghi file ---
                 try (FileOutputStream out = new FileOutputStream(fileToSave)) {
                     workbook.write(out);
-                    JOptionPane.showMessageDialog(null,
-                            "Xuất danh sách nhóm quyền thành công!");
+                    JOptionPane.showMessageDialog(null, "Xuất file Excel 2 sheet thành công!");
                     return true;
                 }
 
             } catch (Exception e) {
-
                 e.printStackTrace();
-                JOptionPane.showMessageDialog(null,
-                        "Lỗi khi xuất file: " + e.getMessage());
+                JOptionPane.showMessageDialog(null, "Lỗi khi xuất file: " + e.getMessage());
             }
         }
-
         return false;
     }
 

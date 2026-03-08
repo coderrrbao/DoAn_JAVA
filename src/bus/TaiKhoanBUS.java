@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
+import dto.NhomQuyen;
 import dto.TaiKhoan;
 import util.XuLyExcel;
 
@@ -251,25 +252,12 @@ public class TaiKhoanBUS {
     }
 
     //nhap excel
-    public boolean nhapTuExcel() {
-        JFileChooser fileChooser = new JFileChooser();
-        fileChooser.setDialogTitle("Chọn file Excel");
-
-        if (fileChooser.showOpenDialog(null) != JFileChooser.APPROVE_OPTION) {
-            return false;
-        }
-
-        File file = fileChooser.getSelectedFile();
-
+    public boolean nhapTaiKhoanExcel(File file) {
         ArrayList<TaiKhoan> list = XuLyExcel.nhapFileTaiKhoan(file);
-
         if (list == null || list.isEmpty()) {
-            JOptionPane.showMessageDialog(null, "File không có dữ liệu!");
             return false;
         }
-
         Connection conn = null;
-
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
@@ -284,41 +272,32 @@ public class TaiKhoanBUS {
                 String maMoi = String.format("TK%02d", so);
                 tk.setMaTK(maMoi);
 
-                tk.setNhomQuyen(
-                    nhomQuyenBUS.timNhomQuyenTheoTen(tk.getNhomQuyen().getTenNhomQuyen())
-                );
-
+                // tìm nhóm quyền trong DB
                 if (tk.getNhomQuyen() == null) {
-                    throw new Exception("Nhóm quyền không tồn tại: " + tk.getTenDangNhap());
+                    throw new Exception("Thiếu nhóm quyền: " + tk.getTenDangNhap());
                 }
-
+                String tenNhom = tk.getNhomQuyen().getTenNhomQuyen();
+                NhomQuyen nq = nhomQuyenBUS.timNhomQuyenTheoTen(tenNhom);
+                if (nq == null) {
+                    throw new Exception("Nhóm quyền không tồn tại: " + tenNhom);
+                }
+                tk.setNhomQuyen(nq);
                 if (dao.kiemTraTrungUsername(conn, tk.getTenDangNhap())) {
                     throw new Exception("Username đã tồn tại: " + tk.getTenDangNhap());
                 }
-
                 dao.insertTaiKhoan(conn, tk);
             }
-
             conn.commit();
-            JOptionPane.showMessageDialog(null, "Nhập Excel thành công!");
             canUpdate = true;
             return true;
-
         } catch (Exception e) {
-
             try {
                 if (conn != null) conn.rollback();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-
-            JOptionPane.showMessageDialog(null,
-                    "Nhập Excel thất bại!\n" + e.getMessage(),
-                    "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
-
+            e.printStackTrace();
             return false;
-
         } finally {
             try {
                 if (conn != null) {
