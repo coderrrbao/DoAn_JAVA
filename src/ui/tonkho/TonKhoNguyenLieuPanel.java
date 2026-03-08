@@ -11,7 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -80,8 +79,9 @@ public class TonKhoNguyenLieuPanel extends JPanel {
 
         JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPaneTable.getViewport().getView();
-        RenderColor render = new RenderColor(3, 6, new Color(255, 205, 210));
+        RenderColor render = new RenderColor(3, 6, 5, new Color(255, 205, 210));
         table.getColumnModel().getColumn(3).setCellRenderer(render);
+        table.getColumnModel().getColumn(5).setCellRenderer(render);
         center.add(scrollPaneTable, BorderLayout.CENTER);
 
         add(center, BorderLayout.CENTER);
@@ -214,9 +214,10 @@ public class TonKhoNguyenLieuPanel extends JPanel {
             NguyenLieuDAO dao = new NguyenLieuDAO();
 
             for (NguyenLieu nl : list) {
-                if (nl.getMaNL() == null || nl.getMaNL().trim().isEmpty() || !dao.exists(conn, nl.getMaNL())) {
-                    dao.themNguyenLieu(nl, conn);
-                }
+                String maNL = nl.getMaNL();
+                if (maNL == null || maNL.trim().isEmpty()) continue;
+                if (dao.exists(conn, maNL)) continue;
+                dao.themNguyenLieu(nl, conn);
             }
             conn.commit();
             loadDuLieu();

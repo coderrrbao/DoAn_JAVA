@@ -761,25 +761,17 @@ BEGIN
         NgayVaoLam DATE,
         SDT VARCHAR(20),
         DiaChi NVARCHAR(255),
-        ChucVu NVARCHAR(100),
-        TaiKhoan NVARCHAR(50),
+        ChucVu NVARCHAR(255),
+        Anh NVARCHAR(255),
         TrangThai BIT
     )
+
     INSERT INTO NhanVien
-        (MaNV, TenNV, GioiTinh, NgaySinh, NgayVaoLam, SDT, DiaChi, ChucVu, TaiKhoan, TrangThai)
+        (MaNV, TenNV, GioiTinh, NgaySinh, NgayVaoLam, SDT, DiaChi, ChucVu, Anh, TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Văn Quản Lý', N'Nam', '1990-01-01', '2025-01-01', '0909123456', N'TP.HCM', N'Cửa hàng trưởng', 'admin', 1),
-        ('NV02', N'Trần Thị Thu Ngân', N'Nữ', '2000-05-15', '2025-01-01', '0909123457', N'Bình Dương', N'Thu ngân', 'nhanvien1', 1),
-        ('NV03', N'Lê Văn Kho', N'Nam', '1995-08-20', '2025-01-01', '0909123458', N'Đồng Nai', N'Thủ kho', 'nhanvienkho', 1),
-        ('NV04', N'Phạm Văn Pha Chế', N'Nam', '1998-02-10', '2025-01-01', '0909222333', N'TP.HCM', N'Pha chế', 'phache01', 1),
-        ('NV05', N'Lý Thị Pha Chế 2', N'Nữ', '1999-11-20', '2025-01-01', '0909333444', N'TP.HCM', N'Pha chế', 'phache02', 1),
-        ('NV06', N'Ngô Văn Bảo Vệ', N'Nam', '1985-06-30', '2025-01-01', '0909555666', N'Long An', N'Bảo vệ', 'baove01', 1),
-        ('NV07', N'Đỗ Thị Kế Toán', N'Nữ', '1992-09-09', '2025-01-01', '0909777888', N'TP.HCM', N'Kế toán', 'ketoan01', 1),
-        ('NV08', N'Hoàng Văn Giám Sát', N'Nam', '1991-03-03', '2025-01-01', '0909888999', N'TP.HCM', N'Giám sát', 'giamsat01', 1),
-        ('NV09', N'Vũ Thị Marketing', N'Nữ', '1997-07-07', '2025-01-01', '0909000111', N'TP.HCM', N'Marketing', 'marketing01', 1),
-        ('NV10', N'Bùi Văn Sale 2', N'Nam', '2001-12-12', '2025-01-01', '0909111222', N'Bình Dương', N'Thu ngân', 'sale02', 1),
-        ('NV11', N'Trịnh Thị Sale 3', N'Nữ', '2002-01-20', '2025-01-01', '0909333555', N'TP.HCM', N'Thu ngân', 'sale03', 1),
-        ('NV12', N'Phan Văn Kho 2', N'Nam', '1996-04-25', '2025-01-01', '0909666777', N'Đồng Nai', N'Thủ kho', 'kho02', 1)
+        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '2026-03-08', '0901234567', N'Địa chỉ 1', 'Admin', '/assets/img/goku.png', 1),
+        ('NV02', N'Phạm Hữu Phú', N'Nam', '2000-02-02', '2026-03-08', '0902345678', N'Địa chỉ 2', 'Nhân viên bán hàng', NULL, 1),
+        ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '2026-03-08', '0903456789', N'Địa chỉ 3', 'Nhân viên kho', NULL, 1)
 END;
 
 /* =============================================
@@ -883,7 +875,7 @@ BEGIN
         MaNV VARCHAR(50),
         MaKH VARCHAR(50),
         MaKM VARCHAR(50),
-        NgayBan DATE,
+        NgayBan DATETIME,
         TongTien DECIMAL(18, 2),
         TienKhuyenMai DECIMAL(18, 2),
         TrangThai BIT
@@ -891,13 +883,47 @@ BEGIN
     INSERT INTO HoaDon
         (MaHD, MaNV, MaKH, MaKM, NgayBan, TongTien, TienKhuyenMai, TrangThai)
     VALUES
-        ('HD001', 'NV01', 'KH001', 'KM07', GETDATE(), 150000, 10000, 1),
-        ('HD002', 'NV02', 'KH002', NULL, GETDATE(), 200000, 0, 1),
-        ('HD003', 'NV01', 'KH003', NULL, GETDATE(), 105000, 0, 1),
-        ('HD004', 'NV02', 'KH004', 'KM02', GETDATE(), 180000, 36000, 1),
-        ('HD005', 'NV01', 'KH005', NULL, GETDATE(), 45000, 0, 1),
-        ('HD006', 'NV03', 'KH006', NULL, GETDATE(), 35000, 0, 1),
-        ('HD007', 'NV01', 'KH007', NULL, GETDATE(), 80000, 0, 1)
+        ('HD_TK_01', 'NV01', 'KH001', NULL, '2024-03-15 08:15:00', 125000, 0, 1),
+        -- 8h sáng
+        ('HD_TK_02', 'NV02', 'KH002', NULL, '2024-03-15 08:45:00', 80000, 0, 1),
+        -- 8h sáng
+        ('HD_TK_03', 'NV01', 'KH003', NULL, '2024-03-15 09:30:00', 210000, 0, 1),
+        -- 9h sáng (Đông khách)
+        ('HD_TK_04', 'NV03', 'KH004', NULL, '2024-03-15 09:50:00', 150000, 0, 1),
+        -- 9h sáng
+        ('HD_TK_05', 'NV02', 'KH005', NULL, '2024-03-15 12:10:00', 350000, 0, 1),
+        -- 12h trưa
+        ('HD_TK_06', 'NV01', 'KH006', NULL, '2024-03-15 14:20:00', 90000, 0, 1),
+        -- 14h chiều
+        ('HD_TK_07', 'NV03', 'KH007', NULL, '2024-03-15 19:15:00', 450000, 0, 1),
+        -- 19h tối (Đỉnh điểm)
+        ('HD_TK_08', 'NV02', 'KH008', NULL, '2024-03-15 19:40:00', 200000, 0, 1),
+        -- 19h tối
+        ('HD_TK_09', 'NV01', 'KH009', NULL, '2024-03-15 21:05:00', 110000, 0, 1),
+        -- 21h tối
+        ('HD_TK_10', 'NV01', 'KH001', NULL, '2024-03-01 10:00:00', 1500000, 0, 1),
+        ('HD_TK_11', 'NV02', 'KH002', NULL, '2024-03-05 14:00:00', 2200000, 0, 1),
+        ('HD_TK_12', 'NV03', 'KH003', NULL, '2024-03-10 16:30:00', 1800000, 0, 1),
+        ('HD_TK_13', 'NV01', 'KH004', NULL, '2024-03-12 11:00:00', 3100000, 0, 1),
+        ('HD_TK_14', 'NV02', 'KH005', NULL, '2024-03-20 09:15:00', 950000, 0, 1),
+        ('HD_TK_15', 'NV01', 'KH006', NULL, '2024-03-25 18:45:00', 2500000, 0, 1),
+        ('HD_TK_16', 'NV03', 'KH007', NULL, '2024-03-28 20:00:00', 1200000, 0, 1),
+        ('HD_TK_17', 'NV01', 'KH008', NULL, '2023-01-15 10:00:00', 5500000, 0, 1),
+        ('HD_TK_18', 'NV02', 'KH009', NULL, '2023-05-20 15:00:00', 8200000, 0, 1),
+        ('HD_TK_19', 'NV03', 'KH010', NULL, '2023-12-24 19:00:00', 12000000, 0, 1),
+        -- Giáng sinh 2023
+        -- Năm 2024
+        ('HD_TK_20', 'NV01', 'KH001', NULL, '2024-01-05 10:00:00', 4500000, 0, 1),
+        ('HD_TK_21', 'NV02', 'KH002', NULL, '2024-02-14 19:30:00', 6500000, 0, 1),
+        -- Valentine 2024
+        ('HD_TK_22', 'NV03', 'KH003', NULL, '2024-04-30 20:00:00', 9000000, 0, 1),
+        -- Lễ 30/4
+        ('HD_TK_23', 'NV01', 'KH004', NULL, '2024-06-01 09:00:00', 5000000, 0, 1),
+        ('HD_TK_24', 'NV02', 'KH005', NULL, '2024-09-02 18:00:00', 8500000, 0, 1),
+        -- Lễ 2/9
+        ('HD_TK_25', 'NV01', 'KH006', NULL, '2024-11-20 10:00:00', 4200000, 0, 1)
+
+
 END;
 
 /* =============================================
@@ -921,15 +947,16 @@ BEGIN
     INSERT INTO ChiTietHoaDon
         (MaCTHD,MaHD, MaSP, MaSize, SoLuong, Gia)
     VALUES
-        ('CTHD1', 'HD001', 'SP03', 'SZ03_M', 1, 30000),
-        ('CTHD2', 'HD001', 'SP01', NULL, 1, 15000),
-        ('CTHD3', 'HD003', 'SP18', 'SZ18_M', 2, 90000),
-        ('CTHD4', 'HD003', 'SP42', NULL, 1, 15000),
-        ('CTHD5', 'HD004', 'SP20', 'SZ20_M', 4, 180000),
-        ('CTHD6', 'HD005', 'SP20', 'SZ20_M', 1, 45000),
-        ('CTHD7', 'HD006', 'SP04', 'SZ04_M', 1, 35000),
-        ('CTHD8', 'HD007', 'SP39', 'SZ39_STD', 1, 55000),
-        ('CTHD9', 'HD007', 'SP45', NULL, 1, 25000)
+        ('CTHD_TK_01', 'HD_TK_01', 'SP02', 'SZ02_M', 2, 25000),
+        ('CTHD_TK_02', 'HD_TK_01', 'SP04', 'SZ04_L', 1, 35000),
+        ('CTHD_TK_03', 'HD_TK_02', 'SP32', 'SZ32_STD', 1, 50000),
+        ('CTHD_TK_04', 'HD_TK_03', 'SP05', 'SZ05_M', 3, 32000),
+        ('CTHD_TK_05', 'HD_TK_04', 'SP12', 'SZ12_M', 2, 35000),
+        ('CTHD_TK_06', 'HD_TK_05', 'SP20', 'SZ20_L', 5, 45000),
+        ('CTHD_TK_07', 'HD_TK_06', 'SP45', NULL, 2, 45000),
+        ('CTHD_TK_08', 'HD_TK_07', 'SP39', 'SZ39_STD', 4, 55000),
+        ('CTHD_TK_09', 'HD_TK_08', 'SP18', 'SZ18_M', 2, 45000),
+        ('CTHD_TK_10', 'HD_TK_09', 'SP01', NULL, 5, 15000)
 END;
 
 /* =============================================

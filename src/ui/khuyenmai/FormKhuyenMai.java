@@ -11,7 +11,7 @@ public class FormKhuyenMai extends JDialog {
     private JTextField txtMa, txtPhanTram;
     private JDateChooser dateTuNgay, dateDenNgay; // Thay JTextField bằng JDateChooser
     private JButton btnThem, btnSua, btnLuu, btnHuy;
-    
+
     private KhuyenMai ketQua = null;
     private boolean isEdit = false;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd"); // Dùng chung SimpleDateFormat
@@ -33,28 +33,30 @@ public class FormKhuyenMai extends JDialog {
         setLocationRelativeTo(owner);
         suaLaiGiaoDienTheoQuyen();
     }
-public void suaLaiGiaoDienTheoQuyen() {
-    var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-    // 1. Trường hợp Thêm mới
-    if (!isEdit) {
-        if (!listQuyen.contains("KM_TAO")) {
-            btnThem.setEnabled(false);
-            setEditableForm(false);
-            setTitle("Thông báo: Bạn không có quyền thêm khuyến mãi");
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
+
+        // 1. Trường hợp Thêm mới
+        if (!isEdit) {
+            if (!listQuyen.contains("KM_TAO")) {
+                btnThem.setEnabled(false);
+                setEditableForm(false);
+                setTitle("Thông báo: Bạn không có quyền thêm khuyến mãi");
+            }
         }
-    } 
-    // 2. Trường hợp Sửa/Chi tiết
-    else {
-        if (!listQuyen.contains("KM_SUA")) {
-            btnSua.setVisible(false); // Ẩn nút sửa để họ chỉ được xem
-            btnLuu.setVisible(false);
-            setTitle("Chi tiết khuyến mãi (Chỉ xem)");
-            // Luôn khóa form nếu không có quyền sửa
-            anThaoTacSua(); 
+        // 2. Trường hợp Sửa/Chi tiết
+        else {
+            if (!listQuyen.contains("KM_SUA")) {
+                btnSua.setVisible(false); // Ẩn nút sửa để họ chỉ được xem
+                btnLuu.setVisible(false);
+                setTitle("Chi tiết khuyến mãi (Chỉ xem)");
+                // Luôn khóa form nếu không có quyền sửa
+                anThaoTacSua();
+            }
         }
     }
-}
+
     private void initUI() {
         setLayout(new BorderLayout());
         JPanel pnlMain = new JPanel();
@@ -63,12 +65,12 @@ public void suaLaiGiaoDienTheoQuyen() {
 
         // Khởi tạo các Component
         txtMa = new JTextField("Tự động");
-        txtMa.setEditable(false); 
+        txtMa.setEditable(false);
         txtPhanTram = new JTextField();
-        
+
         dateTuNgay = new JDateChooser();
         dateTuNgay.setDateFormatString("yyyy-MM-dd");
-        
+
         dateDenNgay = new JDateChooser();
         dateDenNgay.setDateFormatString("yyyy-MM-dd");
 
@@ -85,11 +87,11 @@ public void suaLaiGiaoDienTheoQuyen() {
 
             row.add(lbl);
             row.add(Box.createHorizontalStrut(10));
-            
+
             // Thiết lập kích thước cho Component
             fields[i].setPreferredSize(new Dimension(250, 30));
             fields[i].setMaximumSize(new Dimension(250, 30));
-            
+
             row.add(fields[i]);
 
             pnlMain.add(row);
@@ -148,7 +150,7 @@ public void suaLaiGiaoDienTheoQuyen() {
         btnSua.addActionListener(e -> batThaoTacSua());
 
         btnThem.addActionListener(e -> {
-            if (kiemTraHopLe()) {
+            if (kiemTraDuLieu()) {
                 ketQua = new KhuyenMai();
                 ganDuLieu(ketQua);
                 dispose();
@@ -156,8 +158,8 @@ public void suaLaiGiaoDienTheoQuyen() {
         });
 
         btnLuu.addActionListener(e -> {
-            if (kiemTraHopLe()) {
-                ketQua = editKM; 
+            if (kiemTraDuLieu()) {
+                ketQua = editKM;
                 ganDuLieu(ketQua);
                 dispose();
             }
@@ -167,7 +169,7 @@ public void suaLaiGiaoDienTheoQuyen() {
     private void duLieuCu(KhuyenMai km) {
         txtMa.setText(km.getMaKM());
         txtPhanTram.setText(String.valueOf(km.getPhanTramGiam()));
-        
+
         try {
             // Chuyển chuỗi String từ đối tượng thành Date để set vào JDateChooser
             if (km.getTuNgay() != null && !km.getTuNgay().isEmpty()) {
@@ -183,7 +185,13 @@ public void suaLaiGiaoDienTheoQuyen() {
         }
     }
 
-    private boolean kiemTraHopLe() {
+    private boolean kiemTraDuLieu() {
+        // Kiểm tra phần trăm giảm trống
+        if (txtPhanTram.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập phần trăm giảm!");
+            return false;
+        }
+
         // Kiểm tra trống JDateChooser
         if (dateTuNgay.getDate() == null || dateDenNgay.getDate() == null) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn Từ ngày và Đến ngày!");
@@ -196,11 +204,11 @@ public void suaLaiGiaoDienTheoQuyen() {
                 JOptionPane.showMessageDialog(this, "Phần trăm giảm phải từ 1 đến 100");
                 return false;
             }
-            
+
             // Lấy trực tiếp Date từ JDateChooser để so sánh (không cần dùng sdf.parse nữa)
             Date dTuNgay = dateTuNgay.getDate();
             Date dDenNgay = dateDenNgay.getDate();
-            
+
             // Kiểm tra Logic ngày
             if (dDenNgay.before(dTuNgay)) {
                 JOptionPane.showMessageDialog(this, "Đến ngày không được nhỏ hơn Từ ngày!");
@@ -215,7 +223,7 @@ public void suaLaiGiaoDienTheoQuyen() {
 
     private void ganDuLieu(KhuyenMai km) {
         km.setPhanTramGiam(Integer.parseInt(txtPhanTram.getText().trim()));
-        
+
         // Format Date từ JDateChooser thành String yyyy-MM-dd để lưu vào đối tượng
         km.setTuNgay(sdf.format(dateTuNgay.getDate()));
         km.setDenNgay(sdf.format(dateDenNgay.getDate()));

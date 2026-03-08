@@ -5,7 +5,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.ChiTietNhaCungCapDAO;
-import dao.conection.DBConnection;
 import dto.ChiTietNhaCungCap;
 
 public class ChiTietNhaCungCapBUS {

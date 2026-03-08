@@ -1,93 +1,18 @@
 {
-<<<<<<< HEAD
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "DoAn_JAVA_5bc8b9eb"
-        },
-        {
-            "type": "java",
-            "name": "LoginUI",
-            "request": "launch",
-            "mainClass": "ui.login.LoginUI",
-            "projectName": "DoAn_JAVA_5bc8b9eb"
-        },
-        {
-            "type": "java",
-            "name": "ThemPhieuKiemDialog",
-            "request": "launch",
-            "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Xulypdf",
-            "request": "launch",
-            "mainClass": "util.Xulypdf",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "QuanLySanPhamUI",
-            "request": "launch",
-            "mainClass": "ui.quanlysanpham.QuanLySanPhamUI",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Main",
-            "request": "launch",
-            "mainClass": "Main",
-            "projectName": "QLnuoc_843ad3c1"
-        },
-        {
-            "type": "java",
-            "name": "Chạy Dự Án (Nét)",
-            "request": "launch",
-            "mainClass": "${file}",
-            "vmArgs": "--enable-native-access=ALL-UNNAMED"
-        }
-    ]
-=======
   "version": "0.2.0",
   "configurations": [
     {
       "type": "java",
-      "name": "SuaChiTietNhaCungCapDialog",
+      "name": "Main",
       "request": "launch",
-      "mainClass": "ui.nhacungcap.SuaChiTietNhaCungCapDialog",
-      "projectName": "QLnuoc_843ad3c1"
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_6ab478d7"
     },
     {
       "type": "java",
-      "name": "ThemHangHoaChoNCCDialog",
+      "name": "ChiTietSanPhamDialog",
       "request": "launch",
-      "mainClass": "ui.nhacungcap.ThemHangHoaChoNCCDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "ChiTietPhieuNhapSanPhamDialog",
-      "request": "launch",
-      "mainClass": "ui.nhapkho.sanpham.ChiTietPhieuNhapSanPhamDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "ChiTietNhaCungCapDialog",
-      "request": "launch",
-      "mainClass": "ui.nhacungcap.ChiTietNhaCungCapDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "NhaCungCapDialog",
-      "request": "launch",
-      "mainClass": "ui.nhacungcap.NhaCungCapDialog",
+      "mainClass": "ui.quanlysanpham.ChiTietSanPhamDialog",
       "projectName": "QLnuoc_843ad3c1"
     },
     {
@@ -99,37 +24,9 @@
     },
     {
       "type": "java",
-      "name": "Main",
+      "name": "ChiTietPhieuXuatNguyenLieuDialog",
       "request": "launch",
-      "mainClass": "Main",
-      "projectName": "DoAn_JAVA_36c16d32"
-    },
-    {
-      "type": "java",
-      "name": "NhaCungCapBUS",
-      "request": "launch",
-      "mainClass": "bus.NhaCungCapBUS",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "ThemPhieuKiemDialog",
-      "request": "launch",
-      "mainClass": "ui.kiemke.ThemPhieuKiemDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "Xulypdf",
-      "request": "launch",
-      "mainClass": "util.Xulypdf",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "QuanLySanPhamUI",
-      "request": "launch",
-      "mainClass": "ui.quanlysanpham.QuanLySanPhamUI",
+      "mainClass": "ui.xuatkho.nguyenlieu.ChiTietPhieuXuatNguyenLieuDialog",
       "projectName": "QLnuoc_843ad3c1"
     },
     {
@@ -137,15 +34,16 @@
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
-      "projectName": "QLnuoc_843ad3c1"
+      "projectName": "QLnuoc_843ad3c1",
+      "vmArgs": "--enable-native-access=ALL-UNNAMED"
     },
     {
       "type": "java",
-      "name": "Chạy Dự Án (Nét)",
+      "name": "Main",
       "request": "launch",
-      "mainClass": "${file}",
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_5bc8b9eb",
       "vmArgs": "--enable-native-access=ALL-UNNAMED"
     }
   ]
->>>>>>> 0b0cb834b25d37f9d960c661a7f079a2f2671bf7
 }

@@ -13,19 +13,19 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NhomQuyenBUS;
+import bus.PhanQuyenBUS;
 import dto.NhomQuyen;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
+import util.XuLyExcel;
 
 public class NhomQuyenUI extends JPanel {
     private JTable table;
     private DefaultTableModel model;
     private Search_Item search_Item;
-    private JButton btnThem;
-    private JButton btnXoa;
-    private JButton btnXemChiTiet;
+    private JButton btnThem, btnXemChiTiet, btnXoa, btnNhapExc, btnXuatExc;
 
     private ArrayList<NhomQuyen> listNhomQuyen;
 
@@ -75,6 +75,14 @@ public class NhomQuyenUI extends JPanel {
         btnXemChiTiet = new JButton("Xem chi tiết quyền");
         btnXemChiTiet.setPreferredSize(new Dimension(150, 32));
         top.add(btnXemChiTiet);
+
+        btnXuatExc = new JButton("Xuất Exc");
+        btnXuatExc.setPreferredSize(new Dimension(80, 32));
+        top.add(btnXuatExc);
+
+        btnNhapExc = new JButton("Nhập Exc");
+        btnNhapExc.setPreferredSize(new Dimension(80, 32));
+        top.add(btnNhapExc);
 
         return top;
     }
@@ -141,5 +149,7 @@ public class NhomQuyenUI extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhóm quyền để xóa", "Thông báo", 1);
             }
         });
+        btnXuatExc.addActionListener(e -> {NhomQuyenBUS.getNhomQuyenBUS().XuatExc();});
+        btnNhapExc.addActionListener(e->{NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen();});
     }
 }

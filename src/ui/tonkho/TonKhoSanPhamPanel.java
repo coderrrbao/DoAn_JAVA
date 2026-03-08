@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.image.SampleModel;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -13,13 +11,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 import bus.LoSanPhamBUS;
@@ -28,11 +24,10 @@ import dao.DanhMucDao;
 import dao.SanPhamDAO;
 import dao.conection.DBConnection;
 import dto.DanhMuc;
-import dto.LoSanPham;
 import dto.SanPham;
-import ui.component.Search_Item;
 import util.ExcelUtil;
 import util.RenderColor;
+import util.TaoTinNhan;
 import util.TaoUI;
 
 public class TonKhoSanPhamPanel extends JPanel {
@@ -42,7 +37,6 @@ public class TonKhoSanPhamPanel extends JPanel {
     private JButton btnNhapExcel;
     private JButton btnSua;
     private JButton btnXemLo;
-    private JTable tableUI;
     private DefaultTableModel model;
     private ThongKeTonKhoSP thongKeTonKho;
 
@@ -81,8 +75,9 @@ public class TonKhoSanPhamPanel extends JPanel {
         center.add(topContent, BorderLayout.NORTH);
         JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPaneTable.getViewport().getView();
-        RenderColor render = new RenderColor(3, 6, new Color(255, 205, 210));
+        RenderColor render = new RenderColor(3, 6, 5, new Color(255, 205, 210));
         table.getColumnModel().getColumn(3).setCellRenderer(render);
+        table.getColumnModel().getColumn(5).setCellRenderer(render);
         center.add(scrollPaneTable, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
 
@@ -122,8 +117,14 @@ public class TonKhoSanPhamPanel extends JPanel {
                         "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
             } else {
-                ChiTietTonKhoSPDialog chiTietTonKhoSPDialog = new ChiTietTonKhoSPDialog(null, sanPham);
-                chiTietTonKhoSPDialog.setVisible(true);
+                if (sanPham.getLoaiNuoc() != null && sanPham.getLoaiNuoc().equals("Pha chế")
+                        && (sanPham.getCongThuc() == null
+                                || sanPham.getCongThuc().getListChiTietCongThuc().isEmpty())) {
+                    TaoTinNhan.showAutoCloseMessage("Sản phẩm chưa có công thức", "Thông báo", 1);
+                } else {
+                    ChiTietTonKhoSPDialog chiTietTonKhoSPDialog = new ChiTietTonKhoSPDialog(null, sanPham);
+                    chiTietTonKhoSPDialog.setVisible(true);
+                }
             }
         });
 
@@ -205,10 +206,11 @@ public class TonKhoSanPhamPanel extends JPanel {
             SanPhamDAO dao = new SanPhamDAO();
 
             for (SanPham sp : list) {
-                if (sp.getMaSP() == null || sp.getMaSP().trim().isEmpty() || !dao.exists(conn, sp.getMaSP())) {
-                    if (sp.getDanhMuc() != null) {
-                        dao.themSanPham(sp, conn);
-                    }
+                String maSP = sp.getMaSP();
+                if (maSP == null || maSP.trim().isEmpty()) continue;
+                if (dao.exists(conn, maSP)) continue;
+                if (sp.getDanhMuc() != null) {
+                    dao.themSanPham(sp, conn);
                 }
             }
             conn.commit();

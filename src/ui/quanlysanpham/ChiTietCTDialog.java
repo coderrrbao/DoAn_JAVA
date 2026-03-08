@@ -4,7 +4,6 @@ import java.awt.BorderLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -18,7 +17,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.NguyenLieuBUS;
 import dto.ChiTietCongThuc;
-import dto.CongThuc;
 import dto.NguyenLieu;
 import ui.component.Search_Item;
 import util.TaoUI;
@@ -134,6 +132,38 @@ public class ChiTietCTDialog extends JDialog {
         tfMaNguyenLieu.setEditable(false);
     }
 
+    private boolean kiemTraDuLieu() {
+        if (tfMaNguyenLieu.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn một nguyên liệu từ danh sách bên trên!", "Thông báo",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+
+        String dinhLuongStr = tfDinhLuong.getText().trim();
+        if (dinhLuongStr.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập định lượng!", "Lỗi dữ liệu", JOptionPane.ERROR_MESSAGE);
+            tfDinhLuong.requestFocus();
+            return false;
+        }
+
+        try {
+            double dinhLuong = Double.parseDouble(dinhLuongStr);
+            if (dinhLuong <= 0) {
+                JOptionPane.showMessageDialog(this, "Định lượng phải là số lớn hơn 0!", "Lỗi dữ liệu",
+                        JOptionPane.ERROR_MESSAGE);
+                tfDinhLuong.requestFocus();
+                return false;
+            }
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Định lượng phải là một con số hợp lệ (VD: 10 hoặc 10.5)!",
+                    "Lỗi định dạng", JOptionPane.ERROR_MESSAGE);
+            tfDinhLuong.requestFocus();
+            return false;
+        }
+
+        return true;
+    }
+
     public void locNguyenLieu() {
         model.setRowCount(0);
         String tuKhoa = search_Item.getTextSearch();
@@ -162,6 +192,9 @@ public class ChiTietCTDialog extends JDialog {
         themBtn.addActionListener(e -> {
 
             int dongDangChon = table.getSelectedRow();
+            if (!kiemTraDuLieu()) {
+                return;
+            }
             if (dongDangChon >= 0) {
                 double dinhLuong = Double.parseDouble(tfDinhLuong.getText());
 

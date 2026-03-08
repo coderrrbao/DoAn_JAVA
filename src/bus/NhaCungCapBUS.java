@@ -9,11 +9,7 @@ import java.util.Map;
 import dao.NhaCungCapDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietNhaCungCap;
-import dto.LoSanPham;
-import dto.NguyenLieu;
 import dto.NhaCungCap;
-import dto.PhieuNhapSanPham;
-import dto.SanPham;
 
 public class NhaCungCapBUS {
 

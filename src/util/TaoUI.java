@@ -1,5 +1,6 @@
 package util;
 
+import java.awt.AlphaComposite;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
@@ -32,6 +33,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
 import javax.swing.plaf.basic.BasicScrollBarUI;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -44,6 +46,7 @@ import org.jfree.chart.labels.StandardPieSectionLabelGenerator;
 import org.jfree.chart.plot.CategoryPlot;
 import org.jfree.chart.plot.PiePlot;
 import org.jfree.chart.renderer.category.BarRenderer;
+import org.jfree.chart.title.LegendTitle;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
@@ -104,30 +107,10 @@ public class TaoUI {
         return button;
     }
 
-    public static ImageIcon taoAnhBoTron(ImageIcon icon, int radius) {
-        int width = icon.getIconWidth();
-        int height = icon.getIconHeight();
-
-        // Tạo một ảnh đệm có độ trong suốt
-        BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g2 = bi.createGraphics();
-
-        // Bật chế độ khử răng cưa để đường tròn mượt mà
-        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-        // Vẽ khuôn hình tròn (hoặc hình vuông bo góc)
-        g2.setClip(new Ellipse2D.Float(0, 0, width, height));
-        g2.drawImage(icon.getImage(), 0, 0, width, height, null);
-
-        g2.dispose();
-        return new ImageIcon(bi);
-    }
-
     public static JPanel taoFieldText(String textLabel, int widthLabel, int widthInput, int height, int gap,
             JTextField input) {
 
         JPanel ctn = new JPanel();
-
         ctn.setLayout(new BoxLayout(ctn, BoxLayout.X_AXIS));
 
         ctn.setPreferredSize(new Dimension(widthInput + widthLabel + gap, height));
@@ -154,6 +137,33 @@ public class TaoUI {
 
         return ctn;
 
+    }
+
+    public static ImageIcon taoAnhBoTron(ImageIcon icon) {
+        int width = icon.getIconWidth();
+        int height = icon.getIconHeight();
+
+        // Đảm bảo ảnh là hình vuông để bo tròn hoàn hảo
+        int size = Math.min(width, height);
+
+        BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2 = bi.createGraphics();
+
+        // Bật chế độ khử răng cưa siêu mịn
+        g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+        g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+
+        // 1. Vẽ một hình tròn thuần túy làm mặt nạ (mask)
+        g2.setColor(Color.WHITE);
+        g2.fill(new Ellipse2D.Double(0, 0, size, size));
+
+        // 2. Sử dụng AlphaComposite để "giao" ảnh với hình tròn vừa vẽ
+        // Chỉ những phần ảnh nằm trong hình tròn mới được giữ lại
+        g2.setComposite(AlphaComposite.SrcIn);
+        g2.drawImage(icon.getImage(), 0, 0, size, size, null);
+
+        g2.dispose();
+        return new ImageIcon(bi);
     }
 
     public static JPanel taoPanelBoxLayoutNgang(int width, int height) {
@@ -462,60 +472,69 @@ public class TaoUI {
         return chartPanel;
     }
 
-    public static ChartPanel taoBieuDoTron(
-            String tenBieuDo,
-            DefaultPieDataset dataset) {
-        JFreeChart chart = ChartFactory.createPieChart(
-                tenBieuDo,
-                dataset,
-                true, // legend
-                true,
-                false);
+   public static ChartPanel taoBieuDoTron(String tenBieuDo, DefaultPieDataset dataset) {
+    JFreeChart chart = ChartFactory.createPieChart(
+            tenBieuDo,
+            dataset,
+            true, // legend phải là true
+            true,
+            false);
 
-        // ===== FONT =====
-        Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
-        Font fontChu = new Font("Segoe UI", Font.PLAIN, 14);
-        Font fontLegend = new Font("Segoe UI", Font.PLAIN, 13);
+    // ===== FONT =====
+    Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
+    Font fontChu = new Font("Segoe UI", Font.PLAIN, 14);
+    Font fontLegend = new Font("Segoe UI", Font.PLAIN, 13);
 
-        chart.getTitle().setFont(fontTieuDe);
-        if (chart.getLegend() != null) {
-            chart.getLegend().setItemFont(fontLegend);
-        }
-
-        PiePlot plot = (PiePlot) chart.getPlot();
-
-        // ===== NỀN =====
-        plot.setBackgroundPaint(Color.WHITE);
-        plot.setOutlineVisible(false);
-
-        // ===== LABEL TRONG BIỂU ĐỒ =====
-        plot.setLabelFont(fontChu);
-        plot.setLabelPaint(Color.DARK_GRAY);
-        plot.setLabelBackgroundPaint(Color.WHITE);
-        plot.setLabelOutlinePaint(null);
-        plot.setLabelShadowPaint(null);
-
-        // Hiển thị: Tên + %
-        plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-                "{0}: {2}", // {0}=tên, {1}=giá trị, {2}=%
-                new DecimalFormat("0"),
-                new DecimalFormat("0.0%")));
-
-        // ===== KHOẢNG CÁCH =====
-        plot.setInteriorGap(0.04); // khoảng trống giữa pie và viền
-        plot.setShadowPaint(null); // bỏ bóng (nhẹ mắt)
-
-        // ===== CHỐNG RĂNG CƯA =====
-        chart.setAntiAlias(true);
-
-        // ===== ADD VÀO PANEL =====
-        ChartPanel chartPanel = new ChartPanel(chart);
-        chartPanel.setMouseWheelEnabled(true);
-        chartPanel.setRangeZoomable(false); // Không cho zoom trục Y
-        chartPanel.setDomainZoomable(false); // Không cho zoom trục X
-        chartPanel.setMouseWheelEnabled(false); // Tắt tính năng lăn chuột để zoom
-        return chartPanel;
+    chart.getTitle().setFont(fontTieuDe);
+    
+    // ===== CHỈNH LEGEND SANG BÊN PHẢI =====
+    if (chart.getLegend() != null) {
+        LegendTitle legend = chart.getLegend();
+        legend.setItemFont(fontLegend);
+        legend.setPosition(org.jfree.ui.RectangleEdge.RIGHT); // Chuyển sang bên phải
+        legend.setBorder(0, 0, 0, 0); // Xóa viền của legend cho sạch
     }
+
+    PiePlot plot = (PiePlot) chart.getPlot();
+
+    // ===== NỀN =====
+    plot.setBackgroundPaint(Color.WHITE);
+    plot.setOutlineVisible(false);
+    plot.setShadowPaint(null);
+
+    // ===== LABEL TRONG BIỂU ĐỒ =====
+    plot.setLabelFont(fontChu);
+    plot.setLabelPaint(Color.DARK_GRAY);
+    plot.setLabelBackgroundPaint(Color.WHITE);
+    plot.setLabelOutlinePaint(null);
+    plot.setLabelShadowPaint(null);
+
+    // Hiển thị: Tên + %
+    plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
+            "{0}: {2}",
+            new DecimalFormat("0"),
+            new DecimalFormat("0.0%")));
+
+    // ===== KHOẢNG CÁCH & ĐỘ TRÒN =====
+    plot.setInteriorGap(0.15);
+    plot.setCircular(true);
+
+    // ===== CHỐNG RĂNG CƯA =====
+    chart.setAntiAlias(true);
+    chart.setTextAntiAlias(true);
+
+    // ===== Cấu hình ChartPanel (Dùng kích thước rộng hơn một chút vì có legend bên phải) =====
+    ChartPanel chartPanel = new ChartPanel(
+            chart,
+            650, 350,      // Tăng Width từ 500 lên 650 để không bị chèn ép hình tròn
+            10, 10,
+            3000, 3000,
+            false,         
+            true, true, true, true, true);
+
+    chartPanel.setMouseWheelEnabled(false);
+    return chartPanel;
+}
 
     public static JScrollPane taoTableScroll(DefaultTableModel model) {
         // 1. Khởi tạo JTable
@@ -552,6 +571,7 @@ public class TaoUI {
 
         // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
+        table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
     }
 
@@ -588,6 +608,7 @@ public class TaoUI {
 
         // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
+        table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
     }
 

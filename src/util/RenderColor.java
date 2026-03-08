@@ -6,13 +6,21 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class RenderColor extends DefaultTableCellRenderer {
-    private int columnCheck;
-    private int columnWarning;
+    private int columnSoLuong;
+    private int columnMucCanhBao;
+    private int columnLoHetHan; // -1 nếu không dùng
     private Color colorWarning;
 
-    public RenderColor(int columnCheck, int columnWarning, Color colorWarning) {
-        this.columnCheck = columnCheck;
-        this.columnWarning = columnWarning;
+    /** Cột Số lượng, Mức cảnh báo; tô đỏ khi Số lượng <= Mức cảnh báo. */
+    public RenderColor(int columnSoLuong, int columnMucCanhBao, Color colorWarning) {
+        this(columnSoLuong, columnMucCanhBao, -1, colorWarning);
+    }
+
+    /** Thêm cột Lô hết hạn: tô đỏ khi Lô hết hạn > 0. */
+    public RenderColor(int columnSoLuong, int columnMucCanhBao, int columnLoHetHan, Color colorWarning) {
+        this.columnSoLuong = columnSoLuong;
+        this.columnMucCanhBao = columnMucCanhBao;
+        this.columnLoHetHan = columnLoHetHan;
         this.colorWarning = colorWarning;
     }
 
@@ -29,22 +37,36 @@ public class RenderColor extends DefaultTableCellRenderer {
             return c;
         }
 
+        c.setBackground(Color.WHITE);
         try {
             int modelRow = table.convertRowIndexToModel(row);
-
-            int soLuong = Integer.parseInt(table.getModel().getValueAt(modelRow, columnCheck).toString());
-            int mucCanhBao = Integer.parseInt(table.getModel().getValueAt(modelRow, columnWarning).toString());
-
-            if (soLuong <= mucCanhBao) {
+            int soLuong = parseNumber(table.getModel().getValueAt(modelRow, columnSoLuong));
+            int mucCanhBao = parseNumber(table.getModel().getValueAt(modelRow, columnMucCanhBao));
+            if (column == columnSoLuong && soLuong <= mucCanhBao) {
                 c.setBackground(colorWarning);
-            } else {
-                c.setBackground(Color.WHITE);
             }
-
+            if (columnLoHetHan >= 0 && column == columnLoHetHan) {
+                int loHetHan = parseNumber(table.getModel().getValueAt(modelRow, columnLoHetHan));
+                if (loHetHan > 0) {
+                    c.setBackground(colorWarning);
+                }
+            }
         } catch (Exception e) {
-            c.setBackground(Color.WHITE);
+            // giữ nền trắng
         }
 
         return c;
+    }
+
+    private int parseNumber(Object val) {
+        if (val == null) return 0;
+        String s = val.toString().trim().replace(",", "");
+        if (s.isEmpty()) return 0;
+        try {
+            if (s.contains(".")) return (int) Double.parseDouble(s);
+            return Integer.parseInt(s);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 }

@@ -28,13 +28,13 @@ public class ThongKeTonKhoNL extends JPanel {
         this.setBackground(Color.WHITE); // Đảm bảo nền trắng sạch sẽ
 
         // Thêm các thẻ thống kê (Sử dụng icon và màu sắc tương ứng)
-        add(taoTheThongKe("/assets/img/logo.png", "Nguyên liệu", new Color(187, 222, 251), lbSoNl));
+        add(taoTheThongKe("/assets/icon/thenl.svg", "Nguyên liệu", new Color(187, 222, 251), lbSoNl));
         add(Box.createRigidArea(new Dimension(25, 0)));
         
-        add(taoTheThongKe("/assets/img/logo.png", "Lô nguyên liệu", new Color(255, 249, 196), lbTongLo));
+        add(taoTheThongKe("/assets/icon/thelonl.svg", "Lô nguyên liệu", new Color(255, 249, 196), lbTongLo));
         add(Box.createRigidArea(new Dimension(25, 0)));
         
-        add(taoTheThongKe("/assets/img/logo.png", "Lô hết hạn", new Color(255, 205, 210), lbTongLoHetHan));
+        add(taoTheThongKe("/assets/icon/thelohethan.svg", "Lô hết hạn", new Color(255, 205, 210), lbTongLoHetHan));
         add(Box.createRigidArea(new Dimension(25, 0)));
         
         // Load dữ liệu lần đầu
@@ -46,7 +46,7 @@ public class ThongKeTonKhoNL extends JPanel {
         card.setBackground(mauNen);
 
         // Tạo Icon
-        JLabel icon = TaoUI.taoJlabelAnh(iconPath, 70, 70);
+        JLabel icon = TaoUI.taoJlabelAnh_Svg(iconPath, 70, 70);
         TaoUI.addItem(card, icon, 10, true);
 
         // Panel chứa thông tin chữ
