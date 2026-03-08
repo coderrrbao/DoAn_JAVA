@@ -6,7 +6,7 @@ import bus.SanPhamBUS;
 import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import dto.SanPham;
-import ui.component.Search_Item; // Nhớ import Search_Item
+import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -18,9 +18,9 @@ import javax.swing.table.DefaultTableModel;
 public class XuatKhoSanPhamDialog extends JDialog {
     private JTable tblTonKho, tblChoXuat;
     private DefaultTableModel modelTonKho, modelChoXuat;
-    private JTextField txtMaSP, txtSoLuongXuat, txtMaLo, txtLyDo;
+    private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo; // Đã thêm txtTenSP
     private JButton btnThem, btnXacNhan;
-    private Search_Item search_Item; // Khai báo Search_Item
+    private Search_Item search_Item;
     private XuatKhoSanPhamPanel parentPanel;
 
     public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
@@ -58,15 +58,20 @@ public class XuatKhoSanPhamDialog extends JDialog {
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 10));
 
-        // Đã xóa txtMaNV
         txtMaSP = new JTextField();
         txtMaSP.setEditable(false);
+        
+        // Khởi tạo txtTenSP
+        txtTenSP = new JTextField();
+        txtTenSP.setEditable(false);
+        
         txtMaLo = new JTextField();
         txtMaLo.setEditable(false);
         txtSoLuongXuat = new JTextField();
         txtLyDo = new JTextField();
 
         form.add(taoDong("Mã Sản Phẩm:", txtMaSP));
+        form.add(taoDong("Tên Sản Phẩm:", txtTenSP)); // Thêm dòng Tên Sản Phẩm vào UI
         form.add(taoDong("Mã Lô:", txtMaLo));
         form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
         form.add(taoDong("Lý do hủy:", txtLyDo));
@@ -101,8 +106,6 @@ public class XuatKhoSanPhamDialog extends JDialog {
         right.add(form, BorderLayout.NORTH);
         right.add(scrollChoXuat, BorderLayout.CENTER);
         right.add(pnXacNhan, BorderLayout.SOUTH);
-
-
 
         main.add(left);
         main.add(right);
@@ -169,6 +172,11 @@ public class XuatKhoSanPhamDialog extends JDialog {
             if (r != -1) {
                 txtMaSP.setText(modelTonKho.getValueAt(r, 0).toString());
                 txtMaLo.setText(modelTonKho.getValueAt(r, 1).toString());
+                
+                // Load Tên Sản Phẩm từ database dựa vào Mã SP
+                SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
+                txtTenSP.setText(sp != null ? sp.getTenSP() : "N/A");
+                
                 txtSoLuongXuat.requestFocus();
             }
         });
@@ -206,10 +214,10 @@ public class XuatKhoSanPhamDialog extends JDialog {
                 }
 
                 if (!daTonTai) {
-                    SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
+                    // Không cần tìm lại SanPham từ DB nữa vì đã lấy hiển thị ở txtTenSP rồi
                     modelChoXuat.addRow(new Object[] {
                             txtMaSP.getText(),
-                            (sp != null ? sp.getTenSP() : "SP"),
+                            txtTenSP.getText(), // Lấy trực tiếp từ TextField
                             sl,
                             maLo,
                             modelTonKho.getValueAt(r, 4)

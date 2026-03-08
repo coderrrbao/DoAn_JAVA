@@ -63,13 +63,12 @@ public class HangThanhVienUI extends JPanel {
     add(top, BorderLayout.NORTH);
 
     // --- GIAO DIỆN BẢNG ---
-    model =
-        new DefaultTableModel() {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    model = new DefaultTableModel() {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
 
     model.addColumn("Mã Hạng");
     model.addColumn("Tên Hạng");
@@ -87,7 +86,6 @@ public class HangThanhVienUI extends JPanel {
 
     loadDataToTable();
     addEvents();
-    suaLaiGiaoDienTheoQuyen(); // Giữ logic phân quyền từ HEAD
   }
 
   public void suaLaiGiaoDienTheoQuyen() {
@@ -95,7 +93,7 @@ public class HangThanhVienUI extends JPanel {
 
     if (!listQuyen.contains("HTV_TAO")) {
       btnTao.setVisible(false);
-      btnNhapExcel.setVisible(false); // Thường quyền tạo đi kèm quyền nhập excel
+      btnNhapExcel.setVisible(false);
     }
     if (!listQuyen.contains("HTV_SUA")) {
       btnSua.setVisible(false);
@@ -113,8 +111,7 @@ public class HangThanhVienUI extends JPanel {
     // Sự kiện Thêm
     btnTao.addActionListener(
         e -> {
-          FormHangThanhVien form =
-              new FormHangThanhVien((Frame) SwingUtilities.getWindowAncestor(this), null);
+          FormHangThanhVien form = new FormHangThanhVien((Frame) SwingUtilities.getWindowAncestor(this), null);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (htvBUS.themHangThanhVien(form.getKetQua())) {
@@ -135,9 +132,8 @@ public class HangThanhVienUI extends JPanel {
             return;
           }
           String maHang = model.getValueAt(row, 0).toString();
-          int confirm =
-              JOptionPane.showConfirmDialog(
-                  this, "Xác nhận xóa " + maHang + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+          int confirm = JOptionPane.showConfirmDialog(
+              this, "Xác nhận xóa " + maHang + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
           if (confirm == JOptionPane.YES_OPTION) {
             if (htvBUS.xoaHangThanhVien(maHang)) {
               JOptionPane.showMessageDialog(this, "Đã xóa!");
@@ -156,8 +152,7 @@ public class HangThanhVienUI extends JPanel {
           }
           String maHang = model.getValueAt(row, 0).toString();
           HangThanhVien htvCanSua = htvBUS.timHangThanhVien(maHang);
-          FormHangThanhVien form =
-              new FormHangThanhVien((Frame) SwingUtilities.getWindowAncestor(this), htvCanSua);
+          FormHangThanhVien form = new FormHangThanhVien((Frame) SwingUtilities.getWindowAncestor(this), htvCanSua);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (htvBUS.capNhatHangThanhVien(form.getKetQua())) {
@@ -229,10 +224,10 @@ public class HangThanhVienUI extends JPanel {
     for (HangThanhVien htv : list) {
       model.addRow(
           new Object[] {
-            htv.getMaHang(),
-            htv.getTenHang(),
-            htv.getPhanTramGiam(),
-            String.format("%,.0f", htv.getDieuKien()) // Định dạng tiền tệ
+              htv.getMaHang(),
+              htv.getTenHang(),
+              htv.getPhanTramGiam(),
+              String.format("%,.0f", htv.getDieuKien()) // Định dạng tiền tệ
           });
     }
   }
