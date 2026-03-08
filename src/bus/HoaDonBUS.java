@@ -153,7 +153,7 @@ public class HoaDonBUS {
         String maCuoi = hoaDonDAO.layMaHoaDonCuoiCung();
 
         if (maCuoi == null) {
-            return "HD001";
+            return "HD_TK_01";
         }
 
         try {
@@ -162,10 +162,10 @@ public class HoaDonBUS {
 
             soThuTu++;
 
-            return String.format("HD%03d", soThuTu);
+            return String.format("HD_TK_%02d", soThuTu);
         } catch (NumberFormatException e) {
             System.out.println("Lỗi parse mã cũ: " + maCuoi);
-            return "HD" + System.currentTimeMillis();
+            return "HD_TK_" + System.currentTimeMillis();
         }
     }
 
