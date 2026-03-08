@@ -110,4 +110,47 @@ public class PhieuKiemKeDAO {
             return false;
         }
     }
+
+    public Boolean insert(PhieuKiemKe pkk, Connection conn) {
+        String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai) "
+                + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, pkk.getMaKK());
+            pst.setString(2, pkk.getNgayKiem());
+            pst.setString(3, pkk.getMaLo());
+            pst.setString(4, pkk.getLoaiLo());
+            pst.setDouble(5, pkk.getSoLuongSoSach());
+            pst.setDouble(6, pkk.getSoLuongThuc());
+            pst.setString(7, pkk.getGhiChu());
+            pst.setString(8, pkk.getMaNV());
+            pst.setString(9, pkk.getTrangThaiXuLy());
+            pst.setInt(10, 1);
+            return pst.executeUpdate() > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean exist(String mapkk) {
+        String sql = "SELECT 1 FROM PhieuKiemKe WHERE MaKK = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, mapkk);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
 }

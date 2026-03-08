@@ -1,14 +1,17 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dao.DanhMucDao;
 import dao.SanPhamDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
+import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
 import util.XuLyExcel;
@@ -78,10 +81,6 @@ public class SanPhamBUS {
         return kq;
     }
 
-    public boolean xuatFileExcel() {
-        return XuLyExcel.xuatFile(layListSanPham());
-    }
-
     public SanPham timSanPham(String ma) {
         if (canUpdate || listSanPham == null) {
             khoitao();
@@ -143,14 +142,14 @@ public class SanPhamBUS {
         return true;
     }
 
-    
-
     public String layMaSanPhamKhaDung() {
         return sanPhamDAO.layMaSanPhamKhaDung(null);
     }
-    public boolean suaCanhBao(SanPham sanPham){
+
+    public boolean suaCanhBao(SanPham sanPham) {
         return sanPhamDAO.capNhatMucCanhBao(sanPham);
     }
+
     public Boolean XoaSanPham(String maSp) {
         if (!sanPhamDAO.xoaSanPham(maSp)) {
             return false;
@@ -295,5 +294,77 @@ public class SanPhamBUS {
             }
         }
         return ketQua;
+    }
+
+    public boolean nhapExcel(File file) {
+        // 1. Lấy dữ liệu thô từ Util
+        ArrayList<SanPham> dsNhap = XuLyExcel.nhapFileSanPham(file);
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false); // Bắt đầu Transaction
+
+            DanhMucDao danhMucDao = new DanhMucDao(); // Để tra cứu danh mục
+            int count = 0;
+
+            for (SanPham sp : dsNhap) {
+                // Kiểm tra mã rỗng hoặc trùng lặp
+                if (sp.getMaSP() != null && !sp.getMaSP().isEmpty() && !sanPhamDAO.exists(conn, sp.getMaSP())) {
+
+                    // Tìm đối tượng Danh Mục chuẩn từ Database dựa vào tên lấy từ Excel
+                    if (sp.getDanhMuc() != null) {
+                        DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
+                        sp.setDanhMuc(dmFull);
+
+                        // Chú ý: Cần chắc chắn danh mục tồn tại mới thêm
+                        if (dmFull != null) {
+                            if (!sanPhamDAO.themSanPham(sp, conn)) {
+                                throw new SQLException("Lỗi khi Insert Sản phẩm: " + sp.getMaSP());
+                            }
+                            count++;
+                        }
+                    }
+                }
+            }
+
+            // Nếu không có sản phẩm nào hợp lệ để thêm
+            if (count == 0) {
+                conn.rollback();
+                return false;
+            }
+
+            // Nếu mọi thứ trơn tru, lưu vào DB
+            conn.commit();
+            this.canUpdate = true; // Cờ hiệu để load lại Table
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // LỖI -> ROLLBACK TOÀN BỘ
+            try {
+                if (conn != null)
+                    conn.rollback();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // ================= XUẤT EXCEL =================
+    public boolean xuatExcel(File file) {
+        return XuLyExcel.xuatFileSanPham(file, this.layListSanPham());
     }
 }

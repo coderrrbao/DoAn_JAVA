@@ -7,38 +7,80 @@ import dto.NhanVien;
 
 public class NhanVienDAO {
 
-    // 1. Lấy danh sách: Chỉ lấy những người đang làm việc (TrangThai = 1)
+    // 1. Chỉ lấy những nhân viên đang hoạt động (TrangThai = 1)
     public ArrayList<NhanVien> layDanhSachNhanVien() {
         ArrayList<NhanVien> ds = new ArrayList<>();
-        String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1"; 
+        String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
+
             while (rs.next()) {
-                ds.add(new NhanVien(
+                // Đã bỏ rs.getString("ChucVu")
+                NhanVien nv = new NhanVien(
                         rs.getString("MaNV"),
-                        rs.getNString("TenNV"),
-                        rs.getNString("GioiTinh"),
+                        rs.getString("TenNV"),
+                        rs.getString("GioiTinh"),
                         rs.getString("NgaySinh"),
                         rs.getString("SDT"),
-                        rs.getNString("DiaChi"),
-                        rs.getNString("Anh")));
+                        rs.getString("DiaChi"),
+                        rs.getString("Anh"));
+                ds.add(nv);
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ds;
     }
 
-    // 2. Thêm nhân viên: Fix lỗi cú pháp VALUES
+    // 2. Thêm mới luôn mặc định TrangThai = 1 trong SQL (Dành cho Transaction)
+    public boolean insert(Connection conn, NhanVien nv) throws SQLException {
+        String sql = """
+                INSERT INTO NhanVien 
+                (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+                """;
+
+        if (nv.getMaNV() == null || nv.getMaNV().isEmpty()) {
+            nv.setMaNV(layMaNhanVien());
+        }
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, nv.getMaNV());
+            pst.setNString(2, nv.getTenNV());
+            pst.setNString(3, nv.getGioiTinh());
+            pst.setString(4, nv.getNgaySinh());
+            pst.setString(5, nv.getSdt());
+            pst.setNString(6, nv.getDiaChi());
+            pst.setString(7, nv.getAnh());
+
+            return pst.executeUpdate() > 0;
+        }
+    }
+
+    public boolean exist(String maNV) {
+        String sql = "SELECT 1 FROM NhanVien WHERE MaNV = ? AND TrangThai = 1";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, maNV);
+            try (ResultSet rs = ps.executeQuery()) {
+                return rs.next();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    // 3. Thêm nhân viên đơn lẻ
     public Boolean themNhanVien(NhanVien nv) {
-        // Chỉ để 7 dấu hỏi cho 7 cột dữ liệu, cột TrangThai gán trực tiếp là 1
         String sql = """
                 INSERT INTO NhanVien (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 1)
                 """;
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
 
             if (nv.getMaNV() == null || nv.getMaNV().isEmpty()) {
                 nv.setMaNV(layMaNhanVien());
@@ -59,22 +101,22 @@ public class NhanVienDAO {
         }
     }
 
-    // 3. Tìm kiếm nhân viên theo mã
     public NhanVien timNhanVien(String maNV) {
         String sql = "SELECT * FROM NhanVien WHERE MaNV = ? AND TrangThai = 1";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
             pst.setString(1, maNV);
             try (ResultSet rs = pst.executeQuery()) {
                 if (rs.next()) {
                     return new NhanVien(
                             rs.getString("MaNV"),
-                            rs.getNString("TenNV"),
-                            rs.getNString("GioiTinh"),
+                            rs.getString("TenNV"),
+                            rs.getString("GioiTinh"),
                             rs.getString("NgaySinh"),
                             rs.getString("SDT"),
-                            rs.getNString("DiaChi"),
-                            rs.getNString("Anh"));
+                            rs.getString("DiaChi"),
+                            rs.getString("Anh"));
                 }
             }
         } catch (Exception e) {
@@ -83,26 +125,27 @@ public class NhanVienDAO {
         return null;
     }
 
-    // 4. Xóa mềm (Cập nhật trạng thái về 0)
+    // 4. XÓA MỀM: Cập nhật trạng thái về 0
     public boolean xoaNhanVien(String maNV) {
         String sql = "UPDATE NhanVien SET TrangThai = 0 WHERE MaNV = ?";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
             pst.setString(1, maNV);
             return pst.executeUpdate() > 0;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;
         }
     }
 
-    // 5. Tự động phát sinh mã (NV01, NV02...)
     public String layMaNhanVien() {
-        // Lấy số lớn nhất từ mã hiện có
         String sql = "SELECT MAX(CAST(SUBSTRING(MaNV, 3, LEN(MaNV)) AS INT)) FROM NhanVien";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
+
             if (rs.next()) {
                 int nextId = rs.getInt(1) + 1;
                 return String.format("NV%02d", nextId);
@@ -113,7 +156,6 @@ public class NhanVienDAO {
         return "NV01";
     }
 
-    // 6. Cập nhật thông tin
     public boolean capNhatNhanVien(NhanVien nv) {
         String sql = """
                 UPDATE NhanVien
@@ -121,7 +163,8 @@ public class NhanVienDAO {
                 WHERE MaNV = ? AND TrangThai = 1
                 """;
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement pst = conn.prepareStatement(sql)) {
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
             pst.setNString(1, nv.getTenNV());
             pst.setNString(2, nv.getGioiTinh());
             pst.setString(3, nv.getNgaySinh());
@@ -129,8 +172,9 @@ public class NhanVienDAO {
             pst.setNString(5, nv.getDiaChi());
             pst.setNString(6, nv.getAnh());
             pst.setString(7, nv.getMaNV());
-            
+
             return pst.executeUpdate() > 0;
+
         } catch (Exception e) {
             e.printStackTrace();
             return false;

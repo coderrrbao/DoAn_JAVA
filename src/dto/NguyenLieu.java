@@ -1,6 +1,8 @@
 package dto;
 
-public class NguyenLieu {
+import util.ExcelExport;
+
+public class NguyenLieu implements ExcelExport {
     private String maNL;
     private String tenNL;
     private double gia;
@@ -60,4 +62,13 @@ public class NguyenLieu {
         this.mucCanhBao = mucCanhBao;
     }
 
+    @Override
+    public String[] getExcelHeaders() {
+        return new String[] { "Mã NL", "Tên nguyên liệu", "Giá", "Đơn vị", "Mức cảnh báo" };
+    }
+
+    @Override
+    public Object[] toExcelRow() {
+        return new Object[] { maNL, tenNL, gia, donVi, mucCanhBao };
+    }
 }

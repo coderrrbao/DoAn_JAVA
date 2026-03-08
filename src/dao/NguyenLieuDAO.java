@@ -99,6 +99,16 @@ public boolean capNhatMucCanhBao(NguyenLieu nguyenLieu) {
     }
   }
 
+  public boolean exists(Connection conn, String maNL) throws SQLException {
+    String sql = "SELECT 1 FROM NguyenLieu WHERE MaNL = ?";
+    try (PreparedStatement pst = conn.prepareStatement(sql)) {
+      pst.setString(1, maNL);
+      try (ResultSet rs = pst.executeQuery()) {
+        return rs.next();
+      }
+    }
+  }
+
   public String layMaNguyenLieuKhaDung(Connection conn) {
     String sql = "SELECT COUNT(MaNL) FROM NguyenLieu";
     try (PreparedStatement pst = conn.prepareStatement(sql);

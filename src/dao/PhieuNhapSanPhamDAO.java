@@ -72,6 +72,21 @@ public class PhieuNhapSanPhamDAO {
 
     }
 
+    public boolean exist(String maPN, Connection conn) {
+        String sql = "SELECT 1 FROM PhieuNhapSanPham WHERE MaPN = ?";
+
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maPN);
+            ResultSet rs = pst.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean capNhapPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham, Connection conn) {
         String sql = "UPDATE PhieuNhapSanPham SET GhiChu=? , TrangThaiXuLy=? WHERE MaPN=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {

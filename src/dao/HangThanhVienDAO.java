@@ -7,13 +7,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import dao.conection.DBConnection;
+
 public class HangThanhVienDAO {
-    public ArrayList<HangThanhVien> layListHangThanhVien(Connection conn) {
+    public ArrayList<HangThanhVien> layListHangThanhVien() {
         ArrayList<HangThanhVien> listHTV = new ArrayList<>();
         String sql = "SELECT MaHang, TenHang, PhanTramGiam, DieuKien FROM HangThanhVien WHERE TrangThai = 1";
 
-        try (PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql);
+                ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
                 HangThanhVien htv = new HangThanhVien();
@@ -79,7 +82,7 @@ public class HangThanhVienDAO {
     public String layMaHangThanhVienKhaDung(Connection conn) {
         String sql = "SELECT COUNT(MaHang) FROM HangThanhVien";
         try (PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
                 int so = rs.getInt(1) + 1;
                 return "HTV" + String.format("%02d", so);
@@ -88,5 +91,36 @@ public class HangThanhVienDAO {
             e.printStackTrace();
         }
         return "HTV01";
+    }
+
+    public void insert(Connection conn, HangThanhVien h) throws Exception {
+
+        String sql = """
+                    INSERT INTO HangThanhVien
+                    (MaHang, TenHang, PhanTramGiam, DieuKien, TrangThai)
+                    VALUES (?, ?, ?, ?, ?)
+                """;
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+
+        ps.setString(1, h.getMaHang());
+        ps.setString(2, h.getTenHang());
+        ps.setInt(3, h.getPhanTramGiam());
+        ps.setDouble(4, h.getDieuKien());
+        ps.setInt(5, 1);
+
+        ps.executeUpdate();
+    }
+
+    public boolean exists(Connection conn, String maHang) throws Exception {
+
+        String sql = "SELECT 1 FROM HangThanhVien WHERE MaHang = ?";
+
+        PreparedStatement ps = conn.prepareStatement(sql);
+        ps.setString(1, maHang);
+
+        ResultSet rs = ps.executeQuery();
+
+        return rs.next();
     }
 }

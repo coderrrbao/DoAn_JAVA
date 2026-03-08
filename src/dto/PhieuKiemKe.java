@@ -1,15 +1,45 @@
 package dto;
 
-public class PhieuKiemKe {
+import java.time.LocalDate;
+
+import util.ExcelExport;
+
+public class PhieuKiemKe implements ExcelExport {
     private String maKK;
+    private String maNV;
     private String ngayKiem;
     private String maLo;
     private String loaiLo;
     private Double soLuongSoSach;
     private Double soLuongThuc;
     private String ghiChu;
-    private String maNV;
     private String trangThaiXuLy;
+
+    @Override
+    public String[] getExcelHeaders() {
+        return new String[] {
+                "Mã Phiếu Kiểm", "Ngày Kiểm", "Mã Lô", "Loại Lô", "SL Sổ Sách", "SL Thực Tế", "Chênh Lệch",
+                "Trạng Thái"
+        };
+    }
+
+    @Override
+    public Object[] toExcelRow() {
+        return new Object[] {
+                maKK,
+                ngayKiem,
+                maLo,
+                loaiLo,
+                soLuongSoSach,
+                soLuongThuc,
+                soLuongThuc - soLuongSoSach,
+                trangThaiXuLy
+        };
+    }
+
+    public PhieuKiemKe() {
+
+    }
 
     public String getGhiChu() {
         return ghiChu;

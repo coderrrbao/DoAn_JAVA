@@ -1,16 +1,20 @@
 package ui.hangthanhvien;
 
 import bus.HangThanhVienBUS;
+import dao.HangThanhVienDAO;
+import dao.conection.DBConnection;
 import dto.HangThanhVien;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
-import java.util.ArrayList;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
@@ -162,38 +166,67 @@ public class HangThanhVienUI extends JPanel {
           }
         });
 
-    // Sự kiện Xuất Excel
-    btnXuatExcel.addActionListener(
-        e -> {
-          JFileChooser fileChooser = new JFileChooser();
-          fileChooser.setDialogTitle("Chọn nơi lưu file");
-          fileChooser.setSelectedFile(new java.io.File("HangThanhVien.xlsx"));
-          if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".xlsx")) {
-              path += ".xlsx";
-            }
-            if (htvBUS.xuatExcel(path)) {
-              JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
-            }
-          }
-        });
+    btnXuatExcel.addActionListener(e -> {
+      JFileChooser fileChooser = new JFileChooser();
+      fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+      fileChooser.setSelectedFile(new File("DanhSachHangThanhVien.xlsx")); // Tên file mặc định
 
-    // Sự kiện Nhập Excel
-    btnNhapExcel.addActionListener(
-        e -> {
-          JFileChooser fileChooser = new JFileChooser();
-          fileChooser.setFileFilter(new FileNameExtensionFilter("Excel Files", "xlsx"));
-          if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            if (htvBUS.nhapExcel(fileChooser.getSelectedFile().getAbsolutePath())) {
-              JOptionPane.showMessageDialog(this, "Nhập Excel thành công!");
-              loadDataToTable();
-            } else {
-              JOptionPane.showMessageDialog(
-                  this, "Có lỗi xảy ra khi nhập file!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-          }
-        });
+      int userSelection = fileChooser.showSaveDialog(this);
+
+      if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToSave = fileChooser.getSelectedFile();
+        String filePath = fileToSave.getAbsolutePath();
+
+        // Đảm bảo file có đuôi .xlsx
+        if (!filePath.toLowerCase().endsWith(".xlsx")) {
+          filePath += ".xlsx";
+        }
+
+        // Gọi hàm logic từ BUS (Giả sử hàm này nằm trong HangThanhVienBUS)
+        boolean success = htvBUS.xuatExcel(filePath);
+
+        if (success) {
+          JOptionPane.showMessageDialog(this,
+              "Xuất file Excel thành công!",
+              "Thông báo",
+              JOptionPane.INFORMATION_MESSAGE);
+        } else {
+          JOptionPane.showMessageDialog(this, "Có lỗi xảy ra khi xuất file!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    });
+
+    btnNhapExcel.addActionListener(e -> {
+      JFileChooser fileChooser = new JFileChooser();
+      fileChooser.setDialogTitle("Chọn file Excel để nhập Hạng Thành Viên");
+
+      javax.swing.filechooser.FileNameExtensionFilter filter = new javax.swing.filechooser.FileNameExtensionFilter(
+          "Excel Files (*.xlsx)", "xlsx");
+      fileChooser.setFileFilter(filter);
+
+      int userSelection = fileChooser.showOpenDialog(this);
+
+      if (userSelection == JFileChooser.APPROVE_OPTION) {
+        File fileToOpen = fileChooser.getSelectedFile();
+        String filePath = fileToOpen.getAbsolutePath();
+
+        boolean success = htvBUS.nhapExcel(filePath);
+
+        if (success) {
+          JOptionPane.showMessageDialog(this,
+              "Nhập danh sách Hạng Thành Viên thành công!",
+              "Thông báo",
+              JOptionPane.INFORMATION_MESSAGE);
+
+          loadDataToTable();
+        } else {
+          JOptionPane.showMessageDialog(this,
+              "Nhập file thất bại! Vui lòng kiểm tra định dạng file Excel.",
+              "Lỗi",
+              JOptionPane.ERROR_MESSAGE);
+        }
+      }
+    });
 
     // Sự kiện Tìm kiếm
     search_Item

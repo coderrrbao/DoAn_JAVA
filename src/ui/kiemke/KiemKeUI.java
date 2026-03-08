@@ -4,9 +4,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -14,6 +19,8 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import bus.PhieuKiemKeBUS;
+import dao.PhieuKiemKeDAO;
+import dao.conection.DBConnection;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
 import ui.login.PhienDangNhap;
@@ -25,8 +32,9 @@ public class KiemKeUI extends JPanel {
     private DefaultTableModel model;
     private LocNgay_Item locNgay;
     private JButton btnThem;
-    private JButton btnSua, btnXoa, btnXemCt;
+    private JButton btnSua, btnXoa, btnXuatExcel, btnNhapExcel, btnXemCt;
     private PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
+    private ArrayList<PhieuKiemKe> listPhieuKiemKe = new ArrayList<>();
 
     public KiemKeUI() {
         setLayout(new BorderLayout());
@@ -70,11 +78,11 @@ public class KiemKeUI extends JPanel {
         btnSua.addActionListener(e -> {
             int row = table.getSelectedRow();
             if (row >= 0) {
-                if (model.getValueAt(row, 9).equals("Đã xác nhận")) {
+                if (model.getValueAt(row, 8).equals("Đã xác nhận")) {
                     JOptionPane.showMessageDialog(null, "Phiểu kiểm kê đã xác nhận không thể sửa", "Thông báo",
                             JOptionPane.ERROR_MESSAGE);
                 } else {
-                    PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(row, 1).toString());
+                    PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(row, 0).toString());
                     ThemPhieuKiemDialog themPhieuKiemDialog = new ThemPhieuKiemDialog(this, phieuKiemKe);
                     themPhieuKiemDialog.setVisible(true);
                 }
@@ -91,7 +99,8 @@ public class KiemKeUI extends JPanel {
         btnXemCt.addActionListener(e -> {
             int dongChon = table.getSelectedRow();
             if (dongChon >= 0) {
-                PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 1).toString());
+                PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 0).toString());
+            
                 ChiTietKiemKeDialog chiTietKiemKeDialog = new ChiTietKiemKeDialog(null, phieuKiemKe);
                 chiTietKiemKeDialog.setVisible(true);
             } else {
@@ -103,7 +112,7 @@ public class KiemKeUI extends JPanel {
             int dongChon = table.getSelectedRow();
             if (dongChon >= 0) {
                 if (phieuKiemKeBUS
-                        .xoaPhieuKiemKe(phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 1).toString()))) {
+                        .xoaPhieuKiemKe(phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 0).toString()))) {
                     TaoTinNhan.showAutoCloseMessage("Đã xóa phiếu kiểm kê thành thông", "Thông báo", 1);
                     loaiDuLieu();
                 } else {
@@ -113,16 +122,68 @@ public class KiemKeUI extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn dòng để xóa", "Thông báo", 1);
             }
         });
+
+        // --- XỬ LÝ XUẤT EXCEL ---
+        btnXuatExcel.addActionListener(e -> {
+        
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu Phiếu Kiểm Kê");
+            fileChooser.setSelectedFile(new File("danhsachphieukiemke.xlsx"));
+
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+                String filePath = file.getAbsolutePath();
+
+                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                    filePath += ".xlsx";
+                }
+                if (phieuKiemKeBUS.xuatExcel(filePath)) {
+                    JOptionPane.showMessageDialog(this, "Xuất thành công!", "Thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
+                        loaiDuLieu();
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi ghi file Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // --- XỬ LÝ NHẬP EXCEL ---
+        btnNhapExcel.addActionListener(e -> {
+            // 1. Cấu hình hộp thoại mở file
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn file Excel danh sách kiểm kê");
+            fileChooser
+                    .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
+
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                // 2. Gọi BUS thực hiện nhập file (Hàm này nên trả về danh sách hoặc boolean
+                PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
+                // Giả sử hàm nhapExcel(File file) xử lý logic đọc và lưu vào DB
+                boolean success = phieuKiemKeBUS.nhapExcel(file);
+
+                if (success) {
+                    // 3. Cập nhật lại UI
+                    loaiDuLieu(); // Hàm load lại table của bạn
+
+                    JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ file Excel thành công!",
+                            "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "File trống, sai định dạng hoặc lỗi đọc file!",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
 
     public void loaiDuLieu() {
         model.setRowCount(0);
 
-        ArrayList<PhieuKiemKe> listPhieuKiemKe = phieuKiemKeBUS.layListKiemKe();
-        int stt = 1;
+        listPhieuKiemKe = phieuKiemKeBUS.layListKiemKe();
         for (PhieuKiemKe phieuKiemKe : listPhieuKiemKe) {
             if (locNgay.ngayTrongKhoan(phieuKiemKe.getNgayKiem())) {
-                model.addRow(new Object[] { stt++, phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(),
+                model.addRow(new Object[] { phieuKiemKe.getMaKK(), phieuKiemKe.getMaNV(),
                         phieuKiemKe.getNgayKiem(),
                         phieuKiemKe.getMaLo(), phieuKiemKe.getLoaiLo(), phieuKiemKe.getSoLuongSoSach(),
                         phieuKiemKe.getSoLuongThuc(), phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
@@ -152,6 +213,13 @@ public class KiemKeUI extends JPanel {
         btnXoa.setPreferredSize(new Dimension(80, 32));
         top.add(btnXoa);
 
+        btnNhapExcel = new JButton("Nhập Excel");
+        btnNhapExcel.setPreferredSize(new Dimension(100, 32));
+        top.add(btnNhapExcel);
+
+        btnXuatExcel = new JButton("Xuất Excel");
+        btnXuatExcel.setPreferredSize(new Dimension(100, 32));
+        top.add(btnXuatExcel);
         btnXemCt = new JButton("Xem chi tiết");
         btnXemCt.setPreferredSize(new Dimension(100, 32));
         top.add(btnXemCt);
@@ -161,7 +229,7 @@ public class KiemKeUI extends JPanel {
 
     private JPanel taoPanelTable() {
         JPanel panel = new JPanel(new BorderLayout());
-        String[] columns = { "STT", "Mã Phiếu Kiểm", "Mã NV", "Ngày kiểm", "Mã lô", "Loại lô", "SL sổ sách",
+        String[] columns = { "Mã Phiếu Kiểm", "Mã NV", "Ngày kiểm", "Mã lô", "Loại lô", "SL sổ sách",
                 "SL thực tế", "Chênh lệch", "Trạng thái" };
         model = new DefaultTableModel(columns, 0);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);

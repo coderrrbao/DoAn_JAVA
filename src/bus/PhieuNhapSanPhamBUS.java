@@ -1,5 +1,7 @@
 package bus;
 
+import java.awt.List;
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import dao.PhieuNhapSanPhamDAO;
 import dao.conection.DBConnection;
 import dto.LoSanPham;
 import dto.PhieuNhapSanPham;
+import util.XuLyExcel;
 
 public class PhieuNhapSanPhamBUS {
     private static PhieuNhapSanPhamBUS phieuNhapSanPhamBUS = null;
@@ -128,7 +131,6 @@ public class PhieuNhapSanPhamBUS {
         return true;
     }
 
-
     public boolean xoaPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -179,5 +181,25 @@ public class PhieuNhapSanPhamBUS {
             }
         }
         return null;
+    }
+
+    public boolean nhapExcel(File file) {
+        ArrayList<PhieuNhapSanPham> dsNhap = XuLyExcel.nhapFilePhieuNhapSanPham(file);
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        int thanhCong = 0;
+        for (PhieuNhapSanPham pn : dsNhap) {
+            pn.setTrangThaiXuLy("Đang xử lý");
+            if (themPhieuNhapSanPham(pn)) {
+                thanhCong++;
+            }
+        }
+        return thanhCong > 0;
+    }
+
+    public boolean xuatExcel(File file) {
+        ArrayList<PhieuNhapSanPham> list = layListPhieuNhapSanPham();
+        return XuLyExcel.xuatFilePhieuNhapSanPham(file, list);
     }
 }

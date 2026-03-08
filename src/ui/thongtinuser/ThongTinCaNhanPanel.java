@@ -13,7 +13,7 @@ import util.Anh;
 import util.TaoUI;
 
 public class ThongTinCaNhanPanel extends JPanel {
-    private JTextField tfMaNV, tfTenNV, tfGioiTinh, tfNgaySinh, tfSDT, tfDiaChi, tfChucVu;
+    private JTextField tfMaNV, tfTenNV, tfGioiTinh, tfNgaySinh, tfNgayVaoLam, tfSDT, tfDiaChi, tfChucVu;
     private JButton btnLuuThongTin, btnSua, btnChonAnh;
     private JLabel lblAnhDaiDien;
     private JFileChooser fileChooser = new JFileChooser();
@@ -65,8 +65,16 @@ public class ThongTinCaNhanPanel extends JPanel {
             nhanVien.setAnh(duongDan);
             daDoiAnh = false;
         }
-        return new NhanVien(tfMaNV.getText(), tfTenNV.getText(), tfGioiTinh.getText(), tfNgaySinh.getText(),
-                tfSDT.getText(), tfDiaChi.getText(), nhanVien.getAnh());
+        NhanVien nv =new NhanVien();
+        nv.setMaNV(tfMaNV.getText());
+        nv.setTenNV(tfTenNV.getText());
+        nv.setGioiTinh(tfGioiTinh.getText());
+        nv.setNgaySinh(tfNgaySinh.getText());
+        nv.setSdt(tfSDT.getText());
+        nv.setDiaChi(tfDiaChi.getText());
+       
+        nv.setAnh(nhanVien.getAnh());
+        return nv;
     }
 
     private void initGUI() {

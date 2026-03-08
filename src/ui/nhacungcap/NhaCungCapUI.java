@@ -3,22 +3,29 @@ package ui.nhacungcap;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
+import dao.NhaCungCapDAO;
+import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
+import java.util.*;
 
 public class NhaCungCapUI extends JPanel {
-    private JButton btnTao, btnXoa, btnXemChiTiet;
+    private JButton btnTao, btnXoa, btnXuatExcel, btnNhapExcel, btnXemChiTiet;
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
+    private List<NhaCungCap> ds;
 
     public NhaCungCapUI() {
         setLayout(new BorderLayout());
@@ -35,9 +42,15 @@ public class NhaCungCapUI extends JPanel {
 
         btnXoa = new JButton("Xóa");
 
+        btnNhapExcel = new JButton("Nhập Excel");
+
+        btnXuatExcel = new JButton("Xuất Excel");
+
         TaoUI.setFixSize(btnTao, 100, 32);
         TaoUI.setFixSize(btnXemChiTiet, 150, 32);
         TaoUI.setFixSize(btnXoa, 100, 32);
+        TaoUI.setFixSize(btnNhapExcel, 100, 32);
+        TaoUI.setFixSize(btnXuatExcel, 100, 32);
 
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -46,6 +59,10 @@ public class NhaCungCapUI extends JPanel {
         top.add(btnXemChiTiet);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnNhapExcel);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(Box.createHorizontalGlue());
 
@@ -77,7 +94,8 @@ public class NhaCungCapUI extends JPanel {
     public void loadDuLieu() {
         model.setRowCount(0);
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
-        for (NhaCungCap nhaCungCap : nhaCungCapBUS.laylistNhaCungCap()) {
+        ds = nhaCungCapBUS.laylistNhaCungCap();
+        for (NhaCungCap nhaCungCap : ds) {
             if (nhaCungCap.getTenNCC().contains(search_Item.getTextSearch())) {
                 String loaiCungCap = "";
                 if (nhaCungCap.getCungCapSP()) {
@@ -152,5 +170,60 @@ public class NhaCungCapUI extends JPanel {
                 TaoTinNhan.showAutoCloseMessage("Vui lòng chọn nhà cung cấp để xóa", "Thông báo", 1);
             }
         });
+
+        btnXuatExcel.addActionListener(e -> {
+            // 1. Khởi tạo FileChooser để chọn nơi lưu
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu danh sách Nhà Cung Cấp");
+            fileChooser.setSelectedFile(new File("DanhSachNhaCungCap.xlsx"));
+
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                // Đảm bảo file có đuôi .xlsx
+                if (!file.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
+                    file = new File(file.getAbsolutePath() + ".xlsx");
+                }
+
+                // 2. Truyền file vào BUS để xử lý xuất
+                NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+                if (nhaCungCapBUS.xuatExcel(file)) {
+                    JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi ghi file Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnNhapExcel.addActionListener(e -> {
+            // 1. Khởi tạo hộp thoại chọn file nguồn
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn file Excel Nhà Cung Cấp để nhập");
+
+            // Thiết lập bộ lọc chỉ hiển thị file .xlsx
+            fileChooser
+                    .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
+
+            // 2. Mở hộp thoại Open
+            if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                // 3. Gọi BUS xử lý (BUS sẽ tự gọi XuLyExcel để lấy list và lưu DB)
+                NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
+
+                if (nhaCungCapBUS.nhapExcel(file)) {
+                    // Nếu thành công, load lại table trên giao diện
+                    loadDuLieu();
+                    JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!", "Thành công",
+                            JOptionPane.INFORMATION_MESSAGE);
+                } else {
+                    // Thông báo lỗi nếu file trống, sai định dạng hoặc lỗi Database
+                    JOptionPane.showMessageDialog(this, "Lỗi khi nhập file Excel hoặc dữ liệu đã tồn tại!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
     }
+
 }

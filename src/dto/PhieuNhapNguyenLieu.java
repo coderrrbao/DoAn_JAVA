@@ -2,7 +2,9 @@ package dto;
 
 import java.util.ArrayList;
 
-public class PhieuNhapNguyenLieu {
+import util.ExcelExport;
+
+public class PhieuNhapNguyenLieu implements ExcelExport {
     private String maPN;
     private String ngayNhap;
     private String maNV;
@@ -12,21 +14,37 @@ public class PhieuNhapNguyenLieu {
     private String ghiChu;
     private ArrayList<LoNguyenLieu> listLoNguyenLieu = new ArrayList<>();
 
-    private boolean trangThai;
+    @Override
+    public String[] getExcelHeaders() {
+        return new String[] {
+                "Mã Phiếu Nhập",
+                "Ngày Nhập",
+                "Nhân Viên Tạo Phiếu",
+                "Ghi chú",
+                "Nhà Cung Cấp",
+                "Trạng Thái"
+        };
+    }
+
+    @Override
+    public Object[] toExcelRow() {
+        return new Object[] {
+                maPN, ngayNhap, maNV, ghiChu, maNCC, trangThaiXuLy
+        };
+    }
 
     public PhieuNhapNguyenLieu() {
     }
 
     public PhieuNhapNguyenLieu(String maPNNL, String ngayNhap, String maNV, double tongTien,
             String maNCC,
-            String trangThaiXuLy, String ghiChu, boolean trangThai) {
+            String trangThaiXuLy, String ghiChu) {
         this.ngayNhap = ngayNhap;
         this.maNV = maNV;
         this.tongTien = tongTien;
         this.maNCC = maNCC;
         this.trangThaiXuLy = trangThaiXuLy;
         this.ghiChu = ghiChu;
-        this.trangThai = trangThai;
         this.maPN = maPNNL;
     }
 
@@ -76,14 +94,6 @@ public class PhieuNhapNguyenLieu {
 
     public void setGhiChu(String ghiChu) {
         this.ghiChu = ghiChu;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
     }
 
     public String getMaPN() {

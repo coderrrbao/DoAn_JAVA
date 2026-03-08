@@ -1,8 +1,12 @@
 package ui.quanlysanpham;
 
 import java.awt.*;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,7 +14,11 @@ import javax.swing.table.TableColumnModel;
 
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
+import dao.DanhMucDao;
+import dao.SanPhamDAO;
+import dao.conection.DBConnection;
 import dto.SanPham;
+import dto.DanhMuc;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
@@ -180,9 +188,8 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
 
-        xuaFileBtn.addActionListener(e -> {
-            SanPhamBUS.getSanPhamBUS().xuatFileExcel();
-        });
+        nhapFileBtn.addActionListener(e -> importFileExcel());
+        xuaFileBtn.addActionListener(e -> exportFileExcel());
 
         xoaBtn.addActionListener(e -> {
 
@@ -248,6 +255,50 @@ public class QuanLySanPhamUI extends JPanel {
             }
         }
         veLaiDanhSach(listSanPhamLoc);
+    }
+
+    // --- SỰ KIỆN NÚT NHẬP ---
+    private void importFileExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn file Excel Sản Phẩm để nhập");
+        fileChooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
+
+        if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+
+            // Đưa File cho BUS xử lý (BUS lo Transaction Rollback)
+            if (SanPhamBUS.getSanPhamBUS().nhapExcel(file)) {
+                // Load lại bảng
+                loadDataFromDatabase(); // Hoặc hàm loadTable() của bạn
+                JOptionPane.showMessageDialog(this, "Import thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                // Bao gồm lỗi sai định dạng, dữ liệu trùng, hoặc lỗi Transaction
+                JOptionPane.showMessageDialog(this,
+                        "Import thất bại! Có dữ liệu trùng, sai hoặc danh mục không tồn tại. Đã Rollback toàn bộ.",
+                        "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    // --- SỰ KIỆN NÚT XUẤT ---
+    private void exportFileExcel() {
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Chọn nơi lưu danh sách Sản Phẩm");
+        fileChooser.setSelectedFile(new File("DanhSachSanPham.xlsx"));
+
+        if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+            File file = fileChooser.getSelectedFile();
+            if (!file.getName().toLowerCase().endsWith(".xlsx")) {
+                file = new File(file.getParentFile(), file.getName() + ".xlsx");
+            }
+
+            if (SanPhamBUS.getSanPhamBUS().xuatExcel(file)) {
+                JOptionPane.showMessageDialog(this, "Xuất file thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            } else {
+                JOptionPane.showMessageDialog(this, "Lỗi khi lưu file Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }
 
     private void veLaiDanhSach(ArrayList<SanPham> list) {

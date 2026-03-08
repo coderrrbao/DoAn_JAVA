@@ -1,15 +1,21 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import dao.NhomQuyenDAO;
+import dao.PhanQuyenDAO;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
 import dto.PhanQuyen;
 import dto.Quyen;
+import util.XuLyExcel;
 
 public class NhomQuyenBUS {
     private static NhomQuyenBUS nhomQuyenBUS;
@@ -219,5 +225,62 @@ public class NhomQuyenBUS {
 
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
+    }
+    //xuat exc nhom quyen
+    public boolean XuatExc(){
+        return XuLyExcel.xuatFileNhomQuyen(listNhomQuyen);
+    }
+
+    // nhập excel nhóm quyền + phân quyền
+    public boolean nhapExcelPhanQuyen() {
+        JFileChooser chooser = new JFileChooser();
+        chooser.setDialogTitle("Chọn file Excel");
+        if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+            Connection conn = DBConnection.getConnection();
+            try {
+                conn.setAutoCommit(false);
+                Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
+                ArrayList<NhomQuyen> listNQ = (ArrayList<NhomQuyen>) data[0];
+                ArrayList<PhanQuyen> listPQ = (ArrayList<PhanQuyen>) data[1];
+                PhanQuyenDAO pqDAO = new PhanQuyenDAO();
+
+                for (NhomQuyen nq : listNQ) {
+
+                    if (!nhomQuyenDAO.themNhomQuyen(nq, conn)) {
+                        throw new Exception("Lỗi thêm nhóm quyền");
+                    }
+                }
+
+                for (PhanQuyen pq : listPQ) {
+
+                    if (!pqDAO.themPhanQuyen(pq, conn)) {
+                        throw new Exception("Lỗi thêm phân quyền");
+                    }
+                }
+                conn.commit();
+                this.canUpdate = true;
+                JOptionPane.showMessageDialog(null, "Nhập Excel thành công!");
+                return true;
+            } catch (Exception e) {
+                try {
+                    conn.rollback();
+                } catch (Exception ex) {
+                    ex.printStackTrace();
+                }
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Nhập Excel thất bại!");
+            } finally {
+
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return false;
     }
 }

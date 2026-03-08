@@ -140,8 +140,8 @@ public class NhaCungCapDAO {
         }
     }
 
-    public boolean themNhaCungCap(NhaCungCap ncc, Connection conn) {
-        String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi, TrangThai) VALUES (?, ?, ?, ?, ?)";
+    public boolean insert(Connection conn, NhaCungCap ncc) throws SQLException {
+        String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, ncc.getMaNCC());
             pst.setNString(2, ncc.getTenNCC());
@@ -154,6 +154,25 @@ public class NhaCungCapDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public boolean exist(String maNCC) {
+        String sql = "SELECT 1 FROM NhaCungCap WHERE MaNCC = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, maNCC);
+
+            ResultSet rs = ps.executeQuery();
+
+            return rs.next();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 
     public boolean xoaNhaCungCap(NhaCungCap ncc, Connection conn) {

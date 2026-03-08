@@ -27,6 +27,10 @@ public class ChiTietTonKhoSPDialog extends JDialog {
     private SanPham sanPham;
     private JPanel center;
     private JScrollPane scrollPaneCoSan, scrollPanePhaChe;
+
+    public ChiTietTonKhoSPDialog() {
+    }
+
     public ChiTietTonKhoSPDialog(JFrame owner, SanPham sanPham) {
         super(owner, "Chi tiết lô hàng - " + sanPham.getTenSP(), true);
         setSize(600, 400);
@@ -78,7 +82,7 @@ public class ChiTietTonKhoSPDialog extends JDialog {
             }
         }
         if (sanPham.getLoaiNuoc().equals("Pha chế")) {
-            setTitle("Danh sách tồn kho nguyên liệu cho sản phẩm : "+sanPham.getTenSP());
+            setTitle("Danh sách tồn kho nguyên liệu cho sản phẩm : " + sanPham.getTenSP());
             center.add(scrollPanePhaChe, BorderLayout.CENTER);
             modelPhaChe.setRowCount(0);
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();

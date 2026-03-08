@@ -1,5 +1,6 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -9,6 +10,7 @@ import dao.conection.DBConnection;
 import dto.LoNguyenLieu;
 import dto.LoSanPham;
 import dto.PhieuKiemKe;
+import util.XuLyExcel;
 
 public class PhieuKiemKeBUS {
 
@@ -162,4 +164,34 @@ public class PhieuKiemKeBUS {
         }
         return true;
     }
+
+    public boolean xuatExcel(String filePath) {
+        ArrayList<PhieuKiemKe> ds = layListKiemKe();
+        return XuLyExcel.xuatFilePhieuKiemKe(ds, filePath);
+    }
+
+    // ================= XỬ LÝ NHẬP EXCEL (BUS) =================
+    public boolean nhapExcel(File file) {
+        ArrayList<PhieuKiemKe> dsNhap = XuLyExcel.nhapFilePhieuKiemKe(file);
+
+        // Kiểm tra nếu file lỗi hoặc rỗng
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return false;
+        }
+
+        int thanhCong = 0;
+        for (PhieuKiemKe pkk : dsNhap) {
+            try {
+                pkk.setTrangThaiXuLy("Chưa xử lý");
+                if (themPhieuKiemKe(pkk)) {
+                    thanhCong++;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                // Tiếp tục vòng lặp với các dòng khác
+            }
+        }
+        return thanhCong > 0;
+    }
+
 }
