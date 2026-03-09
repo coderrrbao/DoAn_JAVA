@@ -85,7 +85,6 @@ public class SanPham {
         return tenSP;
     }
 
-
     public ArrayList<Size> getListSize() {
         return listSize;
     }
@@ -114,7 +113,6 @@ public class SanPham {
         this.tenSP = tenSP;
     }
 
-
     public void setTheTich(int theTich) {
         this.theTich = theTich;
     }
@@ -127,28 +125,24 @@ public class SanPham {
         this.listSize = listSize;
     }
 
-    // Thêm size vào list
     public void addSize(Size size) {
         if (size != null) {
             listSize.add(size);
         }
     }
 
-    // Xóa size khỏi list
     public void removeSize(Size size) {
         if (size != null) {
             listSize.remove(size);
         }
     }
 
-    // Xóa size theo index
     public void removeSizeAt(int index) {
         if (index >= 0 && index < listSize.size()) {
             listSize.remove(index);
         }
     }
 
-    // Xóa size theo mã size
     public void removeSizeByMaSize(String maSize) {
         listSize.removeIf(size -> size.getMaSize().equals(maSize));
     }

@@ -109,7 +109,6 @@ public class ThemPhieuKiemDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // TRƯỜNG HỢP 1: Đang tạo phiếu mới (phieuKiemKe == null)
         if (phieuKiemKe == null) {
             if (!listQuyen.contains("KK_TAO")) {
                 btnThem.setVisible(false);
@@ -119,7 +118,7 @@ public class ThemPhieuKiemDialog extends JDialog {
                 this.setTitle("Xem danh sách lô (Chế độ chỉ đọc)");
             }
         }
-        // TRƯỜNG HỢP 2: Đang xem/sửa phiếu cũ (phieuKiemKe != null)
+
         else {
             if (!listQuyen.contains("KK_SUA")) {
                 btnSua.setVisible(false);

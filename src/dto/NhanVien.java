@@ -20,7 +20,7 @@ public class NhanVien implements ExcelExport {
                 "Ngày sinh",
                 "Số điện thoại",
                 "Địa chỉ"
-                // Đã bỏ Chức vụ
+
         };
     }
 
@@ -33,14 +33,13 @@ public class NhanVien implements ExcelExport {
                 ngaySinh,
                 sdt,
                 diaChi
-                // Đã bỏ Chức vụ
+
         };
     }
 
     public NhanVien() {
     }
 
-    // Constructor đã bỏ chucVu
     public NhanVien(String maNV, String tenNV, String gioiTinh, String ngaySinh, String sdt,
             String diaChi, String anh) {
         this.maNV = maNV;

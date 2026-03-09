@@ -46,7 +46,7 @@ public class PhanQuyenDAO {
 
     public boolean xoaPhanQuyen(PhanQuyen phanQuyen, Connection conn) {
         boolean result = false;
-        // Câu lệnh SQL cập nhật trạng thái về 0 thay vì xóa dòng
+
         String sql = "UPDATE PhanQuyen SET TrangThai = 0 WHERE MaNQ = ? AND MaQuyen = ?";
 
         try (

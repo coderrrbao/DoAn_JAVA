@@ -89,7 +89,7 @@ public class QuanLySanPhamUI extends JPanel {
 
         xuaFileBtn = new JButton("Xuất Exc");
         TaoUI.setFixSize(xuaFileBtn, 80, 32);
-   
+
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
@@ -159,14 +159,14 @@ public class QuanLySanPhamUI extends JPanel {
     private void setKichThuocCot() {
         JTable table = (JTable) scrollPane.getViewport().getView();
         TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(50); // STT
-        columnModel.getColumn(2).setPreferredWidth(80); // Mã SP
-        columnModel.getColumn(3).setPreferredWidth(200); // Tên sản phẩm (Cần rộng nhất)
-        columnModel.getColumn(4).setPreferredWidth(100); // Loại
-        columnModel.getColumn(5).setPreferredWidth(100); // Danh mục
-        columnModel.getColumn(6).setPreferredWidth(90); // Giá bán
-        columnModel.getColumn(7).setPreferredWidth(90); // Giá nhập
-        columnModel.getColumn(8).setPreferredWidth(40); // Số lượng
+        columnModel.getColumn(0).setPreferredWidth(50);
+        columnModel.getColumn(2).setPreferredWidth(80);
+        columnModel.getColumn(3).setPreferredWidth(200);
+        columnModel.getColumn(4).setPreferredWidth(100);
+        columnModel.getColumn(5).setPreferredWidth(100);
+        columnModel.getColumn(6).setPreferredWidth(90);
+        columnModel.getColumn(7).setPreferredWidth(90);
+        columnModel.getColumn(8).setPreferredWidth(40);
     }
 
     private void themSanPhamVaoTable(SanPham sanPham) {
@@ -254,7 +254,6 @@ public class QuanLySanPhamUI extends JPanel {
         veLaiDanhSach(listSanPhamLoc);
     }
 
-    // --- SỰ KIỆN NÚT NHẬP ---
     private void importFileExcel() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn file Excel Sản Phẩm để nhập");
@@ -263,13 +262,12 @@ public class QuanLySanPhamUI extends JPanel {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
 
-            // Đưa File cho BUS xử lý (BUS lo Transaction Rollback)
             if (SanPhamBUS.getSanPhamBUS().nhapExcel(file)) {
-                // Load lại bảng
-                loadDataFromDatabase(); // Hoặc hàm loadTable() của bạn
+
+                loadDataFromDatabase();
                 JOptionPane.showMessageDialog(this, "Import thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Bao gồm lỗi sai định dạng, dữ liệu trùng, hoặc lỗi Transaction
+
                 JOptionPane.showMessageDialog(this,
                         "Import thất bại! Có dữ liệu trùng, sai hoặc danh mục không tồn tại. Đã Rollback toàn bộ.",
                         "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -277,7 +275,6 @@ public class QuanLySanPhamUI extends JPanel {
         }
     }
 
-    // --- SỰ KIỆN NÚT XUẤT ---
     private void exportFileExcel() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu danh sách Sản Phẩm");

@@ -17,7 +17,6 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
     private DefaultTableModel modelNguyenLieu;
 
-    // Các thành phần phần Form
     private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC;
     private JTextArea txaGhiChu;
     private JComboBox<String> cbTrangThai;
@@ -29,23 +28,20 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
     public ChiTietPhieuNhapNguyenLieuDialog(Frame parent, PhieuNhapNguyenLieu phieuNhapNguyenLieu,
             NhapKhoNguyenLieuPanel nhapKhoNguyenLieuPanel) {
         super(parent, "Quản lý Phiếu Nhập", true);
-        setSize(550, 750); // Chiều cao 750 để đủ chỗ cho JTextArea và Table
+        setSize(550, 750);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
         this.phieuNhapNguyenLieu = phieuNhapNguyenLieu;
         this.nhapKhoNguyenLieuPanel = nhapKhoNguyenLieuPanel;
 
-        // ==================== PHẦN TOP (DANH SÁCH NGUYÊN LIỆU) ====================
         JPanel pnTop = new JPanel(new BorderLayout(0, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
-        // Tiêu đề
         JLabel lblTitle = new JLabel("Danh sách các nguyên liệu nhập", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         pnTop.add(lblTitle, BorderLayout.NORTH);
 
-        // Bảng dữ liệu
         String[] columnNames = { "Mã", "Tên", "Giá", "Số lượng", "Ngày SX", "Hạn SD" };
         modelNguyenLieu = new DefaultTableModel(columnNames, 0);
 
@@ -55,12 +51,10 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
         add(pnTop, BorderLayout.NORTH);
 
-        // ==================== PHẦN FORM (CENTER) ====================
         JPanel pnForm = new JPanel();
         pnForm.setLayout(new BoxLayout(pnForm, BoxLayout.Y_AXIS));
         pnForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
 
-        // Khởi tạo các Component nhập liệu
         txtMaPN = new JTextField();
         txtNgayNhap = new JTextField();
         txtMaNV = new JTextField();
@@ -73,26 +67,22 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
         txtTongTien.setEditable(false);
         txtMaNCC.setEditable(false);
 
-        // Thiết lập nền màu trắng
         txtMaPN.setBackground(Color.WHITE);
         txtNgayNhap.setBackground(Color.WHITE);
         txtMaNV.setBackground(Color.WHITE);
         txtTongTien.setBackground(Color.WHITE);
         txtMaNCC.setBackground(Color.WHITE);
 
-        // Ghi chú (TextArea)
-        txaGhiChu = new JTextArea(4, 20); // 4 dòng
+        txaGhiChu = new JTextArea(4, 20);
         txaGhiChu.setLineWrap(true);
         txaGhiChu.setWrapStyleWord(true);
         txaGhiChu.setEditable(false);
         txaGhiChu.setBackground(Color.white);
         JScrollPane scrollGhiChu = new JScrollPane(txaGhiChu);
 
-        // Trạng thái xử lý (ComboBox)
         cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
         cbTrangThai.setEnabled(false);
 
-        // Đưa vào Form theo cấu trúc: Label -> Input
         pnForm.add(taoDong(new JLabel("Mã Phiếu Nhập (PK):")));
         pnForm.add(taoDong(txtMaPN));
 
@@ -116,7 +106,6 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
         add(pnForm, BorderLayout.CENTER);
 
-        // ==================== PHẦN BOTTOM (NÚT CHỨC NĂNG) ====================
         JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnLuu = new JButton("Lưu Phiếu Nhập");
         btnSua = new JButton("Sửa");
@@ -137,13 +126,11 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // Kiểm tra quyền SỬA phiếu nhập (NK_SUA)
         if (!listQuyen.contains("NK_SUA")) {
-            // Ẩn hoàn toàn các nút tác vụ sửa đổi
+
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
 
-            // Đổi tiêu đề sang chế độ xem để người dùng dễ nhận biết
             this.setTitle("Chi Tiết Phiếu Nhập (Chế độ chỉ đọc)");
         }
     }

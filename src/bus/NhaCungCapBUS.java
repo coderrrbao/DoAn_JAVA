@@ -269,28 +269,26 @@ public class NhaCungCapBUS {
     }
 
     public boolean nhapExcel(File file) {
-        // 1. Chỉ truyền File qua Util để lấy danh sách
+
         ArrayList<NhaCungCap> dsNhap = XuLyExcel.nhapFileNhaCungCap(file);
 
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
 
         int thanhCong = 0;
-        // 2. BUS xử lý logic nghiệp vụ và gọi DAO
+
         for (NhaCungCap ncc : dsNhap) {
-            if (themNhaCungCap(ncc)) { // Hàm này gọi DAO và cập nhật list nội bộ
+            if (themNhaCungCap(ncc)) {
                 thanhCong++;
             }
         }
         return thanhCong > 0;
     }
 
-    // XUẤT: Nhận file -> Tự lấy List nội bộ -> Đẩy qua Util ghi file
     public boolean xuatExcel(File file) {
-        // 1. BUS tự lấy danh sách đang quản lý
+
         ArrayList<NhaCungCap> listHienTai = laylistNhaCungCap();
 
-        // 2. Chỉ truyền List và File qua Util để xử lý POI
         return XuLyExcel.xuatFileNhaCungCap(file, listHienTai);
     }
 

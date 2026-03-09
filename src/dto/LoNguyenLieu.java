@@ -12,9 +12,9 @@ public class LoNguyenLieu {
   private double giaNhap;
   private String trangThaiXuLy;
 
-  public LoNguyenLieu() {}
+  public LoNguyenLieu() {
+  }
 
-  // Constructor đầy đủ tham số để đồng bộ với SQL
   public LoNguyenLieu(
       String maLoNL,
       String maPN,
@@ -36,7 +36,6 @@ public class LoNguyenLieu {
     this.trangThaiXuLy = trangThaiXuLy;
   }
 
-  // Getters and Setters
   public String getMaLoNL() {
     return maLoNL;
   }

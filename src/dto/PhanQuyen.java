@@ -1,8 +1,8 @@
 package dto;
 
 public class PhanQuyen {
-    private String maNQ;    // Mã Nhóm Quyền (vd: NQ01)
-    private String maQuyen; // Mã Quyền (vd: Q01)
+    private String maNQ;
+    private String maQuyen;
 
     public PhanQuyen() {
     }

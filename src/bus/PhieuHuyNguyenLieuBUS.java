@@ -20,7 +20,8 @@ public class PhieuHuyNguyenLieuBUS {
   private boolean canUpdate = true;
 
   public static PhieuHuyNguyenLieuBUS getPhieuHuyNguyenLieuBUS() {
-    if (instance == null) instance = new PhieuHuyNguyenLieuBUS();
+    if (instance == null)
+      instance = new PhieuHuyNguyenLieuBUS();
     return instance;
   }
 
@@ -33,7 +34,8 @@ public class PhieuHuyNguyenLieuBUS {
   }
 
   public ArrayList<PhieuHuyNguyenLieu> layListPhieuHuy() {
-    if (canUpdate || listPhieuHuy == null) khoiTao();
+    if (canUpdate || listPhieuHuy == null)
+      khoiTao();
     return listPhieuHuy;
   }
 
@@ -44,22 +46,24 @@ public class PhieuHuyNguyenLieuBUS {
       String maPH = dao.layMaPhieuHuyNLKhaDung(conn);
       phieuHuy.setMaPH(maPH);
 
-      if (!dao.themPhieuHuy(phieuHuy, conn)) throw new SQLException();
+      if (!dao.themPhieuHuy(phieuHuy, conn))
+        throw new SQLException();
 
       for (Object[] row : data) {
         String maLo = row[3].toString();
         double soLuong = Double.parseDouble(row[2].toString());
         double gia = Double.parseDouble(row[4].toString());
 
-        // Sử dụng đúng hàm themChiTietHuy của bạn
-        if (!dao.themChiTietHuy(maPH, maLo, soLuong, gia, conn)) throw new SQLException();
+        if (!dao.themChiTietHuy(maPH, maLo, soLuong, gia, conn))
+          throw new SQLException();
       }
       conn.commit();
       this.canUpdate = true;
       return true;
     } catch (SQLException e) {
       try {
-        if (conn != null) conn.rollback();
+        if (conn != null)
+          conn.rollback();
       } catch (Exception ex) {
       }
       return false;
@@ -76,10 +80,12 @@ public class PhieuHuyNguyenLieuBUS {
     Connection conn = DBConnection.getConnection();
     try {
       conn.setAutoCommit(false);
-      if (!dao.capNhatPhieuHuy(ph, conn)) throw new SQLException("Câp nhật thất bại");
+      if (!dao.capNhatPhieuHuy(ph, conn))
+        throw new SQLException("Câp nhật thất bại");
       if ("Đã xác nhận".equalsIgnoreCase(ph.getTrangThaiXuLy().trim())) {
         ArrayList<LoNguyenLieu> chiTiet = dao.layChiTietHuyTheoMaPH(ph.getMaPH());
-        if (chiTiet == null) throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
+        if (chiTiet == null)
+          throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
         for (LoNguyenLieu Lo : chiTiet) {
           if (!dao.truKhoLoNguyenLieu(Lo.getMaLoNL(), Lo.getSoLuong(), conn))
             throw new SQLException("Trừ kho thất bại");
@@ -93,7 +99,8 @@ public class PhieuHuyNguyenLieuBUS {
     } catch (SQLException e) {
       e.printStackTrace();
       try {
-        if (conn != null) conn.rollback();
+        if (conn != null)
+          conn.rollback();
       } catch (Exception ex) {
       }
       return false;
@@ -110,11 +117,11 @@ public class PhieuHuyNguyenLieuBUS {
     ArrayList<PhieuHuyNguyenLieu> dsPhieu = layListPhieuHuy();
     try (Workbook workbook = new XSSFWorkbook()) {
       Sheet sheetP = workbook.createSheet("Phiếu Hủy Nguyên Liệu");
-      String[] headerP = {"Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền"};
+      String[] headerP = { "Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền" };
       createHeader(workbook, sheetP, headerP);
 
       Sheet sheetCT = workbook.createSheet("Chi Tiết Lô Nguyên Liệu");
-      String[] headerCT = {"Mã Phiếu", "Mã Lô NL", "Số Lượng", "Đơn Giá"};
+      String[] headerCT = { "Mã Phiếu", "Mã Lô NL", "Số Lượng", "Đơn Giá" };
       createHeader(workbook, sheetCT, headerCT);
 
       int rowPIdx = 1, rowCTIdx = 1;
@@ -161,7 +168,8 @@ public class PhieuHuyNguyenLieuBUS {
 
       for (int i = 1; i <= sheetP.getLastRowNum(); i++) {
         Row row = sheetP.getRow(i);
-        if (row == null) continue;
+        if (row == null)
+          continue;
         String maCu = getCellValueAsString(row.getCell(0));
         PhieuHuyNguyenLieu p = new PhieuHuyNguyenLieu();
         p.setMaNV(getCellValueAsString(row.getCell(1)));
@@ -173,7 +181,8 @@ public class PhieuHuyNguyenLieuBUS {
 
       for (int i = 1; i <= sheetCT.getLastRowNum(); i++) {
         Row row = sheetCT.getRow(i);
-        if (row == null) continue;
+        if (row == null)
+          continue;
         String maLK = getCellValueAsString(row.getCell(0));
         if (mapPhieu.containsKey(maLK)) {
           LoNguyenLieu lo = new LoNguyenLieu();
@@ -186,14 +195,15 @@ public class PhieuHuyNguyenLieuBUS {
 
       conn.setAutoCommit(false);
       for (PhieuHuyNguyenLieu p : mapPhieu.values()) {
-        // Lấy mã mới ngay trong vòng lặp để tránh trùng Primary Key
+
         p.setMaPH(dao.layMaPhieuHuyNLKhaDung(conn));
         double tong = 0;
         for (LoNguyenLieu lo : p.getListLoNguyenLieuHuy())
           tong += lo.getSoLuong() * lo.getGiaNhap();
         p.setTongTien(tong);
 
-        if (!dao.themPhieuHuy(p, conn)) throw new SQLException();
+        if (!dao.themPhieuHuy(p, conn))
+          throw new SQLException();
         for (LoNguyenLieu lo : p.getListLoNguyenLieuHuy()) {
           if (!dao.themChiTietHuy(
               p.getMaPH(), lo.getMaLoNL(), lo.getSoLuong(), lo.getGiaNhap(), conn))
@@ -206,14 +216,16 @@ public class PhieuHuyNguyenLieuBUS {
       return true;
     } catch (Exception e) {
       try {
-        if (conn != null) conn.rollback();
+        if (conn != null)
+          conn.rollback();
       } catch (SQLException ex) {
       }
       e.printStackTrace();
       return false;
     } finally {
       try {
-        if (conn != null) conn.close();
+        if (conn != null)
+          conn.close();
       } catch (Exception e) {
       }
     }
@@ -233,17 +245,20 @@ public class PhieuHuyNguyenLieuBUS {
   }
 
   private String getCellValueAsString(Cell c) {
-    if (c == null) return "";
-    if (c.getCellType() == CellType.STRING) return c.getStringCellValue().trim();
-    if (c.getCellType() == CellType.NUMERIC) return String.valueOf((int) c.getNumericCellValue());
+    if (c == null)
+      return "";
+    if (c.getCellType() == CellType.STRING)
+      return c.getStringCellValue().trim();
+    if (c.getCellType() == CellType.NUMERIC)
+      return String.valueOf((int) c.getNumericCellValue());
     return "";
   }
 
-  // Soft delete - set TrangThai = 0
   public boolean xoaMemPhieuHuy(String maPH) {
     Connection conn = DBConnection.getConnection();
     try {
-      if (!dao.xoaMemPhieuHuy(maPH, conn)) throw new SQLException("Xóa thất bại");
+      if (!dao.xoaMemPhieuHuy(maPH, conn))
+        throw new SQLException("Xóa thất bại");
       this.canUpdate = true;
       khoiTao();
       return true;
@@ -252,7 +267,8 @@ public class PhieuHuyNguyenLieuBUS {
       return false;
     } finally {
       try {
-        if (conn != null) conn.close();
+        if (conn != null)
+          conn.close();
       } catch (Exception e) {
       }
     }

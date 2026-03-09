@@ -14,10 +14,10 @@ public class LoNguyenLieuDAO {
     public ArrayList<LoNguyenLieu> layListLoNguyenLieu() {
         ArrayList<LoNguyenLieu> list = new ArrayList<>();
         String sql = "SELECT * FROM LoNguyenLieu WHERE TrangThai = 1";
-        
-        try (Connection con = DBConnection.getConnection(); 
-             PreparedStatement pst = con.prepareStatement(sql)) {
-            
+
+        try (Connection con = DBConnection.getConnection();
+                PreparedStatement pst = con.prepareStatement(sql)) {
+
             ResultSet rs = pst.executeQuery();
             while (rs.next()) {
                 LoNguyenLieu lo = new LoNguyenLieu();
@@ -25,11 +25,11 @@ public class LoNguyenLieuDAO {
                 lo.setMaLoNL(rs.getString("MaLoNL"));
                 lo.setMaPN(rs.getString("MaPN"));
                 lo.setMaNL(rs.getString("MaNL"));
-                lo.setSoLuong(rs.getDouble("SoLuong")); 
+                lo.setSoLuong(rs.getDouble("SoLuong"));
                 lo.setNgayNhap(rs.getString("NgayNhap"));
                 lo.setNgaySanXuat(rs.getString("NgaySanXuat"));
                 lo.setHanSuDung(rs.getString("HanSuDung"));
-                lo.setGiaNhap(rs.getDouble("GiaNhap")); 
+                lo.setGiaNhap(rs.getDouble("GiaNhap"));
                 lo.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
 
                 list.add(lo);
@@ -57,7 +57,7 @@ public class LoNguyenLieuDAO {
             return false;
         }
     }
-    
+
     public boolean truNguyenLieu(Connection conn, String maNL, double soLuongCanTru) throws SQLException {
         String sqlGet = "SELECT MaLoNL, SoLuong FROM LoNguyenLieu WHERE MaNL = ? AND SoLuong > 0 ORDER BY HanSuDung ASC ";
         String sqlUpdate = "UPDATE LoNguyenLieu SET SoLuong = SoLuong - ? WHERE MaLoNL = ? AND TrangThai=1";
@@ -115,8 +115,6 @@ public class LoNguyenLieuDAO {
         }
     }
 
-    // --- CÁC HÀM MỚI BỔ SUNG CHO LUỒNG XÁC NHẬN VÀ XÓA ---
-
     public boolean xacNhanLoNguyenLieu(LoNguyenLieu lo, Connection conn) throws SQLException {
         String sql = "UPDATE LoNguyenLieu SET TrangThaiXuLy = ? WHERE MaLoNL = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -139,7 +137,6 @@ public class LoNguyenLieuDAO {
             return false;
         }
     }
-    // ----------------------------------------------------
 
     public String layMaLoNguyenLieuKhaDung(Connection conn) {
         if (conn == null) {
@@ -168,7 +165,7 @@ public class LoNguyenLieuDAO {
             pst.setString(1, layMaLoNguyenLieuKhaDung(conn));
             pst.setString(2, loNL.getMaPN());
             pst.setString(3, loNL.getMaNL());
-            pst.setDouble(4, loNL.getSoLuong()); 
+            pst.setDouble(4, loNL.getSoLuong());
             pst.setDouble(5, loNL.getGiaNhap());
             pst.setString(6, loNL.getNgaySanXuat());
             pst.setString(7, loNL.getHanSuDung());

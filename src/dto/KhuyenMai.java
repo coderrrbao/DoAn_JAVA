@@ -3,8 +3,8 @@ package dto;
 public class KhuyenMai {
     private String maKM;
     private int phanTramGiam;
-    private String tuNgay;  // Chuyển thành String
-    private String denNgay; // Chuyển thành String
+    private String tuNgay;
+    private String denNgay;
 
     public KhuyenMai() {
     }

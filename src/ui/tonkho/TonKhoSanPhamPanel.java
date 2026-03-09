@@ -103,7 +103,6 @@ public class TonKhoSanPhamPanel extends JPanel {
             btnSua.setVisible(false);
         }
 
-        // Vẽ lại giao diện
         this.revalidate();
         this.repaint();
     }

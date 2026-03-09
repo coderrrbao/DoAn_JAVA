@@ -21,7 +21,6 @@ public class SuaChiTietNhaCungCapDialog extends JDialog {
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
-        // ==================== PHẦN FORM ====================
         JPanel pnForm = new JPanel();
         pnForm.setLayout(new BoxLayout(pnForm, BoxLayout.Y_AXIS));
         pnForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
@@ -43,7 +42,6 @@ public class SuaChiTietNhaCungCapDialog extends JDialog {
 
         add(pnForm, BorderLayout.CENTER);
 
-        // ==================== PHẦN NÚT BẤM ====================
         JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         btnLuu = new JButton("Lưu");
         btnHuy = new JButton("Hủy");

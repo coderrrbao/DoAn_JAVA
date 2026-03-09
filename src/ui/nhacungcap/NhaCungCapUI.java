@@ -172,7 +172,7 @@ public class NhaCungCapUI extends JPanel {
         });
 
         btnXuatExcel.addActionListener(e -> {
-            // 1. Khởi tạo FileChooser để chọn nơi lưu
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn nơi lưu danh sách Nhà Cung Cấp");
             fileChooser.setSelectedFile(new File("DanhSachNhaCungCap.xlsx"));
@@ -180,12 +180,10 @@ public class NhaCungCapUI extends JPanel {
             if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // Đảm bảo file có đuôi .xlsx
                 if (!file.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
                     file = new File(file.getAbsolutePath() + ".xlsx");
                 }
 
-                // 2. Truyền file vào BUS để xử lý xuất
                 NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
                 if (nhaCungCapBUS.xuatExcel(file)) {
                     JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!", "Thông báo",
@@ -197,28 +195,25 @@ public class NhaCungCapUI extends JPanel {
         });
 
         btnNhapExcel.addActionListener(e -> {
-            // 1. Khởi tạo hộp thoại chọn file nguồn
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn file Excel Nhà Cung Cấp để nhập");
 
-            // Thiết lập bộ lọc chỉ hiển thị file .xlsx
             fileChooser
                     .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
 
-            // 2. Mở hộp thoại Open
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // 3. Gọi BUS xử lý (BUS sẽ tự gọi XuLyExcel để lấy list và lưu DB)
                 NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
 
                 if (nhaCungCapBUS.nhapExcel(file)) {
-                    // Nếu thành công, load lại table trên giao diện
+
                     loadDuLieu();
                     JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
                 } else {
-                    // Thông báo lỗi nếu file trống, sai định dạng hoặc lỗi Database
+
                     JOptionPane.showMessageDialog(this, "Lỗi khi nhập file Excel hoặc dữ liệu đã tồn tại!", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                 }

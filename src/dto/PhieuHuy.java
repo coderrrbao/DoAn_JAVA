@@ -6,9 +6,9 @@ public class PhieuHuy {
     private String ngayHuy;
     private String maNV;
     private String lyDo;
-    private String loaiHuy; // "SP" hoặc "NL"
-    private String maLoSP; // null nếu huỷ nguyên liệu
-    private String maLoNL; // null nếu huỷ sản phẩm
+    private String loaiHuy;
+    private String maLoSP;
+    private String maLoNL;
     private int soLuong;
     private double tongGiaTri;
     private boolean trangThai;

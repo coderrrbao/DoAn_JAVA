@@ -22,7 +22,7 @@ import dto.NhanVien;
 
 public class NhanVienUI extends JPanel {
     private JButton btnTao, btnXuatExcel, btnNhapExcel, btnXoa;
-    // ĐÃ XÓA cbChucVu
+
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
@@ -35,8 +35,6 @@ public class NhanVienUI extends JPanel {
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
-
-        // ĐÃ XÓA logic khởi tạo dsChucVu và cbChucVu
 
         search_Item = new Search_Item(300, 32);
 
@@ -73,7 +71,7 @@ public class NhanVienUI extends JPanel {
                 File file = fc.getSelectedFile();
 
                 if (NhanVienBUS.getNhanVienBUS().nhapExcel(file)) {
-                    layDanhSachNhanVien(); // Refresh bảng
+                    layDanhSachNhanVien();
                     JOptionPane.showMessageDialog(this, "Nhập thành công!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Nhập thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -81,7 +79,6 @@ public class NhanVienUI extends JPanel {
             }
         });
 
-        // Cập nhật thanh công cụ: Bỏ cbChucVu
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnTao);
@@ -98,7 +95,7 @@ public class NhanVienUI extends JPanel {
         model = new DefaultTableModel() {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-                // Nút sửa giờ chuyển sang cột số 4 (do mất cột Chức vụ)
+
                 if (columnIndex == 4) {
                     return JButton.class;
                 }
@@ -115,14 +112,13 @@ public class NhanVienUI extends JPanel {
         model.addColumn("Họ và tên");
         model.addColumn("Giới tính");
         model.addColumn("Số điện thoại");
-        model.addColumn(""); // Cột nút sửa (Index 4)
+        model.addColumn("");
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(4); // Cột chứa component (Nút sửa)
+        set.add(4);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
 
-        // Thiết lập Renderer và Editor cho cột số 4
         tableUI.getColumnModel().getColumn(4).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
         tableUI.setAutoCreateColumnsFromModel(false);
         tableUI.getColumnModel().getColumn(4).setMinWidth(80);
@@ -155,12 +151,10 @@ public class NhanVienUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm nhân viên (NV_TAO)
         if (!listQuyen.contains("NV_TAO")) {
             btnTao.setVisible(false);
         }
 
-        // 2. Quyền Xóa nhân viên (NV_XOA)
         if (!listQuyen.contains("NV_XOA")) {
             btnXoa.setVisible(false);
         }
@@ -199,7 +193,6 @@ public class NhanVienUI extends JPanel {
                         || sdt.toUpperCase().contains(keyword);
             }
 
-            // Đã xóa matchChucVu, chỉ lọc theo keyword
             if (matchSearch) {
                 listNhanVienLoc.add(nv);
             }
@@ -215,14 +208,13 @@ public class NhanVienUI extends JPanel {
                     nv.getTenNV(),
                     nv.getGioiTinh(),
                     nv.getSdt(),
-                    null // Nút sửa (cột 4)
+                    null
             });
         }
     }
 
     private void ganSuKienLocVaXoa() {
         search_Item.setEvent(this::locNhanVien);
-        // Đã xóa ActionListener cho cbChucVu
 
         btnXoa.addActionListener(e -> {
             int row = tableUI.getSelectedRow();

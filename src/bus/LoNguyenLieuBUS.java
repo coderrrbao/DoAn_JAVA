@@ -120,19 +120,20 @@ public class LoNguyenLieuBUS {
         }
     }
 
- public double laySoLuongNguyenLieuTrongKho(String ma) {
-    double tong = 0;
-    LocalDate homNay = LocalDate.now();
-    for (LoNguyenLieu lo : listLoNguyenLieu) {
-        if (lo.getMaNL().equals(ma)) {
-            LocalDate ngayHetHan = LocalDate.parse(lo.getHanSuDung());
-            if (ngayHetHan.isAfter(homNay)) {
-                tong += lo.getSoLuong();
+    public double laySoLuongNguyenLieuTrongKho(String ma) {
+        double tong = 0;
+        LocalDate homNay = LocalDate.now();
+        for (LoNguyenLieu lo : listLoNguyenLieu) {
+            if (lo.getMaNL().equals(ma)) {
+                LocalDate ngayHetHan = LocalDate.parse(lo.getHanSuDung());
+                if (ngayHetHan.isAfter(homNay)) {
+                    tong += lo.getSoLuong();
+                }
             }
         }
+        return tong;
     }
-    return tong;
-}
+
     public boolean capNhapLoNguyenLieu(LoNguyenLieu loNguyenLieu) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -158,7 +159,7 @@ public class LoNguyenLieuBUS {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                    canUpdate = true; // Đánh dấu để lần lấy list sau sẽ load lại từ DB
+                    canUpdate = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -207,10 +208,6 @@ public class LoNguyenLieuBUS {
         }
         return list;
     }
-
-    // ==========================================
-    // CÁC HÀM BỔ SUNG CHO TÍNH NĂNG XÁC NHẬN VÀ XÓA
-    // ==========================================
 
     public boolean xacNhanLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
         try {

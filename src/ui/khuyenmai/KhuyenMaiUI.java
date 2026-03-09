@@ -45,17 +45,14 @@ public class KhuyenMaiUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm khuyến mãi mới
         if (!listQuyen.contains("KM_TAO")) {
             btnThem.setVisible(false);
         }
 
-        // 2. Quyền Sửa chương trình khuyến mãi
         if (!listQuyen.contains("KM_SUA")) {
             btnSua.setVisible(false);
         }
 
-        // 3. Quyền Xóa (kết thúc sớm) khuyến mãi
         if (!listQuyen.contains("KM_XOA")) {
             btnXoa.setVisible(false);
         }
@@ -69,7 +66,6 @@ public class KhuyenMaiUI extends JPanel {
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        // Thay thế Search_Item bằng LocNgay_Item
         locNgay = new LocNgay_Item(400, 32);
         top.add(locNgay);
 
@@ -114,14 +110,12 @@ public class KhuyenMaiUI extends JPanel {
         return panel;
     }
 
-    // Gộp hàm thucHienTimKiem cũ vào đây và xử lý điều kiện lọc qua LocNgay_Item
     public void loadDataToTable() {
         model.setRowCount(0);
         ArrayList<KhuyenMai> list = kmBUS.layListKhuyenMai();
 
         for (KhuyenMai km : list) {
-            // Kiểm tra xem Từ ngày của khuyến mãi có nằm trong khoảng thời gian đã chọn
-            // không
+
             if (locNgay.ngayTrongKhoan(km.getTuNgay())) {
                 model.addRow(new Object[] {
                         km.getMaKM(),

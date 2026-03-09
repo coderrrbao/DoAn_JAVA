@@ -66,7 +66,6 @@ public class FormNguyenLieu extends JDialog {
 
     JPanel pnlButtons = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
 
-    // Khởi tạo các nút
     btnThem = new JButton("Thêm");
     btnSua = new JButton("Sửa");
     btnLuu = new JButton("Lưu");
@@ -87,7 +86,7 @@ public class FormNguyenLieu extends JDialog {
       btnThem.setVisible(false);
       anThaoTacSua();
     } else {
-      // Chế độ Thêm: Ẩn Sửa/Lưu, hiện Thêm
+
       btnSua.setVisible(false);
       btnLuu.setVisible(false);
       btnThem.setVisible(true);
@@ -98,12 +97,10 @@ public class FormNguyenLieu extends JDialog {
   public void suaLaiGiaoDienTheoQuyen() {
     HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Kiểm tra quyền THÊM
     if (!listQuyen.contains("NL_TAO")) {
       btnThem.setVisible(false);
     }
 
-    // 2. Kiểm tra quyền SỬA
     if (!listQuyen.contains("NL_SUA")) {
       btnSua.setVisible(false);
       btnLuu.setVisible(false);
@@ -140,7 +137,6 @@ public class FormNguyenLieu extends JDialog {
 
     btnSua.addActionListener(e -> batThaoTacSua());
 
-    // Sự kiện nút Thêm
     btnThem.addActionListener(
         e -> {
           if (kiemTraDuLieu()) {
@@ -150,11 +146,10 @@ public class FormNguyenLieu extends JDialog {
           }
         });
 
-    // Sự kiện nút Lưu (khi Sửa)
     btnLuu.addActionListener(
         e -> {
           if (kiemTraDuLieu()) {
-            ketQua = editNL; // Cập nhật trên đối tượng cũ
+            ketQua = editNL;
             ganDuLieu(ketQua);
             dispose();
           }

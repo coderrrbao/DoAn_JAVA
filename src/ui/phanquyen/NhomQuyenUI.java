@@ -159,7 +159,7 @@ public class NhomQuyenUI extends JPanel {
             chooser.setDialogTitle("Chọn file Excel để nhập");
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = chooser.getSelectedFile();
-                // Gọi hàm và truyền file vào
+
                 NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen(selectedFile);
             }
         });

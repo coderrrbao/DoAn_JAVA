@@ -13,6 +13,7 @@ import util.TaoUI;
 
 public class NutHienThiSP extends JButton implements TableCellRenderer {
     private String urlString;
+
     public NutHienThiSP(String url) {
         setContentAreaFilled(false);
         setBorderPainted(false);
@@ -20,6 +21,7 @@ public class NutHienThiSP extends JButton implements TableCellRenderer {
         setOpaque(false);
         this.urlString = url;
     }
+
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
             int row, int column) {
@@ -27,7 +29,7 @@ public class NutHienThiSP extends JButton implements TableCellRenderer {
         FlatSVGIcon icon = new FlatSVGIcon(url).derive(30, 30);
         setIcon(icon);
         setText("");
-// "../assets/icon/sua.svg"
+
         if (isSelected) {
             setBackground(table.getSelectionBackground());
         } else {

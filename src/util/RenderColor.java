@@ -8,15 +8,13 @@ import javax.swing.table.DefaultTableCellRenderer;
 public class RenderColor extends DefaultTableCellRenderer {
     private int columnSoLuong;
     private int columnMucCanhBao;
-    private int columnLoHetHan; // -1 nếu không dùng
+    private int columnLoHetHan;
     private Color colorWarning;
 
-    /** Cột Số lượng, Mức cảnh báo; tô đỏ khi Số lượng <= Mức cảnh báo. */
     public RenderColor(int columnSoLuong, int columnMucCanhBao, Color colorWarning) {
         this(columnSoLuong, columnMucCanhBao, -1, colorWarning);
     }
 
-    /** Thêm cột Lô hết hạn: tô đỏ khi Lô hết hạn > 0. */
     public RenderColor(int columnSoLuong, int columnMucCanhBao, int columnLoHetHan, Color colorWarning) {
         this.columnSoLuong = columnSoLuong;
         this.columnMucCanhBao = columnMucCanhBao;
@@ -52,18 +50,21 @@ public class RenderColor extends DefaultTableCellRenderer {
                 }
             }
         } catch (Exception e) {
-            // giữ nền trắng
+
         }
 
         return c;
     }
 
     private int parseNumber(Object val) {
-        if (val == null) return 0;
+        if (val == null)
+            return 0;
         String s = val.toString().trim().replace(",", "");
-        if (s.isEmpty()) return 0;
+        if (s.isEmpty())
+            return 0;
         try {
-            if (s.contains(".")) return (int) Double.parseDouble(s);
+            if (s.contains("."))
+                return (int) Double.parseDouble(s);
             return Integer.parseInt(s);
         } catch (NumberFormatException e) {
             return 0;

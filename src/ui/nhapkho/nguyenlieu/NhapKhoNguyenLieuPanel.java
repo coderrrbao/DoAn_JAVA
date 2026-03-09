@@ -139,21 +139,18 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         });
 
         XuatExcelBtn.addActionListener(e -> {
-            // 1. Khởi tạo hộp thoại lưu file
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn nơi lưu danh sách Phiếu Nhập Nguyên Liệu");
             fileChooser.setSelectedFile(new File("DanhSachPhieuNhapNL.xlsx"));
 
-            // 2. Nếu người dùng nhấn Save
             if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // Tự động kiểm tra và thêm đuôi .xlsx nếu cần
                 if (!file.getName().toLowerCase().endsWith(".xlsx")) {
                     file = new File(file.getParentFile(), file.getName() + ".xlsx");
                 }
 
-                // 3. Gọi BUS xử lý (BUS tự lấy list nội bộ và đẩy qua ExcelUtil)
                 if (PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS().xuatExcel(file)) {
                     JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!",
                             "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -166,17 +163,15 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         });
 
         NhapExcelBtn.addActionListener(e -> {
-            // 1. Khởi tạo hộp thoại mở file
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn file Excel Phiếu Nhập để nhập");
             fileChooser
                     .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
 
-            // 2. Nếu người dùng chọn file và nhấn Open
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // 3. Gọi BUS thực hiện nghiệp vụ (Đọc file -> Kiểm tra mã trùng -> Lưu DB)
                 if (PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS().nhapExcel(file)) {
                     loadDuLieu();
                     JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!",

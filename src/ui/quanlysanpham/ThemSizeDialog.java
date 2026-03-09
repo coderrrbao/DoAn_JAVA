@@ -53,7 +53,7 @@ public class ThemSizeDialog extends JDialog {
     }
 
     private boolean kiemTraDuLieu() {
-        // 1. Kiểm tra Tên size
+
         String tenSize = tfTenSize.getText().trim();
         if (tenSize.isEmpty()) {
             JOptionPane.showMessageDialog(this, "Tên size không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -61,7 +61,6 @@ public class ThemSizeDialog extends JDialog {
             return false;
         }
 
-        // 2. Kiểm tra % Nguyên liệu thêm
         try {
             String nlStr = tfNLThem.getText().trim();
             if (nlStr.isEmpty()) {
@@ -83,7 +82,6 @@ public class ThemSizeDialog extends JDialog {
             return false;
         }
 
-        // 3. Kiểm tra % Giá thêm
         try {
             String giaStr = tfGiaThem.getText().trim();
             if (giaStr.isEmpty()) {

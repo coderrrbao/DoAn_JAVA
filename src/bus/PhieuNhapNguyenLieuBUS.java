@@ -53,7 +53,6 @@ public class PhieuNhapNguyenLieuBUS {
             conn.setAutoCommit(false);
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
 
-            // Lấy mã phiếu nhập khả dụng (tự tăng) từ DAO
             String maPN = phieuNhapNguyenLieuDAO.layMaPhieuNhapNLKhaDung(conn);
             phieuNhapNguyenLieu.setMaPN(maPN);
 
@@ -61,7 +60,6 @@ public class PhieuNhapNguyenLieuBUS {
                 throw new SQLException("Lỗi khi thêm Phiếu Nhập Nguyên Liệu");
             }
 
-            // Thêm danh sách Lô Nguyên Liệu đi kèm
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
                 loNguyenLieu.setMaPN(maPN);
                 loNguyenLieu.setTrangThaiXuLy("Đang xử lý");
@@ -96,8 +94,6 @@ public class PhieuNhapNguyenLieuBUS {
         return true;
     }
 
-    // --- CÁC PHƯƠNG THỨC MỚI BỔ SUNG ---
-
     public boolean capNhapPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -107,7 +103,7 @@ public class PhieuNhapNguyenLieuBUS {
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-                // Xác nhận từng lô nguyên liệu
+
                 if (!loNguyenLieuBUS.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }
@@ -146,7 +142,7 @@ public class PhieuNhapNguyenLieuBUS {
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-          
+
                 if (!loNguyenLieuBUS.xoaLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }
@@ -175,8 +171,6 @@ public class PhieuNhapNguyenLieuBUS {
         this.canUpdate = true;
         return true;
     }
-
-    // -----------------------------------
 
     public PhieuNhapNguyenLieu timPhieuNhapNguyenLieu(String ma) {
         if (canUpdate || listPhieuNhapNguyenLieu == null) {

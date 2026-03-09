@@ -9,7 +9,6 @@ import util.XuLyExcel;
 
 public class NhanVienBUS {
 
-    // 1. Áp dụng Singleton Pattern giống SanPhamBUS
     private static NhanVienBUS instance = null;
 
     public static NhanVienBUS getNhanVienBUS() {
@@ -188,16 +187,16 @@ public class NhanVienBUS {
     }
 
     public boolean nhapExcel(File file) {
-        // Nhờ Util bóc tách file thành List
+
         ArrayList<NhanVien> dsNhap = XuLyExcel.nhapFileNhanVien(file);
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
 
         int thanhCong = 0;
         for (NhanVien nv : dsNhap) {
-            // Nghiệp vụ: Nếu chưa tồn tại mã NV hoặc SĐT thì mới thêm
+
             if (timNhanVien(nv.getMaNV()) == null) {
-                if (themNhanVien(nv)==null)
+                if (themNhanVien(nv) == null)
                     thanhCong++;
             }
         }
@@ -205,9 +204,9 @@ public class NhanVienBUS {
     }
 
     public boolean xuatExcel(File file) {
-        // Tự lấy danh sách đang quản lý trong BUS
+
         ArrayList<NhanVien> list = layDanhSachNhanVien();
-        // Nhờ Util ghi file
+
         return XuLyExcel.xuatFileNhanVien(file, list);
     }
 }

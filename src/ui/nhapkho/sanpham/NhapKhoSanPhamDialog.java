@@ -329,21 +329,17 @@ public class NhapKhoSanPhamDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // Kiểm tra quyền lập phiếu nhập kho (NK_TAO)
         if (!listQuyen.contains("NK_TAO")) {
-            // Ẩn nút xác nhận nhập hàng (bước cuối cùng)
+
             if (btnNhapHang != null)
                 btnNhapHang.setVisible(false);
 
-            // Ẩn nút thêm sản phẩm vào danh sách chờ nhập
             if (themSpPNHBtn != null)
                 themSpPNHBtn.setVisible(false);
 
-            // Ẩn nút xóa sản phẩm khỏi danh sách chờ nhập
             if (xoaCTBtn != null)
                 xoaCTBtn.setVisible(false);
 
-            // Cập nhật tiêu đề để người dùng biết họ chỉ có thể xem dữ liệu
             this.setTitle("Xem thông tin nhập kho sản phẩm (Chế độ chỉ đọc)");
         }
     }
@@ -362,8 +358,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
                     if (sanPham.getTenSP().contains(search_Item.getTextSearch())
                             && sanPham.getLoaiNuoc().equals("Có sẵn")) {
                         modelKhoHang.addRow(
-                                new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),sanPham.getGiaBan(),
-                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP())});
+                                new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
+                                        sanPham.getGiaBan(),
+                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()) });
                     }
 
                 }
@@ -503,26 +500,23 @@ public class NhapKhoSanPhamDialog extends JDialog {
     }
 
     private boolean kiemTraDuLieu() {
-        // Kiểm tra nhà cung cấp
+
         if (cbNhaCungCap.getSelectedItem() == null
                 || cbNhaCungCap.getSelectedItem().toString().equals("Nhà cung cấp")) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp!");
             return false;
         }
 
-        // Kiểm tra nhân viên nhập
         if (txtNhanVien.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nhân viên nhập không được để trống!");
             return false;
         }
 
-        // Kiểm tra có sản phẩm trong danh sách nhập không
         if (modelChiTietPhieuNhap.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng thêm ít nhất một sản phẩm vào phiếu nhập!");
             return false;
         }
 
-        // Kiểm tra tổng tiền
         double tongTien = tinhTongTienNhap();
         if (tongTien <= 0) {
             JOptionPane.showMessageDialog(this, "Tổng tiền phải lớn hơn 0!");
@@ -550,7 +544,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
             LoSanPham loSanPham = new LoSanPham();
             loSanPham.setMaSP(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
             loSanPham.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
-            loSanPham.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i,3).toString()));
+            loSanPham.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
             loSanPham.setNgayNhap(sdf.format(new Date()));
             loSanPham.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
             loSanPham.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());

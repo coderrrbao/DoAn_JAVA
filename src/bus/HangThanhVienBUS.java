@@ -210,7 +210,7 @@ public class HangThanhVienBUS {
           continue;
 
         HangThanhVien htv = new HangThanhVien();
-        // Bỏ qua mã (cột 0), gán null để DAO tự tạo mã
+
         htv.setMaHang(null);
         htv.setTenHang(getCellValueAsString(row.getCell(1)));
         htv.setPhanTramGiam(
@@ -250,8 +250,7 @@ public class HangThanhVienBUS {
     int soLuongThatBai = 0;
 
     for (dto.HangThanhVien htv : danhSachImport) {
-      // Gọi hàm thêm đã có sẵn trong BUS.
-      // Hàm này cần bao gồm logic tự động sinh Mã Hạng mới.
+
       boolean ketQua = themHangThanhVien(htv);
 
       if (ketQua) {
@@ -261,7 +260,6 @@ public class HangThanhVienBUS {
       }
     }
 
-    // Đánh dấu cần cập nhật lại dữ liệu (nếu class của bạn dùng biến canUpdate)
     this.canUpdate = true;
 
     return "Nhập Excel hoàn tất!\n- Thành công: " + soLuongThanhCong + "\n- Thất bại: " + soLuongThatBai;

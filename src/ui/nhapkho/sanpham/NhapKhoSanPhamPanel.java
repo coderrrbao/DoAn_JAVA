@@ -92,12 +92,10 @@ public class NhapKhoSanPhamPanel extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm mới phiếu nhập (NK_TAO)
         if (!listQuyen.contains("NK_TAO")) {
             nhapHangBtn.setVisible(false);
         }
 
-        // 2. Quyền Xóa phiếu nhập (NK_XOA)
         if (!listQuyen.contains("NK_XOA")) {
             xoaBtn.setVisible(false);
         }
@@ -159,7 +157,7 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                // Đảm bảo đuôi file
+
                 if (!file.getName().endsWith(".xlsx")) {
                     file = new File(file.getAbsolutePath() + ".xlsx");
                 }
@@ -172,7 +170,6 @@ public class NhapKhoSanPhamPanel extends JPanel {
             }
         });
 
-        // --- SỰ KIỆN NÚT NHẬP ---
         NhapExcelBtn.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             fc.setDialogTitle("Chọn file Excel để nhập");
@@ -181,7 +178,7 @@ public class NhapKhoSanPhamPanel extends JPanel {
                 File file = fc.getSelectedFile();
 
                 if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().nhapExcel(file)) {
-                   loadDuLieu();
+                    loadDuLieu();
                     JOptionPane.showMessageDialog(this, "Nhập dữ liệu thành công!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Nhập thất bại! Kiểm tra file hoặc dữ liệu trùng.",

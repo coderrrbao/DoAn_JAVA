@@ -43,7 +43,7 @@ public class HangThanhVienDAO {
             pst.setString(2, htv.getTenHang());
             pst.setInt(3, htv.getPhanTramGiam());
             pst.setDouble(4, htv.getDieuKien());
-            pst.setInt(5, 1); // Set trạng thái = 1 khi thêm mới
+            pst.setInt(5, 1);
 
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -69,7 +69,7 @@ public class HangThanhVienDAO {
     }
 
     public boolean xoaHangThanhVien(String maHang, Connection conn) {
-        String sql = "UPDATE HangThanhVien SET TrangThai = 0 WHERE MaHang = ?"; // Xóa mềm
+        String sql = "UPDATE HangThanhVien SET TrangThai = 0 WHERE MaHang = ?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, maHang);
             return pst.executeUpdate() > 0;

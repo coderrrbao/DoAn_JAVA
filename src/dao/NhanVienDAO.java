@@ -7,7 +7,6 @@ import dto.NhanVien;
 
 public class NhanVienDAO {
 
-    // 1. Chỉ lấy những nhân viên đang hoạt động (TrangThai = 1)
     public ArrayList<NhanVien> layDanhSachNhanVien() {
         ArrayList<NhanVien> ds = new ArrayList<>();
         String sql = "SELECT * FROM NhanVien WHERE TrangThai = 1";
@@ -16,7 +15,7 @@ public class NhanVienDAO {
                 ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
-                // Đã bỏ rs.getString("ChucVu")
+
                 NhanVien nv = new NhanVien(
                         rs.getString("MaNV"),
                         rs.getString("TenNV"),
@@ -34,10 +33,9 @@ public class NhanVienDAO {
         return ds;
     }
 
-    // 2. Thêm mới luôn mặc định TrangThai = 1 trong SQL (Dành cho Transaction)
     public boolean insert(Connection conn, NhanVien nv) throws SQLException {
         String sql = """
-                INSERT INTO NhanVien 
+                INSERT INTO NhanVien
                 (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
                 VALUES (?, ?, ?, ?, ?, ?, ?, 1)
                 """;
@@ -73,7 +71,6 @@ public class NhanVienDAO {
         return false;
     }
 
-    // 3. Thêm nhân viên đơn lẻ
     public Boolean themNhanVien(NhanVien nv) {
         String sql = """
                 INSERT INTO NhanVien (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
@@ -125,7 +122,6 @@ public class NhanVienDAO {
         return null;
     }
 
-    // 4. XÓA MỀM: Cập nhật trạng thái về 0
     public boolean xoaNhanVien(String maNV) {
         String sql = "UPDATE NhanVien SET TrangThai = 0 WHERE MaNV = ?";
         try (Connection conn = DBConnection.getConnection();

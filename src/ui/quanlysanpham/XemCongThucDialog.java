@@ -52,17 +52,14 @@ public class XemCongThucDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         HashSet<String> listQuyen = PhienDangNhap.getListQuyen();
 
-        // Kiểm tra quyền THÊM công thức
         if (!listQuyen.contains("QLSP_TAO")) {
             btnThem.setVisible(false);
         }
 
-        // Kiểm tra quyền XÓA công thức
         if (!listQuyen.contains("QLSP_XOA")) {
             btnXoa.setVisible(false);
         }
 
-        // Kiểm tra quyền SỬA công thức
         if (!listQuyen.contains("QLSP_SUA")) {
             btnSua.setVisible(false);
         }
@@ -179,7 +176,7 @@ public class XemCongThucDialog extends JDialog {
             chiTietSanPhamDialog.getBtnSua().doClick();
             batThaoTacSua();
         });
-        btnHuy.addActionListener(e->{
+        btnHuy.addActionListener(e -> {
             setVisible(false);
         });
     }

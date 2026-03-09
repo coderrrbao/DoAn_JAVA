@@ -23,6 +23,7 @@ public class TaiKhoanBUS {
         }
         return instance;
     }
+
     private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
     private TaiKhoanDao dao = new TaiKhoanDao();
     private ArrayList<TaiKhoan> listTaiKhoan;
@@ -133,7 +134,7 @@ public class TaiKhoanBUS {
             }
         }
     }
-    //lay ma tk
+
     public String layMaTaiKhoanKhaDung() {
         String ma = "";
         try (Connection conn = DBConnection.getConnection()) {
@@ -143,7 +144,7 @@ public class TaiKhoanBUS {
         }
         return ma;
     }
-    //
+
     public boolean suaMatKhau(String tenDangNhap, String matKhauMoi) {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
                 matKhauMoi == null || matKhauMoi.trim().isEmpty()) {
@@ -179,7 +180,7 @@ public class TaiKhoanBUS {
             }
         }
     }
-    //sua tai khoan
+
     public boolean suaTaiKhoan(TaiKhoan tk) {
         if (tk == null || tk.getMaTK() == null) {
             return false;
@@ -246,12 +247,10 @@ public class TaiKhoanBUS {
         return false;
     }
 
-    //xuat exc
-    public boolean xuatExc(){
+    public boolean xuatExc() {
         return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
     }
 
-    //nhap excel
     public boolean nhapTaiKhoanExcel(File file) {
         ArrayList<TaiKhoan> list = XuLyExcel.nhapFileTaiKhoan(file);
         if (list == null || list.isEmpty()) {
@@ -272,7 +271,6 @@ public class TaiKhoanBUS {
                 String maMoi = String.format("TK%02d", so);
                 tk.setMaTK(maMoi);
 
-                // tìm nhóm quyền trong DB
                 if (tk.getNhomQuyen() == null) {
                     throw new Exception("Thiếu nhóm quyền: " + tk.getTenDangNhap());
                 }
@@ -292,7 +290,8 @@ public class TaiKhoanBUS {
             return true;
         } catch (Exception e) {
             try {
-                if (conn != null) conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }

@@ -8,12 +8,11 @@ import dao.PhanQuyenDAO;
 import dto.PhanQuyen;
 
 public class PhanQuyenBUS {
-    private static PhanQuyenBUS phanQuyenBUS; // Biến static để lưu instance duy nhất
+    private static PhanQuyenBUS phanQuyenBUS;
     private PhanQuyenDAO pqDAO = new PhanQuyenDAO();
     private ArrayList<PhanQuyen> listPhanQuyen;
-    private boolean canUpdate = true; // Biến kiểm soát việc làm mới dữ liệu
+    private boolean canUpdate = true;
 
-    // Hàm Singleton để lấy instance duy nhất
     public static PhanQuyenBUS getPhanQuyenBUS() {
         if (phanQuyenBUS == null) {
             phanQuyenBUS = new PhanQuyenBUS();
@@ -25,7 +24,6 @@ public class PhanQuyenBUS {
         khoiTao();
     }
 
-    // Hàm nạp dữ liệu từ DAO vào List
     public void khoiTao() {
         listPhanQuyen = pqDAO.layListPhanQuyen();
     }

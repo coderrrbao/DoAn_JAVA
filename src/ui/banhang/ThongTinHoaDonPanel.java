@@ -65,15 +65,14 @@ public class ThongTinHoaDonPanel extends JPanel {
         table = (JTable) scrollPane.getViewport().getView();
 
         table.setAutoCreateColumnsFromModel(false);
-        table.getColumnModel().getColumn(0).setPreferredWidth(200); // Cột Tên rộng nhất
-        table.getColumnModel().getColumn(1).setPreferredWidth(80); // Giá
-        table.getColumnModel().getColumn(2).setPreferredWidth(50); // Số lượng
+        table.getColumnModel().getColumn(0).setPreferredWidth(200);
+        table.getColumnModel().getColumn(1).setPreferredWidth(80);
+        table.getColumnModel().getColumn(2).setPreferredWidth(50);
         table.getColumnModel().getColumn(3).setPreferredWidth(120);
-        
+
         DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
         leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
         table.getColumnModel().getColumn(0).setCellRenderer(leftRenderer);
-
 
         table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg", 15, 15));
         table.getColumnModel().getColumn(4).setCellEditor(nutTru);

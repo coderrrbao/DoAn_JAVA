@@ -56,41 +56,32 @@ public class Xulypdf {
             System.out.println("Lưu ý: Chưa set được tên nhân viên.");
         }
 
-        // 2. Tạo Hóa Đơn trước để lấy mã
         long millis = System.currentTimeMillis();
         java.sql.Date ngayBan = new java.sql.Date(millis);
-        // Khởi tạo tổng tiền bằng 0, sẽ cộng dồn trong vòng lặp
+
         double tongTienHienTai = 0;
 
         HoaDon hd = new HoaDon("HD001", nv, "KH001", null, ngayBan, 0, 0, true);
 
-        // 3. Vòng lặp tạo 20 Sản phẩm và 20 Chi tiết hóa đơn
         for (int i = 1; i <= 2; i++) {
-            // Tạo mã và tên sp động: SP01, SP02...
+
             String maSP = String.format("SP%02d", i);
             String tenSP = "Sản phẩm thử nghiệm " + i;
-            long giaBan = 10000 + (i * 2000); // Giá tăng dần để test format tiền
-            int soLuongMua = (i % 3) + 1; // Số lượng ngẫu nhiên từ 1 đến 3
+            long giaBan = 10000 + (i * 2000);
+            int soLuongMua = (i % 3) + 1;
 
-            // Khởi tạo Sản phẩm
             SanPham sp = new SanPham(maSP, tenSP, null, giaBan, 0, "Ly", "img.png", 500, 10,
                     "Đã xử lý");
 
-            // Tạo Chi tiết hóa đơn cho sản phẩm này
-            // Constructor: maCT, maHD, sanPham, size, soLuong, gia, trangThai
             ChiTietHoaDon ct = new ChiTietHoaDon("CT" + i, hd.getMaHD(), sp, null, soLuongMua, giaBan, true);
 
-            // Add vào hóa đơn
             hd.themChiTietHoaDon(ct);
 
-            // Cộng dồn vào tổng tiền
             tongTienHienTai += (giaBan * soLuongMua);
         }
 
-        // Cập nhật lại tổng tiền cuối cùng cho hóa đơn
         hd.setTongTien(tongTienHienTai);
 
-        // 4. Gọi hàm xuất PDF
         System.out.println("Tổng tiền hóa đơn: " + tongTienHienTai);
         System.out.println("Bắt đầu xuất file PDF...");
         Xulypdf xuly = new Xulypdf();

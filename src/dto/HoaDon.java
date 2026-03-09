@@ -6,10 +6,10 @@ import java.util.ArrayList;
 public class HoaDon {
 
     private String maHD;
-    // private String maNV;
+
     private NhanVien nhanVien;
     private String maKH;
-    // private String maKM;
+
     private KhuyenMai maGiamGia = null;
     private Date ngayBan;
     private double tongTien;

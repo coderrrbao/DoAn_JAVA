@@ -42,7 +42,7 @@ public class ThongKeNhapHangPanel extends JPanel {
 
     public ThongKeNhapHangPanel() {
         setLayout(new BorderLayout());
-        TaoUI.suaBorderChoPanel(this, 0, 10,0, 10);
+        TaoUI.suaBorderChoPanel(this, 0, 10, 0, 10);
         setBackground(Color.white);
         initGUI();
         loadDuLieu();
@@ -122,13 +122,12 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập sản phẩm");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground(new Color(153, 235, 235));
+        top.setBackground(new Color(255, 250, 230));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelSP = new DefaultTableModel(columns, 0);
         JScrollPane table = TaoUI.taoTableScroll(modelSP);
 
-        // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
         bottom.setBackground(Color.white);
         soLoSP = new JLabel("Số lượng: 10 lô");
@@ -170,13 +169,12 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập nguyên liệu");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground(new Color(153, 235, 235));
+        top.setBackground(new Color(230, 252, 252));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelNL = new DefaultTableModel(columns, 0);
         JScrollPane table = TaoUI.taoTableScroll(modelNL);
 
-        // --- Cập nhật Bottom ---
         JPanel bottom = TaoUI.taoPanelBoxLayoutNgang(880, 40);
         bottom.setBackground(Color.white);
         soLoNL = new JLabel("Số lượng: 10 lô");

@@ -72,7 +72,6 @@ public class TaiKhoanUI extends JPanel {
         });
         TaoUI.setFixSize(btnSuaThongTin, 120, 32);
 
-        // Thêm các thành phần vào thanh công cụ phía trên
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -91,7 +90,6 @@ public class TaiKhoanUI extends JPanel {
 
         add(top, BorderLayout.NORTH);
 
-        // Khởi tạo Model cho Table
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -100,7 +98,7 @@ public class TaiKhoanUI extends JPanel {
         };
         model.addColumn("Mã nhân viên");
         model.addColumn("Tên đăng nhập");
-        model.addColumn("Nhóm quyền"); // Đã thêm lại cột này
+        model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");
 
         tableUI = new JTable(model);
@@ -110,7 +108,6 @@ public class TaiKhoanUI extends JPanel {
         tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // Định dạng độ rộng các cột
         tableUI.getColumnModel().getColumn(0).setPreferredWidth(150);
         tableUI.getColumnModel().getColumn(1).setPreferredWidth(120);
         tableUI.getColumnModel().getColumn(2).setPreferredWidth(150);
@@ -194,7 +191,7 @@ public class TaiKhoanUI extends JPanel {
                 model.addRow(new Object[] {
                         tk.getMaNV(),
                         tk.getTenDangNhap(),
-                        tk.getNhomQuyen().getTenNhomQuyen(), // Thêm lại dữ liệu Nhóm quyền
+                        tk.getNhomQuyen().getTenNhomQuyen(),
                         tk.getTrangThaiXuLy()
                 });
             }
@@ -229,7 +226,6 @@ public class TaiKhoanUI extends JPanel {
         }
     }
 
-    // Các Getter
     public JButton getBtnTao() {
         return btnTao;
     }

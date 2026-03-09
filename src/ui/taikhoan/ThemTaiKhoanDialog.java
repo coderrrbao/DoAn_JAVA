@@ -58,16 +58,12 @@ public class ThemTaiKhoanDialog extends JDialog {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
         if (!listQuyen.contains("TK_TAO")) {
-            // Khóa các trường nhập liệu
+
             txtUser.setEditable(false);
             txtPass.setEditable(false);
             cbQuyen.setEnabled(false);
             cbNVBox.setEnabled(false);
 
-            // Ẩn nút thực thi
-            // Lưu ý: Cần chuyển btnThem thành biến thành viên (private) nếu muốn truy cập ở
-            // đây
-            // Hoặc tìm cách lấy reference của nó.
             this.setTitle("Thông báo: Bạn không có quyền thêm tài khoản");
         }
         this.revalidate();
@@ -75,14 +71,13 @@ public class ThemTaiKhoanDialog extends JDialog {
     }
 
     private void initUI() {
-        // PANEL CHÍNH
+
         JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 180);
         TaoUI.suaBorderChoPanel(mainPanel, 15, 15, 15, 15);
 
-        // USER
         txtUser = new JTextField();
         JPanel userField = TaoUI.taoFieldText("Username", 100, 220, 30, 10, txtUser);
-        // conbobox nhan vien
+
         JPanel cbNVJPanel = new JPanel();
         cbNVJPanel.setLayout(new BoxLayout(cbNVJPanel, BoxLayout.X_AXIS));
         TaoUI.setFixSize(cbNVJPanel, 330, 30);
@@ -100,24 +95,22 @@ public class ThemTaiKhoanDialog extends JDialog {
         }
         cbNVJPanel.add(cbNVJLabel);
         cbNVJPanel.add(cbNVBox);
-        // PASSWORD
+
         txtPass = new JPasswordField();
         JPanel passField = TaoUI.taoFieldText("Password", 100, 220, 30, 10, txtPass);
 
-        // BUTTON PANEL
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
 
         btnThem = new JButton("Thêm");
         btnHuy = new JButton("Hủy");
-        btnSua = new JButton("Sửa");//
-        btnLuu = new JButton("Lưu");//
+        btnSua = new JButton("Sửa");
+        btnLuu = new JButton("Lưu");
 
         TaoUI.addItem(buttonPanel, btnThem, 5, true);
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
         TaoUI.addItem(buttonPanel, btnSua, 5, true);
         TaoUI.addItem(buttonPanel, btnLuu, 5, true);
 
-        // COMBOBOX quyen
         JPanel cbJPanel = new JPanel();
 
         cbJPanel.setLayout(new BoxLayout(cbJPanel, BoxLayout.X_AXIS));
@@ -137,7 +130,6 @@ public class ThemTaiKhoanDialog extends JDialog {
         cbJPanel.add(cbJLabel);
         cbJPanel.add(cbQuyen);
 
-        // COMBOBOX trạng thái
         cbTrangThaiPanel = new JPanel();
         cbTrangThaiPanel.setLayout(new BoxLayout(cbTrangThaiPanel, BoxLayout.X_AXIS));
         TaoUI.setFixSize(cbTrangThaiPanel, 330, 30);
@@ -153,7 +145,6 @@ public class ThemTaiKhoanDialog extends JDialog {
         cbTrangThaiPanel.add(lbTrangThai);
         cbTrangThaiPanel.add(cbTrangThai);
 
-        // ADD COMPONENT
         mainPanel.add(cbNVJPanel);
         mainPanel.add(javax.swing.Box.createVerticalStrut(10));
         mainPanel.add(userField);
@@ -167,18 +158,16 @@ public class ThemTaiKhoanDialog extends JDialog {
         mainPanel.add(buttonPanel);
         add(mainPanel, BorderLayout.CENTER);
 
-        // ===== EVENT =====
         btnHuy.addActionListener(e -> dispose());
     }
 
     private void ganDuLieu() {
-        if (taiKhoan != null) { // CHẾ ĐỘ SỬA
+        if (taiKhoan != null) {
             setTitle("Chi tiết tài khoản");
 
             txtUser.setText(taiKhoan.getTenDangNhap());
             txtPass.setText(taiKhoan.getMatKhau());
 
-            // set nhân viên
             for (int i = 0; i < dsNhanVien.size(); i++) {
                 if (dsNhanVien.get(i).getMaNV().equals(taiKhoan.getMaNV())) {
                     cbNVBox.setSelectedIndex(i);
@@ -186,7 +175,6 @@ public class ThemTaiKhoanDialog extends JDialog {
                 }
             }
 
-            // set quyền
             for (int i = 0; i < dsNhomQuyen.size(); i++) {
                 if (dsNhomQuyen.get(i).getMaNQ()
                         .equals(taiKhoan.getNhomQuyen().getMaNQ())) {
@@ -195,7 +183,6 @@ public class ThemTaiKhoanDialog extends JDialog {
                 }
             }
 
-            // set trạng thái xử lý
             if ("Đang hoạt động".equals(taiKhoan.getTrangThaiXuLy())) {
                 cbTrangThai.setSelectedIndex(0);
             } else {
@@ -274,25 +261,24 @@ public class ThemTaiKhoanDialog extends JDialog {
 
     private TaiKhoan dongGoiTaiKhoan() {
         TaiKhoan tk = new TaiKhoan();
-        // set tk mk
+
         tk.setTenDangNhap(txtUser.getText());
         tk.setMatKhau(new String(txtPass.getPassword()));
 
         int indexNV = cbNVBox.getSelectedIndex();
         int indexNQ = cbQuyen.getSelectedIndex();
 
-        // set manv
         tk.setMaNV(dsNhanVien.get(indexNV).getMaNV());
-        // set nhom quyen
+
         NhomQuyen nq = new NhomQuyen();
         nq.setMaNQ(dsNhomQuyen.get(indexNQ).getMaNQ());
         tk.setNhomQuyen(nq);
 
         if (taiKhoan == null) {
-            // chế độ thêm
+
             tk.setTrangThaiXuLy("Đang hoạt động");
         } else {
-            // chế độ sửa
+
             tk.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
         }
         return tk;

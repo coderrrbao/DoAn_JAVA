@@ -92,7 +92,7 @@ public class KhachHangUI extends JPanel {
         model.addColumn("");
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(6); // cột icon, không căn giữa hết
+        set.add(6);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
         tableUI.setAutoCreateColumnsFromModel(false);
@@ -127,17 +127,14 @@ public class KhachHangUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm khách hàng (KH_TAO)
         if (!listQuyen.contains("KH_TAO")) {
             btnTao.setVisible(false);
         }
 
-        // 2. Quyền Xóa khách hàng (KH_XOA)
         if (!listQuyen.contains("KH_XOA")) {
             btnXoa.setVisible(false);
         }
 
-        // 3. Quyền Sửa khách hàng (KH_SUA)
         if (!listQuyen.contains("KH_SUA")) {
             btnSua.setVisible(false);
         }

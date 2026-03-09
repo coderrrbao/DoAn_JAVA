@@ -227,7 +227,6 @@ public class NhomQuyenBUS {
         this.canUpdate = canUpdate;
     }
 
-    // xuat exc nhom quyen
     public boolean XuatExc() {
         PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
         return XuLyExcel.xuatFileNhomQuyen(layDanhSachNhomQuyen(), phanQuyenBUS.layDanhSachPhanQuyen());
@@ -239,7 +238,6 @@ public class NhomQuyenBUS {
             return false;
         }
 
-        // 1. Đọc dữ liệu từ file Excel thông qua lớp xử lý Excel
         Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
         if (data == null || data.length < 2) {
             JOptionPane.showMessageDialog(null, "Dữ liệu file Excel không đúng định dạng!");
@@ -285,7 +283,6 @@ public class NhomQuyenBUS {
                 }
             }
 
-            // 5. Thông báo kết quả
             this.canUpdate = true;
         }
         return true;

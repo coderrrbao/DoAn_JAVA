@@ -31,6 +31,6 @@ public class DanhMuc {
 
     @Override
     public String toString() {
-        return tenDM; // <<< QUAN TRỌNG
+        return tenDM;
     }
 }

@@ -101,8 +101,8 @@ public class TaoUI {
             button = new JButton("?");
         }
         button.setPreferredSize(new Dimension(size, size));
-        button.setFocusPainted(false); // Xóa viền xanh khi click
-        button.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Hiện bàn tay khi di chuột vào
+        button.setFocusPainted(false);
+        button.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         return button;
     }
@@ -143,22 +143,17 @@ public class TaoUI {
         int width = icon.getIconWidth();
         int height = icon.getIconHeight();
 
-        // Đảm bảo ảnh là hình vuông để bo tròn hoàn hảo
         int size = Math.min(width, height);
 
         BufferedImage bi = new BufferedImage(size, size, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2 = bi.createGraphics();
 
-        // Bật chế độ khử răng cưa siêu mịn
         g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2.setRenderingHint(RenderingHints.KEY_INTERPOLATION, RenderingHints.VALUE_INTERPOLATION_BILINEAR);
 
-        // 1. Vẽ một hình tròn thuần túy làm mặt nạ (mask)
         g2.setColor(Color.WHITE);
         g2.fill(new Ellipse2D.Double(0, 0, size, size));
 
-        // 2. Sử dụng AlphaComposite để "giao" ảnh với hình tròn vừa vẽ
-        // Chỉ những phần ảnh nằm trong hình tròn mới được giữ lại
         g2.setComposite(AlphaComposite.SrcIn);
         g2.drawImage(icon.getImage(), 0, 0, size, size, null);
 
@@ -204,11 +199,11 @@ public class TaoUI {
 
     public static void setFixSize(JComponent c, int width, int height) {
         Dimension d = new Dimension(width, height);
-        // Đặt kích thước ưu tiên (Dùng cho FlowLayout, BorderLayout,...)
+
         c.setPreferredSize(d);
-        // Đặt kích thước tối đa (Dùng cho BoxLayout)
+
         c.setMaximumSize(d);
-        // Đặt kích thước tối thiểu
+
         c.setMinimumSize(d);
     }
 
@@ -277,23 +272,19 @@ public class TaoUI {
     public static void addItem(JPanel container, Component component, int gap, boolean isHorizontal) {
         GridBagConstraints gbc = new GridBagConstraints();
 
-        // Căn giữa thành phần
         gbc.anchor = GridBagConstraints.CENTER;
 
-        // Thiết lập vị trí:
-        // Nếu là hàng ngang (Horizontal): x sẽ tự tăng, y giữ nguyên 0
-        // Nếu là hàng dọc (Vertical): y sẽ tự tăng, x giữ nguyên 0
         int count = container.getComponentCount();
         if (isHorizontal) {
             gbc.gridx = count;
             gbc.gridy = 0;
-            // Thêm khoảng cách bên trái từ item thứ 2 trở đi
+
             if (count > 0)
                 gbc.insets = new Insets(0, gap, 0, 0);
         } else {
             gbc.gridx = 0;
             gbc.gridy = count;
-            // Thêm khoảng cách bên trên từ item thứ 2 trở đi
+
             if (count > 0)
                 gbc.insets = new Insets(gap, 0, 0, 0);
         }
@@ -392,7 +383,7 @@ public class TaoUI {
         scrollPane.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
             @Override
             protected Dimension getMinimumThumbSize() {
-                return new Dimension(5, 30); // chiều rộng 3, chiều cao tối thiểu 30
+                return new Dimension(5, 30);
             }
 
             @Override
@@ -441,31 +432,26 @@ public class TaoUI {
         plot.getRangeAxis().setLabelFont(fontTruc);
         plot.getRangeAxis().setTickLabelFont(fontTick);
 
-        // ===== NỀN + GRID (NHẸ MẮT) =====
         plot.setBackgroundPaint(Color.WHITE);
         plot.setRangeGridlinePaint(new Color(220, 220, 220));
         plot.setDomainGridlinePaint(new Color(220, 220, 220));
 
-        // ===== CỘT (GỌN + ĐẸP) =====
         BarRenderer renderer = (BarRenderer) plot.getRenderer();
-        renderer.setMaximumBarWidth(0.12); // mỏng hơn
-        renderer.setItemMargin(0.15); // khoảng cách giữa các cột
+        renderer.setMaximumBarWidth(0.12);
+        renderer.setItemMargin(0.15);
         renderer.setDrawBarOutline(false);
 
-        // ===== KHOẢNG CÁCH TRỤC X =====
         plot.getDomainAxis().setCategoryMargin(0.25);
 
-        // ===== CHỐNG RĂNG CƯA =====
         chart.setAntiAlias(true);
         chart.setTextAntiAlias(true);
 
-        // QUAN TRỌNG: Cấu hình ChartPanel để không bị bể
         ChartPanel chartPanel = new ChartPanel(
                 chart,
-                800, 400, // Kích thước chuẩn (Preferred size)
-                10, 10, // Kích thước tối thiểu (Minimum size)
-                3000, 3000, // Kích thước tối đa (Maximum size) - Đặt lớn để không bị giới hạn khi scale
-                false, // useBuffer = false (Tắt bộ nhớ đệm để vẽ trực tiếp bằng vector -> KHÔNG BỊ BỂ)
+                800, 400,
+                10, 10,
+                3000, 3000,
+                false,
                 true, true, true, true, true);
 
         chartPanel.setMouseWheelEnabled(false);
@@ -476,58 +462,49 @@ public class TaoUI {
         JFreeChart chart = ChartFactory.createPieChart(
                 tenBieuDo,
                 dataset,
-                true, // legend phải là true
+                true,
                 true,
                 false);
 
-        // ===== FONT =====
         Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
         Font fontChu = new Font("Segoe UI", Font.PLAIN, 14);
         Font fontLegend = new Font("Segoe UI", Font.PLAIN, 13);
 
         chart.getTitle().setFont(fontTieuDe);
 
-        // ===== CHỈNH LEGEND SANG BÊN PHẢI =====
         if (chart.getLegend() != null) {
             LegendTitle legend = chart.getLegend();
             legend.setItemFont(fontLegend);
-            legend.setPosition(org.jfree.ui.RectangleEdge.RIGHT); // Chuyển sang bên phải
-            legend.setBorder(0, 0, 0, 0); // Xóa viền của legend cho sạch
+            legend.setPosition(org.jfree.ui.RectangleEdge.RIGHT);
+            legend.setBorder(0, 0, 0, 0);
         }
 
         PiePlot plot = (PiePlot) chart.getPlot();
 
-        // ===== NỀN =====
         plot.setBackgroundPaint(Color.WHITE);
         plot.setOutlineVisible(false);
         plot.setShadowPaint(null);
 
-        // ===== LABEL TRONG BIỂU ĐỒ =====
         plot.setLabelFont(fontChu);
         plot.setLabelPaint(Color.DARK_GRAY);
         plot.setLabelBackgroundPaint(Color.WHITE);
         plot.setLabelOutlinePaint(null);
         plot.setLabelShadowPaint(null);
 
-        // Hiển thị: Tên + %
         plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
                 "{0}: {2}",
                 new DecimalFormat("0"),
                 new DecimalFormat("0.0%")));
 
-        // ===== KHOẢNG CÁCH & ĐỘ TRÒN =====
         plot.setInteriorGap(0.15);
         plot.setCircular(true);
 
-        // ===== CHỐNG RĂNG CƯA =====
         chart.setAntiAlias(true);
         chart.setTextAntiAlias(true);
 
-        // ===== Cấu hình ChartPanel (Dùng kích thước rộng hơn một chút vì có legend bên
-        // phải) =====
         ChartPanel chartPanel = new ChartPanel(
                 chart,
-                650, 350, // Tăng Width từ 500 lên 650 để không bị chèn ép hình tròn
+                650, 350,
                 10, 10,
                 3000, 3000,
                 false,
@@ -538,65 +515,59 @@ public class TaoUI {
     }
 
     public static JScrollPane taoTableScroll(DefaultTableModel model) {
-        // 1. Khởi tạo JTable
+
         JTable table = new JTable(model) {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return false; // Trả về false để tất cả các ô đều không thể chỉnh sửa
+                return false;
             }
         };
 
-        // 2. Cấu hình giao diện bảng (Sử dụng Segoe UI cho hiện đại)
         table.setRowHeight(35);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setShowGrid(true);
         table.setGridColor(new Color(230, 230, 230));
-        table.setFillsViewportHeight(true); // Luôn lấp đầy vùng nhìn thấy
+        table.setFillsViewportHeight(true);
 
-        // 3. Tùy chỉnh Tiêu đề cột (Header)
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 38));
-        table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
+        table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setBackground(new Color(230, 240, 250));
         table.getTableHeader().setOpaque(false);
         table.getTableHeader().setResizingAllowed(false);
-        // 4. Căn giữa dữ liệu cho tất cả các cột
+
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < table.getColumnCount(); i++) {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // 5. Bọc bảng vào JScrollPane bằng hàm taoScrollPane CÓ SẴN trong package util
         JScrollPane scrollPane = TaoUI.taoScrollPane(table);
 
-        // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
         table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
     }
 
     public static JScrollPane taoTableScroll(DefaultTableModel model, HashSet<Integer> set) {
-        // 1. Khởi tạo JTable
+
         JTable table = new JTable(model);
 
-        // 2. Cấu hình giao diện bảng (Sử dụng Segoe UI cho hiện đại)
         table.setRowHeight(30);
         table.setFont(new Font("Segoe UI", Font.PLAIN, 14));
         table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         table.setShowGrid(true);
         table.setGridColor(new Color(230, 230, 230));
-        table.setFillsViewportHeight(true); // Luôn lấp đầy vùng nhìn thấy
+        table.setFillsViewportHeight(true);
         table.getTableHeader().setBackground(new Color(230, 240, 250));
         table.getTableHeader().setOpaque(false);
-        // 3. Tùy chỉnh Tiêu đề cột (Header)
+
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
-        table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
+        table.getTableHeader().setReorderingAllowed(false);
         table.getTableHeader().setResizingAllowed(false);
 
-        // 4. Căn giữa dữ liệu cho tất cả các cộtaa
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
         for (int i = 0; i < table.getColumnCount(); i++) {
@@ -606,10 +577,8 @@ public class TaoUI {
             table.getColumnModel().getColumn(i).setCellRenderer(centerRenderer);
         }
 
-        // 5. Bọc bảng vào JScrollPane bằng hàm taoScrollPane CÓ SẴN trong package util
         JScrollPane scrollPane = TaoUI.taoScrollPane(table);
 
-        // 6. Thiết lập kích thước cố định bằng hàm setFixSize CÓ SẴN
         scrollPane.setPreferredSize(new Dimension(800, 400));
         table.setSelectionBackground(UIManager.getColor("Table.selectionBackground"));
         return scrollPane;
@@ -617,7 +586,7 @@ public class TaoUI {
 
     public static ChartPanel taoBieuDoMien(String tenBieuDo, String tenTrucDoc, String tenTrucNgang,
             DefaultCategoryDataset dataset) {
-        // 1. Tạo biểu đồ miền (Area Chart)
+
         JFreeChart chart = ChartFactory.createAreaChart(
                 tenBieuDo,
                 tenTrucNgang,
@@ -626,7 +595,6 @@ public class TaoUI {
                 PlotOrientation.VERTICAL,
                 true, true, false);
 
-        // ===== ĐỊNH DẠNG FONT =====
         Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
         Font fontTruc = new Font("Segoe UI", Font.PLAIN, 14);
         Font fontTick = new Font("Segoe UI", Font.PLAIN, 13);
@@ -636,40 +604,34 @@ public class TaoUI {
             chart.getLegend().setItemFont(fontTick);
         }
 
-        // ===== TÙY CHỈNH PLOT =====
         CategoryPlot plot = chart.getCategoryPlot();
         plot.getDomainAxis().setLabelFont(fontTruc);
         plot.getDomainAxis().setTickLabelFont(fontTick);
         plot.getRangeAxis().setLabelFont(fontTruc);
         plot.getRangeAxis().setTickLabelFont(fontTick);
 
-        // Loại bỏ khoảng trống ở 2 đầu trục X để miền bám sát lề
         plot.getDomainAxis().setLowerMargin(0.0);
         plot.getDomainAxis().setUpperMargin(0.0);
 
-        // ===== NỀN + GRID =====
         plot.setBackgroundPaint(Color.WHITE);
         plot.setRangeGridlinePaint(new Color(220, 220, 220));
         plot.setDomainGridlinePaint(new Color(220, 220, 220));
         plot.setOutlineVisible(false);
 
-        // ===== TÙY CHỈNH MIỀN (RENDERER) =====
         AreaRenderer renderer = (AreaRenderer) plot.getRenderer();
-        // Màu sắc: Xanh lá nhẹ nhàng với độ trong suốt (Alpha = 150)
+
         Color colorArea = new Color(76, 175, 80, 150);
         renderer.setSeriesPaint(0, colorArea);
 
-        // Chống răng cưa (Vector graphics)
         chart.setAntiAlias(true);
         chart.setTextAntiAlias(true);
 
-        // ===== TẠO CHART PANEL (QUAN TRỌNG ĐỂ KHÔNG BỊ BỂ) =====
         ChartPanel chartPanel = new ChartPanel(
                 chart,
-                800, 400, // Kích thước chuẩn
-                10, 10, // Kích thước tối thiểu
-                3000, 3000, // Kích thước tối đa (cho phép scale rộng không bị vỡ)
-                false, // useBuffer = false (Vẽ trực tiếp để nét căng, không bị mờ)
+                800, 400,
+                10, 10,
+                3000, 3000,
+                false,
                 true, true, true, true, true);
 
         chartPanel.setMouseWheelEnabled(false);
@@ -686,7 +648,7 @@ public class TaoUI {
         comp.setBackground(Color.WHITE);
         if (comp instanceof javax.swing.text.JTextComponent) {
             JTextComponent textComp = (javax.swing.text.JTextComponent) comp;
-            textComp.setDisabledTextColor(Color.BLACK); // Giữ chữ màu đen thay vì xám mờ
+            textComp.setDisabledTextColor(Color.BLACK);
         }
     }
 }

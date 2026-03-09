@@ -308,32 +308,30 @@ public class SanPhamBUS {
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
-            conn.setAutoCommit(false); 
+            conn.setAutoCommit(false);
 
-         
             SizeDAO sizeDao = new SizeDAO();
             CongThucDAO congThucDao = new CongThucDAO();
             ChiTietCongThucDAO ctctDao = new ChiTietCongThucDAO();
-            DanhMucDao danhMucDao = new DanhMucDao(); 
+            DanhMucDao danhMucDao = new DanhMucDao();
 
             int count = 0;
 
             for (SanPham sp : dsNhap) {
-      
+
                 if (sp.getDanhMuc() != null && sp.getDanhMuc().getTenDM() != null) {
                     DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
                     if (dmFull != null) {
-                        sp.setDanhMuc(dmFull); 
+                        sp.setDanhMuc(dmFull);
                     } else {
-                
+
                         throw new SQLException("Lỗi: Danh mục '" + sp.getDanhMuc().getTenDM()
                                 + "' không tồn tại trong hệ thống. Vui lòng thêm danh mục này trước khi import!");
                     }
                 } else {
                     throw new SQLException("Lỗi: Sản phẩm '" + sp.getMaSP() + "' thiếu thông tin Danh Mục!");
                 }
-        
-           
+
                 if (!sanPhamDAO.themSanPham(sp, conn)) {
                     throw new SQLException("Lỗi thêm Sản phẩm: " + sp.getMaSP());
                 }
@@ -346,7 +344,6 @@ public class SanPhamBUS {
                     }
                 }
 
-             
                 if (sp.getCongThuc() != null) {
                     CongThuc ct = sp.getCongThuc();
                     if (!congThucDao.themCongThuc(ct, conn)) {
@@ -364,7 +361,6 @@ public class SanPhamBUS {
                 count++;
             }
 
-         
             conn.commit();
             this.canUpdate = true;
             return count > 0;
@@ -373,7 +369,7 @@ public class SanPhamBUS {
             e.printStackTrace();
             try {
                 if (conn != null)
-                    conn.rollback(); 
+                    conn.rollback();
             } catch (SQLException ex) {
                 ex.printStackTrace();
             }
@@ -390,7 +386,6 @@ public class SanPhamBUS {
         }
     }
 
-    // ================= XUẤT EXCEL =================
     public boolean xuatExcel(File file) {
         return XuLyExcel.xuatFileSanPham(file, this.layListSanPham());
     }

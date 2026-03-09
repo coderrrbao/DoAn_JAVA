@@ -51,14 +51,12 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
         left.add(scrollKho, BorderLayout.CENTER);
 
-        // ==================== BÊN PHẢI: FORM VÀ DANH SÁCH CHỜ ====================
         JPanel right = new JPanel(new BorderLayout(0, 10));
 
         JPanel form = new JPanel();
         form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
         form.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 10));
 
-        // Đã xóa txtMaNV
         txtMaNL = new JTextField();
         txtMaNL.setEditable(false);
         txtTenNL = new JTextField();
@@ -79,7 +77,7 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         pnBtnThem.setLayout(new BoxLayout(pnBtnThem, BoxLayout.X_AXIS));
         pnBtnThem.add(btnThem);
         TaoUI.setFixSize(btnThem, 475, 32);
-        
+
         form.add(pnBtnThem);
 
         modelChoXuat = new DefaultTableModel(new String[] { "Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập" }, 0) {
@@ -129,8 +127,10 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
         if (!listQuyen.contains("XK_TAO")) {
-            if (btnThem != null) btnThem.setVisible(false);
-            if (btnXacNhan != null) btnXacNhan.setVisible(false);
+            if (btnThem != null)
+                btnThem.setVisible(false);
+            if (btnXacNhan != null)
+                btnXacNhan.setVisible(false);
 
             txtSoLuong.setEditable(false);
             txtLyDo.setEditable(false);
@@ -143,15 +143,15 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
     private void loadDataKhoNL() {
         modelKho.setRowCount(0);
-        String keyword = search_Item != null && search_Item.getTextSearch() != null 
-            ? search_Item.getTextSearch().toString().toLowerCase() 
-            : "";
+        String keyword = search_Item != null && search_Item.getTextSearch() != null
+                ? search_Item.getTextSearch().toString().toLowerCase()
+                : "";
 
         ArrayList<LoNguyenLieu> listLo = LoNguyenLieuBUS.getLoNguyenLieuBUS().layListLoNguyenLieu();
         for (LoNguyenLieu lo : listLo) {
             if (lo.getSoLuong() > 0 && lo.getMaLoNL().toLowerCase().contains(keyword)) {
                 modelKho.addRow(new Object[] {
-                    lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+                        lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
                 });
             }
         }
@@ -191,7 +191,6 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
                     return;
                 }
 
-                // Kiểm tra cộng dồn nếu mã lô đã có trong bảng chờ xuất
                 boolean daTonTai = false;
                 for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
                     if (modelChoXuat.getValueAt(i, 3).toString().equals(maLo)) {
@@ -208,11 +207,11 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
                 if (!daTonTai) {
                     modelChoXuat.addRow(new Object[] {
-                        txtMaNL.getText(),
-                        txtTenNL.getText(),
-                        sl,
-                        maLo,
-                        modelKho.getValueAt(r, 4)
+                            txtMaNL.getText(),
+                            txtTenNL.getText(),
+                            sl,
+                            maLo,
+                            modelKho.getValueAt(r, 4)
                     });
                 }
                 txtSoLuong.setText("");
@@ -230,12 +229,13 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
             double tongTien = 0;
             Object[][] data = new Object[modelChoXuat.getRowCount()][5];
             for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-                for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+                for (int j = 0; j < 5; j++)
+                    data[i][j] = modelChoXuat.getValueAt(i, j);
                 tongTien += Double.parseDouble(data[i][2].toString()) * Double.parseDouble(data[i][4].toString());
             }
 
             PhieuHuyNguyenLieu ph = new PhieuHuyNguyenLieu();
-            // Lấy mã NV từ Session
+
             String maNV = PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "";
             ph.setMaNV(maNV);
             ph.setLyDo(txtLyDo.getText());

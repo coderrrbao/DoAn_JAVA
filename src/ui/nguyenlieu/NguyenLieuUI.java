@@ -28,7 +28,6 @@ public class NguyenLieuUI extends JPanel {
   public NguyenLieuUI() {
     setLayout(new BorderLayout());
 
-    // --- GIAO DIỆN PHẦN TRÊN ---
     JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
     top.setBackground(Color.WHITE);
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
@@ -40,7 +39,6 @@ public class NguyenLieuUI extends JPanel {
     btnXuatExcel = new JButton("Xuất Excel");
     btnNhapExcel = new JButton("Nhập Excel");
 
-    // Thống nhất kích thước nút bấm theo nhánh HEAD (32px)
     TaoUI.setFixSize(btnTao, 80, 32);
     TaoUI.setFixSize(btnXoa, 80, 32);
     TaoUI.setFixSize(btnSua, 80, 32);
@@ -62,7 +60,6 @@ public class NguyenLieuUI extends JPanel {
 
     add(top, BorderLayout.NORTH);
 
-    // --- GIAO DIỆN BẢNG ---
     model = new DefaultTableModel() {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -236,7 +233,6 @@ public class NguyenLieuUI extends JPanel {
     }
   }
 
-  // --- Getters ---
   public JButton getBtnTao() {
     return btnTao;
   }

@@ -120,7 +120,6 @@ public class SizeDialog extends JDialog {
             return false;
         }
 
-        // 2. Kiểm tra % Nguyên liệu thêm
         try {
             int nlThem = Integer.parseInt(tfNLThem.getText().trim());
             if (nlThem < 0) {
@@ -136,7 +135,6 @@ public class SizeDialog extends JDialog {
             return false;
         }
 
-        // 3. Kiểm tra % Giá thêm
         try {
             int giaThem = Integer.parseInt(tfGiaThem.getText().trim());
             if (giaThem < 0) {

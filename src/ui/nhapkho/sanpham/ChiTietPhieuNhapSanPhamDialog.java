@@ -15,11 +15,9 @@ import java.awt.*;
 
 public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
-    // Các thành phần phần Top
     private JTable tblSanPhamNhap;
     private DefaultTableModel modelSanPham;
 
-    // Các thành phần phần Form
     private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC;
     private JTextArea txaGhiChu;
     private JComboBox<String> cbTrangThai;
@@ -31,21 +29,19 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     public ChiTietPhieuNhapSanPhamDialog(Frame parent, PhieuNhapSanPham phieuNhapSanPham,
             NhapKhoSanPhamPanel nhapKhoSanPhamPanel) {
         super(parent, "Quản lý Phiếu Nhập", true);
-        setSize(550, 750); // Chiều cao tăng lên 750 để đủ chỗ cho JTextArea và Table
+        setSize(550, 750);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
         this.phieuNhapSanPham = phieuNhapSanPham;
         this.nhapKhoSanPhamPanel = nhapKhoSanPhamPanel;
-        // ==================== PHẦN TOP (DANH SÁCH SẢN PHẨM) ====================
+
         JPanel pnTop = new JPanel(new BorderLayout(0, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
-        // Tiêu đề
         JLabel lblTitle = new JLabel("Danh sách các sản phẩm nhập", SwingConstants.CENTER);
         lblTitle.setFont(new Font("Arial", Font.BOLD, 16));
         pnTop.add(lblTitle, BorderLayout.NORTH);
 
-        // Bảng dữ liệu
         String[] columnNames = { "Mã", "Tên", "Giá", "Số lượng", "Ngày SX", "Hạn SD" };
         modelSanPham = new DefaultTableModel(columnNames, 0);
 
@@ -53,19 +49,17 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         tblSanPhamNhap = (JTable) scrollTable.getViewport().getView();
         tblSanPhamNhap.getTableHeader()
                 .setPreferredSize(new Dimension(tblSanPhamNhap.getColumnModel().getTotalColumnWidth(), 25));
-        scrollTable.setPreferredSize(new Dimension(500, 180)); // Chiều cao bảng khoảng 180px
+        scrollTable.setPreferredSize(new Dimension(500, 180));
         pnTop.add(scrollTable, BorderLayout.CENTER);
 
         add(pnTop, BorderLayout.NORTH);
 
-        // ==================== PHẦN FORM (CENTER) ====================
         JPanel pnForm = new JPanel();
         pnForm.setLayout(new BoxLayout(pnForm, BoxLayout.Y_AXIS));
         pnForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
 
-        // Khởi tạo các Component nhập liệu
         txtMaPN = new JTextField();
-        txtNgayNhap = new JTextField(); // Có thể đổi thành JDateChooser sau này nếu cần
+        txtNgayNhap = new JTextField();
         txtMaNV = new JTextField();
         txtTongTien = new JTextField();
         txtMaNCC = new JTextField();
@@ -76,25 +70,22 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         txtTongTien.setEditable(false);
         txtMaNCC.setEditable(false);
 
-        // Thiết lập nền màu trắng
         txtMaPN.setBackground(Color.WHITE);
         txtNgayNhap.setBackground(Color.WHITE);
         txtMaNV.setBackground(Color.WHITE);
         txtTongTien.setBackground(Color.WHITE);
         txtMaNCC.setBackground(Color.WHITE);
 
-        // Ghi chú (TextArea)
-        txaGhiChu = new JTextArea(4, 20); // 4 dòng
+        txaGhiChu = new JTextArea(4, 20);
         txaGhiChu.setLineWrap(true);
         txaGhiChu.setWrapStyleWord(true);
         txaGhiChu.setEditable(false);
         txaGhiChu.setBackground(Color.white);
         JScrollPane scrollGhiChu = new JScrollPane(txaGhiChu);
 
-        // Trạng thái xử lý (ComboBox)
         cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
         cbTrangThai.setEnabled(false);
-        // Đưa vào Form theo cấu trúc: Label -> Input
+
         pnForm.add(taoDong(new JLabel("Mã Phiếu Nhập (PK):")));
         pnForm.add(taoDong(txtMaPN));
 
@@ -114,7 +105,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         pnForm.add(taoDong(cbTrangThai));
 
         pnForm.add(taoDong(new JLabel("Ghi Chú:")));
-        pnForm.add(taoDongArea(scrollGhiChu)); // Dùng hàm riêng cho TextArea
+        pnForm.add(taoDongArea(scrollGhiChu));
 
         add(pnForm, BorderLayout.CENTER);
 
@@ -141,13 +132,11 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // Kiểm tra quyền SỬA phiếu nhập kho sản phẩm
         if (!listQuyen.contains("NK_SUA")) {
-            // Ẩn hoàn toàn các nút tác vụ sửa đổi để giao diện sạch hơn
+
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
 
-            // Đổi tiêu đề để thông báo người dùng chỉ đang ở chế độ xem
             this.setTitle("Chi Tiết Phiếu Nhập Sản Phẩm (Chế độ chỉ đọc)");
         }
         this.revalidate();
@@ -163,7 +152,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
             SanPham sanPham = sanPhamBUS.timSanPham(loSanPham.getMaSP());
             modelSanPham.addRow(new Object[] { loSanPham.getMaLoSP(), sanPham != null ? sanPham.getTenSP() : "",
-                 loSanPham.getGiaNhap() ,loSanPham.getSoLuong() , loSanPham.getNgaySanXuat(),
+                    loSanPham.getGiaNhap(), loSanPham.getSoLuong(), loSanPham.getNgaySanXuat(),
                     loSanPham.getHanSuDung() });
         }
         txtMaNCC.setText(phieuNhapSanPham.getMaNCC());

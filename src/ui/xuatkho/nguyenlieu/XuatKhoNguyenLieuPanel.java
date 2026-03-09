@@ -47,17 +47,16 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
           if (row != -1) {
             String maPH = model.getValueAt(row, 0).toString();
             PhieuHuyNguyenLieu selected = null;
-            for (PhieuHuyNguyenLieu p :
-                PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().layListPhieuHuy()) {
+            for (PhieuHuyNguyenLieu p : PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().layListPhieuHuy()) {
               if (p.getMaPH().equals(maPH)) {
                 selected = p;
                 break;
               }
             }
             if (selected != null) {
-              // Đã sửa: Truyền đủ 3 tham số (Frame, DTO, Panel)
-              ChiTietPhieuXuatNguyenLieuDialog detail =
-                  new ChiTietPhieuXuatNguyenLieuDialog((Frame) null, selected, this);
+
+              ChiTietPhieuXuatNguyenLieuDialog detail = new ChiTietPhieuXuatNguyenLieuDialog((Frame) null, selected,
+                  this);
               detail.setVisible(true);
             }
           } else {
@@ -70,7 +69,8 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
           fc.setSelectedFile(new File("PhieuHuyNguyenLieu.xlsx"));
           if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
             String path = fc.getSelectedFile().getAbsolutePath();
-            if (!path.endsWith(".xlsx")) path += ".xlsx";
+            if (!path.endsWith(".xlsx"))
+              path += ".xlsx";
             if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().xuatExcel(path)) {
               JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
             }
@@ -103,12 +103,11 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
                   "Phiếu xuất đã xác nhận, không thể xóa", "Thông báo", 1);
               return;
             }
-            int confirm =
-                JOptionPane.showConfirmDialog(
-                    this,
-                    "Bạn có chắc chắn muốn xóa phiếu này?",
-                    "Xác nhận xóa",
-                    JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa phiếu này?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION);
             if (confirm == JOptionPane.YES_OPTION) {
               if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().xoaMemPhieuHuy(maPH)) {
                 TaoTinNhan.showAutoCloseMessage("Xóa phiếu thành công!", "Thông báo", 2);
@@ -137,10 +136,9 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
     top.add(Box.createHorizontalGlue());
     add(top, BorderLayout.NORTH);
 
-    model =
-        new DefaultTableModel(
-            new String[] {"Mã phiếu", "Ngày xuất", "Nhân viên", "Lý do", "Tổng tiền", "Trạng thái"},
-            0);
+    model = new DefaultTableModel(
+        new String[] { "Mã phiếu", "Ngày xuất", "Nhân viên", "Lý do", "Tổng tiền", "Trạng thái" },
+        0);
     JScrollPane scrollPane = TaoUI.taoTableScroll(model);
     table = (JTable) scrollPane.getViewport().getView();
     add(scrollPane, BorderLayout.CENTER);
@@ -150,27 +148,25 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
   public void suaLaiGiaoDienTheoQuyen() {
     var listQuyen = PhienDangNhap.getListQuyen();
 
-    // Kiểm tra quyền tạo phiếu xuất/hủy nguyên liệu (XK_TAO)
     if (!listQuyen.contains("XK_TAO")) {
       btnXuat.setVisible(false);
-      // Nút btnXemChiTiet vẫn để mặc định là true (hiển thị)
+
     }
   }
 
   public void loadDuLieu() {
     model.setRowCount(0);
-    ArrayList<PhieuHuyNguyenLieu> list =
-        PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().layListPhieuHuy();
+    ArrayList<PhieuHuyNguyenLieu> list = PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().layListPhieuHuy();
     for (PhieuHuyNguyenLieu ph : list) {
       if (locNgay_Item.ngayTrongKhoan(ph.getNgayHuy().toString())) {
         model.addRow(
             new Object[] {
-              ph.getMaPH(),
-              ph.getNgayHuy(),
-              ph.getMaNV(),
-              ph.getLyDo(),
-              String.format("%,.0f VNĐ", ph.getTongTien()),
-              ph.getTrangThaiXuLy()
+                ph.getMaPH(),
+                ph.getNgayHuy(),
+                ph.getMaNV(),
+                ph.getLyDo(),
+                String.format("%,.0f VNĐ", ph.getTongTien()),
+                ph.getTrangThaiXuLy()
             });
       }
     }

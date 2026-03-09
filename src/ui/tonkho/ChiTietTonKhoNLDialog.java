@@ -23,34 +23,30 @@ import util.TaoUI;
 public class ChiTietTonKhoNLDialog extends JDialog {
     private DefaultTableModel modelNL;
     private NguyenLieu nguyenLieu;
- 
 
     public ChiTietTonKhoNLDialog(JFrame owner, NguyenLieu nguyenLieu) {
         super(owner, "Chi tiết lô hàng - " + nguyenLieu.getTenNL(), true);
-        setSize(700, 450); // Tăng kích thước một chút để hiển thị đủ thông tin
+        setSize(700, 450);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout());
-        
+
         this.nguyenLieu = nguyenLieu;
 
-        // Tiêu đề Dialog
         JLabel lblTitle = new JLabel("Danh sách lô hàng: " + nguyenLieu.getTenNL(), SwingConstants.CENTER);
         lblTitle.setFont(new Font("Tahoma", Font.BOLD, 16));
-        
+
         JPanel titlePanel = TaoUI.taoPanelCanGiua(3000, 40);
         titlePanel.setBorder(new MatteBorder(1, 0, 1, 0, Color.LIGHT_GRAY));
         titlePanel.add(lblTitle);
 
-        // Định nghĩa các cột cho bảng Nguyên Liệu
         String[] columns = { "Mã Lô", "Hạn Sử Dụng", "Ngày SX", "Số Lượng", "Ngày Nhập", "Trạng thái" };
         modelNL = new DefaultTableModel(columns, 0);
-        
+
         JPanel center = new JPanel(new BorderLayout());
         center.add(titlePanel, BorderLayout.NORTH);
-        
-        // Sử dụng hàm tạo Table của bạn
+
         JScrollPane scrollPane = TaoUI.taoTableScroll(modelNL);
-        
+
         center.add(scrollPane, BorderLayout.CENTER);
         add(center, BorderLayout.CENTER);
 
@@ -64,29 +60,28 @@ public class ChiTietTonKhoNLDialog extends JDialog {
 
         modelNL.setRowCount(0);
         LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
-        
-        // Giả sử bạn đã có hàm layLoChoNguyenLieu trong LoNguyenLieuBUS
+
         ArrayList<LoNguyenLieu> listLo = loNguyenLieuBUS.layLoChoNguyenLieu(nguyenLieu.getMaNL());
-        
+
         if (listLo != null) {
             for (LoNguyenLieu lo : listLo) {
                 String trangThai;
                 try {
-                    // Logic: Nếu ngày hết hạn nằm SAU ngày hôm nay => Còn hạn
-                    trangThai = LocalDate.parse(lo.getHanSuDung()).isAfter(LocalDate.now()) 
-                                ? "Còn hạn" 
-                                : "Hết hạn";
+
+                    trangThai = LocalDate.parse(lo.getHanSuDung()).isAfter(LocalDate.now())
+                            ? "Còn hạn"
+                            : "Hết hạn";
                 } catch (Exception e) {
                     trangThai = "Lỗi ngày";
                 }
 
-                modelNL.addRow(new Object[] { 
-                    lo.getMaLoNL(),
-                    lo.getHanSuDung(), 
-                    lo.getNgaySanXuat(), 
-                    lo.getSoLuong(),
-                    lo.getNgayNhap(), 
-                    trangThai 
+                modelNL.addRow(new Object[] {
+                        lo.getMaLoNL(),
+                        lo.getHanSuDung(),
+                        lo.getNgaySanXuat(),
+                        lo.getSoLuong(),
+                        lo.getNgayNhap(),
+                        trangThai
                 });
             }
         }

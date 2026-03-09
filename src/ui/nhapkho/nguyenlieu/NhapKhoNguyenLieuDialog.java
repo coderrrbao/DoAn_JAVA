@@ -230,16 +230,13 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         center.add(chiTietPhieuNhapPanel, BorderLayout.WEST);
         TaoUI.suaBorderChoPanel(chiTietPhieuNhapPanel, 0, 0, 8, 0);
 
-        // --- PHẦN XÁC NHẬN NHẬP HÀNG (BÊN PHẢI CENTER) ---
         int gap = 20;
         JPanel xacNhanNH = TaoUI.taoPanelBoxLayoutDoc(380 - gap, 400);
         TaoUI.suaBorderChoPanel(xacNhanNH, 0, 10, 0, 10);
         center.add(xacNhanNH, BorderLayout.CENTER);
 
-        // Khoảng cách phía trên
         xacNhanNH.add(Box.createRigidArea(new Dimension(0, 80)));
 
-        // 1. Ô Nhân viên nhập (Đồng bộ với Sản phẩm)
         JPanel infoNH2 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
         xacNhanNH.add(infoNH2);
         xacNhanNH.add(Box.createVerticalStrut(10));
@@ -250,14 +247,13 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         nvNhapInput.add(titleNVNhap);
 
         txtNhanVien = new JTextField();
-        // Lấy mã NV từ phiên đăng nhập hiện tại
+
         txtNhanVien.setText(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
-        txtNhanVien.setEditable(false); // Không cho sửa mã NV
+        txtNhanVien.setEditable(false);
         TaoUI.setFixSize(txtNhanVien, 380 - gap, 40);
         nvNhapInput.add(txtNhanVien);
         infoNH2.add(nvNhapInput);
 
-        // 2. Ô Nhà cung cấp
         JPanel infoNH3 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
         xacNhanNH.add(infoNH3);
         xacNhanNH.add(Box.createVerticalStrut(10));

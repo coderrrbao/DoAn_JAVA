@@ -34,18 +34,15 @@ public class TonKhoNguyenLieuPanel extends JPanel {
     private JButton btnXemLo;
     private JButton btnSua;
 
-    // Giả sử bạn có class ThongKeTonKhoNL tương tự ThongKeTonKhoSP
     private ThongKeTonKhoNL thongKeTonKho;
 
     public TonKhoNguyenLieuPanel() {
 
         setLayout(new BorderLayout());
 
-        // --- Phần Top (Thống kê) ---
         thongKeTonKho = new ThongKeTonKhoNL();
         add(thongKeTonKho, BorderLayout.NORTH);
 
-        // --- Phần Center (Chứa Nút bấm và Bảng) ---
         JPanel topContent = new JPanel();
         topContent.setPreferredSize(new Dimension(100, 45));
         topContent.setLayout(new FlowLayout(FlowLayout.LEFT));
@@ -59,7 +56,6 @@ public class TonKhoNguyenLieuPanel extends JPanel {
         btnSua.setPreferredSize(new Dimension(120, 35));
         topContent.add(btnSua);
 
-        // Cấu trúc cột giống bên Sản Phẩm (Tùy chỉnh lại theo Nguyên liệu của bạn)
         String[] columns = { "Mã Nguyên liệu", "Tên nguyên liệu", "Đơn vị tính", "Số lượng", "Tổng lô",
                 "Lô hết hạn sd", "Mức cảnh báo" };
         model = new DefaultTableModel(columns, 0);
@@ -76,7 +72,6 @@ public class TonKhoNguyenLieuPanel extends JPanel {
 
         add(center, BorderLayout.CENTER);
 
-        // Gọi 2 hàm khởi tạo chức năng
         ganSuKien();
         loadDuLieu();
     }
@@ -93,7 +88,7 @@ public class TonKhoNguyenLieuPanel extends JPanel {
     }
 
     public void loadDuLieu() {
-        model.setRowCount(0); // Xóa dữ liệu cũ trên bảng
+        model.setRowCount(0);
 
         NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
         LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();

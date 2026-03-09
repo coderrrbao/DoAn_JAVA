@@ -16,7 +16,7 @@ public class SuaCanhBaoDialogNL extends JDialog {
     private JButton btnSua;
     private JButton btnLuu;
 
-    private NguyenLieu nguyenLieu; // Object Nguyên Liệu
+    private NguyenLieu nguyenLieu;
     private TonKhoNguyenLieuPanel tonKhoNguyenLieuPanel;
 
     public SuaCanhBaoDialogNL(TonKhoNguyenLieuPanel tonKhoNguyenLieuPanel, NguyenLieu nl) {
@@ -66,7 +66,7 @@ public class SuaCanhBaoDialogNL extends JDialog {
     private void loadData() {
         if (nguyenLieu != null) {
             txtMaNL.setText(nguyenLieu.getMaNL());
-            txtTenNL.setText(nguyenLieu.getTenNL()); // Giả sử hàm get tên là getTenNL()
+            txtTenNL.setText(nguyenLieu.getTenNL());
             txtMucCanhBao.setText(String.valueOf(nguyenLieu.getMucCanhBao()));
         }
     }

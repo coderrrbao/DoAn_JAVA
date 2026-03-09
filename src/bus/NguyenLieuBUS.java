@@ -32,9 +32,9 @@ public class NguyenLieuBUS {
 
   public void khoitao() {
 
-    try(Connection conn = DBConnection.getConnection()) {
+    try (Connection conn = DBConnection.getConnection()) {
       listNguyenLieu = nguyenLieuDAO.layListNguyenLieu(conn);
-    }catch (SQLException e){
+    } catch (SQLException e) {
       e.printStackTrace();
     }
   }
@@ -159,7 +159,7 @@ public class NguyenLieuBUS {
     ArrayList<NguyenLieu> dsNguyenLieu = layListNguyenLieu();
     try (Workbook workbook = new XSSFWorkbook()) {
       Sheet sheet = workbook.createSheet("Nguyen Lieu");
-      String[] columns = {"Mã NL", "Tên Nguyên Liệu", "Giá Nhập", "Đơn Vị", "Mức Cảnh Báo"};
+      String[] columns = { "Mã NL", "Tên Nguyên Liệu", "Giá Nhập", "Đơn Vị", "Mức Cảnh Báo" };
       Row headerRow = sheet.createRow(0);
       CellStyle headerStyle = workbook.createCellStyle();
       Font font = workbook.createFont();
@@ -174,11 +174,11 @@ public class NguyenLieuBUS {
       int rowNum = 1;
       for (NguyenLieu nl : dsNguyenLieu) {
         Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(nl.getMaNL()); //
-        row.createCell(1).setCellValue(nl.getTenNL()); //
-        row.createCell(2).setCellValue(nl.getGia()); //
-        row.createCell(3).setCellValue(nl.getDonVi()); //
-        row.createCell(4).setCellValue(nl.getMucCanhBao()); //
+        row.createCell(0).setCellValue(nl.getMaNL());
+        row.createCell(1).setCellValue(nl.getTenNL());
+        row.createCell(2).setCellValue(nl.getGia());
+        row.createCell(3).setCellValue(nl.getDonVi());
+        row.createCell(4).setCellValue(nl.getMucCanhBao());
       }
 
       for (int i = 0; i < columns.length; i++) {
@@ -203,11 +203,11 @@ public class NguyenLieuBUS {
       ArrayList<NguyenLieu> dsMoi = new ArrayList<>();
       for (int i = 1; i <= sheet.getLastRowNum(); i++) {
         Row row = sheet.getRow(i);
-        if (row == null) continue;
+        if (row == null)
+          continue;
 
         NguyenLieu nl = new NguyenLieu();
 
-        // BỎ QUA MÃ: Gán null để NguyenLieuDAO tự động sinh mã mới
         nl.setMaNL(null);
 
         nl.setTenNL(getCellValueAsString(row.getCell(1)));
