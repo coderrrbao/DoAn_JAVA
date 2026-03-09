@@ -24,6 +24,7 @@ public class PhienDangNhap {
 
     public static void setTaiKhoan(TaiKhoan taiKhoan) {
         PhienDangNhap.taiKhoan = taiKhoan;
+        listQuyen.clear();
     }
 
     public static HashSet<String> getListQuyen() {

@@ -21,7 +21,6 @@ public class MainFrame extends JFrame {
         add(topPaner, BorderLayout.NORTH);
         add(contentPaner, BorderLayout.CENTER);
         CardLayout cardLayout = (CardLayout) contentPaner.getLayout();
-        cardLayout.show(contentPaner, "Quản lý sản phẩm");
         menuPanel = new MenuPanel(cardLayout, contentPaner);
         add(menuPanel, BorderLayout.WEST);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,5 +41,6 @@ public class MainFrame extends JFrame {
 
     public void loadAllData() {
         contentPaner.loadAllData();
+        menuPanel.chonItemBanDau();
     }
 }
