@@ -27,6 +27,7 @@ import dao.conection.DBConnection;
 import dto.DanhMuc;
 import dto.LoNguyenLieu;
 import dto.SanPham;
+import ui.login.PhienDangNhap;
 import util.RenderColor;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -93,6 +94,18 @@ public class TonKhoSanPhamPanel extends JPanel {
                     loSanPhamBUS.layTongLoHetHangChoSanPham(sanPham.getMaSP()), sanPham.getMucCanhBao() });
         }
         thongKeTonKho.loadDuLieu();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("TKHO_SUA")) {
+            btnSua.setVisible(false);
+        }
+
+        // Vẽ lại giao diện
+        this.revalidate();
+        this.repaint();
     }
 
     private void ganSuKien() {

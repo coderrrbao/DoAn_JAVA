@@ -6,65 +6,8 @@
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
-      "projectName": "SRC_35a1545c"
+      "projectName": "SRC_35a1545c",
+      "vmArgs": "--enable-native-access=ALL-UNNAMED" // Thêm dòng này vào đây
     },
-    {
-      "type": "java",
-      "name": "TestExcel",
-      "request": "launch",
-      "mainClass": "TestExcel",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "ThemNhanVienDialog",
-      "request": "launch",
-      "mainClass": "ui.nhanvien.ThemNhanVienDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "Main",
-      "request": "launch",
-      "mainClass": "Main",
-      "projectName": "DoAn_JAVA_6ab478d7"
-    },
-    {
-      "type": "java",
-      "name": "ChiTietSanPhamDialog",
-      "request": "launch",
-      "mainClass": "ui.quanlysanpham.ChiTietSanPhamDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "XuatKhoSanPhamDialog",
-      "request": "launch",
-      "mainClass": "ui.xuatkho.sanpham.XuatKhoSanPhamDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "ChiTietPhieuXuatNguyenLieuDialog",
-      "request": "launch",
-      "mainClass": "ui.xuatkho.nguyenlieu.ChiTietPhieuXuatNguyenLieuDialog",
-      "projectName": "QLnuoc_843ad3c1"
-    },
-    {
-      "type": "java",
-      "name": "Main",
-      "request": "launch",
-      "mainClass": "Main",
-      "projectName": "QLnuoc_843ad3c1",
-      "vmArgs": "--enable-native-access=ALL-UNNAMED"
-    },
-    {
-      "type": "java",
-      "name": "Main",
-      "request": "launch",
-      "mainClass": "Main",
-      "projectName": "DoAn_JAVA_5bc8b9eb",
-      "vmArgs": "--enable-native-access=ALL-UNNAMED"
-    }
   ]
 }

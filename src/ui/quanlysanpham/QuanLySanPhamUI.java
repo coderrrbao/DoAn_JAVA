@@ -25,7 +25,7 @@ import util.TaoTinNhan;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-    private JButton themSpBtn, xuaFileBtn, nhapFileBtn, xoaBtn;
+    private JButton themSpBtn, xuaFileBtn, xoaBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
@@ -88,8 +88,7 @@ public class QuanLySanPhamUI extends JPanel {
 
         xuaFileBtn = new JButton("Xuất Exc");
         TaoUI.setFixSize(xuaFileBtn, 80, 32);
-        nhapFileBtn = new JButton("Nhập Exc");
-        TaoUI.setFixSize(nhapFileBtn, 80, 32);
+   
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
@@ -104,8 +103,6 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(xoaBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(xuaFileBtn);
-        top.add(Box.createRigidArea(new Dimension(5, 0)));
-        top.add(nhapFileBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(cbTrangThai);
         top.add(Box.createHorizontalGlue());
@@ -188,7 +185,6 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
 
-        nhapFileBtn.addActionListener(e -> importFileExcel());
         xuaFileBtn.addActionListener(e -> exportFileExcel());
 
         xoaBtn.addActionListener(e -> {

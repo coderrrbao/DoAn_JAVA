@@ -37,4 +37,8 @@ public class MainFrame extends JFrame {
     public ContentPaner getContentPaner() {
         return contentPaner;
     }
+
+    public void loadAllData(){
+        
+    }
 }
