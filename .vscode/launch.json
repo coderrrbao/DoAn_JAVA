@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_36c16d32"
+    },
+    {
+      "type": "java",
       "name": "ChiTietSanPhamDialog",
       "request": "launch",
       "mainClass": "ui.quanlysanpham.ChiTietSanPhamDialog",
