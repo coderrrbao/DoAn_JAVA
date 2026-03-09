@@ -7,7 +7,7 @@ import java.awt.*;
 public class MainFrame extends JFrame {
     private TopPaner topPaner;
     private ContentPaner contentPaner;
-    private MenuPanel menuPanel; 
+    private MenuPanel menuPanel;
 
     public MainFrame() {
         setSize(1400, 800);
@@ -31,14 +31,16 @@ public class MainFrame extends JFrame {
     public TopPaner getTopPaner() {
         return topPaner;
     }
+
     public MenuPanel getMenuPanel() {
         return menuPanel;
     }
+
     public ContentPaner getContentPaner() {
         return contentPaner;
     }
 
-    public void loadAllData(){
-        
+    public void loadAllData() {
+        contentPaner.loadAllData();
     }
 }
