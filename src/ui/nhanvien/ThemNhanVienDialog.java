@@ -11,6 +11,7 @@ import java.util.Date;
 import com.toedter.calendar.JDateChooser;
 import bus.NhanVienBUS;
 import dto.NhanVien;
+import ui.login.LoginUI;
 import util.Anh;
 import util.TaoUI;
 
@@ -288,7 +289,7 @@ public class ThemNhanVienDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 if (nvUI != null)
-                    nvUI.hienThiDanhSachNhanVien();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             }
         });

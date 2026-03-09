@@ -16,6 +16,7 @@ import dto.KhachHang;
 import ui.component.IconButtonEditor;
 import ui.component.IconButtonRender;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -191,7 +192,7 @@ public class KhachHangUI extends JPanel {
                 if (ok) {
                     JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    loadDataFromDatabase();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
@@ -209,8 +210,6 @@ public class KhachHangUI extends JPanel {
         listKhachHang = bus.layDanhSachKhachHang();
         locKhachHang();
     }
-
-    
 
     private String tenHangTuMa(String maHang) {
         if (maHang == null)

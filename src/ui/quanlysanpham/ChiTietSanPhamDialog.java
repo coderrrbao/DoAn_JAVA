@@ -30,6 +30,7 @@ import dto.CongThuc;
 import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.Anh;
 import util.TaoUI;
@@ -361,7 +362,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     anThaotacSua();
                     dispose();
-                    quanLySanPhamUI.loadDataFromDatabase();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);
@@ -376,7 +377,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                 if (sanPhamBUS.themSanPham(sanPham)) {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
-                    quanLySanPhamUI.loadDataFromDatabase();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);

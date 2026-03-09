@@ -17,6 +17,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.LocNgay_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -140,7 +141,7 @@ public class KhuyenMaiUI extends JPanel {
             if (form.getKetQua() != null) {
                 if (kmBUS.themKhuyenMai(form.getKetQua())) {
                     JOptionPane.showMessageDialog(this, "Thêm khuyến mãi thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Thêm thất bại!");
                 }
@@ -159,7 +160,7 @@ public class KhuyenMaiUI extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 if (kmBUS.xoaKhuyenMai(maKM)) {
                     JOptionPane.showMessageDialog(this, "Đã xóa thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
             }
         });
@@ -178,7 +179,7 @@ public class KhuyenMaiUI extends JPanel {
             if (form.getKetQua() != null) {
                 if (kmBUS.capNhatKhuyenMai(form.getKetQua())) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
             }
         });
@@ -208,7 +209,7 @@ public class KhuyenMaiUI extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 String ketQua = kmBUS.nhapExcel();
                 JOptionPane.showMessageDialog(this, ketQua);
-                loadDataToTable();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             }
         });
 

@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 import bus.KhachHangBUS;
 import dto.KhachHang;
+import ui.login.LoginUI;
 import util.TaoUI;
 
 public class ThemKhachHangDialog extends JDialog {
@@ -231,7 +232,7 @@ public class ThemKhachHangDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 if (khUI != null) {
-                    khUI.hienThiDanhSachKhachHang();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
                 dispose();
             }
