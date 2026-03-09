@@ -3,6 +3,37 @@
   "configurations": [
     {
       "type": "java",
+<<<<<<< HEAD
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_36c16d32"
+    },
+    {
+      "type": "java",
+      "name": "ChiTietSanPhamDialog",
+      "request": "launch",
+      "mainClass": "ui.quanlysanpham.ChiTietSanPhamDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "XuatKhoSanPhamDialog",
+      "request": "launch",
+      "mainClass": "ui.xuatkho.sanpham.XuatKhoSanPhamDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+      "name": "ChiTietPhieuXuatNguyenLieuDialog",
+      "request": "launch",
+      "mainClass": "ui.xuatkho.nguyenlieu.ChiTietPhieuXuatNguyenLieuDialog",
+      "projectName": "QLnuoc_843ad3c1"
+    },
+    {
+      "type": "java",
+=======
+>>>>>>> d9762596c959d18c0948c754bb09c7f5c8d709b5
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",

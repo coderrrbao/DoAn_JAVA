@@ -22,7 +22,6 @@ public class PhieuHuySanPhamDAO {
   }
 
   public boolean themPhieuHuy(PhieuHuySanPham ph, Connection conn) {
-    // CHỈ INSERT các cột thông tin chung, bỏ MaLo
     String sql =
         "INSERT INTO PhieuHuySanPham (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy,"
             + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
@@ -103,7 +102,7 @@ public class PhieuHuySanPhamDAO {
 
   public ArrayList<LoSanPham> layChiTietHuyTheoMaPH(String maPH) {
     ArrayList<LoSanPham> list = new ArrayList<>();
-    // Sử dụng JOIN để lấy MaSP từ bảng LoSanPham thông qua MaLo
+
     String sql =
         "SELECT ct.*, lo.MaSP "
             + "FROM ChiTietPhieuHuySanPham ct "
@@ -116,7 +115,7 @@ public class PhieuHuySanPhamDAO {
       while (rs.next()) {
         LoSanPham lo = new LoSanPham();
         lo.setMaLoSP(rs.getString("MaLo"));
-        lo.setMaSP(rs.getString("MaSP")); // Bây giờ đã có MaSP từ bảng LoSanPham
+        lo.setMaSP(rs.getString("MaSP"));
         lo.setSoLuong(rs.getDouble("SoLuong"));
         lo.setGiaNhap(rs.getDouble("DonGia"));
         list.add(lo);
@@ -125,5 +124,17 @@ public class PhieuHuySanPhamDAO {
       e.printStackTrace();
     }
     return list;
+  }
+
+  // Soft delete - set TrangThai = 0
+  public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
+    String sql = "UPDATE PhieuHuySanPham SET TrangThai = 0 WHERE MaPH = ?";
+    try (PreparedStatement pst = conn.prepareStatement(sql)) {
+      pst.setString(1, maPH);
+      return pst.executeUpdate() > 0;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
   }
 }

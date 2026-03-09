@@ -31,15 +31,11 @@ public class NguyenLieuBUS {
   }
 
   public void khoitao() {
-    Connection conn = DBConnection.getConnection();
-    try {
+
+    try(Connection conn = DBConnection.getConnection()) {
       listNguyenLieu = nguyenLieuDAO.layListNguyenLieu(conn);
-    } finally {
-      try {
-        if (conn != null) conn.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
+    }catch (SQLException e){
+      e.printStackTrace();
     }
   }
 

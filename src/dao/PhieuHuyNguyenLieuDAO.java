@@ -126,7 +126,9 @@ public class PhieuHuyNguyenLieuDAO {
     }
     return list;
   }
-  public boolean xoaPhieuHuy(String maPH, Connection conn) {
+
+
+  public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
     String sql = "UPDATE PhieuHuyNguyenLieu SET TrangThai = 0 WHERE MaPH = ?";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, maPH);
