@@ -1,6 +1,11 @@
 package bus;
 
+import java.security.Timestamp;
 import java.sql.Connection;
+import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
@@ -66,6 +71,9 @@ public class HoaDonBUS {
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
+            Date now = new Date();
+            hd.setNgayBan(now);
+
             if (!hoaDonDAO.themHoaDon(hd)) {
                 return false;
             }

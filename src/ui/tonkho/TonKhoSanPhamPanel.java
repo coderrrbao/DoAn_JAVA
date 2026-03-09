@@ -18,12 +18,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
+import bus.LoNguyenLieuBUS;
 import bus.LoSanPhamBUS;
 import bus.SanPhamBUS;
 import dao.DanhMucDao;
 import dao.SanPhamDAO;
 import dao.conection.DBConnection;
 import dto.DanhMuc;
+import dto.LoNguyenLieu;
 import dto.SanPham;
 import util.RenderColor;
 import util.TaoTinNhan;
@@ -78,9 +80,16 @@ public class TonKhoSanPhamPanel extends JPanel {
         LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
         ArrayList<SanPham> listSanPham = sanPhamBUS.layListSanPham();
         for (SanPham sanPham : listSanPham) {
+            int soLuong = 0;
+            if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+                soLuong = LoNguyenLieuBUS.getLoNguyenLieuBUS().laySoLuongSanPhamPhaCheTrongKho(sanPham);
+            } else {
+                soLuong = loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP());
+            }
+
             model.addRow(new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), sanPham.getLoaiNuoc(),
-                    loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()),
-                    loSanPhamBUS.layTongLoChoSanPham(sanPham.getMaSP()),
+                    soLuong,
+                    sanPham.getLoaiNuoc().equals("Pha chế") ? 0 : loSanPhamBUS.layTongLoChoSanPham(sanPham.getMaSP()),
                     loSanPhamBUS.layTongLoHetHangChoSanPham(sanPham.getMaSP()), sanPham.getMucCanhBao() });
         }
         thongKeTonKho.loadDuLieu();
