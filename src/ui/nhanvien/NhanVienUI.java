@@ -31,20 +31,23 @@ public class NhanVienUI extends JPanel {
     public NhanVienUI() {
         setLayout(new BorderLayout());
 
-        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 35);
+        JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
         // ĐÃ XÓA logic khởi tạo dsChucVu và cbChucVu
 
-        search_Item = new Search_Item(300, 30);
+        search_Item = new Search_Item(300, 32);
 
         btnTao = new JButton("Thêm");
+        TaoUI.setFixSize(btnTao, 80, 32);
         btnTao.addActionListener(e -> openThemNhanVienDialog());
 
         btnXoa = new JButton("Xóa");
+        TaoUI.setFixSize(btnXoa, 100, 32);
 
         btnXuatExcel = new JButton("Xuất Excel");
+        TaoUI.setFixSize(btnXuatExcel, 100, 32);
         btnXuatExcel.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             fc.setSelectedFile(new File("DanhSachNhanVien.xlsx"));
@@ -62,6 +65,7 @@ public class NhanVienUI extends JPanel {
         });
 
         btnNhapExcel = new JButton("Nhập Excel");
+        TaoUI.setFixSize(btnNhapExcel, 80, 32);
         btnNhapExcel.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
@@ -119,6 +123,10 @@ public class NhanVienUI extends JPanel {
 
         // Thiết lập Renderer và Editor cho cột số 4
         tableUI.getColumnModel().getColumn(4).setCellRenderer(new IconButtonRender("/assets/icon/sua.svg"));
+        tableUI.setAutoCreateColumnsFromModel(false);
+        tableUI.getColumnModel().getColumn(4).setMinWidth(80);
+        tableUI.getColumnModel().getColumn(4).setMaxWidth(80);
+        tableUI.getColumnModel().getColumn(4).setPreferredWidth(80);
         tableUI.getColumnModel().getColumn(4).setCellEditor(new IconButtonEditor("/assets/icon/sua.svg", row -> {
             String maNV = (String) model.getValueAt(row, 0);
             JFrame parentFrame = (JFrame) SwingUtilities.getWindowAncestor(this);
