@@ -126,4 +126,16 @@ public class PhieuHuyNguyenLieuDAO {
     }
     return list;
   }
+
+
+  public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
+    String sql = "UPDATE PhieuHuyNguyenLieu SET TrangThai = 0 WHERE MaPH = ?";
+    try (PreparedStatement pst = conn.prepareStatement(sql)) {
+      pst.setString(1, maPH);
+      return pst.executeUpdate() > 0;
+    } catch (Exception e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 }

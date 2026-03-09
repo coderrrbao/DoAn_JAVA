@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.ArrayList;
 
 public class MenuPanelItem extends JPanel {
@@ -93,5 +94,16 @@ public class MenuPanelItem extends JPanel {
 
     public void setMauChon() {
         setBackground(hoverBg);
+    }
+
+    public void doClick() {
+        for (MouseListener ml : getMouseListeners()) {
+            MouseEvent event = new MouseEvent(
+                    this,
+                    MouseEvent.MOUSE_CLICKED,
+                    System.currentTimeMillis(),
+                    0, 0, 0, 1, false);
+            ml.mouseClicked(event);
+        }
     }
 }

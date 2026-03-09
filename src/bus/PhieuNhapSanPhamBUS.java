@@ -202,4 +202,5 @@ public class PhieuNhapSanPhamBUS {
         ArrayList<PhieuNhapSanPham> list = layListPhieuNhapSanPham();
         return XuLyExcel.xuatFilePhieuNhapSanPham(file, list);
     }
+
 }

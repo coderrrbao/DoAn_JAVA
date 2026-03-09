@@ -23,6 +23,7 @@ import bus.NguyenLieuBUS;
 import dao.NguyenLieuDAO;
 import dao.conection.DBConnection;
 import dto.NguyenLieu;
+import ui.login.PhienDangNhap;
 import util.RenderColor;
 import util.TaoUI;
 
@@ -78,6 +79,17 @@ public class TonKhoNguyenLieuPanel extends JPanel {
         // Gọi 2 hàm khởi tạo chức năng
         ganSuKien();
         loadDuLieu();
+    }
+
+    public void suaLaiGiaoDienTheoQuyen() {
+        var listQuyen = PhienDangNhap.getListQuyen();
+
+        if (!listQuyen.contains("TKHO_SUA")) {
+            btnSua.setVisible(false);
+        }
+
+        this.revalidate();
+        this.repaint();
     }
 
     public void loadDuLieu() {

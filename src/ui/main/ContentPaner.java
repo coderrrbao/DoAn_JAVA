@@ -110,8 +110,6 @@ public class ContentPaner extends JPanel {
       nhapKhoUI.suaLaiGiaoDienTheoQuyen();
     if (khachHangUI != null)
       khachHangUI.suaLaiGiaoDienTheoQuyen();
-    // if (hoaDonUI != null)
-    // hoaDonUI.suaLaiGiaoDienTheoQuyen();
     if (nhanVienUI != null)
       nhanVienUI.suaLaiGiaoDienTheoQuyen();
     if (taiKhoanUI != null)
@@ -130,5 +128,23 @@ public class ContentPaner extends JPanel {
       hangThanhVienUI.suaLaiGiaoDienTheoQuyen();
     this.revalidate();
     this.repaint();
+  }
+
+  public void loadAllData() {
+    quanLySanPhamUI.loadDataFromDatabase();
+    nhaCungCapUI.loadDuLieu();
+    nguyenLieuUI.loadDataToTable();
+    nhaCungCapUI.loadDuLieu();
+    hoaDonUI.loadData();
+    khachHangUI.hienThiDanhSachKhachHang();
+    hoaDonUI.loadData();
+    nhanVienUI.hienThiDanhSachNhanVien();
+    taiKhoanUI.hienThiDanhSachTaiKhoan();
+    xuatKhoUI.loadData();
+    tonKhoUI.loadData();
+    khuyenMaiUI.loadDataToTable();
+    phanQuyenUI.loadDuLieu();
+    kiemKeUI.loaiDuLieu();
+    hangThanhVienUI.loadDataToTable();
   }
 }

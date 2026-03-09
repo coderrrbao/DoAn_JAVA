@@ -108,15 +108,13 @@ public class PhieuHuySanPhamBUS {
   }
 
   public boolean xuatExcel(String filePath) {
-    ArrayList<PhieuHuySanPham> dsPhieu = layListPhieuHuy(); // Lấy từ listPhieuHuy có sẵn trong BUS
+    ArrayList<PhieuHuySanPham> dsPhieu = layListPhieuHuy();
 
     try (Workbook workbook = new XSSFWorkbook()) {
-      // --- SHEET 1: THÔNG TIN PHIẾU ---
       Sheet sheetPhieu = workbook.createSheet("Danh Sách Phiếu Hủy");
       String[] headerPhieu = {"Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền"};
       createHeader(workbook, sheetPhieu, headerPhieu);
 
-      // --- SHEET 2: CHI TIẾT SẢN PHẨM HỦY ---
       Sheet sheetChiTiet = workbook.createSheet("Chi Tiết Lô Sản Phẩm");
       String[] headerCT = {"Mã Phiếu", "Mã Lô SP", "Số Lượng", "Đơn Giá"};
       createHeader(workbook, sheetChiTiet, headerCT);
@@ -125,7 +123,6 @@ public class PhieuHuySanPhamBUS {
       int rowCTIdx = 1;
 
       for (PhieuHuySanPham phieu : dsPhieu) {
-        // Ghi dữ liệu vào Sheet 1
         Row rowP = sheetPhieu.createRow(rowPhieuIdx++);
         rowP.createCell(0).setCellValue(phieu.getMaPH());
         rowP.createCell(1).setCellValue(phieu.getMaNV());
@@ -133,14 +130,13 @@ public class PhieuHuySanPhamBUS {
         rowP.createCell(3).setCellValue(phieu.getLyDo());
         rowP.createCell(4).setCellValue(phieu.getTongGiaTri());
 
-        // Lấy danh sách chi tiết lô từ thuộc tính listSP trong đối tượng PhieuHuySanPham
         ArrayList<LoSanPham> dsChiTiet = phieu.getListLoSanPhamHuy();
 
         if (dsChiTiet != null) {
           for (LoSanPham ct : dsChiTiet) {
-            // Ghi dữ liệu vào Sheet 2
+
             Row rowCT = sheetChiTiet.createRow(rowCTIdx++);
-            rowCT.createCell(0).setCellValue(phieu.getMaPH()); // Liên kết với Sheet 1
+            rowCT.createCell(0).setCellValue(phieu.getMaPH());
             rowCT.createCell(1).setCellValue(ct.getMaLoSP());
             rowCT.createCell(2).setCellValue(ct.getSoLuong());
             rowCT.createCell(3).setCellValue(ct.getGiaNhap());
@@ -148,7 +144,6 @@ public class PhieuHuySanPhamBUS {
         }
       }
 
-      // Tự động căn chỉnh cột
       for (int i = 0; i < headerPhieu.length; i++) sheetPhieu.autoSizeColumn(i);
       for (int i = 0; i < headerCT.length; i++) sheetChiTiet.autoSizeColumn(i);
 
@@ -184,10 +179,8 @@ public class PhieuHuySanPhamBUS {
       Sheet sheetPhieu = workbook.getSheetAt(0);
       Sheet sheetChiTiet = workbook.getSheetAt(1);
 
-      // Map lưu trữ: <Mã cũ trong Excel, DTO Phiếu với dữ liệu thô>
       Map<String, PhieuHuySanPham> mapPhieu = new HashMap<>();
 
-      // 1. Đọc Sheet 1: Lưu tạm dữ liệu phiếu (Chưa gán mã mới ở đây)
       for (int i = 1; i <= sheetPhieu.getLastRowNum(); i++) {
         Row row = sheetPhieu.getRow(i);
         if (row == null) continue;
@@ -202,7 +195,6 @@ public class PhieuHuySanPhamBUS {
         mapPhieu.put(maCu, phieuMoi);
       }
 
-      // 2. Đọc Sheet 2: Gán lô sản phẩm vào đúng phiếu tạm
       for (int i = 1; i <= sheetChiTiet.getLastRowNum(); i++) {
         Row row = sheetChiTiet.getRow(i);
         if (row == null) continue;
@@ -217,10 +209,9 @@ public class PhieuHuySanPhamBUS {
         }
       }
 
-      // 3. Ghi vào Database với Transaction
       conn.setAutoCommit(false);
       for (PhieuHuySanPham phieu : mapPhieu.values()) {
-        // QUAN TRỌNG: Lấy mã mới ngay tại đây để tránh trùng lặp
+
         String maMoi = dao.layMaPhieuHuySPKhaDung(conn);
         phieu.setMaPH(maMoi);
 
@@ -265,5 +256,24 @@ public class PhieuHuySanPhamBUS {
     if (cell.getCellType() == CellType.NUMERIC)
       return String.valueOf((int) cell.getNumericCellValue());
     return "";
+  }
+
+  // Soft delete - set TrangThai = 0
+  public boolean xoaMemPhieuHuy(String maPH) {
+    Connection conn = DBConnection.getConnection();
+    try {
+      if (!dao.xoaMemPhieuHuy(maPH, conn)) throw new SQLException("Xóa thất bại");
+      this.canUpdate = true;
+      khoiTao();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (conn != null) conn.close();
+      } catch (Exception e) {
+      }
+    }
   }
 }

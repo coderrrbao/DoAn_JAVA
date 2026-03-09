@@ -9,6 +9,7 @@ import dto.HoaDon;
 import dto.KhuyenMai;
 import dto.NhanVien;
 import ui.thongke.ThongKeValue;
+import java.sql.Timestamp;
 
 public class HoaDonDAO {
 
@@ -34,7 +35,7 @@ public class HoaDonDAO {
                 pst.setNull(4, java.sql.Types.VARCHAR);
             }
 
-            pst.setDate(5, hd.getNgayBan());
+            pst.setTimestamp(5, new Timestamp(hd.getNgayBan().getTime()));
             pst.setDouble(6, hd.getTongTien());
             pst.setDouble(7, hd.getTienKhuyenMai());
             pst.setBoolean(8, hd.getTrangThai());

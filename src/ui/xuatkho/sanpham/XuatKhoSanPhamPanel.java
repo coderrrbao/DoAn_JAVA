@@ -16,7 +16,7 @@ public class XuatKhoSanPhamPanel extends JPanel {
   private JTable table;
   private DefaultTableModel model;
   private LocNgay_Item locNgay_Item;
-  private JButton xuatHangBtn, xemChiTietBtn, xuatExcelBtn, nhapExcelBtn;
+  private JButton xuatHangBtn, xemChiTietBtn, xuatExcelBtn, nhapExcelBtn, xoaBtn;
 
   public XuatKhoSanPhamPanel() {
     setLayout(new BorderLayout());
@@ -27,12 +27,14 @@ public class XuatKhoSanPhamPanel extends JPanel {
     xemChiTietBtn = new JButton("Xem Chi Tiết");
     xuatExcelBtn = new JButton("Xuất Excel");
     nhapExcelBtn = new JButton("Nhập Excel");
+    xoaBtn = new JButton("Xóa");
     locNgay_Item = new LocNgay_Item(400, 32);
 
     TaoUI.setFixSize(xuatHangBtn, 150, 32);
     TaoUI.setFixSize(xemChiTietBtn, 150, 32);
     TaoUI.setFixSize(xuatExcelBtn, 150, 32);
     TaoUI.setFixSize(nhapExcelBtn, 150, 32);
+    TaoUI.setFixSize(xoaBtn, 100, 32);
     xuatHangBtn.addActionListener(
         e -> {
           XuatKhoSanPhamDialog dialog = new XuatKhoSanPhamDialog(this);
@@ -97,6 +99,36 @@ public class XuatKhoSanPhamPanel extends JPanel {
             }
           }
         });
+    xoaBtn.addActionListener(
+        e -> {
+          int row = table.getSelectedRow();
+          if (row != -1) {
+            String maPH = model.getValueAt(row, 0).toString();
+            if (!model.getValueAt(row, 5).toString().equals("Đang xử lý")) {
+              TaoTinNhan.showAutoCloseMessage(
+                  "Phiếu xuất đã xác nhận, không thể xóa", "Thông báo", 1);
+              return;
+            }
+            int confirm =
+                JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa phiếu này?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+              if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xoaMemPhieuHuy(maPH)) {
+                TaoTinNhan.showAutoCloseMessage("Xóa phiếu thành công!", "Thông báo", 2);
+                loadDuLieu();
+              } else {
+                JOptionPane.showMessageDialog(
+                    this, "Lỗi khi xóa phiếu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+              }
+            }
+          } else {
+            TaoTinNhan.showAutoCloseMessage("Vui lòng chọn phiếu để xóa", "Thông báo", 1);
+          }
+        });
     locNgay_Item.setEvent(() -> loadDuLieu());
     top.add(locNgay_Item);
     top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -107,6 +139,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
     top.add(xuatExcelBtn);
     top.add(Box.createRigidArea(new Dimension(10, 0)));
     top.add(nhapExcelBtn);
+    top.add(Box.createRigidArea(new Dimension(10, 0)));
+    top.add(xoaBtn);
     top.add(Box.createHorizontalGlue());
     add(top, BorderLayout.NORTH);
 
