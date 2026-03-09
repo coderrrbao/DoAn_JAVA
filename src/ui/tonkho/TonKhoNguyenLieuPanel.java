@@ -69,7 +69,7 @@ public class TonKhoNguyenLieuPanel extends JPanel {
 
         JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPaneTable.getViewport().getView();
-        RenderColor render = new RenderColor(3, 6, 5, new Color(255, 205, 210));
+        RenderColor render = new RenderColor(3, 6, 5, Color.RED);
         table.getColumnModel().getColumn(3).setCellRenderer(render);
         table.getColumnModel().getColumn(5).setCellRenderer(render);
         center.add(scrollPaneTable, BorderLayout.CENTER);

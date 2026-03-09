@@ -165,14 +165,12 @@ public class KhachHangBUS {
         return (soDongCapNhat + soDongThemMoi) > 0;
     }
 
-    // Giữ tên hàm xuatFile cho tương thích cũ nếu cần
     public boolean xuatFile(File file) {
         ArrayList<KhachHang> list = layDanhSachKhachHang();
         return XuLyExcel.xuatFileKhachHang(file, list);
     }
 
-    // Hàm xuatExcel giống cách đặt tên của HangThanhVienBUS
-    public boolean xuatExcel(File file) {
+    public boolean xuatExcel(File file){
         return xuatFile(file);
     }
 
