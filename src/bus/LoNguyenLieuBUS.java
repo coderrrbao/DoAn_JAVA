@@ -6,7 +6,10 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import dao.LoNguyenLieuDAO;
 import dao.conection.DBConnection;
+import dto.ChiTietCongThuc;
 import dto.LoNguyenLieu;
+import dto.NguyenLieu;
+import dto.SanPham;
 
 public class LoNguyenLieuBUS {
 
@@ -271,5 +274,42 @@ public class LoNguyenLieuBUS {
             }
         }
         return true;
+    }
+
+    public boolean duSoLuongTrongKho(NguyenLieu nguyenLieu, double soLuongCan) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        double soLuong = 0;
+        for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
+            if (loNguyenLieu.getMaNL().equals(nguyenLieu.getMaNL())) {
+                LocalDate ngayHetHang = LocalDate.parse(loNguyenLieu.getHanSuDung());
+                if (ngayHetHang.isAfter(LocalDate.now())) {
+                    soLuong += loNguyenLieu.getSoLuong();
+                }
+            }
+        }
+        return soLuong >= soLuongCan;
+    }
+
+    public int laySoLuongSanPhamPhaCheTrongKho(SanPham sanPham) {
+        if (sanPham == null || sanPham.getCongThuc() == null)
+            return 0;
+
+        double soLyToiDa = Double.MAX_VALUE;
+
+        for (ChiTietCongThuc ct : sanPham.getCongThuc().getListChiTietCongThuc()) {
+            double tongTonNL = laySoLuongNguyenLieuTrongKho(ct.getNguyenLieu().getMaNL());
+            double dinhMuc = ct.getSoLuong();
+
+            if (dinhMuc > 0) {
+                double khaNangPha = Math.floor(tongTonNL / dinhMuc);
+                if (khaNangPha < soLyToiDa) {
+                    soLyToiDa = khaNangPha;
+                }
+            }
+        }
+        return (int) (soLyToiDa == Double.MAX_VALUE ? 0 : soLyToiDa);
     }
 }

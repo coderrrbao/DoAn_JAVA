@@ -14,15 +14,13 @@ import util.TaoUI;
 
 public class SanPhamBhItemPanel extends JPanel {
 
-
     private SanPham sanPham;
-
 
     public SanPhamBhItemPanel(SanPham sanPham, String size, SanPhamClickListener listener) {
         TaoUI.taoPanelBoxLayoutDoc(132, 170);
         TaoUI.setFixSize(this, 132, 170);
         JPanel anhPanel = TaoUI.taoPanelCanGiua(100, 70);
-        TaoUI.addItem(anhPanel, TaoUI.taoJlabelAnh("../assets/img/pepsi.png", 70, 70), 0, true);
+        TaoUI.addItem(anhPanel, TaoUI.taoJlabelAnh(sanPham.getAnh(), 70, 70), 0, true);
 
         JPanel tenSanPhamPanel = TaoUI.taoPanelCanGiua(100, 20);
         TaoUI.addItem(tenSanPhamPanel, new JLabel(sanPham.getTenSP()), 0, true);

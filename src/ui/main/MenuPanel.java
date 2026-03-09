@@ -80,7 +80,9 @@ public class MenuPanel extends JPanel {
 
   public void suaLaiGiaoDienTheoQuyen() {
     var listQuyen = PhienDangNhap.getListQuyen();
-
+    for (MenuPanelItem item : menuItems) {
+      item.setVisible(true);
+    }
     for (int i = menuItems.size() - 1; i >= 0; i--) {
       MenuPanelItem item = menuItems.get(i);
       String title = item.getText();
@@ -155,8 +157,9 @@ public class MenuPanel extends JPanel {
       }
 
       if (!coQuyen) {
-        this.remove(item);
-        menuItems.remove(i);
+        menuItems.get(i).setVisible(false);
+      } else {
+        menuItems.get(i).setVisible(true);
       }
     }
 
@@ -183,6 +186,16 @@ public class MenuPanel extends JPanel {
       loginUI.getMainFrame().setVisible(false);
       // mở lại màn hình đăng nhập
       loginUI.setVisible(true);
+    }
+  }
+
+  public void chonItemBanDau() {
+    for (MenuPanelItem item : menuItems) {
+      if (item.isVisible() && !item.getText().equals("Thông tin")
+          && !item.getText().equals("Đăng xuất")) {
+        item.doClick();
+        break;
+      }
     }
   }
 }

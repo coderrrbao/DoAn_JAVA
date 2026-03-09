@@ -20,5 +20,12 @@ public class TonKhoUI extends JPanel {
     }
 
     public void suaLaiGiaoDienTheoQuyen() {
+        tonKhoNguyenLieu.suaLaiGiaoDienTheoQuyen();
+        tonKhoSanPham.suaLaiGiaoDienTheoQuyen();
+    }
+
+    public void loadData(){
+        tonKhoNguyenLieu.loadDuLieu();
+        tonKhoSanPham.loadDuLieu();
     }
 }

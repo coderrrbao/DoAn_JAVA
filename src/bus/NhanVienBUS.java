@@ -1,9 +1,11 @@
 package bus;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import dao.NhanVienDAO;
 import dto.NhanVien;
+import util.XuLyExcel;
 
 public class NhanVienBUS {
 
@@ -21,7 +23,7 @@ public class NhanVienBUS {
     private ArrayList<NhanVien> listNhanVien;
     private boolean canUpdate = false;
 
-    private NhanVienBUS() {
+    public NhanVienBUS() {
         khoitao();
     }
 
@@ -35,6 +37,14 @@ public class NhanVienBUS {
             khoitao();
         }
         return listNhanVien;
+    }
+
+    /**
+     * Gọi khi dữ liệu thay đổi bên ngoài BUS (vd: import Excel qua DAO) để lần gọi
+     * sau layDanhSachNhanVien() sẽ load lại từ DB.
+     */
+    public void yeuCauCapNhat() {
+        this.canUpdate = true;
     }
 
     public String themNhanVien(NhanVien nv) {
@@ -175,5 +185,29 @@ public class NhanVienBUS {
             return "Vui lòng chọn ngày sinh.";
         }
         return null;
+    }
+
+    public boolean nhapExcel(File file) {
+        // Nhờ Util bóc tách file thành List
+        ArrayList<NhanVien> dsNhap = XuLyExcel.nhapFileNhanVien(file);
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        int thanhCong = 0;
+        for (NhanVien nv : dsNhap) {
+            // Nghiệp vụ: Nếu chưa tồn tại mã NV hoặc SĐT thì mới thêm
+            if (timNhanVien(nv.getMaNV()) == null) {
+                if (themNhanVien(nv)==null)
+                    thanhCong++;
+            }
+        }
+        return thanhCong > 0;
+    }
+
+    public boolean xuatExcel(File file) {
+        // Tự lấy danh sách đang quản lý trong BUS
+        ArrayList<NhanVien> list = layDanhSachNhanVien();
+        // Nhờ Util ghi file
+        return XuLyExcel.xuatFileNhanVien(file, list);
     }
 }

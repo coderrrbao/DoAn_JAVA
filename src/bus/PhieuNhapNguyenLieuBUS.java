@@ -1,5 +1,6 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import dao.PhieuNhapNguyenLieuDAO;
 import dao.conection.DBConnection;
 import dto.LoNguyenLieu;
 import dto.PhieuNhapNguyenLieu;
+import util.XuLyExcel;
 
 public class PhieuNhapNguyenLieuBUS {
 
@@ -145,7 +147,7 @@ public class PhieuNhapNguyenLieuBUS {
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
                 // GỌI HÀM XÓA LÔ Ở ĐÂY
-                if (!loNguyenLieuBUS.xoaLoNguyenLieu(loNguyenLieu, conn)) { 
+                if (!loNguyenLieuBUS.xoaLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }
             }
@@ -186,5 +188,24 @@ public class PhieuNhapNguyenLieuBUS {
             }
         }
         return null;
+    }
+
+    public boolean nhapExcel(File file) {
+        ArrayList<PhieuNhapNguyenLieu> ds = XuLyExcel.nhapFilePhieuNhapNguyenLieu(file);
+        if (ds == null)
+            return false;
+
+        int successCount = 0;
+        for (PhieuNhapNguyenLieu pn : ds) {
+            pn.setTrangThaiXuLy("Đang xử lý");
+            if (themPhieuNhapNguyenLieu(pn)) {
+                successCount++;
+            }
+        }
+        return successCount > 0;
+    }
+
+    public boolean xuatExcel(File file) {
+        return XuLyExcel.xuatFilePhieuNhapNguyenLieu(file, layListPhieuNhapNguyenLieu());
     }
 }

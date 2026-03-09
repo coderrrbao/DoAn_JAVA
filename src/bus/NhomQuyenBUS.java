@@ -1,15 +1,21 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
 import dao.NhomQuyenDAO;
+import dao.PhanQuyenDAO;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
 import dto.PhanQuyen;
 import dto.Quyen;
+import util.XuLyExcel;
 
 public class NhomQuyenBUS {
     private static NhomQuyenBUS nhomQuyenBUS;
@@ -120,7 +126,7 @@ public class NhomQuyenBUS {
         this.canUpdate = true;
         return true;
     }
-    
+
     public boolean capNhatNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -219,5 +225,69 @@ public class NhomQuyenBUS {
 
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
+    }
+
+    // xuat exc nhom quyen
+    public boolean XuatExc() {
+        PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
+        return XuLyExcel.xuatFileNhomQuyen(layDanhSachNhomQuyen(), phanQuyenBUS.layDanhSachPhanQuyen());
+    }
+
+    public boolean nhapExcelPhanQuyen(File file) {
+        if (file == null || !file.exists()) {
+            JOptionPane.showMessageDialog(null, "File không hợp lệ!");
+            return false;
+        }
+
+        // 1. Đọc dữ liệu từ file Excel thông qua lớp xử lý Excel
+        Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
+        if (data == null || data.length < 2) {
+            JOptionPane.showMessageDialog(null, "Dữ liệu file Excel không đúng định dạng!");
+            return false;
+        }
+
+        ArrayList<NhomQuyen> listNQExcel = (ArrayList<NhomQuyen>) data[0];
+        ArrayList<PhanQuyen> listPQExcel = (ArrayList<PhanQuyen>) data[1];
+
+        this.khoiTao();
+        HashSet<String> dsMaHienTai = new HashSet<>();
+        for (NhomQuyen nq : this.listNhomQuyen) {
+            dsMaHienTai.add(nq.getMaNQ());
+        }
+
+        for (NhomQuyen nq : listNQExcel) {
+            if (!this.themNhomQuyen(nq)) {
+                return false;
+            }
+
+            Connection conn = DBConnection.getConnection();
+            PhanQuyenDAO pqDAO = new PhanQuyenDAO();
+            try {
+                conn.setAutoCommit(false);
+                for (PhanQuyen pq : listPQExcel) {
+                    if (pqDAO.themPhanQuyen(pq, conn)) {
+                    }
+                }
+                conn.commit();
+            } catch (Exception e) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+                e.printStackTrace();
+            } finally {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            // 5. Thông báo kết quả
+            this.canUpdate = true;
+        }
+        return true;
     }
 }

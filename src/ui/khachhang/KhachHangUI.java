@@ -210,6 +210,8 @@ public class KhachHangUI extends JPanel {
         locKhachHang();
     }
 
+    
+
     private String tenHangTuMa(String maHang) {
         if (maHang == null)
             return "Thành Viên Mới";

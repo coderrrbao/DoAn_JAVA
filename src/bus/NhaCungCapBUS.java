@@ -1,15 +1,21 @@
 package bus;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import dao.NhaCungCapDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietNhaCungCap;
 import dto.NhaCungCap;
+import util.XuLyExcel;
 
 public class NhaCungCapBUS {
 
@@ -261,4 +267,31 @@ public class NhaCungCapBUS {
         this.canUpdate = true;
         return true;
     }
+
+    public boolean nhapExcel(File file) {
+        // 1. Chỉ truyền File qua Util để lấy danh sách
+        ArrayList<NhaCungCap> dsNhap = XuLyExcel.nhapFileNhaCungCap(file);
+
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        int thanhCong = 0;
+        // 2. BUS xử lý logic nghiệp vụ và gọi DAO
+        for (NhaCungCap ncc : dsNhap) {
+            if (themNhaCungCap(ncc)) { // Hàm này gọi DAO và cập nhật list nội bộ
+                thanhCong++;
+            }
+        }
+        return thanhCong > 0;
+    }
+
+    // XUẤT: Nhận file -> Tự lấy List nội bộ -> Đẩy qua Util ghi file
+    public boolean xuatExcel(File file) {
+        // 1. BUS tự lấy danh sách đang quản lý
+        ArrayList<NhaCungCap> listHienTai = laylistNhaCungCap();
+
+        // 2. Chỉ truyền List và File qua Util để xử lý POI
+        return XuLyExcel.xuatFileNhaCungCap(file, listHienTai);
+    }
+
 }

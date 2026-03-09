@@ -1,14 +1,21 @@
 package bus;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import dao.ChiTietCongThucDAO;
+import dao.CongThucDAO;
+import dao.DanhMucDao;
 import dao.SanPhamDAO;
+import dao.SizeDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
+import dto.CongThuc;
+import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
 import util.XuLyExcel;
@@ -78,10 +85,6 @@ public class SanPhamBUS {
         return kq;
     }
 
-    public boolean xuatFileExcel() {
-        return XuLyExcel.xuatFile(layListSanPham());
-    }
-
     public SanPham timSanPham(String ma) {
         if (canUpdate || listSanPham == null) {
             khoitao();
@@ -143,14 +146,14 @@ public class SanPhamBUS {
         return true;
     }
 
-    
-
     public String layMaSanPhamKhaDung() {
         return sanPhamDAO.layMaSanPhamKhaDung(null);
     }
-    public boolean suaCanhBao(SanPham sanPham){
+
+    public boolean suaCanhBao(SanPham sanPham) {
         return sanPhamDAO.capNhatMucCanhBao(sanPham);
     }
+
     public Boolean XoaSanPham(String maSp) {
         if (!sanPhamDAO.xoaSanPham(maSp)) {
             return false;
@@ -295,5 +298,100 @@ public class SanPhamBUS {
             }
         }
         return ketQua;
+    }
+
+    public boolean nhapExcel(File file) {
+        ArrayList<SanPham> dsNhap = XuLyExcel.nhapFileSanPham(file);
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false); 
+
+         
+            SizeDAO sizeDao = new SizeDAO();
+            CongThucDAO congThucDao = new CongThucDAO();
+            ChiTietCongThucDAO ctctDao = new ChiTietCongThucDAO();
+            DanhMucDao danhMucDao = new DanhMucDao(); 
+
+            int count = 0;
+
+            for (SanPham sp : dsNhap) {
+      
+                if (sp.getDanhMuc() != null && sp.getDanhMuc().getTenDM() != null) {
+                    DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
+                    if (dmFull != null) {
+                        sp.setDanhMuc(dmFull); 
+                    } else {
+                
+                        throw new SQLException("Lỗi: Danh mục '" + sp.getDanhMuc().getTenDM()
+                                + "' không tồn tại trong hệ thống. Vui lòng thêm danh mục này trước khi import!");
+                    }
+                } else {
+                    throw new SQLException("Lỗi: Sản phẩm '" + sp.getMaSP() + "' thiếu thông tin Danh Mục!");
+                }
+        
+           
+                if (!sanPhamDAO.themSanPham(sp, conn)) {
+                    throw new SQLException("Lỗi thêm Sản phẩm: " + sp.getMaSP());
+                }
+
+                if (sp.getListSize() != null) {
+                    for (Size s : sp.getListSize()) {
+                        if (!sizeDao.themSize(s, conn)) {
+                            throw new SQLException("Lỗi thêm Size: " + s.getMaSize());
+                        }
+                    }
+                }
+
+             
+                if (sp.getCongThuc() != null) {
+                    CongThuc ct = sp.getCongThuc();
+                    if (!congThucDao.themCongThuc(ct, conn)) {
+                        throw new SQLException("Lỗi thêm Công thức cho SP: " + sp.getMaSP());
+                    }
+
+                    if (ct.getListChiTietCongThuc() != null) {
+                        for (ChiTietCongThuc ctct : ct.getListChiTietCongThuc()) {
+                            if (!ctctDao.themCTCT(ctct, conn)) {
+                                throw new SQLException("Lỗi thêm CTCT cho mã CT: " + ct.getMaCT());
+                            }
+                        }
+                    }
+                }
+                count++;
+            }
+
+         
+            conn.commit();
+            this.canUpdate = true;
+            return count > 0;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                if (conn != null)
+                    conn.rollback(); 
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            return false;
+        } finally {
+            try {
+                if (conn != null) {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    // ================= XUẤT EXCEL =================
+    public boolean xuatExcel(File file) {
+        return XuLyExcel.xuatFileSanPham(file, this.layListSanPham());
     }
 }

@@ -3,9 +3,16 @@ package ui.nhapkho.sanpham;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.*;
+
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -13,6 +20,8 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
 import bus.PhieuNhapSanPhamBUS;
+import dao.PhieuNhapSanPhamDAO;
+import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
@@ -21,10 +30,11 @@ import util.TaoTinNhan;
 import util.TaoUI;
 
 public class NhapKhoSanPhamPanel extends JPanel {
-    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn;
+    private JButton nhapHangBtn, xemChiTietBtn, xoaBtn, NhapExcelBtn, XuatExcelBtn;
     private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
+    private PhieuNhapSanPhamBUS bus = new PhieuNhapSanPhamBUS();
 
     public NhapKhoSanPhamPanel() {
         setLayout(new BorderLayout());
@@ -33,10 +43,14 @@ public class NhapKhoSanPhamPanel extends JPanel {
         nhapHangBtn = new JButton("Thêm");
         xemChiTietBtn = new JButton("Xem Chi tiết");
         xoaBtn = new JButton("Xóa");
+        NhapExcelBtn = new JButton("Nhập Excel");
+        XuatExcelBtn = new JButton("Xuất Excel");
 
         TaoUI.setFixSize(nhapHangBtn, 100, 32);
-        TaoUI.setFixSize(xemChiTietBtn, 150, 32);
+        TaoUI.setFixSize(xemChiTietBtn, 120, 32);
         TaoUI.setFixSize(xoaBtn, 100, 32);
+        TaoUI.setFixSize(NhapExcelBtn, 120, 32);
+        TaoUI.setFixSize(XuatExcelBtn, 120, 32);
 
         locNgay_Item = new LocNgay_Item(400, 32);
         top.add(locNgay_Item);
@@ -46,6 +60,10 @@ public class NhapKhoSanPhamPanel extends JPanel {
         top.add(xemChiTietBtn);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(xoaBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(NhapExcelBtn);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(XuatExcelBtn);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -132,6 +150,44 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
         locNgay_Item.setEvent(() -> {
             loadDuLieu();
+        });
+
+        XuatExcelBtn.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Chọn nơi lưu file");
+            fc.setSelectedFile(new File("DanhSachPhieuNhapSP.xlsx"));
+
+            if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                // Đảm bảo đuôi file
+                if (!file.getName().endsWith(".xlsx")) {
+                    file = new File(file.getAbsolutePath() + ".xlsx");
+                }
+
+                if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().xuatExcel(file)) {
+                    JOptionPane.showMessageDialog(this, "Xuất file thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi ghi file!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        // --- SỰ KIỆN NÚT NHẬP ---
+        NhapExcelBtn.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            fc.setDialogTitle("Chọn file Excel để nhập");
+
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+
+                if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().nhapExcel(file)) {
+                   loadDuLieu();
+                    JOptionPane.showMessageDialog(this, "Nhập dữ liệu thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Nhập thất bại! Kiểm tra file hoặc dữ liệu trùng.",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
         });
     }
 

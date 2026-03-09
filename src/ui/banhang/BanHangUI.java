@@ -1,5 +1,6 @@
 package ui.banhang;
 
+import bus.HangThanhVienBUS;
 import bus.HoaDonBUS;
 import bus.KhachHangBUS;
 import bus.KhuyenMaiBUS;
@@ -58,9 +59,11 @@ public class BanHangUI extends JPanel {
                         if (kh != null) {
                             thongTinKhachHangPanel.getTxtTenKh().setText(kh.getTenKH());
                             thongTinKhachHangPanel.getTxtTenKh().setEditable(false);
+                            capNhatGiaoDien();
                         } else {
                             thongTinKhachHangPanel.getTxtTenKh().setText("");
                             thongTinKhachHangPanel.getTxtTenKh().setEditable(true);
+                            capNhatGiaoDien();
                         }
                     }
 
@@ -141,31 +144,35 @@ public class BanHangUI extends JPanel {
                 }
             }
         });
-        listSanPhamPanel.reset();
+
+        ArrayList<SanPham> dsBanDau = locDanhSachKhongTopping(sanPhamBUS.layListSanPham());
+        listSanPhamPanel.render(dsBanDau);
         rightPanel.add(listSanPhamPanel, BorderLayout.CENTER);
 
         boLocPanel = new BoLocPanel();
         boLocPanel.setboLocListener(new BoLocListener() {
             @Override
             public void onLoc(ArrayList<SanPham> ds) {
-                listSanPhamPanel.render(ds);
+                listSanPhamPanel.render(locDanhSachKhongTopping(ds));
             }
 
             @Override
             public void onLamMoi() {
                 SanPhamBUS.getSanPhamBUS().khoitao();
-                listSanPhamPanel.reset();
+                ArrayList<SanPham> dsMoi = locDanhSachKhongTopping(SanPhamBUS.getSanPhamBUS().layListSanPham());
+                listSanPhamPanel.render(dsMoi);
             }
         });
         rightPanel.add(boLocPanel, BorderLayout.NORTH);
 
         ganSuKienThanhToan();
         ganSuKienGiamGia();
+        ganSuKienHuy();
         loadDanhSachKhuyenMai();
     }
 
     private void loadDanhSachKhuyenMai() {
-       KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
+        KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
         ArrayList<KhuyenMai> ds = kmBUS.layListKhuyenMai();
         if (ds != null) {
             for (KhuyenMai mgg : ds) {
@@ -215,10 +222,43 @@ public class BanHangUI extends JPanel {
         thanhToanPanel.getBtnXacNhanMGG().setText(lock ? "Hủy" : "Áp dụng");
     }
 
+    private ArrayList<SanPham> locDanhSachKhongTopping(ArrayList<SanPham> dsGoc) {
+        ArrayList<SanPham> dsDaLoc = new ArrayList<>();
+        if (dsGoc != null) {
+            for (SanPham sp : dsGoc) {
+                if (sp.getDanhMuc() != null && !"DM10".equals(sp.getDanhMuc().getMaDM())) {
+                    dsDaLoc.add(sp);
+                }
+            }
+        }
+        return dsDaLoc;
+    }
+
     private void resetGiamGia() {
         maGiamGiaDangDung = null;
         thanhToanPanel.getCbxKhuyenMai().setSelectedIndex(0);
         capNhatGiaoDien();
+    }
+
+    private void ganSuKienHuy() {
+        thanhToanPanel.getBtnHuy().addActionListener(e -> {
+            DefaultTableModel model = thongTinHoaDonPanel.getModel();
+            String sdt = thongTinKhachHangPanel.getTxtSdt().getText().trim();
+
+            if (model.getRowCount() > 0 || !sdt.isEmpty()) {
+                int luaChon = JOptionPane.showConfirmDialog(this,
+                        "Bạn có chắc chắn muốn làm mới (hủy) hóa đơn đang tạo không?",
+                        "Xác nhận hủy", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (luaChon == JOptionPane.YES_OPTION) {
+                    model.setRowCount(0);
+                    thongTinKhachHangPanel.getTxtSdt().setText("");
+                    thongTinKhachHangPanel.getTxtTenKh().setText("");
+                    resetGiamGia();
+                    lockMaGiamGia(false);
+                }
+            }
+        });
     }
 
     private void ganSuKienThanhToan() {
@@ -384,13 +424,36 @@ public class BanHangUI extends JPanel {
     private void capNhatGiaoDien() {
         double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
         double tienGiam = 0;
+        double tongPhanTramGiam = 0;
 
         if (maGiamGiaDangDung != null) {
-            tienGiam = tongTienHang * (maGiamGiaDangDung.getPhanTramGiam() / 100.0);
+            tongPhanTramGiam += maGiamGiaDangDung.getPhanTramGiam();
         }
 
-        if (tienGiam > tongTienHang)
+        KhachHang khChon = thongTinKhachHangPanel.getKhachHangDuocChon();
+
+        if (khChon != null && khChon.getMaHang() != null && !khChon.getMaHang().isEmpty()) {
+            HangThanhVienBUS htvBus = new HangThanhVienBUS();
+
+            ArrayList<HangThanhVien> listHtv = htvBus.layListHangThanhVien();
+
+            if (listHtv != null) {
+                for (HangThanhVien htv : listHtv) {
+                    if (htv.getMaHang().equals(khChon.getMaHang())) {
+
+                        tongPhanTramGiam += htv.getPhanTramGiam();
+
+                        break;
+                    }
+                }
+            }
+        }
+
+        tienGiam = tongTienHang * (tongPhanTramGiam / 100.0);
+
+        if (tienGiam > tongTienHang) {
             tienGiam = tongTienHang;
+        }
 
         thanhToanPanel.capNhatThongTinThanhToan(tongTienHang, tienGiam);
     }

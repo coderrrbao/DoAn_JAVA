@@ -33,10 +33,11 @@ public class HangThanhVienBUS {
   public void khoitao() {
     Connection conn = DBConnection.getConnection();
     try {
-      listHangThanhVien = hangThanhVienDAO.layListHangThanhVien(conn);
+      listHangThanhVien = hangThanhVienDAO.layListHangThanhVien();
     } finally {
       try {
-        if (conn != null) conn.close();
+        if (conn != null)
+          conn.close();
       } catch (SQLException e) {
         e.printStackTrace();
       }
@@ -135,6 +136,7 @@ public class HangThanhVienBUS {
     if (keyword == null || keyword.trim().isEmpty()) {
       return dsGoc;
     }
+
     for (HangThanhVien htv : dsGoc) {
       if (htv.getMaHang().toLowerCase().contains(lowerKeyword)
           || htv.getTenHang().toLowerCase().contains(lowerKeyword)) {
@@ -159,7 +161,7 @@ public class HangThanhVienBUS {
     ArrayList<HangThanhVien> list = layListHangThanhVien();
     try (Workbook workbook = new XSSFWorkbook()) {
       Sheet sheet = workbook.createSheet("Hang Thanh Vien");
-      String[] columns = {"Mã Hạng", "Tên Hạng", "Phần Trăm Giảm (%)", "Điều Kiện (VNĐ)"};
+      String[] columns = { "Mã Hạng", "Tên Hạng", "Phần Trăm Giảm (%)", "Điều Kiện (VNĐ)" };
 
       Row headerRow = sheet.createRow(0);
       CellStyle headerStyle = workbook.createCellStyle();
@@ -182,7 +184,8 @@ public class HangThanhVienBUS {
         row.createCell(3).setCellValue(htv.getDieuKien());
       }
 
-      for (int i = 0; i < columns.length; i++) sheet.autoSizeColumn(i);
+      for (int i = 0; i < columns.length; i++)
+        sheet.autoSizeColumn(i);
 
       try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
         workbook.write(fileOut);
@@ -203,7 +206,8 @@ public class HangThanhVienBUS {
 
       for (int i = 1; i <= sheet.getLastRowNum(); i++) {
         Row row = sheet.getRow(i);
-        if (row == null) continue;
+        if (row == null)
+          continue;
 
         HangThanhVien htv = new HangThanhVien();
         // Bỏ qua mã (cột 0), gán null để DAO tự tạo mã
@@ -228,10 +232,38 @@ public class HangThanhVienBUS {
   }
 
   private String getCellValueAsString(Cell cell) {
-    if (cell == null) return "";
-    if (cell.getCellType() == CellType.STRING) return cell.getStringCellValue().trim();
+    if (cell == null)
+      return "";
+    if (cell.getCellType() == CellType.STRING)
+      return cell.getStringCellValue().trim();
     if (cell.getCellType() == CellType.NUMERIC)
       return String.valueOf((int) cell.getNumericCellValue());
     return "";
+  }
+
+  public String nhapDanhSachTuExcel(java.util.ArrayList<dto.HangThanhVien> danhSachImport) {
+    if (danhSachImport == null || danhSachImport.isEmpty()) {
+      return "Không có dữ liệu hợp lệ để nhập!";
+    }
+
+    int soLuongThanhCong = 0;
+    int soLuongThatBai = 0;
+
+    for (dto.HangThanhVien htv : danhSachImport) {
+      // Gọi hàm thêm đã có sẵn trong BUS.
+      // Hàm này cần bao gồm logic tự động sinh Mã Hạng mới.
+      boolean ketQua = themHangThanhVien(htv);
+
+      if (ketQua) {
+        soLuongThanhCong++;
+      } else {
+        soLuongThatBai++;
+      }
+    }
+
+    // Đánh dấu cần cập nhật lại dữ liệu (nếu class của bạn dùng biến canUpdate)
+    this.canUpdate = true;
+
+    return "Nhập Excel hoàn tất!\n- Thành công: " + soLuongThanhCong + "\n- Thất bại: " + soLuongThatBai;
   }
 }

@@ -238,4 +238,23 @@ public class PhieuHuyNguyenLieuBUS {
     if (c.getCellType() == CellType.NUMERIC) return String.valueOf((int) c.getNumericCellValue());
     return "";
   }
+
+  // Soft delete - set TrangThai = 0
+  public boolean xoaMemPhieuHuy(String maPH) {
+    Connection conn = DBConnection.getConnection();
+    try {
+      if (!dao.xoaMemPhieuHuy(maPH, conn)) throw new SQLException("Xóa thất bại");
+      this.canUpdate = true;
+      khoiTao();
+      return true;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    } finally {
+      try {
+        if (conn != null) conn.close();
+      } catch (Exception e) {
+      }
+    }
+  }
 }

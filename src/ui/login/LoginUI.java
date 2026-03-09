@@ -130,11 +130,11 @@ public class LoginUI extends JFrame {
 
   // logic dang nhap
   public void xuLyDangNhap() {
-    // String user = txtuser.getText().trim();
-    // String pass = new String(txtpass.getPassword()).trim();
+    String user = txtuser.getText().trim();
+    String pass = new String(txtpass.getPassword()).trim();
 
-    String user = "admin";
-    String pass = "123456";
+    // String user = "admin";
+    // String pass = "123456";
 
     // kiem tra du lieu lay tu form
     if (user.isEmpty()) {
@@ -166,7 +166,9 @@ public class LoginUI extends JFrame {
       mainFrame.getTopPaner().capNhapThongTin(nv);
       mainFrame.getContentPaner().suaLaiGiaoDienTheoQuyen();
       mainFrame.getMenuPanel().suaLaiGiaoDienTheoQuyen();
-
+    
+      mainFrame.loadAllData();
+      
       mainFrame.setVisible(true);
       this.dispose();
 
