@@ -42,7 +42,8 @@ import util.TaoUI;
 public class NhapKhoNguyenLieuDialog extends JDialog {
     Search_Item search_Item;
     private JTextField txtMaNl;
-    private JTextField txtTenNl; // Giữ lại Tên NL
+    private JTextField txtTenNl;
+    private JTextField txtNhanVien;
     private JTextField txtGiaNhap;
     private JTextField txtSoLuong;
     private JDateChooser txtNgaySx;
@@ -82,6 +83,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         modelKhoHang.addColumn("Mã NL");
         modelKhoHang.addColumn("Tên NL");
         modelKhoHang.addColumn("Giá nhập");
+        modelKhoHang.addColumn("Giá bán");
         modelKhoHang.addColumn("SL");
 
         JScrollPane scroll = TaoUI.taoTableScroll(modelKhoHang);
@@ -228,14 +230,34 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         center.add(chiTietPhieuNhapPanel, BorderLayout.WEST);
         TaoUI.suaBorderChoPanel(chiTietPhieuNhapPanel, 0, 0, 8, 0);
 
+        // --- PHẦN XÁC NHẬN NHẬP HÀNG (BÊN PHẢI CENTER) ---
         int gap = 20;
         JPanel xacNhanNH = TaoUI.taoPanelBoxLayoutDoc(380 - gap, 400);
         TaoUI.suaBorderChoPanel(xacNhanNH, 0, 10, 0, 10);
         center.add(xacNhanNH, BorderLayout.CENTER);
 
-        // Đẩy phần Nhà Cung Cấp xuống 1 chút sau khi bỏ ô Nhân viên
-        xacNhanNH.add(Box.createRigidArea(new Dimension(0, 100))); 
+        // Khoảng cách phía trên
+        xacNhanNH.add(Box.createRigidArea(new Dimension(0, 80)));
 
+        // 1. Ô Nhân viên nhập (Đồng bộ với Sản phẩm)
+        JPanel infoNH2 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
+        xacNhanNH.add(infoNH2);
+        xacNhanNH.add(Box.createVerticalStrut(10));
+
+        JPanel nvNhapInput = TaoUI.taoPanelBoxLayoutDoc(380 - gap, 65);
+        JPanel titleNVNhap = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+        titleNVNhap.add(new JLabel("Nhân viên nhập"));
+        nvNhapInput.add(titleNVNhap);
+
+        txtNhanVien = new JTextField();
+        // Lấy mã NV từ phiên đăng nhập hiện tại
+        txtNhanVien.setText(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
+        txtNhanVien.setEditable(false); // Không cho sửa mã NV
+        TaoUI.setFixSize(txtNhanVien, 380 - gap, 40);
+        nvNhapInput.add(txtNhanVien);
+        infoNH2.add(nvNhapInput);
+
+        // 2. Ô Nhà cung cấp
         JPanel infoNH3 = TaoUI.taoPanelBoxLayoutNgang(380 - gap, 65);
         xacNhanNH.add(infoNH3);
         xacNhanNH.add(Box.createVerticalStrut(10));
@@ -248,7 +270,6 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         cbNhaCungCap = new JComboBox<>();
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
         cbNhaCungCap.addItem("Nhà cung cấp");
-
         for (String tenNCC : nhaCungCapBUS.layLuaChonNCCNguyenLieu()) {
             cbNhaCungCap.addItem(tenNCC);
         }
@@ -261,11 +282,9 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
 
         JPanel titleTongTien = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JLabel lblTitle = new JLabel("Tổng tiền: ");
-
         lblTongTienHienThi = new JLabel("0 VNĐ");
         lblTongTienHienThi.setForeground(Color.RED);
         lblTongTienHienThi.setFont(new Font("Arial", Font.BOLD, 18));
-
         titleTongTien.add(lblTitle);
         titleTongTien.add(lblTongTienHienThi);
         infoNH4.add(titleTongTien);
@@ -274,7 +293,6 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
 
         JPanel panelBtn = new JPanel();
         panelBtn.setLayout(new BoxLayout(panelBtn, BoxLayout.X_AXIS));
-
         btnNhapHang = new JButton("NHẬP HÀNG");
         TaoUI.setFixSize(btnNhapHang, 380 - gap, 40);
         panelBtn.add(btnNhapHang);
@@ -316,7 +334,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
                     if (nguyenLieu.getTenNL().contains(search_Item.getTextSearch())) {
                         modelKhoHang.addRow(
                                 new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(),
-                                        chiTietNhaCungCap.getGiaNhap(),
+                                        chiTietNhaCungCap.getGiaNhap(), nguyenLieu.getGia(),
                                         loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) });
                     }
                 }
@@ -449,49 +467,48 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
             return false;
         }
 
+        if (txtNhanVien.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Nhân viên nhập không được để trống!");
+            return false;
+        }
+
         if (modelChiTietPhieuNhap.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng thêm ít nhất một nguyên liệu vào phiếu nhập!");
             return false;
         }
 
-        double tongTien = tinhTongTienNhap();
-        if (tongTien <= 0) {
+        if (tinhTongTienNhap() <= 0) {
             JOptionPane.showMessageDialog(this, "Tổng tiền phải lớn hơn 0!");
             return false;
         }
-
         return true;
     }
 
     public PhieuNhapNguyenLieu dongGoiPhieuNhapNguyenLieu() {
-        PhieuNhapNguyenLieu phieuNhapNguyenLieu = new PhieuNhapNguyenLieu();
+        PhieuNhapNguyenLieu phieuNhap = new PhieuNhapNguyenLieu();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
 
-        phieuNhapNguyenLieu.setNgayNhap(sdf.format(new Date()));
-        
-        // Lấy Mã Nhân Viên trực tiếp từ Session (Không qua giao diện)
-        String maNV = PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "";
-        phieuNhapNguyenLieu.setMaNV(maNV);
-        
-        phieuNhapNguyenLieu.setTongTien(tinhTongTienNhap());
-        
-        NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
-        phieuNhapNguyenLieu.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
-        phieuNhapNguyenLieu.setTrangThaiXuLy("Đang xử lý");
+        phieuNhap.setNgayNhap(sdf.format(new Date()));
+        phieuNhap.setMaNV(txtNhanVien.getText());
+        phieuNhap.setTongTien(tinhTongTienNhap());
 
-        ArrayList<LoNguyenLieu> listLoNguyenLieu = new ArrayList<>();
+        NhaCungCap nhaCungCap = NhaCungCapBUS.getNhaCungCapBUS()
+                .timNhaCungCapTheoTen(cbNhaCungCap.getSelectedItem().toString());
+        phieuNhap.setMaNCC(nhaCungCap != null ? nhaCungCap.getMaNCC() : "");
+        phieuNhap.setTrangThaiXuLy("Đang xử lý");
+
+        ArrayList<LoNguyenLieu> listLo = new ArrayList<>();
         for (int i = 0; i < modelChiTietPhieuNhap.getRowCount(); i++) {
-            LoNguyenLieu loNguyenLieu = new LoNguyenLieu();
-            loNguyenLieu.setMaNL(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
-            loNguyenLieu.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
-            loNguyenLieu.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
-            loNguyenLieu.setNgayNhap(sdf.format(new Date()));
-            loNguyenLieu.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
-            loNguyenLieu.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());
-            listLoNguyenLieu.add(loNguyenLieu);
+            LoNguyenLieu lo = new LoNguyenLieu();
+            lo.setMaNL(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
+            lo.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
+            lo.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
+            lo.setNgayNhap(sdf.format(new Date()));
+            lo.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
+            lo.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());
+            listLo.add(lo);
         }
-        phieuNhapNguyenLieu.setListLoNguyenLieu(listLoNguyenLieu);
-        return phieuNhapNguyenLieu;
+        phieuNhap.setListLoNguyenLieu(listLo);
+        return phieuNhap;
     }
 }

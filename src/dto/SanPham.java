@@ -12,7 +12,6 @@ public class SanPham {
     private String anh;
     private int theTich;
     private int mucCanhBao;
-    private boolean trangThai;
     private ArrayList<Size> listSize;
     private CongThuc congThuc;
     private String trangThaiXuLy;
@@ -25,7 +24,7 @@ public class SanPham {
     }
 
     public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, long giaNhap, String loaiNuoc, String anh,
-            int theTich, int mucCanhBao, String trangThaiXuLi, boolean trangThai) {
+            int theTich, int mucCanhBao, String trangThaiXuLi) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
@@ -35,13 +34,12 @@ public class SanPham {
         this.anh = anh;
         this.theTich = theTich;
         this.mucCanhBao = mucCanhBao;
-        this.trangThai = trangThai;
         this.trangThaiXuLy = trangThaiXuLi;
         listSize = new ArrayList<>();
     }
 
     public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, String loaiNuoc, String anh,
-            int theTich, int mucCanhBao, CongThuc congThuc, String trangThaiXuLi, boolean trangThai) {
+            int theTich, int mucCanhBao, CongThuc congThuc, String trangThaiXuLi) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
@@ -50,7 +48,6 @@ public class SanPham {
         this.anh = anh;
         this.theTich = theTich;
         this.mucCanhBao = mucCanhBao;
-        this.trangThai = trangThai;
         this.congThuc = congThuc;
         this.trangThaiXuLy = trangThaiXuLi;
         listSize = new ArrayList<>();
@@ -88,9 +85,6 @@ public class SanPham {
         return tenSP;
     }
 
-    public boolean getTrangThai() {
-        return trangThai;
-    }
 
     public ArrayList<Size> getListSize() {
         return listSize;
@@ -120,9 +114,6 @@ public class SanPham {
         this.tenSP = tenSP;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
 
     public void setTheTich(int theTich) {
         this.theTich = theTich;

@@ -59,10 +59,11 @@ public class LoSanPhamBUS {
         }
         try {
             int tong = 0;
+            LocalDate homNay = LocalDate.now(); 
             for (LoSanPham loSanPham : listLoSanPham) {
                 if (loSanPham.getMaSP().equals(maSP)) {
                     LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                    if (ngayHetHang.isBefore(LocalDate.now())) {
+                    if (ngayHetHang.isAfter(homNay)) {
                         tong += loSanPham.getSoLuong();
                     }
                 }
@@ -102,45 +103,49 @@ public class LoSanPhamBUS {
         return list;
     }
 
-    public int layTongLoHetHangChoSanPham(String maSP) {
-        if (canUpdate || listLoSanPham == null) {
-            khoitao();
-            canUpdate = false;
-        }
-        int tong = 0;
-        try {
-            for (LoSanPham loSanPham : listLoSanPham) {
+   public int layTongLoHetHangChoSanPham(String maSP) {
+    if (canUpdate || listLoSanPham == null) {
+        khoitao();
+        canUpdate = false;
+    }
+    int tong = 0;
+    try {
+        LocalDate homNay = LocalDate.now();
+        for (LoSanPham loSanPham : listLoSanPham) {
+            if (loSanPham.getMaSP().equals(maSP)) {
                 LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                if (loSanPham.getMaSP().equals(maSP) && ngayHetHang.isBefore(LocalDate.now())) {
+                if (!ngayHetHang.isAfter(homNay)) {
                     tong++;
                 }
             }
-            return tong;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
         }
+        return tong;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return -1;
     }
+}
 
-    public int layTongLoHetHan() {
-        if (canUpdate || listLoSanPham == null) {
-            khoitao();
-            canUpdate = false;
-        }
-        int tong = 0;
-        try {
-            for (LoSanPham loSanPham : listLoSanPham) {
-                LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                if (ngayHetHang.isBefore(LocalDate.now())) {
-                    tong++;
-                }
-            }
-            return tong;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
-        }
+   public int layTongLoHetHan() {
+    if (canUpdate || listLoSanPham == null) {
+        khoitao();
+        canUpdate = false;
     }
+    int tong = 0;
+    try {
+        LocalDate homNay = LocalDate.now();
+        for (LoSanPham loSanPham : listLoSanPham) {
+            LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
+              if (!ngayHetHang.isAfter(homNay)) {
+                tong++;
+            }
+        }
+        return tong;
+    } catch (Exception e) {
+        e.printStackTrace();
+        return -1;
+    }
+}
 
     public boolean capNhapLoSanPham(LoSanPham loSanPham) {
         Connection conn = DBConnection.getConnection();

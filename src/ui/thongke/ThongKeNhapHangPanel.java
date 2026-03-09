@@ -122,7 +122,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập sản phẩm");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground(new Color(225, 235, 245));
+        top.setBackground(new Color(153, 235, 235));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelSP = new DefaultTableModel(columns, 0);
@@ -170,7 +170,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập nguyên liệu");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground(new Color(225, 235, 245));
+        top.setBackground(new Color(153, 235, 235));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelNL = new DefaultTableModel(columns, 0);

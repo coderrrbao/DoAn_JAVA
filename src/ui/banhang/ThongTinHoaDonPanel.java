@@ -9,6 +9,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
 import dto.SanPham;
@@ -33,13 +35,11 @@ public class ThongTinHoaDonPanel extends JPanel {
             }
 
             public Class<?> getColumnClass(int columnIndex) {
-                if (columnIndex == 4 || columnIndex == 5 || columnIndex ==6)
+                if (columnIndex == 4 || columnIndex == 5 || columnIndex == 6)
                     return JButton.class;
                 return Object.class;
             }
         };
-
-
 
         model.addColumn("Tên");
         model.addColumn("Giá");
@@ -49,14 +49,10 @@ public class ThongTinHoaDonPanel extends JPanel {
         model.addColumn("");
         model.addColumn("");
 
-
-
         HashSet<Integer> set = new HashSet<>();
         set.add(4);
         set.add(5);
         set.add(6);
-
-
 
         NutSuKienBanHang nutTru = new NutSuKienBanHang(new JCheckBox());
         nutTru.setLoaiNut("../assets/icon/tru.svg", 1);
@@ -66,8 +62,18 @@ public class ThongTinHoaDonPanel extends JPanel {
         NutSuKienBanHang nutXoa = new NutSuKienBanHang(new JCheckBox());
         nutXoa.setLoaiNut("../assets/icon/xoa.svg", 3);
 
-
         table = (JTable) scrollPane.getViewport().getView();
+
+        table.setAutoCreateColumnsFromModel(false);
+        table.getColumnModel().getColumn(0).setPreferredWidth(200); // Cột Tên rộng nhất
+        table.getColumnModel().getColumn(1).setPreferredWidth(80); // Giá
+        table.getColumnModel().getColumn(2).setPreferredWidth(50); // Số lượng
+        table.getColumnModel().getColumn(3).setPreferredWidth(120);
+        
+        DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+        leftRenderer.setHorizontalAlignment(SwingConstants.LEFT);
+        table.getColumnModel().getColumn(0).setCellRenderer(leftRenderer);
+
 
         table.getColumnModel().getColumn(4).setCellRenderer(new NutHienThiBanHang("../assets/icon/tru.svg", 15, 15));
         table.getColumnModel().getColumn(4).setCellEditor(nutTru);
@@ -105,8 +111,8 @@ public class ThongTinHoaDonPanel extends JPanel {
 
             model.setValueAt(slMoi, indexRow, 2);
             model.setValueAt(donGia * slMoi, indexRow, 3);
-        }else {
-            model.addRow(new Object[]{
+        } else {
+            model.addRow(new Object[] {
                     sp.getTenSP(),
                     sp.getGiaBan(),
                     1,
@@ -124,7 +130,8 @@ public class ThongTinHoaDonPanel extends JPanel {
         for (int i = 0; i < model.getRowCount(); i++) {
             try {
                 tong += Double.parseDouble(model.getValueAt(i, 3).toString());
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
         return tong;
     }

@@ -44,7 +44,7 @@ public class TuyChonDialog extends JDialog {
         pnlTop.setBackground(Color.WHITE);
         pnlTop.setBorder(new EmptyBorder(15, 20, 10, 20));
 
-        JLabel lblTenMon = new JLabel("☕ " + sanPham.getTenSP());
+        JLabel lblTenMon = new JLabel(sanPham.getTenSP());
         lblTenMon.setFont(new Font("SansSerif", Font.BOLD, 18));
 
         JLabel lblGiaGoc = new JLabel("Giá gốc: " + df.format(sanPham.getGiaBan()));

@@ -472,69 +472,70 @@ public class TaoUI {
         return chartPanel;
     }
 
-   public static ChartPanel taoBieuDoTron(String tenBieuDo, DefaultPieDataset dataset) {
-    JFreeChart chart = ChartFactory.createPieChart(
-            tenBieuDo,
-            dataset,
-            true, // legend phải là true
-            true,
-            false);
+    public static ChartPanel taoBieuDoTron(String tenBieuDo, DefaultPieDataset dataset) {
+        JFreeChart chart = ChartFactory.createPieChart(
+                tenBieuDo,
+                dataset,
+                true, // legend phải là true
+                true,
+                false);
 
-    // ===== FONT =====
-    Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
-    Font fontChu = new Font("Segoe UI", Font.PLAIN, 14);
-    Font fontLegend = new Font("Segoe UI", Font.PLAIN, 13);
+        // ===== FONT =====
+        Font fontTieuDe = new Font("Segoe UI", Font.BOLD, 18);
+        Font fontChu = new Font("Segoe UI", Font.PLAIN, 14);
+        Font fontLegend = new Font("Segoe UI", Font.PLAIN, 13);
 
-    chart.getTitle().setFont(fontTieuDe);
-    
-    // ===== CHỈNH LEGEND SANG BÊN PHẢI =====
-    if (chart.getLegend() != null) {
-        LegendTitle legend = chart.getLegend();
-        legend.setItemFont(fontLegend);
-        legend.setPosition(org.jfree.ui.RectangleEdge.RIGHT); // Chuyển sang bên phải
-        legend.setBorder(0, 0, 0, 0); // Xóa viền của legend cho sạch
+        chart.getTitle().setFont(fontTieuDe);
+
+        // ===== CHỈNH LEGEND SANG BÊN PHẢI =====
+        if (chart.getLegend() != null) {
+            LegendTitle legend = chart.getLegend();
+            legend.setItemFont(fontLegend);
+            legend.setPosition(org.jfree.ui.RectangleEdge.RIGHT); // Chuyển sang bên phải
+            legend.setBorder(0, 0, 0, 0); // Xóa viền của legend cho sạch
+        }
+
+        PiePlot plot = (PiePlot) chart.getPlot();
+
+        // ===== NỀN =====
+        plot.setBackgroundPaint(Color.WHITE);
+        plot.setOutlineVisible(false);
+        plot.setShadowPaint(null);
+
+        // ===== LABEL TRONG BIỂU ĐỒ =====
+        plot.setLabelFont(fontChu);
+        plot.setLabelPaint(Color.DARK_GRAY);
+        plot.setLabelBackgroundPaint(Color.WHITE);
+        plot.setLabelOutlinePaint(null);
+        plot.setLabelShadowPaint(null);
+
+        // Hiển thị: Tên + %
+        plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
+                "{0}: {2}",
+                new DecimalFormat("0"),
+                new DecimalFormat("0.0%")));
+
+        // ===== KHOẢNG CÁCH & ĐỘ TRÒN =====
+        plot.setInteriorGap(0.15);
+        plot.setCircular(true);
+
+        // ===== CHỐNG RĂNG CƯA =====
+        chart.setAntiAlias(true);
+        chart.setTextAntiAlias(true);
+
+        // ===== Cấu hình ChartPanel (Dùng kích thước rộng hơn một chút vì có legend bên
+        // phải) =====
+        ChartPanel chartPanel = new ChartPanel(
+                chart,
+                650, 350, // Tăng Width từ 500 lên 650 để không bị chèn ép hình tròn
+                10, 10,
+                3000, 3000,
+                false,
+                true, true, true, true, true);
+
+        chartPanel.setMouseWheelEnabled(false);
+        return chartPanel;
     }
-
-    PiePlot plot = (PiePlot) chart.getPlot();
-
-    // ===== NỀN =====
-    plot.setBackgroundPaint(Color.WHITE);
-    plot.setOutlineVisible(false);
-    plot.setShadowPaint(null);
-
-    // ===== LABEL TRONG BIỂU ĐỒ =====
-    plot.setLabelFont(fontChu);
-    plot.setLabelPaint(Color.DARK_GRAY);
-    plot.setLabelBackgroundPaint(Color.WHITE);
-    plot.setLabelOutlinePaint(null);
-    plot.setLabelShadowPaint(null);
-
-    // Hiển thị: Tên + %
-    plot.setLabelGenerator(new StandardPieSectionLabelGenerator(
-            "{0}: {2}",
-            new DecimalFormat("0"),
-            new DecimalFormat("0.0%")));
-
-    // ===== KHOẢNG CÁCH & ĐỘ TRÒN =====
-    plot.setInteriorGap(0.15);
-    plot.setCircular(true);
-
-    // ===== CHỐNG RĂNG CƯA =====
-    chart.setAntiAlias(true);
-    chart.setTextAntiAlias(true);
-
-    // ===== Cấu hình ChartPanel (Dùng kích thước rộng hơn một chút vì có legend bên phải) =====
-    ChartPanel chartPanel = new ChartPanel(
-            chart,
-            650, 350,      // Tăng Width từ 500 lên 650 để không bị chèn ép hình tròn
-            10, 10,
-            3000, 3000,
-            false,         
-            true, true, true, true, true);
-
-    chartPanel.setMouseWheelEnabled(false);
-    return chartPanel;
-}
 
     public static JScrollPane taoTableScroll(DefaultTableModel model) {
         // 1. Khởi tạo JTable
@@ -559,6 +560,7 @@ public class TaoUI {
         table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
         table.getTableHeader().setBackground(new Color(230, 240, 250));
         table.getTableHeader().setOpaque(false);
+        table.getTableHeader().setResizingAllowed(false);
         // 4. Căn giữa dữ liệu cho tất cả các cột
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(JLabel.CENTER);
@@ -592,6 +594,7 @@ public class TaoUI {
         table.getTableHeader().setFont(new Font("Segoe UI", Font.BOLD, 14));
         table.getTableHeader().setPreferredSize(new Dimension(0, 35));
         table.getTableHeader().setReorderingAllowed(false); // Không cho kéo đổi cột
+        table.getTableHeader().setResizingAllowed(false);
 
         // 4. Căn giữa dữ liệu cho tất cả các cộtaa
         DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();

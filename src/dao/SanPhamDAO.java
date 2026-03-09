@@ -26,7 +26,6 @@ public class SanPhamDAO {
                 sp.setTenSP(rs.getNString("TenSP"));
                 sp.setAnh(rs.getString("Anh"));
                 sp.setGiaBan(rs.getLong("GiaBan"));
-                sp.setTrangThai(rs.getBoolean("TrangThai"));
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));

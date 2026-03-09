@@ -139,24 +139,6 @@ public class HoaDonBUS {
         }
     }
 
-    public ArrayList<ThongKeValue> getThongKeTheoNgay(String ngay) {
-        if (ngay == null || ngay.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return hoaDonDAO.layKeQuaThongKeTheoNgay(ngay);
-    }
-
-    public ArrayList<ThongKeValue> getThongKeTheoThang(int thang, int nam) {
-        return hoaDonDAO.layKetQuaThongKeTheoThang(thang, nam);
-    }
-
-    public ArrayList<ThongKeValue> getThongKeTheoNam(int nam) {
-        if (nam < 0) {
-            return new ArrayList<>();
-        }
-        return hoaDonDAO.layKetQuaThongKeTheoNam(nam);
-    }
-
     public String taoMaHoaDonMoi() {
         String maCuoi = hoaDonDAO.layMaHoaDonCuoiCung();
 

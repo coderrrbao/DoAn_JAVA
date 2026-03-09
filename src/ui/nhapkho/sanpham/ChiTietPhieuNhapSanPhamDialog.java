@@ -163,7 +163,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
             SanPham sanPham = sanPhamBUS.timSanPham(loSanPham.getMaSP());
             modelSanPham.addRow(new Object[] { loSanPham.getMaLoSP(), sanPham != null ? sanPham.getTenSP() : "",
-                    loSanPham.getSoLuong(), loSanPham.getGiaNhap(), loSanPham.getNgaySanXuat(),
+                 loSanPham.getGiaNhap() ,loSanPham.getSoLuong() , loSanPham.getNgaySanXuat(),
                     loSanPham.getHanSuDung() });
         }
         txtMaNCC.setText(phieuNhapSanPham.getMaNCC());

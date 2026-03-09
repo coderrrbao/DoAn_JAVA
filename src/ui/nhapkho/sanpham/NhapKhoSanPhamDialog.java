@@ -85,8 +85,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
         modelKhoHang.addColumn("Mã sp");
         modelKhoHang.addColumn("Tên sp");
         modelKhoHang.addColumn("Giá nhập");
+
+        modelKhoHang.addColumn("Giá bán");
         modelKhoHang.addColumn("SL");
-        modelKhoHang.addColumn("Loại SP");
 
         JScrollPane scroll = TaoUI.taoTableScroll(modelKhoHang);
 
@@ -358,11 +359,11 @@ public class NhapKhoSanPhamDialog extends JDialog {
             for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
                 if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
                     SanPham sanPham = sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong());
-                    if (sanPham.getTenSP().contains(search_Item.getTextSearch())) {
+                    if (sanPham.getTenSP().contains(search_Item.getTextSearch())
+                            && sanPham.getLoaiNuoc().equals("Có sẵn")) {
                         modelKhoHang.addRow(
-                                new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
-                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()),
-                                        sanPham.getLoaiNuoc() });
+                                new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),sanPham.getGiaBan(),
+                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP())});
                     }
 
                 }
@@ -549,7 +550,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
             LoSanPham loSanPham = new LoSanPham();
             loSanPham.setMaSP(modelChiTietPhieuNhap.getValueAt(i, 0).toString());
             loSanPham.setGiaNhap(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 2).toString()));
-            loSanPham.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i, 3).toString()));
+            loSanPham.setSoLuong(Double.parseDouble(modelChiTietPhieuNhap.getValueAt(i,3).toString()));
             loSanPham.setNgayNhap(sdf.format(new Date()));
             loSanPham.setNgaySanXuat(modelChiTietPhieuNhap.getValueAt(i, 4).toString());
             loSanPham.setHanSuDung(modelChiTietPhieuNhap.getValueAt(i, 5).toString());

@@ -3,7 +3,6 @@
   "configurations": [
     {
       "type": "java",
-<<<<<<< HEAD
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
@@ -32,8 +31,6 @@
     },
     {
       "type": "java",
-=======
->>>>>>> d9762596c959d18c0948c754bb09c7f5c8d709b5
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",

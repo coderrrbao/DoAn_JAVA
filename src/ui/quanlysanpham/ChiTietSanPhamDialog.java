@@ -525,7 +525,6 @@ public class ChiTietSanPhamDialog extends JDialog {
         sp.setCongThuc(xemCongThucDialog != null ? xemCongThucDialog.dongGoiCongThuc() : null);
         sp.setListSize(dongGoiListSize());
         sp.setTrangThaiXuLy("Chờ xử lý");
-        sp.setTrangThai(true);
 
         if (lblAnh.getIcon() != null) {
             SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();

@@ -146,7 +146,7 @@ public class PhieuNhapNguyenLieuBUS {
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-                // GỌI HÀM XÓA LÔ Ở ĐÂY
+          
                 if (!loNguyenLieuBUS.xoaLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }

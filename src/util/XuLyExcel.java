@@ -1226,7 +1226,6 @@ public class XuLyExcel {
 
                 sp.setLoaiNuoc(formatter.formatCellValue(row.getCell(7)).trim());
                 sp.setTrangThaiXuLy("Đang kinh doanh"); // Mặc định khi nhập
-                sp.setTrangThai(true);
                 sp.setAnh(""); // Ảnh thường được cập nhật sau thủ công
 
                 danhSach.add(sp);
