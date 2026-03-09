@@ -22,7 +22,6 @@ import dto.NhanVien;
 
 public class NhanVienUI extends JPanel {
     private JButton btnTao, btnXuatExcel, btnNhapExcel, btnXoa;
-
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
@@ -95,7 +94,6 @@ public class NhanVienUI extends JPanel {
         model = new DefaultTableModel() {
             @Override
             public Class<?> getColumnClass(int columnIndex) {
-
                 if (columnIndex == 4) {
                     return JButton.class;
                 }

@@ -32,40 +32,44 @@ public class RenderColor extends DefaultTableCellRenderer {
 
         if (isSelected) {
             c.setBackground(table.getSelectionBackground());
+            c.setForeground(table.getSelectionForeground());
             return c;
         }
 
+        // reset màu mặc định
         c.setBackground(Color.WHITE);
+        c.setForeground(table.getForeground());
+
         try {
             int modelRow = table.convertRowIndexToModel(row);
-            int soLuong = parseNumber(table.getModel().getValueAt(modelRow, columnSoLuong));
-            int mucCanhBao = parseNumber(table.getModel().getValueAt(modelRow, columnMucCanhBao));
-            if (column == columnSoLuong && soLuong <= mucCanhBao) {
-                c.setBackground(colorWarning);
+            double soLuong = parseNumberAsDouble(table.getModel().getValueAt(modelRow, columnSoLuong));
+            double mucCanhBao = parseNumberAsDouble(table.getModel().getValueAt(modelRow, columnMucCanhBao));
+
+            // chỉ cảnh báo khi đã đặt mức cảnh báo (>0) và tồn kho < mức cảnh báo
+            if (column == columnSoLuong && mucCanhBao > 0 && soLuong < mucCanhBao) {
+                c.setForeground(colorWarning);
             }
+
             if (columnLoHetHan >= 0 && column == columnLoHetHan) {
-                int loHetHan = parseNumber(table.getModel().getValueAt(modelRow, columnLoHetHan));
+                double loHetHan = parseNumberAsDouble(table.getModel().getValueAt(modelRow, columnLoHetHan));
                 if (loHetHan > 0) {
-                    c.setBackground(colorWarning);
+                    c.setForeground(colorWarning);
                 }
             }
         } catch (Exception e) {
-
         }
 
         return c;
     }
 
-    private int parseNumber(Object val) {
+    private double parseNumberAsDouble(Object val) {
         if (val == null)
             return 0;
         String s = val.toString().trim().replace(",", "");
         if (s.isEmpty())
             return 0;
         try {
-            if (s.contains("."))
-                return (int) Double.parseDouble(s);
-            return Integer.parseInt(s);
+            return Double.parseDouble(s);
         } catch (NumberFormatException e) {
             return 0;
         }

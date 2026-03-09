@@ -187,14 +187,12 @@ public class NhanVienBUS {
     }
 
     public boolean nhapExcel(File file) {
-
         ArrayList<NhanVien> dsNhap = XuLyExcel.nhapFileNhanVien(file);
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
 
         int thanhCong = 0;
         for (NhanVien nv : dsNhap) {
-
             if (timNhanVien(nv.getMaNV()) == null) {
                 if (themNhanVien(nv) == null)
                     thanhCong++;

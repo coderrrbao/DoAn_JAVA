@@ -22,6 +22,7 @@ import dto.ChiTietNhaCungCap;
 import dto.CongThuc;
 import dto.DanhMuc;
 import dto.HoaDon;
+import dto.KhachHang;
 import dto.KhuyenMai;
 import dto.LoNguyenLieu;
 import dto.LoSanPham;
@@ -1209,6 +1210,87 @@ public class XuLyExcel {
                 sheet.autoSizeColumn(i);
             }
 
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                workbook.write(out);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+        public static ArrayList<KhachHang> nhapFileKhachHang(File file) {
+        ArrayList<KhachHang> danhSach = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+            DataFormatter formatter = new DataFormatter();
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null)
+                    continue;
+
+                String tenKH = formatter.formatCellValue(row.getCell(1)).trim();
+                if (tenKH.isEmpty())
+                    continue;
+
+                KhachHang kh = new KhachHang();
+                kh.setMaKH(formatter.formatCellValue(row.getCell(0)).trim());
+                kh.setTenKH(tenKH);
+                kh.setGioiTinh(formatter.formatCellValue(row.getCell(2)).trim());
+                kh.setSdt(formatter.formatCellValue(row.getCell(3)).trim());
+                kh.setTenDaMua(Double.parseDouble(formatter.formatCellValue(row.getCell(4)).trim()));
+                kh.setMaHang(formatter.formatCellValue(row.getCell(5)).trim());
+
+                danhSach.add(kh);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return danhSach;
+    }
+
+    public static boolean xuatFileKhachHang(File file, ArrayList<KhachHang> list) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Sản Phẩm");
+
+            // 1. Tạo Header
+            String[] headers = { "Mã KH", "Tên Khách Hàng", "Giới Tính", "Số Điện Thoại", "Tổng Chi Tiêu", "Hạng Thành Viên"};
+            Row headerRow = sheet.createRow(0);
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+
+            for (int i = 0; i < headers.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
+            }
+
+            // 2. Ghi dữ liệu
+            int rowNum = 1;
+            for (KhachHang kh : list) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(kh.getMaKH());
+                row.createCell(1).setCellValue(kh.getTenKH());
+                row.createCell(2).setCellValue(kh.getGioiTinh());
+                row.createCell(3).setCellValue(kh.getSdt());
+                row.createCell(4).setCellValue(kh.getTenDaMua());
+                row.createCell(5).setCellValue(kh.getMaHang());
+            }
+
+            // Tự động giãn cột
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            // 3. Ghi file
             try (FileOutputStream out = new FileOutputStream(file)) {
                 workbook.write(out);
                 return true;

@@ -1,10 +1,31 @@
 package bus;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+import dao.ChiTietCongThucDAO;
+import dao.CongThucDAO;
+import dao.DanhMucDao;
 import dao.KhachHangDAO;
+import dao.SizeDAO;
+import dao.conection.DBConnection;
+import dto.ChiTietCongThuc;
+import dto.CongThuc;
+import dto.DanhMuc;
+import dto.HangThanhVien;
 import dto.KhachHang;
+import dto.NhanVien;
+import dto.SanPham;
+import util.XuLyExcel;
 
 public class KhachHangBUS {
 
@@ -45,7 +66,7 @@ public class KhachHangBUS {
         return khachHangDAO.capNhatTienDaMua(maKH, tienThem);
     }
 
-    public List<KhachHang> layDanhSachKhachHang() {
+    public ArrayList<KhachHang> layDanhSachKhachHang() {
         return khachHangDAO.layDanhSachKhachHang();
     }
 
@@ -56,7 +77,7 @@ public class KhachHangBUS {
         return khachHangDAO.layKhachHangTheoMa(maKH);
     }
 
-    public boolean themKhachHang(KhachHang kh) throws Exception { 
+    public boolean themKhachHang(KhachHang kh) throws Exception {
         if (kh.getTenKH() == null || kh.getTenKH().trim().isEmpty()) {
             throw new Exception("Tên khách hàng không được để trống!");
         }
@@ -78,7 +99,7 @@ public class KhachHangBUS {
             throw new Exception("Lỗi: Không thể lưu vào cơ sở dữ liệu!");
         }
 
-        return true; 
+        return true;
     }
 
     public String capNhatKhachHang(KhachHang kh) {
@@ -102,4 +123,72 @@ public class KhachHangBUS {
         }
         return khachHangDAO.xoaKhachHang(maKH);
     }
+
+    public boolean nhapFile(File file) {
+        ArrayList<KhachHang> dsNhap = XuLyExcel.nhapFileKhachHang(file);
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
+
+        int soDongCapNhat = 0;
+        int soDongThemMoi = 0;
+
+        for (KhachHang khFile : dsNhap) {
+            String maKH = khFile.getMaKH();
+            if (maKH == null || maKH.trim().isEmpty())
+                continue;
+
+            double tongChiTieu = khFile.getTenDaMua();
+            if (tongChiTieu < 0)
+                tongChiTieu = 0;
+
+            String maHangMoi = tinhMaHangTheoTongChiTieu(tongChiTieu);
+
+            KhachHang khDb = timKhachHangTheoMa(maKH);
+            if (khDb != null) {
+                khDb.setTenDaMua(tongChiTieu);
+                khDb.setMaHang(maHangMoi);
+                if (khachHangDAO.capNhatKhachHang(khDb)) {
+                    soDongCapNhat++;
+                }
+            } else {
+                khFile.setTenDaMua(tongChiTieu);
+                khFile.setMaHang(maHangMoi);
+                try {
+                    if (themKhachHang(khFile)) {
+                        soDongThemMoi++;
+                    }
+                } catch (Exception e) {
+                }
+            }
+        }
+
+        return (soDongCapNhat + soDongThemMoi) > 0;
+    }
+
+    public boolean xuatFile(File file) {
+        ArrayList<KhachHang> list = layDanhSachKhachHang();
+        return XuLyExcel.xuatFileKhachHang(file, list);
+    }
+
+    public boolean xuatExcel(File file){
+        return xuatFile(file);
+    }
+
+    private String tinhMaHangTheoTongChiTieu(double tongChiTieu) {
+        String maHangChon = "HTV01";
+        double maxDieuKien = -1;
+
+        ArrayList<HangThanhVien> dsHang = bus.HangThanhVienBUS.getHangThanhVienBUS().layListHangThanhVien();
+        if (dsHang == null)
+            return maHangChon;
+
+        for (HangThanhVien h : dsHang) {
+            if (tongChiTieu >= h.getDieuKien() && h.getDieuKien() > maxDieuKien) {
+                maxDieuKien = h.getDieuKien();
+                maHangChon = h.getMaHang();
+            }
+        }
+        return maHangChon;
+    }
+
 }
