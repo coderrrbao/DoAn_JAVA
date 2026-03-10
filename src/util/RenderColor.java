@@ -36,7 +36,6 @@ public class RenderColor extends DefaultTableCellRenderer {
             return c;
         }
 
-        // reset màu mặc định
         c.setBackground(Color.WHITE);
         c.setForeground(table.getForeground());
 
@@ -45,7 +44,6 @@ public class RenderColor extends DefaultTableCellRenderer {
             double soLuong = parseNumberAsDouble(table.getModel().getValueAt(modelRow, columnSoLuong));
             double mucCanhBao = parseNumberAsDouble(table.getModel().getValueAt(modelRow, columnMucCanhBao));
 
-            // chỉ cảnh báo khi đã đặt mức cảnh báo (>0) và tồn kho < mức cảnh báo
             if (column == columnSoLuong && mucCanhBao > 0 && soLuong < mucCanhBao) {
                 c.setForeground(colorWarning);
             }

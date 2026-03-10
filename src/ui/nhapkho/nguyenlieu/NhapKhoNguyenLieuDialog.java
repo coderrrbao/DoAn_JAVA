@@ -35,6 +35,7 @@ import dto.NhaCungCap;
 import dto.PhieuNhapNguyenLieu;
 import dto.NguyenLieu;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -415,7 +416,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
 
             if (phieuNhapNguyenLieuBUS.themPhieuNhapNguyenLieu(phieuNhapNguyenLieu)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thành công", "Thông báo", 1);
-                nhapKhoNguyenLieuPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thất bại", "Thông báo", 1);
             }

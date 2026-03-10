@@ -7,8 +7,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -82,11 +84,11 @@ public class KhuyenMaiUI extends JPanel {
         top.add(btnXoa);
 
         btnNhapExc = new JButton("Nhập Excel");
-        btnNhapExc.setPreferredSize(new Dimension(80, 32));
+        btnNhapExc.setPreferredSize(new Dimension(100, 32));
         top.add(btnNhapExc);
 
         btnXuatExc = new JButton("Xuất Excel");
-        btnXuatExc.setPreferredSize(new Dimension(80, 32));
+        btnXuatExc.setPreferredSize(new Dimension(100, 32));
         top.add(btnXuatExc);
 
         return top;
@@ -179,31 +181,29 @@ public class KhuyenMaiUI extends JPanel {
         });
 
         btnXuatExc.addActionListener(e -> {
-            java.util.ArrayList<KhuyenMai> dsXuat = new java.util.ArrayList<>();
-            for (int i = 0; i < table.getRowCount(); i++) {
-                String maKM = table.getValueAt(i, 0).toString();
-                KhuyenMai km = kmBUS.timKhuyenMai(maKM);
-                if (km != null) {
-                    dsXuat.add(km);
-                }
-            }
 
-            if (dsXuat.isEmpty()) {
+            if (table.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "Bảng dữ liệu trống, không có gì để xuất!");
                 return;
             }
-            kmBUS.xuatExcel(dsXuat);
-        });
 
-        btnNhapExc.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Lưu ý: File nhập phải đúng định dạng cột như file Xuất ra.\nBạn có muốn tiếp tục?",
-                    "Xác nhận Nhập Excel", JOptionPane.YES_NO_OPTION);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file Khuyến mãi");
+            fileChooser.setSelectedFile(new File("DanhSachKhuyenMai.xlsx"));
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                String ketQua = kmBUS.nhapExcel();
-                JOptionPane.showMessageDialog(this, ketQua);
-                LoginUI.getLoginUI().getMainFrame().loadAllData();
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                if (!file.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
+                    file = new File(file.getAbsolutePath() + ".xlsx");
+                }
+
+                if (kmBUS.xuatExcel(file)) {
+                    JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi: Không thể xuất file Excel!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

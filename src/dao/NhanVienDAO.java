@@ -79,9 +79,7 @@ public class NhanVienDAO {
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            if (nv.getMaNV() == null || nv.getMaNV().isEmpty()) {
-                nv.setMaNV(layMaNhanVien());
-            }
+            nv.setMaNV(layMaNhanVien());
 
             pst.setString(1, nv.getMaNV());
             pst.setNString(2, nv.getTenNV());
@@ -96,6 +94,45 @@ public class NhanVienDAO {
             e.printStackTrace();
             return false;
         }
+    }
+
+    public Boolean themNhanVien(NhanVien nv, Connection conn) throws SQLException {
+        String sql = """
+                INSERT INTO NhanVien (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, Anh, TrangThai)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 1)
+                """;
+        try (
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            nv.setMaNV(layMaNhanVien());
+
+            pst.setString(1, nv.getMaNV());
+            pst.setNString(2, nv.getTenNV());
+            pst.setNString(3, nv.getGioiTinh());
+            pst.setString(4, nv.getNgaySinh());
+            pst.setString(5, nv.getSdt());
+            pst.setNString(6, nv.getDiaChi());
+            pst.setNString(7, nv.getAnh());
+
+            return pst.executeUpdate() > 0;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public String layMaNhanVien(Connection conn) {
+        String sql = "SELECT MAX(CAST(SUBSTRING(MaNV, 3, LEN(MaNV)) AS INT)) FROM NhanVien";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            ResultSet rs = pst.executeQuery();
+            if (rs.next()) {
+                int nextId = rs.getInt(1) + 1;
+                return String.format("NV%03d", nextId);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return "NV001";
     }
 
     public NhanVien timNhanVien(String maNV) {

@@ -2,23 +2,15 @@ package ui.quanlysanpham;
 
 import java.awt.*;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
-import dao.DanhMucDao;
-import dao.SanPhamDAO;
-import dao.conection.DBConnection;
 import dto.SanPham;
-import dto.DanhMuc;
 import ui.component.Search_Item;
 import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
@@ -85,10 +77,10 @@ public class QuanLySanPhamUI extends JPanel {
         TaoUI.setFixSize(xoaBtn, 80, 32);
 
         xuaFileBtn = new JButton("Xuất Exc");
-        TaoUI.setFixSize(xuaFileBtn, 80, 32);
+        TaoUI.setFixSize(xuaFileBtn, 100, 32);
 
         nhapBtn = new JButton("Nhập Excel");
-        TaoUI.setFixSize(nhapBtn, 80, 32);
+        TaoUI.setFixSize(nhapBtn, 100, 32);
 
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));

@@ -9,19 +9,19 @@ import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NhomQuyenBUS;
-import bus.PhanQuyenBUS;
 import dto.NhomQuyen;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
-import util.XuLyExcel;
 
 public class NhomQuyenUI extends JPanel {
     private JTable table;
@@ -152,15 +152,31 @@ public class NhomQuyenUI extends JPanel {
             }
         });
         btnXuatExc.addActionListener(e -> {
-            NhomQuyenBUS.getNhomQuyenBUS().XuatExc();
+    
+            boolean success = NhomQuyenBUS.getNhomQuyenBUS().XuatExc();
+            if (success) {
+                JOptionPane.showMessageDialog(null, "Xuất file Excel thành công!", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+            }
         });
+
         btnNhapExc.addActionListener(e -> {
             JFileChooser chooser = new JFileChooser();
             chooser.setDialogTitle("Chọn file Excel để nhập");
+            chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xlsx"));
+
             if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = chooser.getSelectedFile();
+                boolean success = NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen(selectedFile);
 
-                NhomQuyenBUS.getNhomQuyenBUS().nhapExcelPhanQuyen(selectedFile);
+                if (success) {
+                    JOptionPane.showMessageDialog(null, "Nhập dữ liệu từ Excel thành công!", "Thông báo",
+                            JOptionPane.INFORMATION_MESSAGE);
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
+                } else {
+                    JOptionPane.showMessageDialog(null, "Nhập dữ liệu thất bại! Vui lòng kiểm tra lại định dạng file.",
+                            "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }

@@ -35,6 +35,7 @@ import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -449,7 +450,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
 
             if (phieuNhapSanPhamBUS.themPhieuNhapSanPham(phieuNhapSanPham)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thành công", "Thông báo", 1);
-                nhapKhoSanPhamPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thất bại", "Thông báo", 1);
             }

@@ -3,6 +3,7 @@ package dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 
 import dao.conection.DBConnection;
@@ -35,32 +36,45 @@ public class KhachHangDAO {
         return kh;
     }
 
-    public String layMaKhachHangKhaDung() {
-        String sql = "SELECT COUNT(MaKH) FROM KhachHang";
-
-        try (Connection conn = DBConnection.getConnection();
-                PreparedStatement pst = conn.prepareStatement(sql)) {
-
+    public String layMaKhachHangKhaDung(Connection conn) {
+        String sql = "SELECT MAX(CAST(SUBSTRING(MaKH, 3, LEN(MaKH)) AS INT)) FROM KhachHang";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
                 int so = rs.getInt(1) + 1;
-                String ma = String.format("%03d", so);
-                return "KH" + ma;
+                return String.format("KH%03d", so);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-            System.out.println("Lỗi truy vấn Khách hàng: " + e.getMessage());
         }
-        return "";
+        return "KH001";
+    }
+
+    public String layMaKhachHangKhaDung() {
+        try (Connection conn = DBConnection.getConnection()) {
+            return layMaKhachHangKhaDung(conn);
+        } catch (Exception e) {
+            return "KH001";
+        }
     }
 
     public boolean themKhachHang(KhachHang kh) {
+        try (Connection conn = DBConnection.getConnection()) {
+            return themKhachHang(kh, conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean themKhachHang(KhachHang kh, Connection conn) throws SQLException {
         String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, SDT, TenDaMua, MaHang, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            kh.setMaKH(layMaKhachHangKhaDung());
+        if (kh.getMaKH() == null || kh.getMaKH().isEmpty()) {
+            kh.setMaKH(layMaKhachHangKhaDung(conn));
+        }
 
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, kh.getMaKH());
             pst.setString(2, kh.getTenKH());
             pst.setString(3, kh.getGioiTinh());
@@ -69,10 +83,6 @@ public class KhachHangDAO {
             pst.setString(6, kh.getMaHang());
             pst.setInt(7, 1);
             return pst.executeUpdate() > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Lỗi thêm KhachHang: " + e.getMessage());
-            return false;
         }
     }
 
@@ -153,8 +163,8 @@ public class KhachHangDAO {
 
     public boolean capNhatTienDaMua(String maKH, double tienThem) {
         String sql = "UPDATE KhachHang SET TenDaMua = ISNULL(TenDaMua, 0) + ? WHERE MaKH = ?";
-        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
-                java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setDouble(1, tienThem);
             pst.setString(2, maKH);
             return pst.executeUpdate() > 0;

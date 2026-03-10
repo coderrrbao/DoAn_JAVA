@@ -1,31 +1,15 @@
 package bus;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
-import dao.ChiTietCongThucDAO;
-import dao.CongThucDAO;
-import dao.DanhMucDao;
 import dao.KhachHangDAO;
-import dao.SizeDAO;
 import dao.conection.DBConnection;
-import dto.ChiTietCongThuc;
-import dto.CongThuc;
-import dto.DanhMuc;
 import dto.HangThanhVien;
 import dto.KhachHang;
-import dto.NhanVien;
-import dto.SanPham;
 import util.XuLyExcel;
 
 public class KhachHangBUS {
@@ -44,7 +28,7 @@ public class KhachHangBUS {
     }
 
     public String taoMaKHMoi() {
-        java.util.ArrayList<KhachHang> ds = khachHangDAO.layDanhSachKhachHang();
+        ArrayList<KhachHang> ds = khachHangDAO.layDanhSachKhachHang();
         if (ds == null || ds.isEmpty())
             return "KH001";
 
@@ -57,6 +41,7 @@ public class KhachHangBUS {
                     if (num > maxId)
                         maxId = num;
                 } catch (Exception e) {
+
                 }
             }
         }
@@ -105,6 +90,31 @@ public class KhachHangBUS {
         return true;
     }
 
+    public boolean themKhachHang(KhachHang kh, Connection conn) throws Exception {
+        if (kh.getTenKH() == null || kh.getTenKH().trim().isEmpty()) {
+            throw new Exception("Tên khách hàng không được để trống!");
+        }
+        if (kh.getSdt() == null || kh.getSdt().trim().isEmpty()) {
+            throw new Exception("Số điện thoại không được để trống!");
+        }
+        if (!kh.getSdt().matches("\\d{10,11}")) {
+            throw new Exception("Số điện thoại phải có từ 10-11 chữ số!");
+        }
+
+        if (kh.getTenDaMua() < 0)
+            kh.setTenDaMua(0);
+        if (kh.getMaHang() == null || kh.getMaHang().trim().isEmpty()) {
+            kh.setMaHang("HTV01");
+        }
+
+        boolean ok = khachHangDAO.themKhachHang(kh, conn);
+        if (!ok) {
+            throw new Exception("Lỗi: Không thể lưu vào cơ sở dữ liệu!");
+        }
+
+        return true;
+    }
+
     public String capNhatKhachHang(KhachHang kh) {
         if (kh == null || kh.getMaKH() == null || kh.getMaKH().trim().isEmpty()) {
             return "Không tìm thấy mã khách hàng";
@@ -128,7 +138,7 @@ public class KhachHangBUS {
         if (!ok) {
             return "Lỗi cập nhật khách hàng vào CSDL";
         }
-        return null; // Cập nhật thành công
+        return null;
     }
 
     public String layTenHangTuMa(String maHang) {
@@ -156,6 +166,7 @@ public class KhachHangBUS {
         if (dsNhap == null || dsNhap.isEmpty()) {
             return false;
         }
+
         HashSet<String> setSdt = new HashSet<>();
         ArrayList<KhachHang> hienTai = khachHangDAO.layDanhSachKhachHang();
         for (KhachHang kh : hienTai) {
@@ -163,24 +174,50 @@ public class KhachHangBUS {
         }
 
         boolean hasAdded = false;
+        Connection conn = null;
 
-        for (KhachHang kh : dsNhap) {
-            if (setSdt.contains(kh.getSdt())) {
-                System.out.println("Bỏ qua khách hàng (Trùng SDT): " + kh.getSdt());
-                continue;
-            }
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
 
-            try {
-                if (themKhachHang(kh)) {
+            for (KhachHang kh : dsNhap) {
+                if (setSdt.contains(kh.getSdt())) {
+                    System.out.println("Bỏ qua khách hàng (Trùng SDT): " + kh.getSdt());
+                    continue;
+                }
+
+                if (themKhachHang(kh, conn)) {
                     setSdt.add(kh.getSdt());
                     hasAdded = true;
                 }
-            } catch (Exception e) {
-                System.err.println("Lỗi khi nhập khách hàng " + kh.getSdt() + ": " + e.getMessage());
+            }
+
+            if (hasAdded) {
+                conn.commit();
+            } else {
+                conn.rollback();
+            }
+            return hasAdded;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi nhập khách hàng: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
-        return hasAdded;
     }
-
 }

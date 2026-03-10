@@ -140,7 +140,7 @@ public class NhaCungCapDAO {
         }
     }
 
-    public boolean insert(Connection conn, NhaCungCap ncc) throws SQLException {
+    public boolean themNhaCungCap(Connection conn, NhaCungCap ncc) throws SQLException {
         String sql = "INSERT INTO NhaCungCap (MaNCC, TenNCC, SoDienThoai, DiaChi) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, ncc.getMaNCC());

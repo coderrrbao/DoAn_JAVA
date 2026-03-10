@@ -51,13 +51,10 @@ public class ChiTietSanPhamDialog extends JDialog {
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
 
     private XemCongThucDialog xemCongThucDialog;
-    private QuanLySanPhamUI quanLySanPhamUI;
-
     private JPanel formCongThuc;
 
     public ChiTietSanPhamDialog(SanPham sanPham, QuanLySanPhamUI quanLySanPhamUI) {
         super((JFrame) null, "Chi tiết sản phẩm", true);
-        this.quanLySanPhamUI = quanLySanPhamUI;
         this.sanPham = sanPham;
 
         this.setSize(400, 700);
@@ -574,35 +571,35 @@ public class ChiTietSanPhamDialog extends JDialog {
         return btnSua;
     }
 
- public void inChiTietSanPham(SanPham sp) {
-    if (sp == null) {
-        System.out.println("Sản phẩm không tồn tại!");
-        return;
-    }
-
-    System.out.println("----------------------------------------------");
-    System.out.println(String.format("%-15s: %s", "Mã sản phẩm", sp.getMaSP()));
-    System.out.println(String.format("%-15s: %s", "Tên sản phẩm", sp.getTenSP()));
-    System.out.println(String.format("%-15s: %s", "Danh mục", (sp.getDanhMuc() != null ? sp.getDanhMuc().getTenDM() : "N/A")));
-    System.out.println(String.format("%-15s: %,d VNĐ", "Giá bán", sp.getGiaBan()));
-    System.out.println(String.format("%-15s: %s", "Loại nước", sp.getLoaiNuoc()));
-    System.out.println(String.format("%-15s: %d ml", "Thể tích", sp.getTheTich()));
-    
-    // In công thức nếu có
-    if (sp.getCongThuc() != null && sp.getCongThuc().getListChiTietCongThuc() != null) {
-        System.out.println("Công thức pha chế:");
-        for (ChiTietCongThuc ct : sp.getCongThuc().getListChiTietCongThuc()) {
-            String tenNL = (ct.getNguyenLieu() != null) ? ct.getNguyenLieu().getTenNL() : "Nguyên liệu ẩn";
-            System.out.println(String.format("   + %-15s: %.2f %s", 
-                tenNL, 
-                ct.getSoLuong(), 
-                (ct.getNguyenLieu() != null ? ct.getNguyenLieu().getDonVi() : "")));
+    public void inChiTietSanPham(SanPham sp) {
+        if (sp == null) {
+            System.out.println("Sản phẩm không tồn tại!");
+            return;
         }
-    } else {
-        System.out.println("Công thức: (Trống)");
+
+        System.out.println("----------------------------------------------");
+        System.out.println(String.format("%-15s: %s", "Mã sản phẩm", sp.getMaSP()));
+        System.out.println(String.format("%-15s: %s", "Tên sản phẩm", sp.getTenSP()));
+        System.out.println(
+                String.format("%-15s: %s", "Danh mục", (sp.getDanhMuc() != null ? sp.getDanhMuc().getTenDM() : "N/A")));
+        System.out.println(String.format("%-15s: %,d VNĐ", "Giá bán", sp.getGiaBan()));
+        System.out.println(String.format("%-15s: %s", "Loại nước", sp.getLoaiNuoc()));
+        System.out.println(String.format("%-15s: %d ml", "Thể tích", sp.getTheTich()));
+
+        if (sp.getCongThuc() != null && sp.getCongThuc().getListChiTietCongThuc() != null) {
+            System.out.println("Công thức pha chế:");
+            for (ChiTietCongThuc ct : sp.getCongThuc().getListChiTietCongThuc()) {
+                String tenNL = (ct.getNguyenLieu() != null) ? ct.getNguyenLieu().getTenNL() : "Nguyên liệu ẩn";
+                System.out.println(String.format("   + %-15s: %.2f %s",
+                        tenNL,
+                        ct.getSoLuong(),
+                        (ct.getNguyenLieu() != null ? ct.getNguyenLieu().getDonVi() : "")));
+            }
+        } else {
+            System.out.println("Công thức: (Trống)");
+        }
+        System.out.println("----------------------------------------------");
     }
-    System.out.println("----------------------------------------------");
-}
 
     public static void main(String[] args) {
         SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP0sds2");

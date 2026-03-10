@@ -69,11 +69,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
           int userSelection = fileChooser.showSaveDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".xlsx")) {
-              path += ".xlsx";
-            }
-            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xuatExcel(path)) {
+         
+            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xuatExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Xuất dữ liệu Excel thành công!");
             } else {
               JOptionPane.showMessageDialog(
@@ -88,8 +85,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
               new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xlsx"));
 
           if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().nhapExcel(path)) {
+     
+            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().nhapExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Nhập dữ liệu Excel thành công!");
               loadDuLieu();
             } else {

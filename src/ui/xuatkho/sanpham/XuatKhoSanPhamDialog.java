@@ -7,6 +7,7 @@ import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -21,11 +22,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
     private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo;
     private JButton btnThem, btnXacNhan;
     private Search_Item search_Item;
-    private XuatKhoSanPhamPanel parentPanel;
-
     public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
         super((Frame) null, "Tạo Phiếu Hủy Sản Phẩm", true);
-        this.parentPanel = parent;
         setSize(1000, 650);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -247,7 +245,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
             ph.setTongGiaTri(tongTien);
 
             if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().thucHienHuy(ph, data)) {
-                parentPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thất bại!");

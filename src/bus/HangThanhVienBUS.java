@@ -9,6 +9,7 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class HangThanhVienBUS {
     private static HangThanhVienBUS hangThanhVienBUS = null;
@@ -34,7 +35,8 @@ public class HangThanhVienBUS {
             listHangThanhVien = hangThanhVienDAO.layListHangThanhVien();
         } finally {
             try {
-                if (conn != null) conn.close();
+                if (conn != null)
+                    conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -81,6 +83,10 @@ public class HangThanhVienBUS {
         } finally {
             dongKetNoi(conn);
         }
+    }
+
+    public boolean themHangThanhVien(HangThanhVien htv, Connection conn) throws SQLException {
+        return hangThanhVienDAO.themHangThanhVien(htv, conn);
     }
 
     public boolean xoaHangThanhVien(String maHang) {
@@ -154,44 +160,67 @@ public class HangThanhVienBUS {
         }
     }
 
-    // Đã sửa lại nhận String filePath nhưng truyền File qua XuLyExcel
-    public boolean xuatExcel(String filePath) {
-        File file = new File(filePath);
+    public boolean xuatExcel(File file) {
         ArrayList<HangThanhVien> list = layListHangThanhVien();
         return XuLyExcel.xuatFileHangThanhVien(file, list);
     }
 
-    // Đã sửa lại gọi XuLyExcel và tận dụng hàm xử lý list
-    public boolean nhapExcel(String filePath) {
-        File file = new File(filePath);
-        ArrayList<HangThanhVien> dsMoi = XuLyExcel.nhapFileHangThanhVien(file);
-        
-        if (dsMoi == null || dsMoi.isEmpty()) {
+    public boolean nhapExcel(File file) {
+        ArrayList<HangThanhVien> dsNhap = XuLyExcel.nhapFileHangThanhVien(file);
+
+        if (dsNhap == null || dsNhap.isEmpty()) {
             return false;
         }
-        
-        nhapDanhSachTuExcel(dsMoi);
-        return true;
-    }
 
-    public String nhapDanhSachTuExcel(ArrayList<HangThanhVien> danhSachImport) {
-        if (danhSachImport == null || danhSachImport.isEmpty()) {
-            return "Không có dữ liệu hợp lệ để nhập!";
+        HashSet<String> setTenHang = new HashSet<>();
+        for (HangThanhVien htv : layListHangThanhVien()) {
+            setTenHang.add(htv.getTenHang().trim().toLowerCase());
         }
 
-        int soLuongThanhCong = 0;
-        int soLuongThatBai = 0;
+        boolean hasAdded = false;
+        Connection conn = null;
 
-        for (HangThanhVien htv : danhSachImport) {
-            boolean ketQua = themHangThanhVien(htv);
-            if (ketQua) {
-                soLuongThanhCong++;
-            } else {
-                soLuongThatBai++;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (HangThanhVien htv : dsNhap) {
+
+                if (setTenHang.contains(htv.getTenHang().trim().toLowerCase())) {
+                    System.out.println("Bỏ qua hạng thành viên đã tồn tại: " + htv.getTenHang());
+                    continue;
+                }
+
+                if (themHangThanhVien(htv, conn)) {
+                    setTenHang.add(htv.getTenHang().trim().toLowerCase());
+                    hasAdded = true;
+                } else {
+                    throw new SQLException("Lỗi thao tác DB ở Hạng: " + htv.getTenHang());
+                }
             }
-        }
 
-        this.canUpdate = true;
-        return "Nhập Excel hoàn tất!\n- Thành công: " + soLuongThanhCong + "\n- Thất bại: " + soLuongThatBai;
+            if (hasAdded) {
+                conn.commit();
+                this.canUpdate = true;
+                this.khoitao();
+            } else {
+                conn.rollback();
+            }
+
+            return hasAdded;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi nhập hạng thành viên: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
     }
 }

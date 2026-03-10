@@ -165,11 +165,8 @@ public class NguyenLieuUI extends JPanel {
           fileChooser.setSelectedFile(new java.io.File("NguyenLieu.xlsx"));
           int userSelection = fileChooser.showSaveDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".xlsx")) {
-              path += ".xlsx";
-            }
-            if (nlBUS.xuatExcel(path)) {
+     
+            if (nlBUS.xuatExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
             } else {
               JOptionPane.showMessageDialog(this, "Xuất Excel thất bại!");
@@ -186,8 +183,7 @@ public class NguyenLieuUI extends JPanel {
 
           int userSelection = fileChooser.showOpenDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (nlBUS.nhapExcel(path)) {
+            if (nlBUS.nhapExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!");
               LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {

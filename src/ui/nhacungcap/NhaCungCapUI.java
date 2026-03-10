@@ -4,15 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
-import dao.NhaCungCapDAO;
-import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;

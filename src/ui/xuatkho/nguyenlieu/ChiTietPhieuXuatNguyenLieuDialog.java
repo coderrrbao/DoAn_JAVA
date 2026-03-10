@@ -17,7 +17,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     private DefaultTableModel modelChiTiet;
     private JTextField txtMaPH, txtNgay, txtNV, txtLyDo, txtTong;
     private JComboBox<String> cbTrangThai;
-    private JButton btnLuu, btnSua, btnXoa;
+    private JButton btnLuu, btnSua;
     private PhieuHuyNguyenLieu phieuHuy;
     private XuatKhoNguyenLieuPanel parent;
 
@@ -90,7 +90,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
         JPanel pnBtn = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         btnSua = new JButton("Sửa");
         btnLuu = new JButton("Lưu");
-        btnXoa = new JButton("Xóa");
+        new JButton("Xóa");
         btnLuu.setEnabled(false);
 
         pnBtn.add(btnSua);

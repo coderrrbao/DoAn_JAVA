@@ -15,7 +15,6 @@ public class CongThucBUS {
     private final ChiTietCongThucBUS chiTietCongThucBUS = ChiTietCongThucBUS.getInstance();
     private Map<String, CongThuc> cacheCongThuc = new HashMap<>();
 
-    // Thêm biến canUpdate tương tự SanPhamBUS
     private boolean canUpdate = false;
 
     private CongThucBUS() {
@@ -36,11 +35,11 @@ public class CongThucBUS {
             congThuc.setListChiTietCongThuc(chiTietCongThucBUS.laylistCTCTbangMaCT(congThuc.getMaCT()));
             cacheCongThuc.put(congThuc.getMaSp(), congThuc);
         }
-        canUpdate = false; // Reset trạng thái sau khi đã nạp dữ liệu mới nhất
+        canUpdate = false;
     }
 
     public CongThuc timCongThucChoSP(String maSP) {
-        // Kiểm tra nếu cần cập nhật thì nạp lại dữ liệu từ DB
+
         if (canUpdate) {
             khoitao();
         }

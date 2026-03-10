@@ -4,14 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -20,8 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.LoNguyenLieuBUS;
 import bus.NguyenLieuBUS;
-import dao.NguyenLieuDAO;
-import dao.conection.DBConnection;
 import dto.NguyenLieu;
 import ui.login.PhienDangNhap;
 import util.RenderColor;

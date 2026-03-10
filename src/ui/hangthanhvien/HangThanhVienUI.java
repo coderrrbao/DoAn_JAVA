@@ -1,23 +1,18 @@
 package ui.hangthanhvien;
 
 import bus.HangThanhVienBUS;
-import dao.HangThanhVienDAO;
-import dao.conection.DBConnection;
 import dto.HangThanhVien;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
-import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -169,14 +164,8 @@ public class HangThanhVienUI extends JPanel {
       int userSelection = fileChooser.showSaveDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-        File fileToSave = fileChooser.getSelectedFile();
-        String filePath = fileToSave.getAbsolutePath();
-
-        if (!filePath.toLowerCase().endsWith(".xlsx")) {
-          filePath += ".xlsx";
-        }
-
-        boolean success = htvBUS.xuatExcel(filePath);
+     
+        boolean success = htvBUS.xuatExcel(fileChooser.getSelectedFile());
 
         if (success) {
           JOptionPane.showMessageDialog(this,
@@ -200,10 +189,9 @@ public class HangThanhVienUI extends JPanel {
       int userSelection = fileChooser.showOpenDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-        File fileToOpen = fileChooser.getSelectedFile();
-        String filePath = fileToOpen.getAbsolutePath();
 
-        boolean success = htvBUS.nhapExcel(filePath);
+
+        boolean success = htvBUS.nhapExcel(fileChooser.getSelectedFile());
 
         if (success) {
           JOptionPane.showMessageDialog(this,

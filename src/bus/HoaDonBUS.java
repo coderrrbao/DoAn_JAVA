@@ -1,11 +1,7 @@
 package bus;
 
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.util.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
@@ -18,7 +14,6 @@ import dto.ChiTietHoaDon;
 import dto.CongThuc;
 import dto.HoaDon;
 import dto.Size;
-import ui.thongke.ThongKeValue;
 
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();

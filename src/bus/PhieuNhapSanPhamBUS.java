@@ -1,6 +1,5 @@
 package bus;
 
-import java.awt.List;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -183,19 +182,75 @@ public class PhieuNhapSanPhamBUS {
         return null;
     }
 
-    public boolean nhapExcel(File file) {
-        ArrayList<PhieuNhapSanPham> dsNhap = XuLyExcel.nhapFilePhieuNhapSanPham(file);
-        if (dsNhap == null || dsNhap.isEmpty())
-            return false;
+    public boolean themPhieuNhapSanPham(PhieuNhapSanPham phieuNhapSanPham, Connection conn) throws SQLException {
+        LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
 
-        int thanhCong = 0;
-        for (PhieuNhapSanPham pn : dsNhap) {
-            pn.setTrangThaiXuLy("Đang xử lý");
-            if (themPhieuNhapSanPham(pn)) {
-                thanhCong++;
+        String maPN = phieuNhapSanPhamDAO.layMaPhieuNhapSPKhaDung(conn);
+        phieuNhapSanPham.setMaPN(maPN);
+
+        if (!phieuNhapSanPhamDAO.themPhieuNhapSanPham(phieuNhapSanPham, conn)) {
+            return false;
+        }
+
+        if (phieuNhapSanPham.getListLoSanPham() != null) {
+            for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
+                loSanPham.setMaPN(maPN);
+                loSanPham.setTrangThaiXuLy("Đang xử lý");
+                if (!loSanPhamBUS.themLoSanPham(loSanPham, conn)) {
+                    return false;
+                }
             }
         }
-        return thanhCong > 0;
+        return true;
+    }
+
+    public boolean nhapExcel(File file) {
+
+        ArrayList<PhieuNhapSanPham> dsNhap = XuLyExcel.nhapFilePhieuNhapSanPham(file);
+
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return false;
+        }
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (PhieuNhapSanPham pn : dsNhap) {
+                pn.setTrangThaiXuLy("Đang xử lý");
+
+                if (!themPhieuNhapSanPham(pn, conn)) {
+
+                    throw new SQLException("Lỗi khi thêm Phiếu Nhập của NCC: " + pn.getMaNCC());
+                }
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            this.khoiTao();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public boolean xuatExcel(File file) {

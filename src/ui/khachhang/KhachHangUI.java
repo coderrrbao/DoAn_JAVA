@@ -14,7 +14,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.HangThanhVienBUS;
 import bus.KhachHangBUS;
-import bus.NhanVienBUS;
 import dto.HangThanhVien;
 import dto.KhachHang;
 import ui.component.IconButtonEditor;
@@ -23,7 +22,6 @@ import ui.component.Search_Item;
 import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
-import util.XuLyExcel;
 
 public class KhachHangUI extends JPanel {
     private JButton btnTao, btnSua, btnXoa, btnNhapExcel, btnXuatExcel;
@@ -31,7 +29,6 @@ public class KhachHangUI extends JPanel {
     private Search_Item search_Item;
     private JTable tableUI;
     private DefaultTableModel model;
-    private KhachHangBUS KHBUS = new KhachHangBUS();
 
     private List<KhachHang> listKhachHang = new ArrayList<>();
     private List<KhachHang> listKhachHangLoc = new ArrayList<>();

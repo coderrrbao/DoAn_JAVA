@@ -8,15 +8,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 
-import dao.ChiTietCongThucDAO;
-import dao.CongThucDAO;
-import dao.DanhMucDao;
+import javax.swing.JOptionPane;
+
 import dao.SanPhamDAO;
-import dao.SizeDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
-import dto.CongThuc;
-import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
 import util.XuLyExcel;
@@ -306,8 +302,40 @@ public class SanPhamBUS {
         return XuLyExcel.xuatFileSanPham(file, this.layListSanPham());
     }
 
+    public boolean themSanPham(SanPham sanPham, Connection conn) throws SQLException {
+        CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
+        SizeBUS sizeBUS = SizeBUS.getSizeBUS();
+
+        if (!sanPhamDAO.themSanPham(sanPham, conn)) {
+            return false;
+        }
+
+        if (sanPham.getCongThuc() != null && sanPham.getLoaiNuoc().equals("Pha chế")) {
+            sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
+            if (!congThucBUS.themCongThuc(sanPham.getCongThuc(), conn)) {
+                return false;
+            }
+        }
+
+        if (sanPham.getListSize() != null) {
+            for (Size size : sanPham.getListSize()) {
+                size.setMaSP(sanPham.getMaSP());
+                if (!sizeBUS.themSize(size, conn)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
     public boolean nhapExcel(File file) {
+
         ArrayList<SanPham> listSanPham = XuLyExcel.nhapFileSanPham(file);
+        if (listSanPham == null || listSanPham.isEmpty()) {
+            return false;
+        }
+
         HashSet<String> setTenSp = new HashSet<>();
         for (SanPham sanPham : layListSanPham()) {
             setTenSp.add(sanPham.getTenSP());
@@ -315,16 +343,49 @@ public class SanPhamBUS {
 
         for (SanPham sanPham : listSanPham) {
             if (setTenSp.contains(sanPham.getTenSP())) {
+                JOptionPane.showMessageDialog(null, "Sản phẩm đã tồn tại: " + sanPham.getTenSP());
                 return false;
             }
         }
 
-        for (SanPham sanPham : listSanPham) {
-            themSanPham(sanPham);
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (SanPham sanPham : listSanPham) {
+
+                if (!themSanPham(sanPham, conn)) {
+                    throw new SQLException("Lỗi khi thêm sản phẩm: " + sanPham.getTenSP());
+                }
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            this.khoitao();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-
-        return true;
-
     }
 
     public void setCanUpdate(boolean canUpdate) {

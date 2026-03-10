@@ -189,21 +189,15 @@ public class TaiKhoanDao {
         return false;
     }
 
-    public void insertTaiKhoan(Connection conn, TaiKhoan tk) throws SQLException {
-        String sql = "INSERT INTO TaiKhoan "
-                + "(MaTK, MaNV, TenDangNhap, MatKhau, MaNQ, TrangThaiXuLy, TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, tk.getMaTK());
-            ps.setString(2, tk.getMaNV());
-            ps.setString(3, tk.getTenDangNhap());
-            ps.setString(4, tk.getMatKhau());
-            ps.setString(5, tk.getNhomQuyen().getMaNQ());
-            ps.setString(6, "Đang hoạt động");
-            ps.setInt(7, 1);
-            ps.executeUpdate();
+    public boolean insertTaiKhoan(Connection conn, TaiKhoan tk) throws SQLException {
+        String sql = "INSERT INTO TaiKhoan (MaTK, TenDangNhap, MatKhau, MaNQ, TrangThai) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, tk.getMaTK());
+            pst.setString(2, tk.getTenDangNhap());
+            pst.setString(3, tk.getMatKhau());
+            pst.setString(4, tk.getNhomQuyen().getMaNQ());
+            pst.setInt(5, 1);
+            return pst.executeUpdate() > 0;
         }
     }
 

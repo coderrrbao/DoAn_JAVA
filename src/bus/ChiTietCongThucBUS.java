@@ -10,22 +10,19 @@ import dto.ChiTietCongThuc;
 import dto.NguyenLieu;
 
 public class ChiTietCongThucBUS {
-    // 1. Khai báo instance duy nhất (Singleton)
+
     private static ChiTietCongThucBUS instance;
 
     private final ChiTietCongThucDAO chiTietCongThucDAO = new ChiTietCongThucDAO();
     private final NguyenLieuBUS nguyenLieuBUS = NguyenLieuBUS.getNguyenLieuBUS();
 
-    // 2. Bộ nhớ đệm lưu theo mã công thức
     private Map<String, ArrayList<ChiTietCongThuc>> cacheCTCT = new HashMap<>();
     private boolean canUpdate = false;
 
-    // Private constructor để ngăn chặn việc khởi tạo từ bên ngoài
     private ChiTietCongThucBUS() {
         khoiTao();
     }
 
-    // 3. Phương thức để lấy instance duy nhất
     public static ChiTietCongThucBUS getInstance() {
         if (instance == null) {
             instance = new ChiTietCongThucBUS();

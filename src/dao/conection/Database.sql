@@ -655,7 +655,7 @@ BEGIN
     INSERT INTO NhanVien
         (MaNV, TenNV, GioiTinh, NgaySinh, SDT, DiaChi, ChucVu, Anh,TrangThai)
     VALUES
-        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Dĩ An, Bình Dương', N'Admin', '/assets/img/NV01.png', 1),
+        ('NV01', N'Nguyễn Hoài Bảo', N'Nam', '2000-01-01', '0901234567', N'Dĩ An, Bình Dương', N'Admin', '/assets/img/nhanvien/NV01.png', 1),
         ('NV02', N'Phạm Hữu Phú', N'Nam', '1998-02-02', '0902345678', N'Quận 1, TP.HCM', N'Quản lý', '/assets/img/NV02.png', 1),
         ('NV03', N'Lê Huy Hoàng', N'Nam', '1995-05-05', '0903456789', N'Thủ Đức, TP.HCM', N'Nhân viên kho', '/assets/img/NV03.png', 1),
         ('NV04', N'Trần Thị Mai', N'Nữ', '2001-08-15', '0904567890', N'Biên Hòa, Đồng Nai', N'Nhân viên bán hàng', '/assets/img/NV04.png', 1),

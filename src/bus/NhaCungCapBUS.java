@@ -1,15 +1,12 @@
 package bus;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dao.NhaCungCapDAO;
 import dao.conection.DBConnection;
@@ -268,21 +265,82 @@ public class NhaCungCapBUS {
         return true;
     }
 
+    public boolean themNhaCungCap(NhaCungCap ncc, Connection conn) throws SQLException {
+
+        String maMoi = nhaCungCapDAO.layMaNhaCungCapKhaDung();
+        ncc.setMaNCC(maMoi);
+
+        if (!nhaCungCapDAO.themNhaCungCap(conn, ncc)) {
+            return false;
+        }
+
+        ChiTietNhaCungCapBUS ctBus = ChiTietNhaCungCapBUS.getChiTietNhaCungCapBUS();
+        if (ncc.getListChiTietNhaCungCap() != null) {
+            for (ChiTietNhaCungCap ct : ncc.getListChiTietNhaCungCap()) {
+                ct.setMaNCC(maMoi);
+                if (!ctBus.themChiTietNhaCungCap(ct, conn)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean nhapExcel(File file) {
 
         ArrayList<NhaCungCap> dsNhap = XuLyExcel.nhapFileNhaCungCap(file);
-
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
 
-        int thanhCong = 0;
+        HashSet<String> setTenHienTai = new HashSet<>();
+        for (NhaCungCap ncc : laylistNhaCungCap()) {
+            setTenHienTai.add(ncc.getTenNCC().trim().toLowerCase());
+        }
 
-        for (NhaCungCap ncc : dsNhap) {
-            if (themNhaCungCap(ncc)) {
-                thanhCong++;
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (NhaCungCap ncc : dsNhap) {
+
+                if (setTenHienTai.contains(ncc.getTenNCC().trim().toLowerCase())) {
+                    continue;
+                }
+
+                if (!themNhaCungCap(ncc, conn)) {
+                    throw new SQLException("Lỗi thực thi tại dòng: " + ncc.getTenNCC());
+                }
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
+    }
+
+    private void dongKetNoi(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-        return thanhCong > 0;
     }
 
     public boolean xuatExcel(File file) {

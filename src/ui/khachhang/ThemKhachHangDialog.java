@@ -76,7 +76,6 @@ public class ThemKhachHangDialog extends JDialog {
         txtPhone = new JTextField();
         JPanel phoneField = TaoUI.taoFieldText("Số điện thoại", 110, 210, 30, 10, txtPhone);
 
-        // Chỉ cho phép nhập số
         txtPhone.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
@@ -108,7 +107,7 @@ public class ThemKhachHangDialog extends JDialog {
         hangLabel.setPreferredSize(new Dimension(110, 30));
         hangLabel.setMinimumSize(new Dimension(110, 30));
         hangLabel.setMaximumSize(new Dimension(110, 30));
-        
+
         lblHangThanhVien = new JLabel(khachHang != null ? "" : "Thành Viên Mới");
         hangPanel.add(hangLabel);
         hangPanel.add(lblHangThanhVien);
@@ -177,7 +176,6 @@ public class ThemKhachHangDialog extends JDialog {
 
         btnSua.addActionListener(e -> batThaoTacSua());
 
-        // Xử lý nút Thêm: Bắt lỗi trực tiếp từ Exception của hàm themKhachHang
         btnThem.addActionListener(e -> {
             String name = txtName.getText().trim();
             String phone = txtPhone.getText().trim();
@@ -191,24 +189,25 @@ public class ThemKhachHangDialog extends JDialog {
             kh.setMaHang("HTV01");
 
             try {
-                // Đẩy hẳn đối tượng xuống BUS. Nếu lỗi, BUS sẽ ném Exception
+
                 bus.themKhachHang(kh);
-                
-                JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 if (khUI != null) {
                     LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
                 dispose();
             } catch (Exception ex) {
-                // In ra thông báo lỗi mà hàm themKhachHang đã thiết lập
+
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
             }
         });
 
-        // Xử lý nút Lưu (Cập nhật): Bắt lỗi bằng kết quả String trả về từ hàm capNhatKhachHang
         btnLuu.addActionListener(e -> {
             if (khachHang == null) {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
@@ -216,15 +215,15 @@ public class ThemKhachHangDialog extends JDialog {
             khachHang.setSdt(txtPhone.getText().trim());
             khachHang.setGioiTinh((String) cbGioiTinh.getSelectedItem());
 
-            // Đẩy xuống BUS
             String errorMsg = bus.capNhatKhachHang(khachHang);
-            
+
             if (errorMsg != null) {
-                // Nếu errorMsg khác null nghĩa là có lỗi
+
                 JOptionPane.showMessageDialog(this, errorMsg, "Lỗi cập nhật", JOptionPane.ERROR_MESSAGE);
             } else {
-                // Nếu errorMsg là null nghĩa là thành công
-                JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
                 if (khUI != null) {
                     LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
@@ -240,7 +239,7 @@ public class ThemKhachHangDialog extends JDialog {
         txtName.setText(khachHang.getTenKH());
         txtPhone.setText(khachHang.getSdt());
         cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
-    
+
         lblHangThanhVien.setText(bus.layTenHangTuMa(khachHang.getMaHang()));
     }
 }

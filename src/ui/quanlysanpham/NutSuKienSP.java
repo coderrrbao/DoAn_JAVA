@@ -3,7 +3,6 @@ package ui.quanlysanpham;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import bus.SanPhamBUS;
-import dto.ChiTietCongThuc;
 import dto.SanPham;
 import util.TaoUI;
 

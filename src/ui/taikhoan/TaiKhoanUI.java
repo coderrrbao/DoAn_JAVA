@@ -46,7 +46,29 @@ public class TaiKhoanUI extends JPanel {
         TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất exc");
-        btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
+        btnXuatExcel.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+
+            fileChooser.setSelectedFile(new File("DanhSachTaiKhoan.xlsx"));
+
+            int userSelection = fileChooser.showSaveDialog(null);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                    fileToSave = new File(filePath + ".xlsx");
+                }
+
+                if (taiKhoanBUS.xuatExc(fileToSave)) {
+                    JOptionPane.showMessageDialog(null, "Xuất file Excel thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         TaoUI.setFixSize(btnXuatExcel, 100, 32);
 
         btnNhapExcel = new JButton("Nhập exc");

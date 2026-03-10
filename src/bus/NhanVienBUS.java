@@ -1,9 +1,13 @@
 package bus;
 
 import java.io.File;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import dao.NhanVienDAO;
+import dao.conection.DBConnection;
 import dto.NhanVien;
 import util.XuLyExcel;
 
@@ -38,10 +42,6 @@ public class NhanVienBUS {
         return listNhanVien;
     }
 
-    /**
-     * Gọi khi dữ liệu thay đổi bên ngoài BUS (vd: import Excel qua DAO) để lần gọi
-     * sau layDanhSachNhanVien() sẽ load lại từ DB.
-     */
     public void yeuCauCapNhat() {
         this.canUpdate = true;
     }
@@ -58,6 +58,19 @@ public class NhanVienBUS {
 
         canUpdate = true;
         return null;
+    }
+
+    public boolean themNhanVien(NhanVien nv, Connection conn) throws SQLException {
+
+        String validation = kiemTraDuLieu(nv);
+        if (validation != null) {
+            throw new SQLException("Lỗi dữ liệu nhân viên " + nv.getTenNV() + ": " + validation);
+        }
+
+        if (!dao.themNhanVien(nv, conn)) {
+            return false;
+        }
+        return true;
     }
 
     public String capNhatNhanVien(NhanVien nv) {
@@ -91,30 +104,6 @@ public class NhanVienBUS {
         return true;
     }
 
-    public int getTongSoTrang(int pageSize) {
-        if (canUpdate || listNhanVien == null) {
-            khoitao();
-        }
-        return (int) Math.ceil((double) listNhanVien.size() / pageSize);
-    }
-
-    public ArrayList<NhanVien> layTrang(int page, int pageSize) {
-        if (canUpdate || listNhanVien == null) {
-            canUpdate = false;
-            khoitao();
-        }
-        ArrayList<NhanVien> kq = new ArrayList<>();
-        int start = (page - 1) * pageSize;
-        int end = Math.min(start + pageSize, listNhanVien.size());
-
-        if (start >= listNhanVien.size())
-            return kq;
-
-        for (int i = start; i < end; i++) {
-            kq.add(listNhanVien.get(i));
-        }
-        return kq;
-    }
 
     public NhanVien timNhanVien(String maNV) {
         if (canUpdate || listNhanVien == null) {
@@ -188,23 +177,68 @@ public class NhanVienBUS {
 
     public boolean nhapExcel(File file) {
         ArrayList<NhanVien> dsNhap = XuLyExcel.nhapFileNhanVien(file);
-        if (dsNhap == null || dsNhap.isEmpty())
+        if (dsNhap == null || dsNhap.isEmpty()) {
             return false;
+        }
 
-        int thanhCong = 0;
-        for (NhanVien nv : dsNhap) {
-            if (timNhanVien(nv.getMaNV()) == null) {
-                if (themNhanVien(nv) == null)
-                    thanhCong++;
+        HashSet<String> setSdt = new HashSet<>();
+        for (NhanVien nvHienTai : layDanhSachNhanVien()) {
+            setSdt.add(nvHienTai.getSdt());
+        }
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (NhanVien nv : dsNhap) {
+
+                if (setSdt.contains(nv.getSdt())) {
+                    throw new SQLException("Trùng số điện thoại: " + nv.getSdt());
+                }
+
+                if (nv.getMaNV() == null || nv.getMaNV().isEmpty()) {
+
+                    nv.setMaNV(dao.layMaNhanVien(conn));
+                }
+
+                if (!themNhanVien(nv, conn)) {
+                    throw new SQLException("Lỗi thao tác thêm nhân viên vào CSDL.");
+                }
+
+                setSdt.add(nv.getSdt());
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            this.khoitao();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.err.println("Import Excel Nhân Viên thất bại: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return thanhCong > 0;
     }
 
     public boolean xuatExcel(File file) {
-
         ArrayList<NhanVien> list = layDanhSachNhanVien();
-
         return XuLyExcel.xuatFileNhanVien(file, list);
     }
 }

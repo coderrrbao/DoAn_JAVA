@@ -4,10 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,8 +16,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
 import bus.PhieuNhapSanPhamBUS;
-import dao.PhieuNhapSanPhamDAO;
-import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
@@ -34,8 +28,6 @@ public class NhapKhoSanPhamPanel extends JPanel {
     private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
-    private PhieuNhapSanPhamBUS bus = new PhieuNhapSanPhamBUS();
-
     public NhapKhoSanPhamPanel() {
         setLayout(new BorderLayout());
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);

@@ -68,10 +68,9 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
           JFileChooser fc = new JFileChooser();
           fc.setSelectedFile(new File("PhieuHuyNguyenLieu.xlsx"));
           if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String path = fc.getSelectedFile().getAbsolutePath();
-            if (!path.endsWith(".xlsx"))
-              path += ".xlsx";
-            if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().xuatExcel(path)) {
+      
+  
+            if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().xuatExcel(fc.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
             }
           }
@@ -84,7 +83,7 @@ public class XuatKhoNguyenLieuPanel extends JPanel {
               new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xlsx"));
           if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS()
-                .nhapExcel(fc.getSelectedFile().getAbsolutePath())) {
+                .nhapExcel(fc.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Nhập Excel thành công!");
               loadDuLieu();
             } else {
