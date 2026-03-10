@@ -26,6 +26,7 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
+import dto.ChiTietCongThuc;
 import dto.CongThuc;
 import dto.DanhMuc;
 import dto.SanPham;
@@ -63,12 +64,11 @@ public class ChiTietSanPhamDialog extends JDialog {
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        xemCongThucDialog = new XemCongThucDialog(this, sanPham);
         lblAnh = TaoUI.taoJlabelAnh(null, 200, 200);
         lblAnh.setAlignmentX(CENTER_ALIGNMENT);
 
         btnChonAnh = new JButton("Chọn ảnh");
-
+        xemCongThucDialog = new XemCongThucDialog(this, sanPham);
         tfMaSanPham = new JTextField();
         tfTenSanPham = new JTextField();
         tfCanhBao = new JTextField();
@@ -94,7 +94,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         initGUI();
         ganSuKien();
         settupGiaoDien(sanPham);
-
+        suaLaiGiaoDienTheoQuyen();
     }
 
     private void initGUI() {
@@ -278,8 +278,6 @@ public class ChiTietSanPhamDialog extends JDialog {
                                 size.getPhanTramNL() });
             }
         }
-
-        xemCongThucDialog.capNhapDuLieu(sanPham);
         this.sanPham = sanPham;
         anThaotacSua();
     }
@@ -362,6 +360,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     anThaotacSua();
                     dispose();
+
                     LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
@@ -511,9 +510,6 @@ public class ChiTietSanPhamDialog extends JDialog {
     }
 
     public SanPham dongGoiSanPham() {
-        if (xemCongThucDialog != null) {
-            xemCongThucDialog.dongGoiCongThuc();
-        }
         SanPham sp = new SanPham();
         sp.setMaSP(sanPham == null ? "" : sanPham.getMaSP());
         sp.setTenSP(tfTenSanPham.getText());
@@ -524,6 +520,11 @@ public class ChiTietSanPhamDialog extends JDialog {
         sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
         sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
         sp.setCongThuc(xemCongThucDialog != null ? xemCongThucDialog.dongGoiCongThuc() : null);
+
+        for (ChiTietCongThuc chiTietCongThuc : sp.getCongThuc().getListChiTietCongThuc()) {
+            System.out.println(chiTietCongThuc.getMaCT() + " " + chiTietCongThuc.getNguyenLieu().getMaNL());
+        }
+
         sp.setListSize(dongGoiListSize());
         sp.setTrangThaiXuLy("Chờ xử lý");
 
@@ -572,6 +573,36 @@ public class ChiTietSanPhamDialog extends JDialog {
     public JButton getBtnSua() {
         return btnSua;
     }
+
+ public void inChiTietSanPham(SanPham sp) {
+    if (sp == null) {
+        System.out.println("Sản phẩm không tồn tại!");
+        return;
+    }
+
+    System.out.println("----------------------------------------------");
+    System.out.println(String.format("%-15s: %s", "Mã sản phẩm", sp.getMaSP()));
+    System.out.println(String.format("%-15s: %s", "Tên sản phẩm", sp.getTenSP()));
+    System.out.println(String.format("%-15s: %s", "Danh mục", (sp.getDanhMuc() != null ? sp.getDanhMuc().getTenDM() : "N/A")));
+    System.out.println(String.format("%-15s: %,d VNĐ", "Giá bán", sp.getGiaBan()));
+    System.out.println(String.format("%-15s: %s", "Loại nước", sp.getLoaiNuoc()));
+    System.out.println(String.format("%-15s: %d ml", "Thể tích", sp.getTheTich()));
+    
+    // In công thức nếu có
+    if (sp.getCongThuc() != null && sp.getCongThuc().getListChiTietCongThuc() != null) {
+        System.out.println("Công thức pha chế:");
+        for (ChiTietCongThuc ct : sp.getCongThuc().getListChiTietCongThuc()) {
+            String tenNL = (ct.getNguyenLieu() != null) ? ct.getNguyenLieu().getTenNL() : "Nguyên liệu ẩn";
+            System.out.println(String.format("   + %-15s: %.2f %s", 
+                tenNL, 
+                ct.getSoLuong(), 
+                (ct.getNguyenLieu() != null ? ct.getNguyenLieu().getDonVi() : "")));
+        }
+    } else {
+        System.out.println("Công thức: (Trống)");
+    }
+    System.out.println("----------------------------------------------");
+}
 
     public static void main(String[] args) {
         SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham("SP0sds2");

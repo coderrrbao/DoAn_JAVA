@@ -41,6 +41,9 @@ public class MainFrame extends JFrame {
 
     public void loadAllData() {
         contentPaner.loadAllData();
+    }
+
+    public void chonItemBanDau() {
         menuPanel.chonItemBanDau();
     }
 }

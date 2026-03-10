@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import org.apache.poi.ss.usermodel.Workbook;
@@ -87,7 +88,9 @@ public class KhachHangBUS {
         if (!kh.getSdt().matches("\\d{10,11}")) {
             throw new Exception("Số điện thoại phải có từ 10-11 chữ số!");
         }
-
+        if (timTheoSDT(kh.getSdt()) != null) {
+            throw new Exception("Số điện thoại này đã tồn tại trong hệ thống!");
+        }
         if (kh.getTenDaMua() < 0)
             kh.setTenDaMua(0);
         if (kh.getMaHang() == null || kh.getMaHang().trim().isEmpty()) {
@@ -106,15 +109,34 @@ public class KhachHangBUS {
         if (kh == null || kh.getMaKH() == null || kh.getMaKH().trim().isEmpty()) {
             return "Không tìm thấy mã khách hàng";
         }
-        if (kh.getTenKH() == null || kh.getTenKH().trim().isEmpty()
-                || kh.getSdt() == null || kh.getSdt().trim().isEmpty()) {
-            return "Vui lòng nhập đầy đủ tên và số điện thoại";
+        if (kh.getTenKH() == null || kh.getTenKH().trim().isEmpty()) {
+            return "Tên khách hàng không được để trống!";
         }
+        if (kh.getSdt() == null || kh.getSdt().trim().isEmpty()) {
+            return "Số điện thoại không được để trống!";
+        }
+        if (!kh.getSdt().matches("\\d{10,11}")) {
+            return "Số điện thoại phải là 10-11 chữ số!";
+        }
+
+        KhachHang khExist = timTheoSDT(kh.getSdt());
+        if (khExist != null && !khExist.getMaKH().equals(kh.getMaKH())) {
+            return "Số điện thoại này đã thuộc về khách hàng khác!";
+        }
+
         boolean ok = khachHangDAO.capNhatKhachHang(kh);
         if (!ok) {
-            return "Lỗi cập nhật khách hàng";
+            return "Lỗi cập nhật khách hàng vào CSDL";
         }
-        return null;
+        return null; // Cập nhật thành công
+    }
+
+    public String layTenHangTuMa(String maHang) {
+        if (maHang == null || maHang.trim().isEmpty()) {
+            return "Thành Viên Mới";
+        }
+        HangThanhVien htv = bus.HangThanhVienBUS.getHangThanhVienBUS().timHangThanhVien(maHang);
+        return htv != null ? htv.getTenHang() : "Thành Viên Mới";
     }
 
     public boolean xoaKhachHang(String maKH) {
@@ -124,71 +146,41 @@ public class KhachHangBUS {
         return khachHangDAO.xoaKhachHang(maKH);
     }
 
-    public boolean nhapFile(File file) {
-        ArrayList<KhachHang> dsNhap = XuLyExcel.nhapFileKhachHang(file);
-        if (dsNhap == null || dsNhap.isEmpty())
-            return false;
-
-        int soDongCapNhat = 0;
-        int soDongThemMoi = 0;
-
-        for (KhachHang khFile : dsNhap) {
-            String maKH = khFile.getMaKH();
-            if (maKH == null || maKH.trim().isEmpty())
-                continue;
-
-            double tongChiTieu = khFile.getTenDaMua();
-            if (tongChiTieu < 0)
-                tongChiTieu = 0;
-
-            String maHangMoi = tinhMaHangTheoTongChiTieu(tongChiTieu);
-
-            KhachHang khDb = timKhachHangTheoMa(maKH);
-            if (khDb != null) {
-                khDb.setTenDaMua(tongChiTieu);
-                khDb.setMaHang(maHangMoi);
-                if (khachHangDAO.capNhatKhachHang(khDb)) {
-                    soDongCapNhat++;
-                }
-            } else {
-                khFile.setTenDaMua(tongChiTieu);
-                khFile.setMaHang(maHangMoi);
-                try {
-                    if (themKhachHang(khFile)) {
-                        soDongThemMoi++;
-                    }
-                } catch (Exception e) {
-                }
-            }
-        }
-
-        return (soDongCapNhat + soDongThemMoi) > 0;
-    }
-
-    public boolean xuatFile(File file) {
+    public boolean xuatExcel(File file) {
         ArrayList<KhachHang> list = layDanhSachKhachHang();
         return XuLyExcel.xuatFileKhachHang(file, list);
     }
 
-    public boolean xuatExcel(File file){
-        return xuatFile(file);
-    }
+    public boolean nhapExcel(File file) {
+        ArrayList<KhachHang> dsNhap = XuLyExcel.nhapFileKhachHang(file);
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return false;
+        }
+        HashSet<String> setSdt = new HashSet<>();
+        ArrayList<KhachHang> hienTai = khachHangDAO.layDanhSachKhachHang();
+        for (KhachHang kh : hienTai) {
+            setSdt.add(kh.getSdt());
+        }
 
-    private String tinhMaHangTheoTongChiTieu(double tongChiTieu) {
-        String maHangChon = "HTV01";
-        double maxDieuKien = -1;
+        boolean hasAdded = false;
 
-        ArrayList<HangThanhVien> dsHang = bus.HangThanhVienBUS.getHangThanhVienBUS().layListHangThanhVien();
-        if (dsHang == null)
-            return maHangChon;
+        for (KhachHang kh : dsNhap) {
+            if (setSdt.contains(kh.getSdt())) {
+                System.out.println("Bỏ qua khách hàng (Trùng SDT): " + kh.getSdt());
+                continue;
+            }
 
-        for (HangThanhVien h : dsHang) {
-            if (tongChiTieu >= h.getDieuKien() && h.getDieuKien() > maxDieuKien) {
-                maxDieuKien = h.getDieuKien();
-                maHangChon = h.getMaHang();
+            try {
+                if (themKhachHang(kh)) {
+                    setSdt.add(kh.getSdt());
+                    hasAdded = true;
+                }
+            } catch (Exception e) {
+                System.err.println("Lỗi khi nhập khách hàng " + kh.getSdt() + ": " + e.getMessage());
             }
         }
-        return maHangChon;
+
+        return hasAdded;
     }
 
 }

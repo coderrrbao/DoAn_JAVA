@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -16,11 +18,14 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import bus.NhomQuyenBUS;
 import bus.ChiTietHoaDonBUS;
+import bus.DanhMucBUS;
+import bus.NguyenLieuBUS;
 import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.ChiTietNhaCungCap;
 import dto.CongThuc;
 import dto.DanhMuc;
+import dto.HangThanhVien;
 import dto.HoaDon;
 import dto.KhachHang;
 import dto.KhuyenMai;
@@ -568,118 +573,85 @@ public class XuLyExcel {
         }
         return danhSachNcc;
     }
+public static boolean xuatFileHangThanhVien(File file, ArrayList<HangThanhVien> list) {
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Hang Thanh Vien");
+            String[] columns = { "Mã Hạng", "Tên Hạng", "Phần Trăm Giảm (%)", "Điều Kiện (VNĐ)" };
 
-    public static boolean xuatFileHangThanhVien(java.util.ArrayList<dto.HangThanhVien> list) {
-        javax.swing.JFileChooser fileChooser = new javax.swing.JFileChooser();
-        fileChooser.setDialogTitle("Chọn nơi lưu file Excel Hạng Thành Viên");
-        fileChooser.setSelectedFile(new java.io.File("DanhSachHangThanhVien.xlsx"));
+            Row headerRow = sheet.createRow(0);
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
 
-        if (fileChooser.showSaveDialog(null) == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File fileToSave = fileChooser.getSelectedFile();
-            if (!fileToSave.getName().toLowerCase().endsWith(".xlsx")) {
-                fileToSave = new java.io.File(fileToSave.getParentFile(), fileToSave.getName() + ".xlsx");
+            for (int i = 0; i < columns.length; i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(columns[i]);
+                cell.setCellStyle(headerStyle);
             }
 
-            try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
-                org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Hạng Thành Viên");
-
-                org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
-                org.apache.poi.ss.usermodel.Font font = workbook.createFont();
-                font.setBold(true);
-                headerStyle.setFont(font);
-
-                dto.HangThanhVien dummy = new dto.HangThanhVien();
-                String[] headers = dummy.getExcelHeaders();
-
-                org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
-                for (int i = 0; i < headers.length; i++) {
-                    org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
-                    cell.setCellValue(headers[i]);
-                    cell.setCellStyle(headerStyle);
-                }
-
-                int rowNum = 1;
-                for (dto.HangThanhVien htv : list) {
-                    org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
-                    Object[] rowData = htv.toExcelRow();
-                    for (int i = 0; i < rowData.length; i++) {
-                        row.createCell(i).setCellValue(rowData[i] != null ? rowData[i].toString() : "");
-                    }
-                }
-
-                for (int i = 0; i < headers.length; i++)
-                    sheet.autoSizeColumn(i);
-
-                try (java.io.FileOutputStream out = new java.io.FileOutputStream(fileToSave)) {
-                    workbook.write(out);
-                    javax.swing.JOptionPane.showMessageDialog(null, "Xuất danh sách Hạng Thành Viên thành công!");
-                    return true;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                javax.swing.JOptionPane.showMessageDialog(null, "Lỗi khi xuất file: " + e.getMessage());
-            }
-        }
-        return false;
-    }
-
-    public static java.util.ArrayList<dto.HangThanhVien> nhapFileHangThanhVien(java.io.File file) {
-        java.util.ArrayList<dto.HangThanhVien> danhSach = new java.util.ArrayList<>();
-
-        try (java.io.FileInputStream fis = new java.io.FileInputStream(file);
-                org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook(fis)) {
-
-            org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
-            org.apache.poi.ss.usermodel.DataFormatter formatter = new org.apache.poi.ss.usermodel.DataFormatter();
-
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                org.apache.poi.ss.usermodel.Row row = sheet.getRow(i);
-                if (row == null)
-                    continue;
-
-                String tenHang = formatter.formatCellValue(row.getCell(1)).trim();
-                if (tenHang.isEmpty())
-                    continue;
-
-                dto.HangThanhVien htv = new dto.HangThanhVien();
-
-                htv.setTenHang(tenHang);
-
-                try {
-                    htv.setPhanTramGiam(Integer.parseInt(formatter.formatCellValue(row.getCell(2)).trim()));
-                } catch (Exception e) {
-                    htv.setPhanTramGiam(0);
-                }
-
-                try {
-                    String dieuKienStr = formatter.formatCellValue(row.getCell(3)).replace(",", "").trim();
-                    htv.setDieuKien(Double.parseDouble(dieuKienStr));
-                } catch (Exception e) {
-                    htv.setDieuKien(0);
-                }
-
-                danhSach.add(htv);
+            int rowNum = 1;
+            for (HangThanhVien htv : list) {
+                Row row = sheet.createRow(rowNum++);
+                row.createCell(0).setCellValue(htv.getMaHang());
+                row.createCell(1).setCellValue(htv.getTenHang());
+                row.createCell(2).setCellValue(htv.getPhanTramGiam());
+                row.createCell(3).setCellValue(htv.getDieuKien());
             }
 
+            for (int i = 0; i < columns.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (FileOutputStream fileOut = new FileOutputStream(file)) {
+                workbook.write(fileOut);
+            }
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
-            javax.swing.JOptionPane.showMessageDialog(null, "Lỗi đọc file Excel: File không đúng định dạng!");
+            return false;
         }
+    }
 
-        return danhSach;
+    public static ArrayList<HangThanhVien> nhapFileHangThanhVien(File file) {
+        ArrayList<HangThanhVien> dsMoi = new ArrayList<>();
+        try (FileInputStream fis = new FileInputStream(file);
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+
+                HangThanhVien htv = new HangThanhVien();
+                htv.setMaHang(null); 
+                htv.setTenHang(docCell(row.getCell(1)));
+                htv.setPhanTramGiam(chuyenSoInt(docCell(row.getCell(2))));
+                htv.setDieuKien(chuyenSoDouble(docCell(row.getCell(3))));
+
+                dsMoi.add(htv);
+            }
+            return dsMoi;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
     }
 
     public static boolean xuatFilePhieuKiemKe(java.util.ArrayList<dto.PhieuKiemKe> list, String filePath) {
         try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Phiếu Kiểm Kê");
 
+            String[] headers = {
+                    "Mã Kiểm Kê", "Mã Nhân Viên", "Ngày Kiểm", "Mã Lô",
+                    "Loại Lô", "SL Sổ Sách", "SL Thực Tế", "Ghi Chú", "Trạng Thái"
+            };
+
             org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
             org.apache.poi.ss.usermodel.Font font = workbook.createFont();
             font.setBold(true);
             headerStyle.setFont(font);
-
-            dto.PhieuKiemKe dummy = new dto.PhieuKiemKe();
-            String[] headers = dummy.getExcelHeaders();
 
             org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
@@ -691,11 +663,28 @@ public class XuLyExcel {
             int rowNum = 1;
             for (dto.PhieuKiemKe pkk : list) {
                 org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
-                Object[] rowData = pkk.toExcelRow();
-                for (int i = 0; i < rowData.length; i++) {
 
-                    row.createCell(i).setCellValue(rowData[i] != null ? rowData[i].toString() : "");
+                row.createCell(0).setCellValue(pkk.getMaKK());
+
+                row.createCell(1).setCellValue(pkk.getMaNV());
+
+                row.createCell(2).setCellValue(pkk.getNgayKiem());
+
+                row.createCell(3).setCellValue(pkk.getMaLo());
+
+                row.createCell(4).setCellValue(pkk.getLoaiLo());
+
+                if (pkk.getSoLuongSoSach() != null) {
+                    row.createCell(5).setCellValue(pkk.getSoLuongSoSach());
                 }
+
+                if (pkk.getSoLuongThuc() != null) {
+                    row.createCell(6).setCellValue(pkk.getSoLuongThuc());
+                }
+
+                row.createCell(7).setCellValue(pkk.getGhiChu());
+
+                row.createCell(8).setCellValue(pkk.getTrangThaiXuLy());
             }
 
             for (int i = 0; i < headers.length; i++) {
@@ -709,7 +698,6 @@ public class XuLyExcel {
 
         } catch (Exception e) {
             e.printStackTrace();
-
             return false;
         }
     }
@@ -804,27 +792,43 @@ public class XuLyExcel {
         return danhSach;
     }
 
-    public static boolean xuatFileNhanVien(File file, ArrayList<NhanVien> list) {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Nhân Viên");
+    public static boolean xuatFileNhanVien(java.io.File file, java.util.ArrayList<dto.NhanVien> list) {
+        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+            org.apache.poi.ss.usermodel.Sheet sheet = workbook.createSheet("Nhân Viên");
 
-            Row headerRow = sheet.createRow(0);
-            String[] headers = new NhanVien().getExcelHeaders();
+            String[] headers = { "Mã NV", "Tên Nhân Viên", "Giới Tính", "Ngày Sinh", "Số Điện Thoại", "Địa Chỉ",
+                    "Ảnh" };
+
+            org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+
+            org.apache.poi.ss.usermodel.Row headerRow = sheet.createRow(0);
             for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
+                org.apache.poi.ss.usermodel.Cell cell = headerRow.createCell(i);
                 cell.setCellValue(headers[i]);
+                cell.setCellStyle(headerStyle);
             }
 
             int rowNum = 1;
-            for (NhanVien nv : list) {
-                Row row = sheet.createRow(rowNum++);
-                Object[] rowData = nv.toExcelRow();
-                for (int i = 0; i < rowData.length; i++) {
-                    row.createCell(i).setCellValue(rowData[i] != null ? rowData[i].toString() : "");
-                }
+            for (dto.NhanVien nv : list) {
+                org.apache.poi.ss.usermodel.Row row = sheet.createRow(rowNum++);
+
+                row.createCell(0).setCellValue(nv.getMaNV());
+                row.createCell(1).setCellValue(nv.getTenNV());
+                row.createCell(2).setCellValue(nv.getGioiTinh());
+                row.createCell(3).setCellValue(nv.getNgaySinh());
+                row.createCell(4).setCellValue(nv.getSdt());
+                row.createCell(5).setCellValue(nv.getDiaChi());
+                row.createCell(6).setCellValue(nv.getAnh());
             }
 
-            try (FileOutputStream out = new FileOutputStream(file)) {
+            for (int i = 0; i < headers.length; i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (java.io.FileOutputStream out = new java.io.FileOutputStream(file)) {
                 workbook.write(out);
                 return true;
             }
@@ -1055,30 +1059,34 @@ public class XuLyExcel {
         return danhSachPN;
     }
 
-    public static boolean xuatFilePhieuNhapNguyenLieu(File file, ArrayList<PhieuNhapNguyenLieu> list) {
+    public static boolean xuatFilePhieuNhapNguyenLieu(java.io.File file,
+            java.util.ArrayList<dto.PhieuNhapNguyenLieu> list) {
         if (list == null || list.isEmpty())
             return false;
 
-        try (Workbook workbook = new XSSFWorkbook()) {
-            CellStyle headerStyle = workbook.createCellStyle();
-            Font font = workbook.createFont();
+        try (org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook()) {
+
+            org.apache.poi.ss.usermodel.CellStyle headerStyle = workbook.createCellStyle();
+            org.apache.poi.ss.usermodel.Font font = workbook.createFont();
             font.setBold(true);
             headerStyle.setFont(font);
 
-            Sheet sheet1 = workbook.createSheet("Phiếu Nhập NL");
-            String[] headers1 = new PhieuNhapNguyenLieu().getExcelHeaders();
-            Row rowH1 = sheet1.createRow(0);
+            org.apache.poi.ss.usermodel.Sheet sheet1 = workbook.createSheet("Phiếu Nhập NL");
+            String[] headers1 = { "Mã PN", "Ngày Nhập", "Mã NV", "Tổng Tiền", "Mã NCC", "Trạng Thái", "Ghi Chú" };
+
+            org.apache.poi.ss.usermodel.Row rowH1 = sheet1.createRow(0);
             for (int i = 0; i < headers1.length; i++) {
-                Cell cell = rowH1.createCell(i);
+                org.apache.poi.ss.usermodel.Cell cell = rowH1.createCell(i);
                 cell.setCellValue(headers1[i]);
                 cell.setCellStyle(headerStyle);
             }
 
-            Sheet sheet2 = workbook.createSheet("Chi Tiết Lô NL");
+            org.apache.poi.ss.usermodel.Sheet sheet2 = workbook.createSheet("Chi Tiết Lô NL");
             String[] headers2 = { "Mã Lô NL", "Mã PN", "Mã NL", "Số Lượng", "NSX", "HSD", "Giá Nhập", "Thành Tiền" };
-            Row rowH2 = sheet2.createRow(0);
+
+            org.apache.poi.ss.usermodel.Row rowH2 = sheet2.createRow(0);
             for (int i = 0; i < headers2.length; i++) {
-                Cell cell = rowH2.createCell(i);
+                org.apache.poi.ss.usermodel.Cell cell = rowH2.createCell(i);
                 cell.setCellValue(headers2[i]);
                 cell.setCellStyle(headerStyle);
             }
@@ -1086,17 +1094,20 @@ public class XuLyExcel {
             int rowNum1 = 1;
             int rowNum2 = 1;
 
-            for (PhieuNhapNguyenLieu pn : list) {
+            for (dto.PhieuNhapNguyenLieu pn : list) {
 
-                Row row1 = sheet1.createRow(rowNum1++);
-                Object[] data1 = pn.toExcelRow();
-                for (int i = 0; i < data1.length; i++) {
-                    row1.createCell(i).setCellValue(data1[i] != null ? data1[i].toString() : "");
-                }
+                org.apache.poi.ss.usermodel.Row row1 = sheet1.createRow(rowNum1++);
+                row1.createCell(0).setCellValue(pn.getMaPN());
+                row1.createCell(1).setCellValue(pn.getNgayNhap());
+                row1.createCell(2).setCellValue(pn.getMaNV());
+                row1.createCell(3).setCellValue(pn.getTongTien());
+                row1.createCell(4).setCellValue(pn.getMaNCC());
+                row1.createCell(5).setCellValue(pn.getTrangThaiXuLy());
+                row1.createCell(6).setCellValue(pn.getGhiChu());
 
                 if (pn.getListLoNguyenLieu() != null) {
-                    for (LoNguyenLieu lo : pn.getListLoNguyenLieu()) {
-                        Row row2 = sheet2.createRow(rowNum2++);
+                    for (dto.LoNguyenLieu lo : pn.getListLoNguyenLieu()) {
+                        org.apache.poi.ss.usermodel.Row row2 = sheet2.createRow(rowNum2++);
                         row2.createCell(0).setCellValue(lo.getMaLoNL());
                         row2.createCell(1).setCellValue(pn.getMaPN());
                         row2.createCell(2).setCellValue(lo.getMaNL());
@@ -1114,7 +1125,7 @@ public class XuLyExcel {
             for (int i = 0; i < headers2.length; i++)
                 sheet2.autoSizeColumn(i);
 
-            try (FileOutputStream out = new FileOutputStream(file)) {
+            try (java.io.FileOutputStream out = new java.io.FileOutputStream(file)) {
                 workbook.write(out);
                 return true;
             }
@@ -1124,103 +1135,9 @@ public class XuLyExcel {
         }
     }
 
-    public static ArrayList<SanPham> nhapFileSanPham(File file) {
-        ArrayList<SanPham> danhSach = new ArrayList<>();
-        try (FileInputStream fis = new FileInputStream(file);
-                Workbook workbook = new XSSFWorkbook(fis)) {
 
-            Sheet sheet = workbook.getSheetAt(0);
-            DataFormatter formatter = new DataFormatter();
 
-            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-                Row row = sheet.getRow(i);
-                if (row == null)
-                    continue;
-
-                String tenSP = formatter.formatCellValue(row.getCell(1)).trim();
-                if (tenSP.isEmpty())
-                    continue;
-
-                SanPham sp = new SanPham();
-                sp.setMaSP(formatter.formatCellValue(row.getCell(0)).trim());
-                sp.setTenSP(tenSP);
-
-                String tenDM = formatter.formatCellValue(row.getCell(2)).trim();
-                DanhMuc danhMuc = new DanhMuc();
-                danhMuc.setTenDM(tenDM);
-                sp.setDanhMuc(danhMuc);
-
-                try {
-                    sp.setGiaBan(Long.parseLong(formatter.formatCellValue(row.getCell(3)).replaceAll("[^0-9]", "")));
-                    sp.setGiaNhap(Long.parseLong(formatter.formatCellValue(row.getCell(4)).replaceAll("[^0-9]", "")));
-                    sp.setTheTich(Integer.parseInt(formatter.formatCellValue(row.getCell(5)).replaceAll("[^0-9]", "")));
-                    sp.setMucCanhBao(
-                            Integer.parseInt(formatter.formatCellValue(row.getCell(6)).replaceAll("[^0-9]", "")));
-                } catch (Exception e) {
-
-                    System.out.println("Lỗi định dạng số tại dòng: " + (i + 1));
-                }
-
-                sp.setLoaiNuoc(formatter.formatCellValue(row.getCell(7)).trim());
-                sp.setTrangThaiXuLy("Đang kinh doanh");
-                sp.setAnh("");
-
-                danhSach.add(sp);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-        return danhSach;
-    }
-
-    public static boolean xuatFileSanPham(File file, ArrayList<SanPham> list) {
-        try (Workbook workbook = new XSSFWorkbook()) {
-            Sheet sheet = workbook.createSheet("Sản Phẩm");
-
-            String[] headers = { "Mã SP", "Tên Sản Phẩm", "Danh Mục", "Giá Bán", "Giá Nhập", "Thể Tích", "Mức Cảnh Báo",
-                    "Loại Nước" };
-            Row headerRow = sheet.createRow(0);
-
-            CellStyle headerStyle = workbook.createCellStyle();
-            Font font = workbook.createFont();
-            font.setBold(true);
-            headerStyle.setFont(font);
-
-            for (int i = 0; i < headers.length; i++) {
-                Cell cell = headerRow.createCell(i);
-                cell.setCellValue(headers[i]);
-                cell.setCellStyle(headerStyle);
-            }
-
-            int rowNum = 1;
-            for (SanPham sp : list) {
-                Row row = sheet.createRow(rowNum++);
-                row.createCell(0).setCellValue(sp.getMaSP());
-                row.createCell(1).setCellValue(sp.getTenSP());
-                row.createCell(2).setCellValue(sp.getDanhMuc() != null ? sp.getDanhMuc().getTenDM() : "");
-                row.createCell(3).setCellValue(sp.getGiaBan());
-                row.createCell(4).setCellValue(sp.getGiaNhap());
-                row.createCell(5).setCellValue(sp.getTheTich());
-                row.createCell(6).setCellValue(sp.getMucCanhBao());
-                row.createCell(7).setCellValue(sp.getLoaiNuoc());
-            }
-
-            for (int i = 0; i < headers.length; i++) {
-                sheet.autoSizeColumn(i);
-            }
-
-            try (FileOutputStream out = new FileOutputStream(file)) {
-                workbook.write(out);
-                return true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-        public static ArrayList<KhachHang> nhapFileKhachHang(File file) {
+    public static ArrayList<KhachHang> nhapFileKhachHang(File file) {
         ArrayList<KhachHang> danhSach = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(file);
                 Workbook workbook = new XSSFWorkbook(fis)) {
@@ -1258,8 +1175,8 @@ public class XuLyExcel {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Sản Phẩm");
 
-            // 1. Tạo Header
-            String[] headers = { "Mã KH", "Tên Khách Hàng", "Giới Tính", "Số Điện Thoại", "Tổng Chi Tiêu", "Hạng Thành Viên"};
+            String[] headers = { "Mã KH", "Tên Khách Hàng", "Giới Tính", "Số Điện Thoại", "Tổng Chi Tiêu",
+                    "Hạng Thành Viên" };
             Row headerRow = sheet.createRow(0);
 
             CellStyle headerStyle = workbook.createCellStyle();
@@ -1273,7 +1190,6 @@ public class XuLyExcel {
                 cell.setCellStyle(headerStyle);
             }
 
-            // 2. Ghi dữ liệu
             int rowNum = 1;
             for (KhachHang kh : list) {
                 Row row = sheet.createRow(rowNum++);
@@ -1285,12 +1201,10 @@ public class XuLyExcel {
                 row.createCell(5).setCellValue(kh.getMaHang());
             }
 
-            // Tự động giãn cột
             for (int i = 0; i < headers.length; i++) {
                 sheet.autoSizeColumn(i);
             }
 
-            // 3. Ghi file
             try (FileOutputStream out = new FileOutputStream(file)) {
                 workbook.write(out);
                 return true;
@@ -1298,6 +1212,287 @@ public class XuLyExcel {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    public static boolean xuatFileSanPham(File file, ArrayList<SanPham> listSanPham) {
+        if (listSanPham == null || listSanPham.isEmpty()) {
+            return false;
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+
+            // 1. Tạo Style in đậm cho dòng tiêu đề (Header)
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+
+            // 2. KHỞI TẠO 4 SHEET
+            Sheet sheetSP = workbook.createSheet("Sản Phẩm");
+            Sheet sheetSize = workbook.createSheet("Size");
+            Sheet sheetCT = workbook.createSheet("Công Thức");
+            Sheet sheetCTCT = workbook.createSheet("Chi Tiết Công Thức");
+
+            // 3. TẠO HEADER CHO 4 SHEET
+            String[] headersSP = { "Mã SP", "Tên SP", "Mã Danh Mục", "Giá Bán", "Loại Nước", "Ảnh", "Thể Tích",
+                    "Mức Cảnh Báo", "Trạng Thái" };
+            String[] headersSize = { "Mã Size", "Mã SP", "Tên Size", "Phần Trăm Giá", "Phần Trăm NL" };
+            String[] headersCT = { "Mã CT", "Mã SP" };
+            String[] headersCTCT = { "Mã CTCT", "Mã CT", "Mã Nguyên Liệu", "Số Lượng" };
+
+            taoHeader(sheetSP, headersSP, headerStyle);
+            taoHeader(sheetSize, headersSize, headerStyle);
+            taoHeader(sheetCT, headersCT, headerStyle);
+            taoHeader(sheetCTCT, headersCTCT, headerStyle);
+
+            // 4. DUYỆT LIST SẢN PHẨM VÀ BÓC TÁCH DỮ LIỆU ĐIỀN VÀO TỪNG SHEET
+            int rowNumSP = 1;
+            int rowNumSize = 1;
+            int rowNumCT = 1;
+            int rowNumCTCT = 1;
+
+            for (SanPham sp : listSanPham) {
+                // --- Ghi dữ liệu Sheet Sản Phẩm ---
+                Row rowSP = sheetSP.createRow(rowNumSP++);
+                rowSP.createCell(0).setCellValue(sp.getMaSP());
+                rowSP.createCell(1).setCellValue(sp.getTenSP());
+                rowSP.createCell(2).setCellValue(sp.getDanhMuc() != null ? sp.getDanhMuc().getMaDM() : "");
+                rowSP.createCell(3).setCellValue(sp.getGiaBan());
+                rowSP.createCell(4).setCellValue(sp.getLoaiNuoc());
+                rowSP.createCell(5).setCellValue(sp.getAnh());
+                rowSP.createCell(6).setCellValue(sp.getTheTich());
+                rowSP.createCell(7).setCellValue(sp.getMucCanhBao());
+                rowSP.createCell(8).setCellValue(sp.getTrangThaiXuLy());
+
+                // --- Ghi dữ liệu Sheet Size ---
+                if (sp.getListSize() != null) {
+                    for (Size size : sp.getListSize()) {
+                        Row rowSize = sheetSize.createRow(rowNumSize++);
+                        rowSize.createCell(0).setCellValue(size.getMaSize());
+                        rowSize.createCell(1).setCellValue(size.getMaSP() != null ? size.getMaSP() : sp.getMaSP());
+                        rowSize.createCell(2).setCellValue(size.getTenSize());
+                        rowSize.createCell(3).setCellValue(size.getPhanTramGia());
+                        rowSize.createCell(4).setCellValue(size.getPhanTramNL());
+
+                    }
+                }
+
+                // --- Ghi dữ liệu Sheet Công Thức & Chi Tiết Công Thức ---
+                CongThuc ct = sp.getCongThuc();
+                if (ct != null) {
+                    // Sheet Công Thức
+                    Row rowCT = sheetCT.createRow(rowNumCT++);
+                    rowCT.createCell(0).setCellValue(ct.getMaCT());
+                    rowCT.createCell(1).setCellValue(ct.getMaSp() != null ? ct.getMaSp() : sp.getMaSP());
+
+                    // Sheet Chi Tiết Công Thức
+                    if (ct.getListChiTietCongThuc() != null) {
+                        for (ChiTietCongThuc ctct : ct.getListChiTietCongThuc()) {
+                            Row rowCTCT = sheetCTCT.createRow(rowNumCTCT++);
+                            rowCTCT.createCell(0).setCellValue(ctct.getMaCTCT());
+                            rowCTCT.createCell(1).setCellValue(ctct.getMaCT() != null ? ctct.getMaCT() : ct.getMaCT());
+                            rowCTCT.createCell(2)
+                                    .setCellValue(ctct.getNguyenLieu() != null ? ctct.getNguyenLieu().getMaNL() : "");
+                            rowCTCT.createCell(3).setCellValue(ctct.getSoLuong());
+                        }
+                    }
+                }
+            }
+
+            // 5. AUTO-SIZE CÁC CỘT CHO ĐẸP
+            tuDongGianCot(sheetSP, headersSP.length);
+            tuDongGianCot(sheetSize, headersSize.length);
+            tuDongGianCot(sheetCT, headersCT.length);
+            tuDongGianCot(sheetCTCT, headersCTCT.length);
+
+            // 6. GHI RA FILE
+            try (FileOutputStream out = new FileOutputStream(file)) {
+                workbook.write(out);
+                return true;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // --- CÁC HÀM HỖ TRỢ TRONG CLASS XULYEXCEL ---
+
+    private static void taoHeader(Sheet sheet, String[] headers, CellStyle style) {
+        Row headerRow = sheet.createRow(0);
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(style);
+        }
+    }
+
+    private static void tuDongGianCot(Sheet sheet, int soLuongCot) {
+        for (int i = 0; i < soLuongCot; i++) {
+            sheet.autoSizeColumn(i);
+        }
+    }
+
+    public static ArrayList<SanPham> nhapFileSanPham(File file) {
+        // Dùng LinkedHashMap để giữ nguyên thứ tự sản phẩm như trong file Excel
+        Map<String, SanPham> mapSanPham = new LinkedHashMap<>();
+        Map<String, CongThuc> mapCongThuc = new LinkedHashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(file);
+                Workbook workbook = new XSSFWorkbook(fis)) {
+
+            // --- 1. ĐỌC SHEET "SẢN PHẨM" (Sheet 0) ---
+            Sheet sheetSP = workbook.getSheetAt(0);
+            for (int i = 1; i <= sheetSP.getLastRowNum(); i++) {
+                Row row = sheetSP.getRow(i);
+                if (row == null)
+                    continue;
+
+                String maSP = docCell(row.getCell(0));
+                if (maSP.isEmpty())
+                    continue; // Bỏ qua dòng trống
+
+                SanPham sp = new SanPham();
+                sp.setMaSP(maSP);
+                sp.setTenSP(docCell(row.getCell(1)));
+
+            
+                String danhMucVal = docCell(row.getCell(2));
+                DanhMucBUS  danhMucBUS = new DanhMucBUS();
+                sp.setDanhMuc(danhMucBUS.timDanhMuc(danhMucVal));
+
+                sp.setGiaBan(chuyenSoLong(docCell(row.getCell(3))));
+                sp.setLoaiNuoc(docCell(row.getCell(4)));
+                sp.setAnh(docCell(row.getCell(5)));
+                sp.setTheTich(chuyenSoInt(docCell(row.getCell(6))));
+                sp.setMucCanhBao(chuyenSoInt(docCell(row.getCell(7))));
+                sp.setTrangThaiXuLy(docCell(row.getCell(8)));
+
+                sp.setListSize(new ArrayList<>()); // Khởi tạo list size rỗng
+                mapSanPham.put(maSP, sp);
+            }
+
+            // --- 2. ĐỌC SHEET "SIZE" (Sheet 1) ---
+            Sheet sheetSize = workbook.getSheetAt(1);
+            for (int i = 1; i <= sheetSize.getLastRowNum(); i++) {
+                Row row = sheetSize.getRow(i);
+                if (row == null)
+                    continue;
+
+                String maSP = docCell(row.getCell(1));
+                if (mapSanPham.containsKey(maSP)) {
+                    Size size = new Size();
+                    size.setMaSize(docCell(row.getCell(0)));
+                    size.setMaSP(maSP);
+                    size.setTenSize(docCell(row.getCell(2)));
+                    size.setPhanTramGia(chuyenSoInt(docCell(row.getCell(3))));
+                    size.setPhanTramNL(chuyenSoInt(docCell(row.getCell(4))));
+
+                    mapSanPham.get(maSP).addSize(size); // Đẩy vào listSize của sản phẩm
+                }
+            }
+
+            // --- 3. ĐỌC SHEET "CÔNG THỨC" (Sheet 2) ---
+            Sheet sheetCT = workbook.getSheetAt(2);
+            for (int i = 1; i <= sheetCT.getLastRowNum(); i++) {
+                Row row = sheetCT.getRow(i);
+                if (row == null)
+                    continue;
+
+                String maCT = docCell(row.getCell(0));
+                String maSP = docCell(row.getCell(1));
+
+                if (mapSanPham.containsKey(maSP)) {
+                    CongThuc ct = new CongThuc();
+                    ct.setMaCT(maCT);
+                    ct.setMaSp(maSP);
+                    ct.setListChiTietCongThuc(new ArrayList<>());
+
+                    mapCongThuc.put(maCT, ct); // Lưu vào map để lát ráp CTCT vào
+                    mapSanPham.get(maSP).setCongThuc(ct);
+                }
+            }
+
+            // --- 4. ĐỌC SHEET "CHI TIẾT CÔNG THỨC" (Sheet 3) ---
+            Sheet sheetCTCT = workbook.getSheetAt(3);
+            for (int i = 1; i <= sheetCTCT.getLastRowNum(); i++) {
+                Row row = sheetCTCT.getRow(i);
+                if (row == null)
+                    continue;
+
+                String maCT = docCell(row.getCell(1));
+                if (mapCongThuc.containsKey(maCT)) {
+                    ChiTietCongThuc ctct = new ChiTietCongThuc();
+                    ctct.setMaCTCT(docCell(row.getCell(0)));
+                    ctct.setMaCT(maCT);
+
+                    NguyenLieu nl = NguyenLieuBUS.getNguyenLieuBUS().timNguyenLieu(docCell(row.getCell(2)));
+       
+                    ctct.setNguyenLieu(nl);
+                    System.out.println(chuyenSoDouble(docCell(row.getCell(3))));
+                    ctct.setSoLuong(chuyenSoDouble(docCell(row.getCell(3))));
+
+                    mapCongThuc.get(maCT).getListChiTietCongThuc().add(ctct);
+                }
+            }
+
+            return new ArrayList<>(mapSanPham.values());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static String docCell(Cell cell) {
+    if (cell == null)
+        return "";
+    switch (cell.getCellType()) {
+        case STRING:
+            return cell.getStringCellValue().trim();
+        case NUMERIC:
+            double value = cell.getNumericCellValue();
+            
+            if (value == (long) value) {
+                return String.valueOf((long) value);
+            }
+            return String.valueOf(value);
+            
+        case BOOLEAN:
+            return String.valueOf(cell.getBooleanCellValue());
+        case FORMULA:
+            try {
+                return String.valueOf(cell.getNumericCellValue());
+            } catch (Exception e) {
+                return cell.getStringCellValue();
+            }
+        default:
+            return "";
+    }
+}
+
+    private static Double chuyenSoDouble(String val) {
+        try {
+            return Double.parseDouble(val);
+        } catch (Exception e) {
+            return 0.0;
+        }
+    }
+private static int chuyenSoInt(String val) {
+        try {
+            return Integer.parseInt(val);
+        } catch (Exception e) {
+            return 0;
+        }
+    }
+
+    private static long chuyenSoLong(String val) {
+        try {
+            return Long.parseLong(val);
+        } catch (Exception e) {
+            return 0L;
         }
     }
 

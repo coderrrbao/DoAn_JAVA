@@ -26,7 +26,7 @@ import util.TaoTinNhan;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-    private JButton themSpBtn, xuaFileBtn, xoaBtn;
+    private JButton themSpBtn, xuaFileBtn, xoaBtn, nhapBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
@@ -38,9 +38,6 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
-
-    private ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(new SanPham(), this);
-    private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
 
     public QuanLySanPhamUI(JFrame owner) {
         this.listSanPham = new ArrayList<>();
@@ -63,7 +60,7 @@ public class QuanLySanPhamUI extends JPanel {
             themSpBtn.setVisible(false);
             xuaFileBtn.setVisible(false);
         }
-        chiTietSanPhamDialog.suaLaiGiaoDienTheoQuyen();
+
         this.revalidate();
         this.repaint();
     }
@@ -90,6 +87,9 @@ public class QuanLySanPhamUI extends JPanel {
         xuaFileBtn = new JButton("Xuất Exc");
         TaoUI.setFixSize(xuaFileBtn, 80, 32);
 
+        nhapBtn = new JButton("Nhập Excel");
+        TaoUI.setFixSize(nhapBtn, 80, 32);
+
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
@@ -104,6 +104,8 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(xoaBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(xuaFileBtn);
+        top.add(Box.createRigidArea(new Dimension(5, 0)));
+        top.add(nhapBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(cbTrangThai);
         top.add(Box.createHorizontalGlue());
@@ -178,6 +180,7 @@ public class QuanLySanPhamUI extends JPanel {
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
+            ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
             themSanPhamDialog.setVisible(true);
         });
 
@@ -186,6 +189,7 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
 
+        nhapBtn.addActionListener(e -> importFileExcel());
         xuaFileBtn.addActionListener(e -> exportFileExcel());
 
         xoaBtn.addActionListener(e -> {
@@ -264,7 +268,7 @@ public class QuanLySanPhamUI extends JPanel {
 
             if (SanPhamBUS.getSanPhamBUS().nhapExcel(file)) {
 
-                loadDataFromDatabase();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 JOptionPane.showMessageDialog(this, "Import thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
 
@@ -302,9 +306,4 @@ public class QuanLySanPhamUI extends JPanel {
             themSanPhamVaoTable(sanPham);
         }
     }
-
-    public ChiTietSanPhamDialog layXemChiTietSanPhamDialog() {
-        return chiTietSanPhamDialog;
-    }
-
 }

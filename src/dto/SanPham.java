@@ -7,7 +7,6 @@ public class SanPham {
     private String tenSP;
     private DanhMuc danhMuc;
     private long giaBan;
-    private long giaNhap;
     private String loaiNuoc;
     private String anh;
     private int theTich;
@@ -19,17 +18,16 @@ public class SanPham {
     public SanPham() {
     }
 
-    public SanPham(String maSp) {
+    public SanPham(String maSp) { 
         this.maSP = maSp;
     }
 
-    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, long giaNhap, String loaiNuoc, String anh,
+    public SanPham(String maSP, String tenSP, DanhMuc danhMuc, long giaBan, String loaiNuoc, String anh,
             int theTich, int mucCanhBao, String trangThaiXuLi) {
         this.maSP = maSP;
         this.tenSP = tenSP;
         this.danhMuc = danhMuc;
         this.giaBan = giaBan;
-        this.giaNhap = giaNhap;
         this.loaiNuoc = loaiNuoc;
         this.anh = anh;
         this.theTich = theTich;
@@ -161,13 +159,5 @@ public class SanPham {
 
     public void setTrangThaiXuLy(String trangThaiXuLi) {
         this.trangThaiXuLy = trangThaiXuLi;
-    }
-
-    public long getGiaNhap() {
-        return giaNhap;
-    }
-
-    public void setGiaNhap(long giaNhap) {
-        this.giaNhap = giaNhap;
     }
 }

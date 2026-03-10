@@ -172,10 +172,16 @@ public class BanHangUI extends JPanel {
         loadDanhSachKhuyenMai();
     }
 
-    private void loadDanhSachKhuyenMai() {
+    public void loadDuLieu(){
+        loadDanhSachKhuyenMai();
+        thongTinKhachHangPanel.loadDataKhachHang();
+    }
+
+    public void loadDanhSachKhuyenMai() {
         KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
         ArrayList<KhuyenMai> ds = kmBUS.layListKhuyenMai();
         if (ds != null) {
+            thanhToanPanel.getCbxKhuyenMai().removeAllItems();
             for (KhuyenMai mgg : ds) {
                 if (kmBUS.kiemTraTrangThaiHopLe(mgg).isEmpty()) {
                     thanhToanPanel.getCbxKhuyenMai().addItem(mgg.getMaKM() + " - Giảm " + mgg.getPhanTramGiam() + "%");

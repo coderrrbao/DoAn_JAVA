@@ -1,9 +1,8 @@
 package dto;
 
 import java.util.ArrayList;
-import util.ExcelExport;
 
-public class NhaCungCap implements ExcelExport {
+public class NhaCungCap {
     private String maNCC;
     private String tenNCC;
     private String soDienThoai;
@@ -12,36 +11,6 @@ public class NhaCungCap implements ExcelExport {
     private boolean cungCapSP = false;
 
     private ArrayList<ChiTietNhaCungCap> listChiTietNhaCungCap = new ArrayList<>();
-
-    @Override
-    public String[] getExcelHeaders() {
-        return new String[] {
-                "Mã NCC",
-                "Tên Nhà Cung Cấp",
-                "Loại Cung Cấp",
-                "Số Điện Thoại",
-                "Địa Chỉ"
-        };
-    }
-
-    @Override
-    public Object[] toExcelRow() {
-        String loai = "";
-        if (cungCapNL && cungCapSP) {
-            loai = "Sản phẩm & Nguyên liệu";
-        } else if (cungCapNL) {
-            loai = "Nguyên liệu";
-        } else if (cungCapSP) {
-            loai = "Sản phẩm";
-        } else {
-            loai = "Không có";
-        }
-        
-        return new Object[] {
-                maNCC, tenNCC, loai, soDienThoai, diaChi
-        };
-    }
-
     public NhaCungCap() {
     }
 

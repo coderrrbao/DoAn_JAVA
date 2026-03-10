@@ -7,7 +7,6 @@ public class Size {
     private String tenSize;
     private int phanTramGia;
     private int phanTramNL;
-    private boolean trangThai;
 
     public Size() {
     }
@@ -24,13 +23,6 @@ public class Size {
         this.phanTramNL = phanTramNL;
     }
 
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
-    }
 
     public String getMaSize() {
         return maSize;

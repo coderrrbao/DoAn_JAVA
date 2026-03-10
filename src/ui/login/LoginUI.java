@@ -157,7 +157,7 @@ public class LoginUI extends JFrame {
       mainFrame.getMenuPanel().suaLaiGiaoDienTheoQuyen();
 
       mainFrame.loadAllData();
-
+      mainFrame.chonItemBanDau();
       mainFrame.setVisible(true);
       this.dispose();
 

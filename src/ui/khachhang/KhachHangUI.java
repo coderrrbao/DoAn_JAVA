@@ -22,7 +22,6 @@ import ui.component.IconButtonRender;
 import ui.component.Search_Item;
 import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
-import util.ExcelExport;
 import util.TaoUI;
 import util.XuLyExcel;
 
@@ -51,8 +50,8 @@ public class KhachHangUI extends JPanel {
         for (HangThanhVien htv : listHang) {
             cbHangThanhVien.addItem(htv.getTenHang());
         }
-        cbHangThanhVien.setPreferredSize(new Dimension(150, 30));
-        cbHangThanhVien.setMaximumSize(new Dimension(150, 30));
+        cbHangThanhVien.setPreferredSize(new Dimension(150, 32));
+        cbHangThanhVien.setMaximumSize(new Dimension(150, 32));
 
         search_Item = new Search_Item(300, 32);
 
@@ -63,9 +62,9 @@ public class KhachHangUI extends JPanel {
         btnXoa = new JButton("Xóa");
         TaoUI.setFixSize(btnXoa, 80, 32);
         btnNhapExcel = new JButton("Nhập Excel");
-        TaoUI.setFixSize(btnXoa, 120, 32);
+        TaoUI.setFixSize(btnNhapExcel, 120, 32);
         btnXuatExcel = new JButton("Xuất Excel");
-        TaoUI.setFixSize(btnXoa, 120, 32);
+        TaoUI.setFixSize(btnXuatExcel, 120, 32);
 
         top.add(cbHangThanhVien);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -216,8 +215,8 @@ public class KhachHangUI extends JPanel {
             if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
 
-                if (bus.nhapFile(file)) {
-                    loadDataFromDatabase();
+                if (bus.nhapExcel(file)) {
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                     JOptionPane.showMessageDialog(this, "Nhập thành công!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Nhập thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);

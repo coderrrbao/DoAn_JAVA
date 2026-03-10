@@ -1,35 +1,12 @@
 package dto;
 
-import util.ExcelExport;
 
-public class ChiTietNhaCungCap implements ExcelExport {
+public class ChiTietNhaCungCap {
     private String maCTNCC;
     private String maNCC;
     private String loaiDoiTuong;
     private String maDoiTuong;
     private double giaNhap;
-
-    @Override
-    public String[] getExcelHeaders() {
-        return new String[] {
-                "Mã CTNCC",
-                "Mã NCC",
-                "Loại Đối Tượng",
-                "Mã Đối Tượng",
-                "Giá Nhập"
-        };
-    }
-
-    @Override
-    public Object[] toExcelRow() {
-        return new Object[] {
-                maCTNCC, 
-                maNCC, 
-                loaiDoiTuong, 
-                maDoiTuong, 
-                giaNhap
-        };
-    }
 
     public ChiTietNhaCungCap() {
     }

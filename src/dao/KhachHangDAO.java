@@ -58,9 +58,9 @@ public class KhachHangDAO {
     public boolean themKhachHang(KhachHang kh) {
         String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, SDT, TenDaMua, MaHang, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement pst = conn.prepareStatement(sql)) {
-            if (kh.getMaKH() == null || kh.getMaKH().trim().isEmpty()) {
-                kh.setMaKH(layMaKhachHangKhaDung());
-            }
+
+            kh.setMaKH(layMaKhachHangKhaDung());
+
             pst.setString(1, kh.getMaKH());
             pst.setString(2, kh.getTenKH());
             pst.setString(3, kh.getGioiTinh());
@@ -150,10 +150,11 @@ public class KhachHangDAO {
             return false;
         }
     }
+
     public boolean capNhatTienDaMua(String maKH, double tienThem) {
         String sql = "UPDATE KhachHang SET TenDaMua = ISNULL(TenDaMua, 0) + ? WHERE MaKH = ?";
         try (java.sql.Connection conn = dao.conection.DBConnection.getConnection();
-             java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
+                java.sql.PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setDouble(1, tienThem);
             pst.setString(2, maKH);
             return pst.executeUpdate() > 0;
@@ -163,4 +164,3 @@ public class KhachHangDAO {
         return false;
     }
 }
-

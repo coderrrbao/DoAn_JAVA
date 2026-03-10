@@ -10,19 +10,21 @@ import dto.ChiTietCongThuc;
 import dto.NguyenLieu;
 
 public class ChiTietCongThucDAO {
-    public ArrayList<ChiTietCongThuc> laylistChiTietCongThuc(String maCT) {
+
+    public ArrayList<ChiTietCongThuc> laylistChiTietCongThuc() {
         ArrayList<ChiTietCongThuc> listChiTietCongThuc = new ArrayList<>();
 
-        String sql = "SELECT * FROM ChiTietCongThuc WHERE TrangThai=1 and MaCT=?";
+        String sql = "SELECT * FROM ChiTietCongThuc WHERE TrangThai=1";
 
         try (Connection conn = DBConnection.getConnection();
                 PreparedStatement pst = conn.prepareStatement(sql)) {
-            pst.setString(1, maCT);
             ResultSet rs = pst.executeQuery();
 
             while (rs.next()) {
+                NguyenLieu nguyenLieu = new NguyenLieu();
+                nguyenLieu.setMaNL(rs.getString("MaNL"));
                 ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(rs.getString("MaCTCT"), rs.getString("MaCT"),
-                        new NguyenLieu(rs.getString("MaNL"), "", 0, "", 0, false),
+                        nguyenLieu,
                         Double.parseDouble(rs.getString("SoLuong")));
                 listChiTietCongThuc.add(chiTietCongThuc);
             }
@@ -90,6 +92,7 @@ public class ChiTietCongThucDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, chiTietCongThuc.getNguyenLieu().getMaNL());
             pst.setDouble(2, chiTietCongThuc.getSoLuong());
+            pst.setString(3, chiTietCongThuc.getMaCTCT());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();

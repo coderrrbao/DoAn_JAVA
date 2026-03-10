@@ -3,6 +3,7 @@ package ui.quanlysanpham;
 import com.formdev.flatlaf.extras.FlatSVGIcon;
 
 import bus.SanPhamBUS;
+import dto.ChiTietCongThuc;
 import dto.SanPham;
 import util.TaoUI;
 
@@ -34,10 +35,10 @@ public class NutSuKienSP extends DefaultCellEditor {
             SanPhamBUS quanLySanPhamBUS = SanPhamBUS.getSanPhamBUS();
             SanPham sanPham = quanLySanPhamBUS
                     .timSanPham(String.valueOf(currentTable.getModel().getValueAt(currentRow, 2)));
+        
             if (sanPham != null) {
-                quanLySanPhamUI.layXemChiTietSanPhamDialog().settupGiaoDien(sanPham);
-
-                quanLySanPhamUI.layXemChiTietSanPhamDialog().setVisible(true);
+                ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(sanPham, quanLySanPhamUI);
+                chiTietSanPhamDialog.setVisible(true);
             } else {
                 JOptionPane.showMessageDialog(null, "Bruhh");
             }

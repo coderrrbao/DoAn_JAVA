@@ -88,7 +88,7 @@ public class ContentPaner extends JPanel {
           banHangUI.setOnThanhToanSuccess(() -> {
             if (hoaDonUI != null) {
               hoaDonUI.loadData();
-}
+            }
           });
 
           revalidate();
@@ -134,21 +134,38 @@ public class ContentPaner extends JPanel {
 
   public void loadAllData() {
     SwingUtilities.invokeLater(() -> {
-      if (quanLySanPhamUI != null) quanLySanPhamUI.loadDataFromDatabase();
-      if (nhaCungCapUI != null) nhaCungCapUI.loadDuLieu();
-      if (nguyenLieuUI != null) nguyenLieuUI.loadDataToTable();
-      if (nhaCungCapUI != null) nhaCungCapUI.loadDuLieu();
-      if (hoaDonUI != null) hoaDonUI.loadData();
-      if (khachHangUI != null) khachHangUI.hienThiDanhSachKhachHang();
-      if (hoaDonUI != null) hoaDonUI.loadData();
-      if (nhanVienUI != null) nhanVienUI.hienThiDanhSachNhanVien();
-      if (taiKhoanUI != null) taiKhoanUI.hienThiDanhSachTaiKhoan();
-      if (xuatKhoUI != null) xuatKhoUI.loadData();
-      if (tonKhoUI != null) tonKhoUI.loadData();
-      if (khuyenMaiUI != null) khuyenMaiUI.loadDataToTable();
-      if (phanQuyenUI != null) phanQuyenUI.loadDuLieu();
-      if (kiemKeUI != null) kiemKeUI.loaiDuLieu();
-      if (hangThanhVienUI != null) hangThanhVienUI.loadDataToTable();
-    }); 
+      if (quanLySanPhamUI != null)
+        quanLySanPhamUI.loadDataFromDatabase();
+      if (nhaCungCapUI != null)
+        nhaCungCapUI.loadDuLieu();
+      if (nguyenLieuUI != null)
+        nguyenLieuUI.loadDataToTable();
+      if (nhaCungCapUI != null)
+        nhaCungCapUI.loadDuLieu();
+      if (hoaDonUI != null)
+        hoaDonUI.loadData();
+      if (khachHangUI != null)
+        khachHangUI.hienThiDanhSachKhachHang();
+      if (hoaDonUI != null)
+        hoaDonUI.loadData();
+      if (nhanVienUI != null)
+        nhanVienUI.hienThiDanhSachNhanVien();
+      if (taiKhoanUI != null)
+        taiKhoanUI.hienThiDanhSachTaiKhoan();
+      if (xuatKhoUI != null)
+        xuatKhoUI.loadData();
+      if (tonKhoUI != null)
+        tonKhoUI.loadData();
+      if (khuyenMaiUI != null)
+        khuyenMaiUI.loadDataToTable();
+      if (phanQuyenUI != null)
+        phanQuyenUI.loadDuLieu();
+      if (kiemKeUI != null)
+        kiemKeUI.loaiDuLieu();
+      if (hangThanhVienUI != null)
+        hangThanhVienUI.loadDataToTable();
+      if (banHangUI != null)
+        banHangUI.loadDanhSachKhuyenMai();
+    });
   }
 }

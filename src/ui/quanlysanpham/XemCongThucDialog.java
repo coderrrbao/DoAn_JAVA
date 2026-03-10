@@ -147,10 +147,10 @@ public class XemCongThucDialog extends JDialog {
         btnSua.addActionListener(e -> {
             int dong = table.getSelectedRow();
             if (dong >= 0) {
-                double soLuong = Double.parseDouble(table.getModel().getValueAt(dong, 3).toString());
+                double soLuong = Double.parseDouble(model.getValueAt(dong, 3).toString());
                 NguyenLieu nguyenLieu = new NguyenLieu();
-                nguyenLieu.setMaNL(table.getModel().getValueAt(dong, 1).toString());
-                nguyenLieu.setTenNL(table.getModel().getValueAt(dong, 2).toString());
+                nguyenLieu.setMaNL(model.getValueAt(dong, 1).toString());
+                nguyenLieu.setTenNL(model.getValueAt(dong, 2).toString());
                 ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(table.getModel().getValueAt(dong, 0).toString(),
                         "",
                         nguyenLieu, soLuong);
@@ -202,7 +202,7 @@ public class XemCongThucDialog extends JDialog {
             NguyenLieu nguyenLieu = nguyenLieuBUS.timNguyenLieu(model.getValueAt(i, 1).toString());
             String maCT = congThuc == null ? "" : congThuc.getMaCT();
             String maCTCT = model.getValueAt(i, 0).toString();
-            ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc(maCT, maCTCT, nguyenLieu,
+            ChiTietCongThuc chiTietCongThuc = new ChiTietCongThuc( maCTCT,maCT, nguyenLieu,
                     Double.parseDouble(model.getValueAt(i, 3).toString()));
             listChiTietCongThuc.add(chiTietCongThuc);
         }

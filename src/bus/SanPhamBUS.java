@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import dao.ChiTietCongThucDAO;
@@ -168,7 +169,7 @@ public class SanPhamBUS {
         try {
             conn.setAutoCommit(false);
             if (sanPham.getCongThuc() != null) {
-                ChiTietCongThucBUS chiTietCongThucBUS = new ChiTietCongThucBUS();
+                ChiTietCongThucBUS chiTietCongThucBUS = ChiTietCongThucBUS.getInstance();
                 Map<String, ChiTietCongThuc> map = new HashMap<>();
                 for (ChiTietCongThuc chiTietCongThuc : sanPhamMoi.getCongThuc().getListChiTietCongThuc()) {
                     if (chiTietCongThuc.getMaCTCT().equals("")) {
@@ -186,7 +187,8 @@ public class SanPhamBUS {
                         }
                     } else {
                         ChiTietCongThuc chiTietCongThucMoi = map.get(chiTietCongThuc.getMaCTCT());
-                        if (!chiTietCongThuc.getNguyenLieu().getMaNL().equals(chiTietCongThucMoi.getMaCTCT())
+                        if (!chiTietCongThuc.getNguyenLieu().getMaNL()
+                                .equals(chiTietCongThucMoi.getNguyenLieu().getMaNL())
                                 || chiTietCongThuc.getSoLuong() != chiTietCongThucMoi.getSoLuong()) {
                             chiTietCongThucBUS.capNhapChiTietCongThuc(chiTietCongThucMoi, conn);
                             canUpdate = true;
@@ -300,93 +302,32 @@ public class SanPhamBUS {
         return ketQua;
     }
 
-    public boolean nhapExcel(File file) {
-        ArrayList<SanPham> dsNhap = XuLyExcel.nhapFileSanPham(file);
-        if (dsNhap == null || dsNhap.isEmpty())
-            return false;
-
-        Connection conn = null;
-        try {
-            conn = DBConnection.getConnection();
-            conn.setAutoCommit(false);
-
-            SizeDAO sizeDao = new SizeDAO();
-            CongThucDAO congThucDao = new CongThucDAO();
-            ChiTietCongThucDAO ctctDao = new ChiTietCongThucDAO();
-            DanhMucDao danhMucDao = new DanhMucDao();
-
-            int count = 0;
-
-            for (SanPham sp : dsNhap) {
-
-                if (sp.getDanhMuc() != null && sp.getDanhMuc().getTenDM() != null) {
-                    DanhMuc dmFull = danhMucDao.timDanhMucTheoTen(sp.getDanhMuc().getTenDM());
-                    if (dmFull != null) {
-                        sp.setDanhMuc(dmFull);
-                    } else {
-
-                        throw new SQLException("Lỗi: Danh mục '" + sp.getDanhMuc().getTenDM()
-                                + "' không tồn tại trong hệ thống. Vui lòng thêm danh mục này trước khi import!");
-                    }
-                } else {
-                    throw new SQLException("Lỗi: Sản phẩm '" + sp.getMaSP() + "' thiếu thông tin Danh Mục!");
-                }
-
-                if (!sanPhamDAO.themSanPham(sp, conn)) {
-                    throw new SQLException("Lỗi thêm Sản phẩm: " + sp.getMaSP());
-                }
-
-                if (sp.getListSize() != null) {
-                    for (Size s : sp.getListSize()) {
-                        if (!sizeDao.themSize(s, conn)) {
-                            throw new SQLException("Lỗi thêm Size: " + s.getMaSize());
-                        }
-                    }
-                }
-
-                if (sp.getCongThuc() != null) {
-                    CongThuc ct = sp.getCongThuc();
-                    if (!congThucDao.themCongThuc(ct, conn)) {
-                        throw new SQLException("Lỗi thêm Công thức cho SP: " + sp.getMaSP());
-                    }
-
-                    if (ct.getListChiTietCongThuc() != null) {
-                        for (ChiTietCongThuc ctct : ct.getListChiTietCongThuc()) {
-                            if (!ctctDao.themCTCT(ctct, conn)) {
-                                throw new SQLException("Lỗi thêm CTCT cho mã CT: " + ct.getMaCT());
-                            }
-                        }
-                    }
-                }
-                count++;
-            }
-
-            conn.commit();
-            this.canUpdate = true;
-            return count > 0;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                if (conn != null)
-                    conn.rollback();
-            } catch (SQLException ex) {
-                ex.printStackTrace();
-            }
-            return false;
-        } finally {
-            try {
-                if (conn != null) {
-                    conn.setAutoCommit(true);
-                    conn.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
-
     public boolean xuatExcel(File file) {
         return XuLyExcel.xuatFileSanPham(file, this.layListSanPham());
+    }
+
+    public boolean nhapExcel(File file) {
+        ArrayList<SanPham> listSanPham = XuLyExcel.nhapFileSanPham(file);
+        HashSet<String> setTenSp = new HashSet<>();
+        for (SanPham sanPham : layListSanPham()) {
+            setTenSp.add(sanPham.getTenSP());
+        }
+
+        for (SanPham sanPham : listSanPham) {
+            if (setTenSp.contains(sanPham.getTenSP())) {
+                return false;
+            }
+        }
+
+        for (SanPham sanPham : listSanPham) {
+            themSanPham(sanPham);
+        }
+
+        return true;
+
+    }
+
+    public void setCanUpdate(boolean canUpdate) {
+        this.canUpdate = canUpdate;
     }
 }

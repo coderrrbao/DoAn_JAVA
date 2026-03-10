@@ -70,7 +70,7 @@ public class Xulypdf {
             long giaBan = 10000 + (i * 2000);
             int soLuongMua = (i % 3) + 1;
 
-            SanPham sp = new SanPham(maSP, tenSP, null, giaBan, 0, "Ly", "img.png", 500, 10,
+            SanPham sp = new SanPham(maSP, tenSP, null, giaBan, "Ly", "img.png", 500, 10,
                     "Đã xử lý");
 
             ChiTietHoaDon ct = new ChiTietHoaDon("CT" + i, hd.getMaHD(), sp, null, soLuongMua, giaBan, true);

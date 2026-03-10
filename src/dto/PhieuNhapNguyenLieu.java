@@ -2,9 +2,7 @@ package dto;
 
 import java.util.ArrayList;
 
-import util.ExcelExport;
-
-public class PhieuNhapNguyenLieu implements ExcelExport {
+public class PhieuNhapNguyenLieu {
     private String maPN;
     private String ngayNhap;
     private String maNV;
@@ -14,24 +12,7 @@ public class PhieuNhapNguyenLieu implements ExcelExport {
     private String ghiChu;
     private ArrayList<LoNguyenLieu> listLoNguyenLieu = new ArrayList<>();
 
-    @Override
-    public String[] getExcelHeaders() {
-        return new String[] {
-                "Mã Phiếu Nhập",
-                "Ngày Nhập",
-                "Nhân Viên Tạo Phiếu",
-                "Ghi chú",
-                "Nhà Cung Cấp",
-                "Trạng Thái"
-        };
-    }
 
-    @Override
-    public Object[] toExcelRow() {
-        return new Object[] {
-                maPN, ngayNhap, maNV, ghiChu, maNCC, trangThaiXuLy
-        };
-    }
 
     public PhieuNhapNguyenLieu() {
     }
