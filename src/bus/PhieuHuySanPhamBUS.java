@@ -220,11 +220,8 @@ public class PhieuHuySanPhamBUS {
           tongTien += lo.getSoLuong() * lo.getGiaNhap();
         }
         phieu.setTongGiaTri(tongTien);
-
-        // Lưu phiếu chính
         if (!dao.themPhieuHuy(phieu, conn)) throw new SQLException();
 
-        // Lưu chi tiết lô
         for (LoSanPham lo : phieu.getListLoSanPhamHuy()) {
           if (!dao.themChiTietHuy(
               phieu.getMaPH(), lo.getMaLoSP(), lo.getSoLuong(), lo.getGiaNhap(), conn))
