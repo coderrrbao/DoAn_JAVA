@@ -26,9 +26,9 @@ public class HoaDonBUS {
             String loaiNuoc = ct.getSanPham().getLoaiNuoc();
             String maSP = ct.getSanPham().getMaSP();
             int soLuongMua = ct.getSoLuong();
-
+            LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
             if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
-                if (!loSanPhamDAO.kiemTraDuHang(maSP, soLuongMua)) {
+                if (loSanPhamBUS.laySoLuongSanPhamTrongKho(maSP)<soLuongMua) {
                     return "Sản phẩm " + ct.getSanPham().getTenSP() + " không đủ hàng!";
                 }
             } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
@@ -39,10 +39,10 @@ public class HoaDonBUS {
                     System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
                     continue;
                 }
-
+                LoNguyenLieuBUS loNguyenLieuBUS =  LoNguyenLieuBUS.getLoNguyenLieuBUS();
                 for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                     double canDung = ctct.getSoLuong() * soLuongMua;
-                    if (!loNguyenLieuDAO.kiemTraDuNguyenLieu(ctct.getNguyenLieu().getMaNL(), canDung)) {
+                    if (loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(ctct.getNguyenLieu().getMaNL())<canDung) {
                         return "Nguyên liệu " + ctct.getNguyenLieu().getTenNL() + " không đủ để pha chế!";
                     }
                 }
