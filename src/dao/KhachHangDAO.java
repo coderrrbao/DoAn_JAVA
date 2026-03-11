@@ -70,9 +70,7 @@ public class KhachHangDAO {
     public boolean themKhachHang(KhachHang kh, Connection conn) throws SQLException {
         String sql = "INSERT INTO KhachHang (MaKH, TenKH, GioiTinh, SDT, TenDaMua, MaHang, TrangThai) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
-        if (kh.getMaKH() == null || kh.getMaKH().isEmpty()) {
-            kh.setMaKH(layMaKhachHangKhaDung(conn));
-        }
+        kh.setMaKH(layMaKhachHangKhaDung(conn));
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, kh.getMaKH());

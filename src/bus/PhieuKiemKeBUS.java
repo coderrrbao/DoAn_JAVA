@@ -175,6 +175,7 @@ public class PhieuKiemKeBUS {
     }
 
     public boolean nhapExcel(File file) {
+        System.out.println("1");
         ArrayList<PhieuKiemKe> dsNhap = XuLyExcel.nhapFilePhieuKiemKe(file);
 
         if (dsNhap == null || dsNhap.isEmpty()) {

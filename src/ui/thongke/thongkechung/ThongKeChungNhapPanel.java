@@ -29,7 +29,7 @@ public class ThongKeChungNhapPanel extends JPanel {
         add(taoTheThongKe("/assets/icon/thelosp.svg", lblLoSanPhamSo, "Lô sản phẩm", new Color(255, 234, 167)));
         add(Box.createRigidArea(new Dimension(10, 0)));
 
-        add(taoTheThongKe("/assets/icon/thelonl.svg", lblLoNguyenLieuSo, "Lô nguyên liệu", new Color(129, 236, 236)));
+        add(taoTheThongKe("/assets/icon/thelonl.svg", lblLoNguyenLieuSo, "Lô nguyên liệu", new Color(110, 235, 185)));
     }
 
     private JPanel taoTheThongKe(String iconPath, JLabel lblSo, String tieuDe, Color mauNen) {

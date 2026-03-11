@@ -664,7 +664,12 @@ public class XuLyExcel {
 
                 row.createCell(1).setCellValue(pkk.getMaNV());
 
-                row.createCell(2).setCellValue(pkk.getNgayKiem());
+                org.apache.poi.ss.usermodel.CreationHelper createHelper = workbook.getCreationHelper();
+                CellStyle dateStyle = workbook.createCellStyle();
+                dateStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd"));
+                SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                row.createCell(2).setCellValue(sdf.parse(pkk.getNgayKiem()));
+                row.createCell(2).setCellStyle(dateStyle);
 
                 row.createCell(3).setCellValue(pkk.getMaLo());
 
@@ -705,51 +710,45 @@ public class XuLyExcel {
                 org.apache.poi.ss.usermodel.Workbook workbook = new org.apache.poi.xssf.usermodel.XSSFWorkbook(fis)) {
 
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
-            org.apache.poi.ss.usermodel.DataFormatter formatter = new org.apache.poi.ss.usermodel.DataFormatter();
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 org.apache.poi.ss.usermodel.Row row = sheet.getRow(i);
                 if (row == null)
                     continue;
 
-                String maLo = formatter.formatCellValue(row.getCell(2)).trim();
+                String maLo = docCell(row.getCell(3));
                 if (maLo.isEmpty())
                     continue;
 
                 dto.PhieuKiemKe pkk = new dto.PhieuKiemKe();
 
-                pkk.setMaKK(formatter.formatCellValue(row.getCell(0)).trim());
+                pkk.setMaKK(docCell(row.getCell(0))); // Mã Kiểm Kê
+                pkk.setMaNV(docCell(row.getCell(1))); // Mã Nhân Viên từ Excel
+                pkk.setNgayKiem(docCell(row.getCell(2))); // Tự động ra yyyy-MM-dd nhờ docCell
+                pkk.setMaLo(maLo); // Mã Lô
+                pkk.setLoaiLo(docCell(row.getCell(4))); // Loại Lô
 
-                pkk.setNgayKiem(formatter.formatCellValue(row.getCell(1)).trim());
-
-                pkk.setMaLo(maLo);
-
-                pkk.setLoaiLo(formatter.formatCellValue(row.getCell(3)).trim());
-
+                // Xử lý số lượng an toàn
                 try {
-                    pkk.setSoLuongSoSach(Double.parseDouble(formatter.formatCellValue(row.getCell(4)).trim()));
+                    pkk.setSoLuongSoSach(Double.parseDouble(docCell(row.getCell(5))));
                 } catch (Exception e) {
                     pkk.setSoLuongSoSach(0.0);
                 }
 
                 try {
-                    pkk.setSoLuongThuc(Double.parseDouble(formatter.formatCellValue(row.getCell(5)).trim()));
+                    pkk.setSoLuongThuc(Double.parseDouble(docCell(row.getCell(6))));
                 } catch (Exception e) {
                     pkk.setSoLuongThuc(0.0);
                 }
 
-                pkk.setMaNV(PhienDangNhap.getUser().getMaNV());
-
-                pkk.setTrangThaiXuLy(formatter.formatCellValue(row.getCell(7)).trim());
+                pkk.setGhiChu(docCell(row.getCell(7)));
+                pkk.setTrangThaiXuLy(docCell(row.getCell(8)));
 
                 danhSach.add(pkk);
             }
-
         } catch (Exception e) {
             e.printStackTrace();
-
         }
-
         return danhSach;
     }
 
@@ -1448,6 +1447,12 @@ public class XuLyExcel {
             case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
+
+                if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
+                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
+                    return sdf.format(cell.getDateCellValue());
+                }
+
                 double value = cell.getNumericCellValue();
 
                 if (value == (long) value) {
