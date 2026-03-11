@@ -21,7 +21,6 @@ public class ListSanPhamPanel extends JPanel {
     private final int PAGE_SIZE = 16;
     private int currentPage = 1;
 
-
     private ArrayList<SanPham> dsHienTai = null;
 
     private JPanel listSanPhamPanel;
@@ -36,7 +35,6 @@ public class ListSanPhamPanel extends JPanel {
 
         initGUI();
     }
-
 
     private void taoTopPanel() {
         JPanel titlePanel = TaoUI.taoPanelCanGiua(Integer.MAX_VALUE, 40);
@@ -91,7 +89,6 @@ public class ListSanPhamPanel extends JPanel {
         taoListSpPanel();
     }
 
-
     private void renderTrang() {
         listSanPhamPanel.removeAll();
 
@@ -119,9 +116,11 @@ public class ListSanPhamPanel extends JPanel {
         }
 
         for (SanPham sp : dsTrang) {
+            if (sp.getTrangThaiXuLy().equals("Ẩn")) {
+                continue;
+            }
             listSanPhamPanel.add(
-                    new SanPhamBhItemPanel(sp, "Mặc định", listener)
-            );
+                    new SanPhamBhItemPanel(sp, "Mặc định", listener));
         }
 
         lblPage.setText(currentPage + "/" + getTongSoTrang());
@@ -130,7 +129,6 @@ public class ListSanPhamPanel extends JPanel {
         listSanPhamPanel.repaint();
     }
 
-
     private int getTongSoTrang() {
         if (dsHienTai == null) {
             return sanPhamBUS.getTongSoTrang(PAGE_SIZE);
@@ -138,20 +136,17 @@ public class ListSanPhamPanel extends JPanel {
         return (int) Math.ceil(dsHienTai.size() * 1.0 / PAGE_SIZE);
     }
 
-
     public void render(ArrayList<SanPham> dsLoc) {
         currentPage = 1;
         this.dsHienTai = dsLoc;
         renderTrang();
     }
 
-
     public void reset() {
         currentPage = 1;
         dsHienTai = null;
         renderTrang();
     }
-
 
     public void setListener(SanPhamClickListener listener) {
         this.listener = listener;

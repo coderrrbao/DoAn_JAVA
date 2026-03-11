@@ -1,11 +1,7 @@
 package bus;
 
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.util.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
@@ -18,7 +14,6 @@ import dto.ChiTietHoaDon;
 import dto.CongThuc;
 import dto.HoaDon;
 import dto.Size;
-import ui.thongke.ThongKeValue;
 
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
@@ -137,24 +132,6 @@ public class HoaDonBUS {
                 e.printStackTrace();
             }
         }
-    }
-
-    public ArrayList<ThongKeValue> getThongKeTheoNgay(String ngay) {
-        if (ngay == null || ngay.isEmpty()) {
-            return new ArrayList<>();
-        }
-        return hoaDonDAO.layKeQuaThongKeTheoNgay(ngay);
-    }
-
-    public ArrayList<ThongKeValue> getThongKeTheoThang(int thang, int nam) {
-        return hoaDonDAO.layKetQuaThongKeTheoThang(thang, nam);
-    }
-
-    public ArrayList<ThongKeValue> getThongKeTheoNam(int nam) {
-        if (nam < 0) {
-            return new ArrayList<>();
-        }
-        return hoaDonDAO.layKetQuaThongKeTheoNam(nam);
     }
 
     public String taoMaHoaDonMoi() {

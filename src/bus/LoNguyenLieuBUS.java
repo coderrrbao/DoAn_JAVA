@@ -75,18 +75,13 @@ public class LoNguyenLieuBUS {
             canUpdate = false;
         }
         int tong = 0;
-        try {
-            for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
-                LocalDate ngayHetHang = LocalDate.parse(loNguyenLieu.getHanSuDung());
-                if (loNguyenLieu.getMaNL().equals(maNL) && ngayHetHang.isBefore(LocalDate.now())) {
-                    tong++;
-                }
+        for (LoNguyenLieu lo : listLoNguyenLieu) {
+            LocalDate ngayHetHan = LocalDate.parse(lo.getHanSuDung());
+            if (lo.getMaNL().equals(maNL) && !ngayHetHan.isAfter(LocalDate.now())) {
+                tong++;
             }
-            return tong;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return -1;
         }
+        return tong;
     }
 
     public ArrayList<LoNguyenLieu> layLoChoNguyenLieu(String maNL) {
@@ -127,9 +122,13 @@ public class LoNguyenLieuBUS {
 
     public double laySoLuongNguyenLieuTrongKho(String ma) {
         double tong = 0;
-        for (LoNguyenLieu loNguyenLieu : listLoNguyenLieu) {
-            if (loNguyenLieu.getMaNL().equals(ma)) {
-                tong += loNguyenLieu.getSoLuong();
+        LocalDate homNay = LocalDate.now();
+        for (LoNguyenLieu lo : listLoNguyenLieu) {
+            if (lo.getMaNL().equals(ma)) {
+                LocalDate ngayHetHan = LocalDate.parse(lo.getHanSuDung());
+                if (ngayHetHan.isAfter(homNay)) {
+                    tong += lo.getSoLuong();
+                }
             }
         }
         return tong;
@@ -160,7 +159,7 @@ public class LoNguyenLieuBUS {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                    canUpdate = true; // Đánh dấu để lần lấy list sau sẽ load lại từ DB
+                    canUpdate = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -210,16 +209,8 @@ public class LoNguyenLieuBUS {
         return list;
     }
 
-    // ==========================================
-    // CÁC HÀM BỔ SUNG CHO TÍNH NĂNG XÁC NHẬN VÀ XÓA
-    // ==========================================
-
     public boolean xacNhanLoNguyenLieu(LoNguyenLieu loNguyenLieu, Connection conn) {
         try {
-            // Lưu ý: conn.setAutoCommit(false) và conn.commit() đã được xử lý ở
-            // PhieuNhapBUS,
-            // nhưng mình vẫn giữ cấu trúc try-catch giống với LoSanPhamBUS của bạn để đồng
-            // bộ.
             conn.setAutoCommit(false);
 
             if (!loNguyenLieuDAO.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {

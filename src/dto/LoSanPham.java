@@ -15,7 +15,6 @@ public class LoSanPham {
     public LoSanPham() {
     }
 
-    // Constructor đầy đủ tham số để đồng bộ với SQL
     public LoSanPham(String maLoSP, String maPN, String maSP, Double soLuong,
             String ngayNhap, String ngaySanXuat, String hanSuDung,
             double tongTien, String trangThaiXuLy) {
@@ -30,7 +29,6 @@ public class LoSanPham {
         this.trangThaiXuLy = trangThaiXuLy;
     }
 
-    // Getters and Setters
     public String getMaLoSP() {
         return maLoSP;
     }

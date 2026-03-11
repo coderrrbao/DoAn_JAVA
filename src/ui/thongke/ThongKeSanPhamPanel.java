@@ -29,7 +29,7 @@ public class ThongKeSanPhamPanel extends JPanel {
 
     public ThongKeSanPhamPanel() {
         setLayout(new BorderLayout());
-        // setBackground(Color.white);
+
         JPanel top = TaoUI.taoPanelBorderLayout(3000, 450);
         thongKeChungSpPanel = new ThongKeChungSpPanel();
         top.add(thongKeChungSpPanel, BorderLayout.NORTH);
@@ -39,7 +39,7 @@ public class ThongKeSanPhamPanel extends JPanel {
         JPanel bieuDoTron = TaoUI.taoPanelBorderLayout(570, 320);
         TaoUI.suaBorderChoPanel(top, 10, 0, 10, 0);
         JPanel bieuDoCot = TaoUI.taoPanelBorderLayout(700, 320);
-        // TaoUI.suaBorderChoPanel(bieuDoCot, 10, 10, 10, 10);
+
         bieuDoPanel.add(bieuDoTron);
         bieuDoPanel.add(bieuDoCot);
         top.add(bieuDoPanel, BorderLayout.CENTER);

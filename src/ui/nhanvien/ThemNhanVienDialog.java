@@ -11,6 +11,7 @@ import java.util.Date;
 import com.toedter.calendar.JDateChooser;
 import bus.NhanVienBUS;
 import dto.NhanVien;
+import ui.login.LoginUI;
 import util.Anh;
 import util.TaoUI;
 
@@ -21,7 +22,6 @@ public class ThemNhanVienDialog extends JDialog {
     private JTextField txtAddress;
     private JDateChooser date;
 
-    // Khai báo các biến liên quan đến hình ảnh
     private JLabel lblAnh;
     private JButton btnChonAnh;
     private JFileChooser fileChooser;
@@ -61,7 +61,6 @@ public class ThemNhanVienDialog extends JDialog {
         JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 600);
         TaoUI.suaBorderChoPanel(mainPanel, 15, 15, 15, 15);
 
-        // --- PHẦN HÌNH ẢNH VÀ NÚT CHỌN ẢNH ---
         JPanel pnlAnhMain = new JPanel();
         pnlAnhMain.setLayout(new BoxLayout(pnlAnhMain, BoxLayout.Y_AXIS));
 
@@ -78,19 +77,17 @@ public class ThemNhanVienDialog extends JDialog {
         pnlAnhMain.add(pnlAnh);
         pnlAnhMain.add(pnlBtnAnh);
 
-        // --- CÁC TRƯỜNG NHẬP LIỆU ---
         txtName = new JTextField();
         JPanel nameField = TaoUI.taoFieldText("Tên nhân viên", 100, 220, 30, 10, txtName);
 
         txtPhone = new JTextField();
         JPanel phoneField = TaoUI.taoFieldText("Số điện thoại", 100, 220, 30, 10, txtPhone);
 
-        // Chỉ cho phép nhập số cho số điện thoại
         txtPhone.addKeyListener(new KeyAdapter() {
             public void keyTyped(KeyEvent e) {
                 char c = e.getKeyChar();
                 if (!Character.isDigit(c) && c != KeyEvent.VK_BACK_SPACE && c != KeyEvent.VK_DELETE) {
-                    e.consume(); // Loại bỏ ký tự không phải số
+                    e.consume();
                 }
             }
         });
@@ -124,7 +121,6 @@ public class ThemNhanVienDialog extends JDialog {
         cbGTJPanel.add(cbGTLabel);
         cbGTJPanel.add(cbGioiTinh);
 
-        // --- PHẦN BUTTON DƯỚI CÙNG ---
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
         btnThem = new JButton("Thêm");
         btnSua = new JButton("Sửa");
@@ -136,7 +132,6 @@ public class ThemNhanVienDialog extends JDialog {
         TaoUI.addItem(buttonPanel, btnLuu, 5, true);
         TaoUI.addItem(buttonPanel, btnDong, 5, true);
 
-        // --- ADD VÀO MAIN PANEL ---
         mainPanel.add(pnlAnhMain);
         mainPanel.add(Box.createVerticalStrut(15));
         mainPanel.add(nameField);
@@ -166,20 +161,19 @@ public class ThemNhanVienDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // TRƯỜNG HỢP 1: Chế độ thêm mới (nhanVien == null)
         if (nhanVien == null) {
             if (!listQuyen.contains("NV_TAO")) {
                 btnThem.setVisible(false);
-                setEditableForm(false); // Khóa toàn bộ form nhập liệu
+                setEditableForm(false);
                 this.setTitle("Thông tin nhân viên mới (Chỉ xem)");
             }
         }
-        // TRƯỜNG HỢP 2: Chế độ xem hoặc sửa (nhanVien != null)
+
         else {
             if (!listQuyen.contains("NV_SUA")) {
                 btnSua.setVisible(false);
                 btnLuu.setVisible(false);
-                btnChonAnh.setVisible(false); // Không cho phép thay đổi ảnh nếu không có quyền sửa
+                btnChonAnh.setVisible(false);
                 this.setTitle("Chi tiết nhân viên (Chế độ chỉ đọc)");
             }
         }
@@ -226,7 +220,6 @@ public class ThemNhanVienDialog extends JDialog {
         btnSua.addActionListener(e -> batThaoTacSua());
         btnChonAnh.addActionListener(e -> chonAnh());
 
-        // XỬ LÝ THÊM NHÂN VIÊN
         btnThem.addActionListener(e -> {
             if (!kiemTraDuLieu()) {
                 return;
@@ -235,7 +228,6 @@ public class ThemNhanVienDialog extends JDialog {
             if (nv == null)
                 return;
 
-            // Xử lý lưu ảnh vào thư mục dự án
             if (fileChooser != null && fileChooser.getSelectedFile() != null) {
                 String duongDanMoi = Anh.luuAnhNV(bus.layMaNVMoi(), fileChooser);
                 if (duongDanMoi != null) {
@@ -256,7 +248,6 @@ public class ThemNhanVienDialog extends JDialog {
             }
         });
 
-        // XỬ LÝ LƯU (CẬP NHẬT)
         btnLuu.addActionListener(e -> {
             if (!kiemTraDuLieu()) {
                 return;
@@ -270,7 +261,6 @@ public class ThemNhanVienDialog extends JDialog {
 
             nvMoi.setMaNV(nhanVien.getMaNV());
 
-            // Xử lý lưu ảnh mới (nếu có chọn)
             if (fileChooser != null && fileChooser.getSelectedFile() != null) {
                 String duongDanMoi = Anh.luuAnhNV(bus.layMaNVMoi(), fileChooser);
                 if (duongDanMoi != null) {
@@ -288,7 +278,7 @@ public class ThemNhanVienDialog extends JDialog {
                 JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 if (nvUI != null)
-                    nvUI.hienThiDanhSachNhanVien();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             }
         });
@@ -332,7 +322,6 @@ public class ThemNhanVienDialog extends JDialog {
         nv.setDiaChi(txtAddress.getText().trim());
         nv.setGioiTinh((String) cbGioiTinh.getSelectedItem());
 
-        // Mặc định set đường dẫn ảnh đang hiện trên form (trước khi lưu đè)
         nv.setAnh(hinhAnhPath);
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

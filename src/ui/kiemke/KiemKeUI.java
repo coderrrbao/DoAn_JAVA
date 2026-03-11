@@ -44,17 +44,14 @@ public class KiemKeUI extends JPanel {
   public void suaLaiGiaoDienTheoQuyen() {
     var listQuyen = PhienDangNhap.getListQuyen();
 
-    // 1. Quyền Thêm phiếu kiểm kê (KK_TAO)
     if (!listQuyen.contains("KK_TAO")) {
       btnThem.setVisible(false);
     }
 
-    // 2. Quyền Sửa phiếu kiểm kê (KK_SUA)
     if (!listQuyen.contains("KK_SUA")) {
       btnSua.setVisible(false);
     }
 
-    // 3. Quyền Xóa phiếu kiểm kê (KK_XOA)
     if (!listQuyen.contains("KK_XOA")) {
       btnXoa.setVisible(false);
     }
@@ -80,8 +77,7 @@ public class KiemKeUI extends JPanel {
                   "Thông báo",
                   JOptionPane.ERROR_MESSAGE);
             } else {
-              PhieuKiemKe phieuKiemKe =
-                  phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(row, 0).toString());
+              PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(row, 0).toString());
               ThemPhieuKiemDialog themPhieuKiemDialog = new ThemPhieuKiemDialog(this, phieuKiemKe);
               themPhieuKiemDialog.setVisible(true);
             }
@@ -99,8 +95,7 @@ public class KiemKeUI extends JPanel {
         e -> {
           int dongChon = table.getSelectedRow();
           if (dongChon >= 0) {
-            PhieuKiemKe phieuKiemKe =
-                phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 0).toString());
+            PhieuKiemKe phieuKiemKe = phieuKiemKeBUS.timPhieuKiemKe(model.getValueAt(dongChon, 0).toString());
 
             ChiTietKiemKeDialog chiTietKiemKeDialog = new ChiTietKiemKeDialog(null, phieuKiemKe);
             chiTietKiemKeDialog.setVisible(true);
@@ -130,7 +125,6 @@ public class KiemKeUI extends JPanel {
           }
         });
 
-    // --- XỬ LÝ XUẤT EXCEL ---
     btnXuatExcel.addActionListener(
         e -> {
           JFileChooser fileChooser = new JFileChooser();
@@ -155,10 +149,9 @@ public class KiemKeUI extends JPanel {
           }
         });
 
-    // --- XỬ LÝ NHẬP EXCEL ---
     btnNhapExcel.addActionListener(
         e -> {
-          // 1. Cấu hình hộp thoại mở file
+
           JFileChooser fileChooser = new JFileChooser();
           fileChooser.setDialogTitle("Chọn file Excel danh sách kiểm kê");
           fileChooser.setFileFilter(
@@ -167,14 +160,13 @@ public class KiemKeUI extends JPanel {
           if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
 
-            // 2. Gọi BUS thực hiện nhập file (Hàm này nên trả về danh sách hoặc boolean
             PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
-            // Giả sử hàm nhapExcel(File file) xử lý logic đọc và lưu vào DB
+
             boolean success = phieuKiemKeBUS.nhapExcel(file);
 
             if (success) {
-              // 3. Cập nhật lại UI
-              loaiDuLieu(); // Hàm load lại table của bạn
+
+              loaiDuLieu();
 
               JOptionPane.showMessageDialog(
                   this,
@@ -200,15 +192,15 @@ public class KiemKeUI extends JPanel {
       if (locNgay.ngayTrongKhoan(phieuKiemKe.getNgayKiem())) {
         model.addRow(
             new Object[] {
-              phieuKiemKe.getMaKK(),
-              phieuKiemKe.getMaNV(),
-              phieuKiemKe.getNgayKiem(),
-              phieuKiemKe.getMaLo(),
-              phieuKiemKe.getLoaiLo(),
-              phieuKiemKe.getSoLuongSoSach(),
-              phieuKiemKe.getSoLuongThuc(),
-              phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
-              phieuKiemKe.getTrangThaiXuLy()
+                phieuKiemKe.getMaKK(),
+                phieuKiemKe.getMaNV(),
+                phieuKiemKe.getNgayKiem(),
+                phieuKiemKe.getMaLo(),
+                phieuKiemKe.getLoaiLo(),
+                phieuKiemKe.getSoLuongSoSach(),
+                phieuKiemKe.getSoLuongThuc(),
+                phieuKiemKe.getSoLuongThuc() - phieuKiemKe.getSoLuongSoSach(),
+                phieuKiemKe.getTrangThaiXuLy()
             });
       }
     }
@@ -252,15 +244,15 @@ public class KiemKeUI extends JPanel {
   private JPanel taoPanelTable() {
     JPanel panel = new JPanel(new BorderLayout());
     String[] columns = {
-      "Mã Phiếu Kiểm",
-      "Mã NV",
-      "Ngày kiểm",
-      "Mã lô",
-      "Loại lô",
-      "SL sổ sách",
-      "SL thực tế",
-      "Chênh lệch",
-      "Trạng thái"
+        "Mã Phiếu Kiểm",
+        "Mã NV",
+        "Ngày kiểm",
+        "Mã lô",
+        "Loại lô",
+        "SL sổ sách",
+        "SL thực tế",
+        "Chênh lệch",
+        "Trạng thái"
     };
     model = new DefaultTableModel(columns, 0);
     JScrollPane scrollPane = TaoUI.taoTableScroll(model);

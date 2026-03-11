@@ -26,10 +26,12 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
+import dto.ChiTietCongThuc;
 import dto.CongThuc;
 import dto.DanhMuc;
 import dto.SanPham;
 import dto.Size;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.Anh;
 import util.TaoUI;
@@ -49,25 +51,21 @@ public class ChiTietSanPhamDialog extends JDialog {
     private DanhMucBUS danhMucBUS = new DanhMucBUS();
 
     private XemCongThucDialog xemCongThucDialog;
-    private QuanLySanPhamUI quanLySanPhamUI;
-
     private JPanel formCongThuc;
 
     public ChiTietSanPhamDialog(SanPham sanPham, QuanLySanPhamUI quanLySanPhamUI) {
         super((JFrame) null, "Chi tiết sản phẩm", true);
-        this.quanLySanPhamUI = quanLySanPhamUI;
         this.sanPham = sanPham;
 
         this.setSize(400, 700);
         this.setLocationRelativeTo(null);
         this.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 
-        xemCongThucDialog = new XemCongThucDialog(this, sanPham);
         lblAnh = TaoUI.taoJlabelAnh(null, 200, 200);
         lblAnh.setAlignmentX(CENTER_ALIGNMENT);
 
         btnChonAnh = new JButton("Chọn ảnh");
-
+        xemCongThucDialog = new XemCongThucDialog(this, sanPham);
         tfMaSanPham = new JTextField();
         tfTenSanPham = new JTextField();
         tfCanhBao = new JTextField();
@@ -93,7 +91,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         initGUI();
         ganSuKien();
         settupGiaoDien(sanPham);
-
+        suaLaiGiaoDienTheoQuyen();
     }
 
     private void initGUI() {
@@ -277,8 +275,6 @@ public class ChiTietSanPhamDialog extends JDialog {
                                 size.getPhanTramNL() });
             }
         }
-
-        xemCongThucDialog.capNhapDuLieu(sanPham);
         this.sanPham = sanPham;
         anThaotacSua();
     }
@@ -361,7 +357,8 @@ public class ChiTietSanPhamDialog extends JDialog {
                             JOptionPane.INFORMATION_MESSAGE);
                     anThaotacSua();
                     dispose();
-                    quanLySanPhamUI.loadDataFromDatabase();
+
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);
@@ -376,7 +373,7 @@ public class ChiTietSanPhamDialog extends JDialog {
                 if (sanPhamBUS.themSanPham(sanPham)) {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
-                    quanLySanPhamUI.loadDataFromDatabase();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Thêm sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);
@@ -510,9 +507,6 @@ public class ChiTietSanPhamDialog extends JDialog {
     }
 
     public SanPham dongGoiSanPham() {
-        if (xemCongThucDialog != null) {
-            xemCongThucDialog.dongGoiCongThuc();
-        }
         SanPham sp = new SanPham();
         sp.setMaSP(sanPham == null ? "" : sanPham.getMaSP());
         sp.setTenSP(tfTenSanPham.getText());
@@ -523,9 +517,13 @@ public class ChiTietSanPhamDialog extends JDialog {
         sp.setTheTich(Integer.parseInt(tfDungTich.getText()));
         sp.setMucCanhBao(Integer.parseInt(tfCanhBao.getText()));
         sp.setCongThuc(xemCongThucDialog != null ? xemCongThucDialog.dongGoiCongThuc() : null);
+
+        for (ChiTietCongThuc chiTietCongThuc : sp.getCongThuc().getListChiTietCongThuc()) {
+            System.out.println(chiTietCongThuc.getMaCT() + " " + chiTietCongThuc.getNguyenLieu().getMaNL());
+        }
+
         sp.setListSize(dongGoiListSize());
         sp.setTrangThaiXuLy("Chờ xử lý");
-        sp.setTrangThai(true);
 
         if (lblAnh.getIcon() != null) {
             SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
@@ -571,6 +569,36 @@ public class ChiTietSanPhamDialog extends JDialog {
 
     public JButton getBtnSua() {
         return btnSua;
+    }
+
+    public void inChiTietSanPham(SanPham sp) {
+        if (sp == null) {
+            System.out.println("Sản phẩm không tồn tại!");
+            return;
+        }
+
+        System.out.println("----------------------------------------------");
+        System.out.println(String.format("%-15s: %s", "Mã sản phẩm", sp.getMaSP()));
+        System.out.println(String.format("%-15s: %s", "Tên sản phẩm", sp.getTenSP()));
+        System.out.println(
+                String.format("%-15s: %s", "Danh mục", (sp.getDanhMuc() != null ? sp.getDanhMuc().getTenDM() : "N/A")));
+        System.out.println(String.format("%-15s: %,d VNĐ", "Giá bán", sp.getGiaBan()));
+        System.out.println(String.format("%-15s: %s", "Loại nước", sp.getLoaiNuoc()));
+        System.out.println(String.format("%-15s: %d ml", "Thể tích", sp.getTheTich()));
+
+        if (sp.getCongThuc() != null && sp.getCongThuc().getListChiTietCongThuc() != null) {
+            System.out.println("Công thức pha chế:");
+            for (ChiTietCongThuc ct : sp.getCongThuc().getListChiTietCongThuc()) {
+                String tenNL = (ct.getNguyenLieu() != null) ? ct.getNguyenLieu().getTenNL() : "Nguyên liệu ẩn";
+                System.out.println(String.format("   + %-15s: %.2f %s",
+                        tenNL,
+                        ct.getSoLuong(),
+                        (ct.getNguyenLieu() != null ? ct.getNguyenLieu().getDonVi() : "")));
+            }
+        } else {
+            System.out.println("Công thức: (Trống)");
+        }
+        System.out.println("----------------------------------------------");
     }
 
     public static void main(String[] args) {

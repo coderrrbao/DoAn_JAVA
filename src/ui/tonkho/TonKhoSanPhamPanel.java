@@ -4,14 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -21,11 +15,6 @@ import javax.swing.table.DefaultTableModel;
 import bus.LoNguyenLieuBUS;
 import bus.LoSanPhamBUS;
 import bus.SanPhamBUS;
-import dao.DanhMucDao;
-import dao.SanPhamDAO;
-import dao.conection.DBConnection;
-import dto.DanhMuc;
-import dto.LoNguyenLieu;
 import dto.SanPham;
 import ui.login.PhienDangNhap;
 import util.RenderColor;
@@ -65,7 +54,7 @@ public class TonKhoSanPhamPanel extends JPanel {
         center.add(topContent, BorderLayout.NORTH);
         JScrollPane scrollPaneTable = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPaneTable.getViewport().getView();
-        RenderColor render = new RenderColor(3, 6, 5, new Color(255, 205, 210));
+        RenderColor render = new RenderColor(3, 6, 5, Color.RED);
         table.getColumnModel().getColumn(3).setCellRenderer(render);
         table.getColumnModel().getColumn(5).setCellRenderer(render);
         center.add(scrollPaneTable, BorderLayout.CENTER);
@@ -103,7 +92,6 @@ public class TonKhoSanPhamPanel extends JPanel {
             btnSua.setVisible(false);
         }
 
-        // Vẽ lại giao diện
         this.revalidate();
         this.repaint();
     }

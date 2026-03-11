@@ -22,9 +22,8 @@ public class PhieuHuySanPhamDAO {
   }
 
   public boolean themPhieuHuy(PhieuHuySanPham ph, Connection conn) {
-    String sql =
-        "INSERT INTO PhieuHuySanPham (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy,"
-            + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
+    String sql = "INSERT INTO PhieuHuySanPham (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy,"
+        + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getMaPH());
       pst.setString(2, ph.getMaNV());
@@ -39,8 +38,7 @@ public class PhieuHuySanPhamDAO {
 
   public boolean themChiTietHuy(
       String maPH, String maLo, double soLuong, double gia, Connection conn) {
-    String sql =
-        "INSERT INTO ChiTietPhieuHuySanPham (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO ChiTietPhieuHuySanPham (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, maPH);
       pst.setString(2, maLo);
@@ -103,11 +101,10 @@ public class PhieuHuySanPhamDAO {
   public ArrayList<LoSanPham> layChiTietHuyTheoMaPH(String maPH) {
     ArrayList<LoSanPham> list = new ArrayList<>();
 
-    String sql =
-        "SELECT ct.*, lo.MaSP "
-            + "FROM ChiTietPhieuHuySanPham ct "
-            + "JOIN LoSanPham lo ON ct.MaLo = lo.MaLoSP "
-            + "WHERE ct.MaPH = ?";
+    String sql = "SELECT ct.*, lo.MaSP "
+        + "FROM ChiTietPhieuHuySanPham ct "
+        + "JOIN LoSanPham lo ON ct.MaLo = lo.MaLoSP "
+        + "WHERE ct.MaPH = ?";
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, maPH);
@@ -126,7 +123,6 @@ public class PhieuHuySanPhamDAO {
     return list;
   }
 
-  // Soft delete - set TrangThai = 0
   public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
     String sql = "UPDATE PhieuHuySanPham SET TrangThai = 0 WHERE MaPH = ?";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {

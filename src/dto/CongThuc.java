@@ -7,7 +7,6 @@ public class CongThuc {
     private String maCT;
     private String maSp;
     private ArrayList<ChiTietCongThuc> listChiTietCongThuc;
-    private boolean trangThai;
 
     public CongThuc() {
         listChiTietCongThuc = new ArrayList<>();
@@ -32,14 +31,6 @@ public class CongThuc {
     public CongThuc(String maCT) {
         this.maCT = maCT;
         listChiTietCongThuc = new ArrayList<>();
-    }
-
-    public void setTrangThai(boolean trangThai) {
-        this.trangThai = trangThai;
-    }
-
-    public boolean getTrangThai() {
-        return trangThai;
     }
 
     public String getMaCT() {

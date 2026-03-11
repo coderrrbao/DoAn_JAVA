@@ -59,10 +59,11 @@ public class LoSanPhamBUS {
         }
         try {
             int tong = 0;
+            LocalDate homNay = LocalDate.now();
             for (LoSanPham loSanPham : listLoSanPham) {
                 if (loSanPham.getMaSP().equals(maSP)) {
                     LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                    if (ngayHetHang.isBefore(LocalDate.now())) {
+                    if (ngayHetHang.isAfter(homNay)) {
                         tong += loSanPham.getSoLuong();
                     }
                 }
@@ -109,10 +110,13 @@ public class LoSanPhamBUS {
         }
         int tong = 0;
         try {
+            LocalDate homNay = LocalDate.now();
             for (LoSanPham loSanPham : listLoSanPham) {
-                LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                if (loSanPham.getMaSP().equals(maSP) && ngayHetHang.isBefore(LocalDate.now())) {
-                    tong++;
+                if (loSanPham.getMaSP().equals(maSP)) {
+                    LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
+                    if (!ngayHetHang.isAfter(homNay)) {
+                        tong++;
+                    }
                 }
             }
             return tong;
@@ -129,9 +133,10 @@ public class LoSanPhamBUS {
         }
         int tong = 0;
         try {
+            LocalDate homNay = LocalDate.now();
             for (LoSanPham loSanPham : listLoSanPham) {
                 LocalDate ngayHetHang = LocalDate.parse(loSanPham.getHanSuDung());
-                if (ngayHetHang.isBefore(LocalDate.now())) {
+                if (!ngayHetHang.isAfter(homNay)) {
                     tong++;
                 }
             }
@@ -167,7 +172,7 @@ public class LoSanPhamBUS {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
-                    canUpdate = true; // Đánh dấu để lần lấy list sau sẽ load lại từ DB
+                    canUpdate = true;
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

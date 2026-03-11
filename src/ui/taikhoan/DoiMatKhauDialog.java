@@ -1,4 +1,5 @@
 package ui.taikhoan;
+
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
@@ -11,17 +12,15 @@ import bus.TaiKhoanBUS;
 import java.awt.Font;
 import util.TaoUI;
 
-
-public class DoiMatKhauDialog extends JDialog{
+public class DoiMatKhauDialog extends JDialog {
     private TaiKhoanUI taiKhoanUI;
     private JPasswordField TXTMatKhauMoi;
     private JPasswordField TXTXacNhanMatKhau;
     private TaiKhoanBUS taiKhoanBUS;
-    
 
-    public DoiMatKhauDialog(JFrame jFrame, TaiKhoanUI taiKhoanUI){
-        super(jFrame,"Đổi mật khẩu", true);
-        
+    public DoiMatKhauDialog(JFrame jFrame, TaiKhoanUI taiKhoanUI) {
+        super(jFrame, "Đổi mật khẩu", true);
+
         initDoiMatKhau();
 
         this.taiKhoanUI = taiKhoanUI;
@@ -29,26 +28,23 @@ public class DoiMatKhauDialog extends JDialog{
         setLocationRelativeTo(jFrame);
         setResizable(false);
     }
-    public void initDoiMatKhau(){
-        //panel main
+
+    public void initDoiMatKhau() {
+
         JPanel mainPanel = TaoUI.taoPanelBoxLayoutDoc(400, 250);
         TaoUI.suaBorderChoPanel(mainPanel, 15, 15, 15, 15);
 
-        // tieu de
         JLabel lblTitle = new JLabel("ĐỔI MẬT KHẨU");
         lblTitle.setFont(new Font("Segoe UI", Font.BOLD, 18));
         JPanel titlePanel = TaoUI.taoPanelCanGiua(400, 40);
         titlePanel.add(lblTitle);
 
-        //nhap mat khau
         TXTMatKhauMoi = new JPasswordField();
-        JPanel MatKhauMoiPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80 ,220 , 30, 10, TXTMatKhauMoi);
+        JPanel MatKhauMoiPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80, 220, 30, 10, TXTMatKhauMoi);
 
-        //xac nhan mat khau
         TXTXacNhanMatKhau = new JPasswordField();
-        JPanel xacNhanMatKhauJPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80 ,220 , 30, 10, TXTXacNhanMatKhau);
+        JPanel xacNhanMatKhauJPanel = TaoUI.taoFieldText("Mật Khẩu Mới", 80, 220, 30, 10, TXTXacNhanMatKhau);
 
-        //button
         JPanel buttonPanel = TaoUI.taoPanelCanGiua(330, 30);
         JButton btnThem = new JButton("Đổi mật khẩu");
         btnThem.addActionListener(e -> xuLyDoiMatKhau());
@@ -57,7 +53,7 @@ public class DoiMatKhauDialog extends JDialog{
 
         TaoUI.addItem(buttonPanel, btnThem, 5, true);
         TaoUI.addItem(buttonPanel, btnHuy, 5, true);
-        //add vao main
+
         mainPanel.add(titlePanel);
         mainPanel.add(javax.swing.Box.createVerticalStrut(20));
         mainPanel.add(MatKhauMoiPanel);
@@ -68,24 +64,24 @@ public class DoiMatKhauDialog extends JDialog{
 
         add(mainPanel);
     }
+
     private void xuLyDoiMatKhau() {
 
         String matKhauMoi = new String(TXTMatKhauMoi.getPassword());
         String xacNhan = new String(TXTXacNhanMatKhau.getPassword());
-        // kiem tra rong
-        if(matKhauMoi.trim().isEmpty() || xacNhan.trim().isEmpty()){
+
+        if (matKhauMoi.trim().isEmpty() || xacNhan.trim().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Vui lòng nhập đầy đủ thông tin");
             return;
         }
-        // kiem tra xac nhan matkhau
-        if(!matKhauMoi.equals(xacNhan)){
+
+        if (!matKhauMoi.equals(xacNhan)) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Mật khẩu xác nhận không khớp");
             return;
         }
 
-        // lay ten dang nhap tu tk UI
         int row = taiKhoanUI.getTableUI().getSelectedRow();
 
         if (row == -1) {
@@ -94,15 +90,15 @@ public class DoiMatKhauDialog extends JDialog{
             return;
         }
         String tenDangNhap = taiKhoanUI.getModel().getValueAt(row, 1).toString();
-        // xu ly
+
         taiKhoanBUS = TaiKhoanBUS.getTaiKhoanBUS();
         boolean kq = taiKhoanBUS.suaMatKhau(tenDangNhap, matKhauMoi);
 
-        if(kq){
+        if (kq) {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Đổi mật khẩu thành công");
             dispose();
-        }else{
+        } else {
             javax.swing.JOptionPane.showMessageDialog(this,
                     "Đổi mật khẩu thất bại");
         }

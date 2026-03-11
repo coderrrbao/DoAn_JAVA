@@ -14,6 +14,7 @@ import dto.ChiTietHoaDon;
 import dto.HoaDon;
 import ui.component.LocNgay_Item;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import util.TaoUI;
 
 public class HoaDonUI extends JPanel {
@@ -124,7 +125,7 @@ public class HoaDonUI extends JPanel {
                 if (hoaDonBUS.xoaHoaDon(maHD)) {
                     JOptionPane.showMessageDialog(this, "Đã xóa hóa đơn thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    loadData();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Lỗi: Không thể xóa hóa đơn này!", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);

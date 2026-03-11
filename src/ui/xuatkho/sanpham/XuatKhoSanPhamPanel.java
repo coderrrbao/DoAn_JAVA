@@ -7,7 +7,7 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
-import ui.component.LocNgay_Item; // Thêm bộ lọc ngày cho đồng bộ
+import ui.component.LocNgay_Item;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -54,8 +54,7 @@ public class XuatKhoSanPhamPanel extends JPanel {
               }
             }
             if (selected != null) {
-              ChiTietPhieuXuatSanPhamDialog detail =
-                  new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
+              ChiTietPhieuXuatSanPhamDialog detail = new ChiTietPhieuXuatSanPhamDialog((Frame) null, selected, this);
               detail.setVisible(true);
             }
           } else {
@@ -70,11 +69,8 @@ public class XuatKhoSanPhamPanel extends JPanel {
 
           int userSelection = fileChooser.showSaveDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".xlsx")) {
-              path += ".xlsx";
-            }
-            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xuatExcel(path)) {
+         
+            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xuatExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Xuất dữ liệu Excel thành công!");
             } else {
               JOptionPane.showMessageDialog(
@@ -89,10 +85,10 @@ public class XuatKhoSanPhamPanel extends JPanel {
               new javax.swing.filechooser.FileNameExtensionFilter("Excel Files", "xlsx"));
 
           if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().nhapExcel(path)) {
+     
+            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().nhapExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Nhập dữ liệu Excel thành công!");
-              loadDuLieu(); // Cập nhật lại bảng hiển thị
+              loadDuLieu();
             } else {
               JOptionPane.showMessageDialog(
                   this, "Lỗi khi nhập dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -109,12 +105,11 @@ public class XuatKhoSanPhamPanel extends JPanel {
                   "Phiếu xuất đã xác nhận, không thể xóa", "Thông báo", 1);
               return;
             }
-            int confirm =
-                JOptionPane.showConfirmDialog(
-                    this,
-                    "Bạn có chắc chắn muốn xóa phiếu này?",
-                    "Xác nhận xóa",
-                    JOptionPane.YES_NO_OPTION);
+            int confirm = JOptionPane.showConfirmDialog(
+                this,
+                "Bạn có chắc chắn muốn xóa phiếu này?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION);
 
             if (confirm == JOptionPane.YES_OPTION) {
               if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().xoaMemPhieuHuy(maPH)) {
@@ -144,12 +139,11 @@ public class XuatKhoSanPhamPanel extends JPanel {
     top.add(Box.createHorizontalGlue());
     add(top, BorderLayout.NORTH);
 
-    model =
-        new DefaultTableModel(
-            new String[] {
-              "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
-            },
-            0);
+    model = new DefaultTableModel(
+        new String[] {
+            "Mã Phiếu", "Ngày Hủy", "Nhân Viên", "Lý Do", "Tổng Giá Trị", "Trạng Thái"
+        },
+        0);
     JScrollPane scrollPane = TaoUI.taoTableScroll(model);
     table = (JTable) scrollPane.getViewport().getView();
 
@@ -174,12 +168,12 @@ public class XuatKhoSanPhamPanel extends JPanel {
       if (locNgay_Item.ngayTrongKhoan(ph.getNgayHuy().toString())) {
         model.addRow(
             new Object[] {
-              ph.getMaPH(),
-              ph.getNgayHuy(),
-              ph.getMaNV(),
-              ph.getLyDo(),
-              String.format("%,.0f VNĐ", ph.getTongGiaTri()),
-              ph.getTrangThaiXuLy()
+                ph.getMaPH(),
+                ph.getNgayHuy(),
+                ph.getMaNV(),
+                ph.getLyDo(),
+                String.format("%,.0f VNĐ", ph.getTongGiaTri()),
+                ph.getTrangThaiXuLy()
             });
       }
     }

@@ -67,7 +67,7 @@ public class PhieuNhapNguyenLieuDAO {
             pst.setString(5, phieuNhapNguyenLieu.getMaNCC());
             pst.setString(6, phieuNhapNguyenLieu.getGhiChu());
             pst.setString(7, phieuNhapNguyenLieu.getTrangThaiXuLy());
-            pst.setInt(8, 1); // Trạng thái = 1 (Đang hoạt động)
+            pst.setInt(8, 1);
 
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
@@ -91,8 +91,6 @@ public class PhieuNhapNguyenLieuDAO {
         }
     }
 
-    // --- CÁC PHƯƠNG THỨC MỚI ĐƯỢC BỔ SUNG ---
-
     public boolean capNhapPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
         String sql = "UPDATE PhieuNhapNguyenLieu SET GhiChu=? , TrangThaiXuLy=? WHERE MaPN=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
@@ -107,7 +105,7 @@ public class PhieuNhapNguyenLieuDAO {
     }
 
     public boolean xoaPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
-        // Xóa mềm: Set TrangThai = 0
+
         String sql = "UPDATE PhieuNhapNguyenLieu SET TrangThai=? WHERE MaPN=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setInt(1, 0);

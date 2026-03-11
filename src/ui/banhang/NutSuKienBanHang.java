@@ -45,7 +45,7 @@ public class NutSuKienBanHang extends DefaultCellEditor {
                     } else {
                         model.removeRow(row);
                     }
-                } else if (type == 2) { // Nút Cộng
+                } else if (type == 2) {
                     soLuong++;
                     capNhatHang(model, row, soLuong, donGia);
                 } else if (type == 3) {
@@ -67,7 +67,7 @@ public class NutSuKienBanHang extends DefaultCellEditor {
 
     public void setLoaiNut(String path, int type) {
         this.type = type;
-        // Dùng getResource để lấy ảnh từ classpath an toàn hơn
+
         if (getClass().getResource(path) != null) {
             btn.setIcon(new ImageIcon(getClass().getResource(path)));
         } else {

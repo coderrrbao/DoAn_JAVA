@@ -2,30 +2,23 @@ package ui.quanlysanpham;
 
 import java.awt.*;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import bus.DanhMucBUS;
 import bus.SanPhamBUS;
-import dao.DanhMucDao;
-import dao.SanPhamDAO;
-import dao.conection.DBConnection;
 import dto.SanPham;
-import dto.DanhMuc;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
 
 public class QuanLySanPhamUI extends JPanel {
-    private JButton themSpBtn, xuaFileBtn, xoaBtn;
+    private JButton themSpBtn, xuaFileBtn, xoaBtn, nhapBtn;
     private Search_Item search_Item;
     private JComboBox<String> cbLoaiNuoc, cbDanhMuc;
     private JComboBox<String> cbTrangThai;
@@ -37,9 +30,6 @@ public class QuanLySanPhamUI extends JPanel {
     private String[] loai = { "Loại nước", "Có sẵn", "Pha chế" };
     private String[] danhmuc = new String[0];
     private String[] trangThaiOptions = { "Trạng thái", "Đã xác nhận", "Chờ xử lý", "Ẩn" };
-
-    private ChiTietSanPhamDialog chiTietSanPhamDialog = new ChiTietSanPhamDialog(new SanPham(), this);
-    private ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
 
     public QuanLySanPhamUI(JFrame owner) {
         this.listSanPham = new ArrayList<>();
@@ -62,7 +52,7 @@ public class QuanLySanPhamUI extends JPanel {
             themSpBtn.setVisible(false);
             xuaFileBtn.setVisible(false);
         }
-        chiTietSanPhamDialog.suaLaiGiaoDienTheoQuyen();
+
         this.revalidate();
         this.repaint();
     }
@@ -87,8 +77,11 @@ public class QuanLySanPhamUI extends JPanel {
         TaoUI.setFixSize(xoaBtn, 80, 32);
 
         xuaFileBtn = new JButton("Xuất Exc");
-        TaoUI.setFixSize(xuaFileBtn, 80, 32);
-   
+        TaoUI.setFixSize(xuaFileBtn, 100, 32);
+
+        nhapBtn = new JButton("Nhập Excel");
+        TaoUI.setFixSize(nhapBtn, 100, 32);
+
         cbTrangThai = new JComboBox<>(trangThaiOptions);
         cbTrangThai.setMaximumSize(new Dimension(160, 32));
 
@@ -103,6 +96,8 @@ public class QuanLySanPhamUI extends JPanel {
         top.add(xoaBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(xuaFileBtn);
+        top.add(Box.createRigidArea(new Dimension(5, 0)));
+        top.add(nhapBtn);
         top.add(Box.createRigidArea(new Dimension(5, 0)));
         top.add(cbTrangThai);
         top.add(Box.createHorizontalGlue());
@@ -158,14 +153,14 @@ public class QuanLySanPhamUI extends JPanel {
     private void setKichThuocCot() {
         JTable table = (JTable) scrollPane.getViewport().getView();
         TableColumnModel columnModel = table.getColumnModel();
-        columnModel.getColumn(0).setPreferredWidth(50); // STT
-        columnModel.getColumn(2).setPreferredWidth(80); // Mã SP
-        columnModel.getColumn(3).setPreferredWidth(200); // Tên sản phẩm (Cần rộng nhất)
-        columnModel.getColumn(4).setPreferredWidth(100); // Loại
-        columnModel.getColumn(5).setPreferredWidth(100); // Danh mục
-        columnModel.getColumn(6).setPreferredWidth(90); // Giá bán
-        columnModel.getColumn(7).setPreferredWidth(90); // Giá nhập
-        columnModel.getColumn(8).setPreferredWidth(40); // Số lượng
+        columnModel.getColumn(0).setPreferredWidth(50);
+        columnModel.getColumn(2).setPreferredWidth(80);
+        columnModel.getColumn(3).setPreferredWidth(200);
+        columnModel.getColumn(4).setPreferredWidth(100);
+        columnModel.getColumn(5).setPreferredWidth(100);
+        columnModel.getColumn(6).setPreferredWidth(90);
+        columnModel.getColumn(7).setPreferredWidth(90);
+        columnModel.getColumn(8).setPreferredWidth(40);
     }
 
     private void themSanPhamVaoTable(SanPham sanPham) {
@@ -177,6 +172,7 @@ public class QuanLySanPhamUI extends JPanel {
 
     private void ganSuKienChoNut() {
         themSpBtn.addActionListener(e -> {
+            ChiTietSanPhamDialog themSanPhamDialog = new ChiTietSanPhamDialog(null, this);
             themSanPhamDialog.setVisible(true);
         });
 
@@ -185,6 +181,7 @@ public class QuanLySanPhamUI extends JPanel {
         cbDanhMuc.addActionListener(e -> locSanPham());
         search_Item.setEvent(this::locSanPham);
 
+        nhapBtn.addActionListener(e -> importFileExcel());
         xuaFileBtn.addActionListener(e -> exportFileExcel());
 
         xoaBtn.addActionListener(e -> {
@@ -253,7 +250,6 @@ public class QuanLySanPhamUI extends JPanel {
         veLaiDanhSach(listSanPhamLoc);
     }
 
-    // --- SỰ KIỆN NÚT NHẬP ---
     private void importFileExcel() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn file Excel Sản Phẩm để nhập");
@@ -262,13 +258,12 @@ public class QuanLySanPhamUI extends JPanel {
         if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
             File file = fileChooser.getSelectedFile();
 
-            // Đưa File cho BUS xử lý (BUS lo Transaction Rollback)
             if (SanPhamBUS.getSanPhamBUS().nhapExcel(file)) {
-                // Load lại bảng
-                loadDataFromDatabase(); // Hoặc hàm loadTable() của bạn
+
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 JOptionPane.showMessageDialog(this, "Import thành công!", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
-                // Bao gồm lỗi sai định dạng, dữ liệu trùng, hoặc lỗi Transaction
+
                 JOptionPane.showMessageDialog(this,
                         "Import thất bại! Có dữ liệu trùng, sai hoặc danh mục không tồn tại. Đã Rollback toàn bộ.",
                         "Lỗi", JOptionPane.ERROR_MESSAGE);
@@ -276,7 +271,6 @@ public class QuanLySanPhamUI extends JPanel {
         }
     }
 
-    // --- SỰ KIỆN NÚT XUẤT ---
     private void exportFileExcel() {
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setDialogTitle("Chọn nơi lưu danh sách Sản Phẩm");
@@ -304,9 +298,4 @@ public class QuanLySanPhamUI extends JPanel {
             themSanPhamVaoTable(sanPham);
         }
     }
-
-    public ChiTietSanPhamDialog layXemChiTietSanPhamDialog() {
-        return chiTietSanPhamDialog;
-    }
-
 }

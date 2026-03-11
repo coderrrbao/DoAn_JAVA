@@ -41,7 +41,6 @@ public class TaiKhoanDao {
         }
     }
 
-    // Thay đổi mật khẩu
     public boolean suaMatKhau(String tenDangNhap, String matKhauMoi, Connection conn) {
         String sql = "UPDATE TaiKhoan SET MatKhau = ? WHERE TenDangNhap = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -54,7 +53,6 @@ public class TaiKhoanDao {
         }
     }
 
-    // Lấy danh sách tài khoản
     public ArrayList<TaiKhoan> layDanhSachTaiKhoan() {
         ArrayList<TaiKhoan> ds = new ArrayList<>();
         String sql = "SELECT * FROM TaiKhoan Where TrangThai = 1";
@@ -65,7 +63,7 @@ public class TaiKhoanDao {
 
             while (rs.next()) {
                 TaiKhoan tk = new TaiKhoan();
-                tk.setMaTK(rs.getString("MaTK")); // Fix: Bổ sung MaTK
+                tk.setMaTK(rs.getString("MaTK"));
                 tk.setMaNV(rs.getString("MaNV"));
                 tk.setTenDangNhap(rs.getString("TenDangNhap"));
                 tk.setMatKhau(rs.getString("MatKhau"));
@@ -96,7 +94,7 @@ public class TaiKhoanDao {
             try (ResultSet rs = ps.executeQuery()) {
                 if (rs.next()) {
                     TaiKhoan tk = new TaiKhoan();
-                    tk.setMaTK(rs.getString("MaTK")); // Fix: Bổ sung MaTK
+                    tk.setMaTK(rs.getString("MaTK"));
                     tk.setMaNV(rs.getString("MaNV"));
                     tk.setTenDangNhap(rs.getString("TenDangNhap"));
                     tk.setMatKhau(rs.getString("MatKhau"));
@@ -115,7 +113,6 @@ public class TaiKhoanDao {
         return null;
     }
 
-    // sua tai khoan
     public boolean suaTaiKhoan(TaiKhoan tk, Connection conn) {
         String sql = "UPDATE TaiKhoan SET "
                 + "MaNV = ?, "
@@ -143,7 +140,7 @@ public class TaiKhoanDao {
     }
 
     public String layMaTaiKhoanKhaDung(Connection conn) {
-        String sql = "SELECT MAX(MaTK) FROM TaiKhoan"; // lay lon nhat theo thu tu tu dien
+        String sql = "SELECT MAX(MaTK) FROM TaiKhoan";
         String maMoi = "";
         try (
                 PreparedStatement ps = conn.prepareStatement(sql);
@@ -162,7 +159,6 @@ public class TaiKhoanDao {
         return maMoi;
     }
 
-    // Kiểm tra username đã tồn tại chưa
     public boolean kiemTraUsernameTonTai(String username) {
         String sql = "SELECT 1 FROM TaiKhoan WHERE TenDangNhap = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -178,7 +174,6 @@ public class TaiKhoanDao {
         }
     }
 
-    // nhap excel
     public boolean kiemTraTrungUsername(Connection conn, String username) throws SQLException {
         String sql = "SELECT COUNT(*) FROM taikhoan WHERE tenDangNhap = ?";
 
@@ -194,22 +189,16 @@ public class TaiKhoanDao {
         return false;
     }
 
-    public void insertTaiKhoan(Connection conn, TaiKhoan tk) throws SQLException {
-        String sql = "INSERT INTO TaiKhoan "
-                + "(MaTK, MaNV, TenDangNhap, MatKhau, MaNQ, TrangThaiXuLy, TrangThai) "
-                + "VALUES (?, ?, ?, ?, ?, ?, ?)";
-
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setString(1, tk.getMaTK());
-            ps.setString(2, tk.getMaNV());
-            ps.setString(3, tk.getTenDangNhap());
-            ps.setString(4, tk.getMatKhau());
-            ps.setString(5, tk.getNhomQuyen().getMaNQ());
-            ps.setString(6, "Đang hoạt động");
-            ps.setInt(7, 1);
-            ps.executeUpdate();
+    public boolean insertTaiKhoan(Connection conn, TaiKhoan tk) throws SQLException {
+        String sql = "INSERT INTO TaiKhoan (MaTK, TenDangNhap, MatKhau, MaNQ, TrangThai) VALUES (?, ?, ?, ?, ?)";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, tk.getMaTK());
+            pst.setString(2, tk.getTenDangNhap());
+            pst.setString(3, tk.getMatKhau());
+            pst.setString(4, tk.getNhomQuyen().getMaNQ());
+            pst.setInt(5, 1);
+            return pst.executeUpdate() > 0;
         }
     }
-    //
+
 }

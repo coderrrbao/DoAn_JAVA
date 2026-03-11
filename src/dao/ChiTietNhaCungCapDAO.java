@@ -78,7 +78,7 @@ public class ChiTietNhaCungCapDAO {
             pst.setNString(2, ct.getLoaiDoiTuong());
             pst.setString(3, ct.getMaDoiTuong());
             pst.setDouble(4, ct.getGiaNhap());
-            pst.setString(5, ct.getMaCTNCC()); // Kiểu String
+            pst.setString(5, ct.getMaCTNCC());
 
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -88,7 +88,7 @@ public class ChiTietNhaCungCapDAO {
     }
 
     public boolean xoaChiTietNhaCungCap(String maCTNCC, Connection conn) {
-        // Tham số truyền vào đổi từ int sang String
+
         String sql = "UPDATE ChiTietNhaCungCap SET TrangThai = 0 WHERE MaCTNCC = ?";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {

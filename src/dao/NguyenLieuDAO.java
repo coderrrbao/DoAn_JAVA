@@ -12,7 +12,7 @@ import dao.conection.DBConnection;
 public class NguyenLieuDAO {
   public ArrayList<NguyenLieu> layListNguyenLieu(Connection conn) {
     ArrayList<NguyenLieu> listNguyenLieu = new ArrayList<>();
-    // Đảm bảo SQL không gọi các cột NCC
+
     String sql = "SELECT MaNL, TenNL, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai = 1";
 
     try (PreparedStatement pst = conn.prepareStatement(sql);
@@ -32,25 +32,26 @@ public class NguyenLieuDAO {
     }
     return listNguyenLieu;
   }
-public boolean capNhatMucCanhBao(NguyenLieu nguyenLieu) {
-        Connection conn = DBConnection.getConnection();
-        String sql = "UPDATE NguyenLieu SET mucCanhBao = ? WHERE maNL = ?";
-        try {
-            PreparedStatement ps = conn.prepareStatement(sql);
-            ps.setInt(1, nguyenLieu.getMucCanhBao());
-            ps.setString(2, nguyenLieu.getMaNL());
-            
-            return ps.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
-        }
+
+  public boolean capNhatMucCanhBao(NguyenLieu nguyenLieu) {
+    Connection conn = DBConnection.getConnection();
+    String sql = "UPDATE NguyenLieu SET mucCanhBao = ? WHERE maNL = ?";
+    try {
+      PreparedStatement ps = conn.prepareStatement(sql);
+      ps.setInt(1, nguyenLieu.getMucCanhBao());
+      ps.setString(2, nguyenLieu.getMaNL());
+
+      return ps.executeUpdate() > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
     }
+  }
+
   public boolean themNguyenLieu(NguyenLieu nl, Connection conn) {
-    // Cập nhật lại số lượng dấu ? cho khớp với logic không có NCC
-    String sql =
-        "INSERT INTO NguyenLieu (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?,"
-            + " ?, ?, ?)";
+
+    String sql = "INSERT INTO NguyenLieu (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?,"
+        + " ?, ?, ?)";
 
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       if (nl.getMaNL() == null || nl.getMaNL().trim().isEmpty()) {
@@ -71,8 +72,7 @@ public boolean capNhatMucCanhBao(NguyenLieu nguyenLieu) {
   }
 
   public boolean capNhatNguyenLieu(NguyenLieu nl, Connection conn) {
-    String sql =
-        "UPDATE NguyenLieu SET TenNL = ?, Gia = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
+    String sql = "UPDATE NguyenLieu SET TenNL = ?, Gia = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
 
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, nl.getTenNL());

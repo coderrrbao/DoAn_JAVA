@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date; // Chú ý import java.sql.Date
+import java.sql.Date;
 import java.util.ArrayList;
 
 public class KhuyenMaiDAO {
@@ -14,20 +14,19 @@ public class KhuyenMaiDAO {
         String sql = "SELECT MaKM, PhanTramGiam, TuNgay, DenNgay FROM KhuyenMai WHERE TrangThai = 1";
 
         try (PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                ResultSet rs = pst.executeQuery()) {
 
             while (rs.next()) {
                 KhuyenMai km = new KhuyenMai();
                 km.setMaKM(rs.getString("MaKM"));
                 km.setPhanTramGiam(rs.getInt("PhanTramGiam"));
-                
-                // Đọc Date từ DB và chuyển ngay sang String (định dạng yyyy-MM-dd)
+
                 Date tuNgayDB = rs.getDate("TuNgay");
                 Date denNgayDB = rs.getDate("DenNgay");
-                
+
                 km.setTuNgay(tuNgayDB != null ? tuNgayDB.toString() : "");
                 km.setDenNgay(denNgayDB != null ? denNgayDB.toString() : "");
-                
+
                 listKM.add(km);
             }
         } catch (SQLException e) {
@@ -45,10 +44,10 @@ public class KhuyenMaiDAO {
             }
             pst.setString(1, km.getMaKM());
             pst.setInt(2, km.getPhanTramGiam());
-            
+
             pst.setDate(3, Date.valueOf(km.getTuNgay()));
             pst.setDate(4, Date.valueOf(km.getDenNgay()));
-            pst.setInt(5, 1); 
+            pst.setInt(5, 1);
 
             return pst.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -62,8 +61,7 @@ public class KhuyenMaiDAO {
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setInt(1, km.getPhanTramGiam());
-            
-            // Chuyển String từ Java sang Date để cập nhật DB
+
             pst.setDate(2, Date.valueOf(km.getTuNgay()));
             pst.setDate(3, Date.valueOf(km.getDenNgay()));
             pst.setString(4, km.getMaKM());
@@ -89,7 +87,7 @@ public class KhuyenMaiDAO {
     public String layMaKhuyenMaiKhaDung(Connection conn) {
         String sql = "SELECT COUNT(MaKM) FROM KhuyenMai";
         try (PreparedStatement pst = conn.prepareStatement(sql);
-             ResultSet rs = pst.executeQuery()) {
+                ResultSet rs = pst.executeQuery()) {
             if (rs.next()) {
                 int so = rs.getInt(1) + 1;
                 return "KM" + String.format("%03d", so);

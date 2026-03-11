@@ -4,10 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
-import java.util.*;
-
 import javax.swing.Box;
 import javax.swing.JButton;
 import javax.swing.JDialog;
@@ -20,8 +16,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
 import bus.PhieuNhapSanPhamBUS;
-import dao.PhieuNhapSanPhamDAO;
-import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
@@ -34,8 +28,6 @@ public class NhapKhoSanPhamPanel extends JPanel {
     private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
-    private PhieuNhapSanPhamBUS bus = new PhieuNhapSanPhamBUS();
-
     public NhapKhoSanPhamPanel() {
         setLayout(new BorderLayout());
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
@@ -92,12 +84,10 @@ public class NhapKhoSanPhamPanel extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm mới phiếu nhập (NK_TAO)
         if (!listQuyen.contains("NK_TAO")) {
             nhapHangBtn.setVisible(false);
         }
 
-        // 2. Quyền Xóa phiếu nhập (NK_XOA)
         if (!listQuyen.contains("NK_XOA")) {
             xoaBtn.setVisible(false);
         }
@@ -159,7 +149,7 @@ public class NhapKhoSanPhamPanel extends JPanel {
 
             if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fc.getSelectedFile();
-                // Đảm bảo đuôi file
+
                 if (!file.getName().endsWith(".xlsx")) {
                     file = new File(file.getAbsolutePath() + ".xlsx");
                 }
@@ -172,7 +162,6 @@ public class NhapKhoSanPhamPanel extends JPanel {
             }
         });
 
-        // --- SỰ KIỆN NÚT NHẬP ---
         NhapExcelBtn.addActionListener(e -> {
             JFileChooser fc = new JFileChooser();
             fc.setDialogTitle("Chọn file Excel để nhập");
@@ -181,7 +170,7 @@ public class NhapKhoSanPhamPanel extends JPanel {
                 File file = fc.getSelectedFile();
 
                 if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().nhapExcel(file)) {
-                   loadDuLieu();
+                    loadDuLieu();
                     JOptionPane.showMessageDialog(this, "Nhập dữ liệu thành công!");
                 } else {
                     JOptionPane.showMessageDialog(this, "Nhập thất bại! Kiểm tra file hoặc dữ liệu trùng.",

@@ -3,6 +3,7 @@ package ui.khachhang;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,16 +12,19 @@ import java.util.HashSet;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 
+import bus.HangThanhVienBUS;
 import bus.KhachHangBUS;
+import dto.HangThanhVien;
 import dto.KhachHang;
 import ui.component.IconButtonEditor;
 import ui.component.IconButtonRender;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
 public class KhachHangUI extends JPanel {
-    private JButton btnTao, btnSua, btnXoa;
+    private JButton btnTao, btnSua, btnXoa, btnNhapExcel, btnXuatExcel;
     private JComboBox<String> cbHangThanhVien;
     private Search_Item search_Item;
     private JTable tableUI;
@@ -28,6 +32,7 @@ public class KhachHangUI extends JPanel {
 
     private List<KhachHang> listKhachHang = new ArrayList<>();
     private List<KhachHang> listKhachHangLoc = new ArrayList<>();
+    private List<HangThanhVien> listHang = new ArrayList<>();
 
     public KhachHangUI() {
         setLayout(new BorderLayout());
@@ -35,18 +40,15 @@ public class KhachHangUI extends JPanel {
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
         top.setBackground(Color.WHITE);
         top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
-
-        String[] hang = {
-                "Tất cả hạng",
-                "Thành Viên Mới",
-                "Thành Viên Bạc",
-                "Thành Viên Vàng",
-                "Thành Viên Bạch Kim",
-                "Thành Viên Kim Cương"
-        };
-        cbHangThanhVien = new JComboBox<>(hang);
-        cbHangThanhVien.setPreferredSize(new Dimension(150, 30));
-        cbHangThanhVien.setMaximumSize(new Dimension(150, 30));
+        HangThanhVienBUS htvBus = new HangThanhVienBUS();
+        listHang = htvBus.layListHangThanhVien();
+        cbHangThanhVien = new JComboBox<>();
+        cbHangThanhVien.addItem("Tất cả hạng");
+        for (HangThanhVien htv : listHang) {
+            cbHangThanhVien.addItem(htv.getTenHang());
+        }
+        cbHangThanhVien.setPreferredSize(new Dimension(150, 32));
+        cbHangThanhVien.setMaximumSize(new Dimension(150, 32));
 
         search_Item = new Search_Item(300, 32);
 
@@ -56,6 +58,10 @@ public class KhachHangUI extends JPanel {
         TaoUI.setFixSize(btnSua, 80, 32);
         btnXoa = new JButton("Xóa");
         TaoUI.setFixSize(btnXoa, 80, 32);
+        btnNhapExcel = new JButton("Nhập Excel");
+        TaoUI.setFixSize(btnNhapExcel, 120, 32);
+        btnXuatExcel = new JButton("Xuất Excel");
+        TaoUI.setFixSize(btnXuatExcel, 120, 32);
 
         top.add(cbHangThanhVien);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -64,6 +70,10 @@ public class KhachHangUI extends JPanel {
         top.add(btnTao);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(btnXoa);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnNhapExcel);
+        top.add(Box.createRigidArea(new Dimension(10, 0)));
+        top.add(btnXuatExcel);
         top.add(Box.createHorizontalGlue());
 
         add(top, BorderLayout.NORTH);
@@ -91,7 +101,7 @@ public class KhachHangUI extends JPanel {
         model.addColumn("");
 
         HashSet<Integer> set = new HashSet<>();
-        set.add(6); // cột icon, không căn giữa hết
+        set.add(6);
         JScrollPane scrollPane = TaoUI.taoTableScroll(model, set);
         tableUI = (JTable) scrollPane.getViewport().getView();
         tableUI.setAutoCreateColumnsFromModel(false);
@@ -126,17 +136,14 @@ public class KhachHangUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm khách hàng (KH_TAO)
         if (!listQuyen.contains("KH_TAO")) {
             btnTao.setVisible(false);
         }
 
-        // 2. Quyền Xóa khách hàng (KH_XOA)
         if (!listQuyen.contains("KH_XOA")) {
             btnXoa.setVisible(false);
         }
 
-        // 3. Quyền Sửa khách hàng (KH_SUA)
         if (!listQuyen.contains("KH_SUA")) {
             btnSua.setVisible(false);
         }
@@ -191,13 +198,46 @@ public class KhachHangUI extends JPanel {
                 if (ok) {
                     JOptionPane.showMessageDialog(this, "Xóa khách hàng thành công", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    loadDataFromDatabase();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Xóa khách hàng thất bại", "Lỗi",
                             JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
+
+        btnNhapExcel.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            KhachHangBUS bus = new KhachHangBUS();
+            if (fc.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+
+                if (bus.nhapExcel(file)) {
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
+                    JOptionPane.showMessageDialog(this, "Nhập thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Nhập thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        btnXuatExcel.addActionListener(e -> {
+            JFileChooser fc = new JFileChooser();
+            KhachHangBUS bus = new KhachHangBUS();
+            fc.setSelectedFile(new File("DanhSachKhachHang.xlsx"));
+            if (fc.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fc.getSelectedFile();
+                if (!file.getName().endsWith(".xlsx"))
+                    file = new File(file.getAbsolutePath() + ".xlsx");
+
+                if (bus.xuatExcel(file)) {
+                    JOptionPane.showMessageDialog(this, "Xuất thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi xuất file!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
     }
 
     public void hienThiDanhSachKhachHang() {
@@ -210,19 +250,13 @@ public class KhachHangUI extends JPanel {
         locKhachHang();
     }
 
-    
-
     private String tenHangTuMa(String maHang) {
-        if (maHang == null)
-            return "Thành Viên Mới";
-        return switch (maHang) {
-            case "HTV01" -> "Thành Viên Mới";
-            case "HTV02" -> "Thành Viên Bạc";
-            case "HTV03" -> "Thành Viên Vàng";
-            case "HTV04" -> "Thành Viên Bạch Kim";
-            case "HTV05" -> "Thành Viên Kim Cương";
-            default -> "Thành Viên Mới";
-        };
+        for (HangThanhVien htv : listHang) {
+            if (htv.getMaHang().equals(maHang)) {
+                return htv.getTenHang();
+            }
+        }
+        return null;
     }
 
     private void locKhachHang() {

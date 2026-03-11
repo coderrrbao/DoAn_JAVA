@@ -1,15 +1,12 @@
 package bus;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import dao.NhaCungCapDAO;
 import dao.conection.DBConnection;
@@ -268,29 +265,88 @@ public class NhaCungCapBUS {
         return true;
     }
 
-    public boolean nhapExcel(File file) {
-        // 1. Chỉ truyền File qua Util để lấy danh sách
-        ArrayList<NhaCungCap> dsNhap = XuLyExcel.nhapFileNhaCungCap(file);
+    public boolean themNhaCungCap(NhaCungCap ncc, Connection conn) throws SQLException {
 
+        String maMoi = nhaCungCapDAO.layMaNhaCungCapKhaDung();
+        ncc.setMaNCC(maMoi);
+
+        if (!nhaCungCapDAO.themNhaCungCap(conn, ncc)) {
+            return false;
+        }
+
+        ChiTietNhaCungCapBUS ctBus = ChiTietNhaCungCapBUS.getChiTietNhaCungCapBUS();
+        if (ncc.getListChiTietNhaCungCap() != null) {
+            for (ChiTietNhaCungCap ct : ncc.getListChiTietNhaCungCap()) {
+                ct.setMaNCC(maMoi);
+                if (!ctBus.themChiTietNhaCungCap(ct, conn)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    public boolean nhapExcel(File file) {
+
+        ArrayList<NhaCungCap> dsNhap = XuLyExcel.nhapFileNhaCungCap(file);
         if (dsNhap == null || dsNhap.isEmpty())
             return false;
 
-        int thanhCong = 0;
-        // 2. BUS xử lý logic nghiệp vụ và gọi DAO
-        for (NhaCungCap ncc : dsNhap) {
-            if (themNhaCungCap(ncc)) { // Hàm này gọi DAO và cập nhật list nội bộ
-                thanhCong++;
-            }
+        HashSet<String> setTenHienTai = new HashSet<>();
+        for (NhaCungCap ncc : laylistNhaCungCap()) {
+            setTenHienTai.add(ncc.getTenNCC().trim().toLowerCase());
         }
-        return thanhCong > 0;
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (NhaCungCap ncc : dsNhap) {
+
+                if (setTenHienTai.contains(ncc.getTenNCC().trim().toLowerCase())) {
+                    continue;
+                }
+
+                if (!themNhaCungCap(ncc, conn)) {
+                    throw new SQLException("Lỗi thực thi tại dòng: " + ncc.getTenNCC());
+                }
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
     }
 
-    // XUẤT: Nhận file -> Tự lấy List nội bộ -> Đẩy qua Util ghi file
+    private void dongKetNoi(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public boolean xuatExcel(File file) {
-        // 1. BUS tự lấy danh sách đang quản lý
+
         ArrayList<NhaCungCap> listHienTai = laylistNhaCungCap();
 
-        // 2. Chỉ truyền List và File qua Util để xử lý POI
         return XuLyExcel.xuatFileNhaCungCap(file, listHienTai);
     }
 

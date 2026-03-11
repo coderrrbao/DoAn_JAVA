@@ -67,7 +67,7 @@ public class ThongTinKhachHangPanel extends JPanel {
         setupAutoSuggest();
     }
 
-    private void loadDataKhachHang() {
+    public void loadDataKhachHang() {
         try {
             danhSachKH = khachHangBUS.getDanhSachKhachHang();
         } catch (Exception e) {

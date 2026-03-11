@@ -53,7 +53,6 @@ public class PhieuNhapNguyenLieuBUS {
             conn.setAutoCommit(false);
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
 
-            // Lấy mã phiếu nhập khả dụng (tự tăng) từ DAO
             String maPN = phieuNhapNguyenLieuDAO.layMaPhieuNhapNLKhaDung(conn);
             phieuNhapNguyenLieu.setMaPN(maPN);
 
@@ -61,7 +60,6 @@ public class PhieuNhapNguyenLieuBUS {
                 throw new SQLException("Lỗi khi thêm Phiếu Nhập Nguyên Liệu");
             }
 
-            // Thêm danh sách Lô Nguyên Liệu đi kèm
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
                 loNguyenLieu.setMaPN(maPN);
                 loNguyenLieu.setTrangThaiXuLy("Đang xử lý");
@@ -96,8 +94,6 @@ public class PhieuNhapNguyenLieuBUS {
         return true;
     }
 
-    // --- CÁC PHƯƠNG THỨC MỚI BỔ SUNG ---
-
     public boolean capNhapPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -107,7 +103,7 @@ public class PhieuNhapNguyenLieuBUS {
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-                // Xác nhận từng lô nguyên liệu
+
                 if (!loNguyenLieuBUS.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }
@@ -146,7 +142,7 @@ public class PhieuNhapNguyenLieuBUS {
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
             for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-                // GỌI HÀM XÓA LÔ Ở ĐÂY
+
                 if (!loNguyenLieuBUS.xoaLoNguyenLieu(loNguyenLieu, conn)) {
                     throw new SQLException();
                 }
@@ -176,8 +172,6 @@ public class PhieuNhapNguyenLieuBUS {
         return true;
     }
 
-    // -----------------------------------
-
     public PhieuNhapNguyenLieu timPhieuNhapNguyenLieu(String ma) {
         if (canUpdate || listPhieuNhapNguyenLieu == null) {
             khoiTao();
@@ -190,19 +184,78 @@ public class PhieuNhapNguyenLieuBUS {
         return null;
     }
 
-    public boolean nhapExcel(File file) {
-        ArrayList<PhieuNhapNguyenLieu> ds = XuLyExcel.nhapFilePhieuNhapNguyenLieu(file);
-        if (ds == null)
-            return false;
+    public boolean themPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn)
+            throws SQLException {
+        LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
 
-        int successCount = 0;
-        for (PhieuNhapNguyenLieu pn : ds) {
-            pn.setTrangThaiXuLy("Đang xử lý");
-            if (themPhieuNhapNguyenLieu(pn)) {
-                successCount++;
+        String maPN = phieuNhapNguyenLieuDAO.layMaPhieuNhapNLKhaDung(conn);
+        phieuNhapNguyenLieu.setMaPN(maPN);
+
+        if (!phieuNhapNguyenLieuDAO.themPhieuNhapNguyenLieu(phieuNhapNguyenLieu, conn)) {
+            return false;
+        }
+
+        if (phieuNhapNguyenLieu.getListLoNguyenLieu() != null) {
+            for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
+                loNguyenLieu.setMaPN(maPN);
+                loNguyenLieu.setTrangThaiXuLy("Đang xử lý");
+
+                if (!loNguyenLieuBUS.themLoNguyenLieu(loNguyenLieu, conn)) {
+                    return false;
+                }
             }
         }
-        return successCount > 0;
+
+        return true;
+    }
+
+    public boolean nhapExcel(File file) {
+
+        ArrayList<PhieuNhapNguyenLieu> dsNhap = XuLyExcel.nhapFilePhieuNhapNguyenLieu(file);
+
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return false;
+        }
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (PhieuNhapNguyenLieu pn : dsNhap) {
+                pn.setTrangThaiXuLy("Đang xử lý");
+
+                if (!themPhieuNhapNguyenLieu(pn, conn)) {
+
+                    throw new SQLException("Lỗi khi thêm Phiếu Nhập Nguyên Liệu của NCC: " + pn.getMaNCC());
+                }
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            this.khoiTao();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     public boolean xuatExcel(File file) {

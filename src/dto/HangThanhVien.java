@@ -1,33 +1,12 @@
 package dto;
 
-import java.text.DecimalFormat;
 
-import util.ExcelExport;
 
-public class HangThanhVien implements ExcelExport {
+public class HangThanhVien {
     private String maHang;
     private String tenHang;
     private int phanTramGiam;
     private double dieuKien;
-
-    @Override
-    public String[] getExcelHeaders() {
-        return new String[] {
-                "Mã Hạng",
-                "Tên Hạng",
-                "Phần Trăm Giảm (%)",
-                "Điều Kiện (VNĐ)"
-        };
-    }
-
-    @Override
-    public Object[] toExcelRow() {
-        DecimalFormat df = new DecimalFormat("#,###");
-        String dieuKienString = df.format(dieuKien);
-        return new Object[] {
-                maHang, tenHang, phanTramGiam, dieuKienString
-        };
-    }
 
     public HangThanhVien() {
     }

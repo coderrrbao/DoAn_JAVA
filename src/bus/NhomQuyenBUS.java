@@ -4,13 +4,13 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import dao.NhomQuyenDAO;
-import dao.PhanQuyenDAO;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
 import dto.PhanQuyen;
@@ -127,6 +127,30 @@ public class NhomQuyenBUS {
         return true;
     }
 
+    public boolean themNhomQuyen(NhomQuyen nhomQuyen, Connection conn) {
+        try {
+            PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
+
+            String maNQMoi = nhomQuyenDAO.taoMaNhomQuyenMoi(conn);
+            nhomQuyen.setMaNQ(maNQMoi);
+
+            if (!nhomQuyenDAO.themNhomQuyen(nhomQuyen, conn)) {
+                return false;
+            }
+            for (Quyen quyen : nhomQuyen.getListQuyen()) {
+                PhanQuyen phanQuyen = new PhanQuyen(maNQMoi, quyen.getMaQuyen());
+
+                if (!phanQuyenBUS.themPhanQuyen(phanQuyen, conn)) {
+                    return false;
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean capNhatNhomQuyen(NhomQuyen nhomQuyen) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -227,7 +251,6 @@ public class NhomQuyenBUS {
         this.canUpdate = canUpdate;
     }
 
-    // xuat exc nhom quyen
     public boolean XuatExc() {
         PhanQuyenBUS phanQuyenBUS = PhanQuyenBUS.getPhanQuyenBUS();
         return XuLyExcel.xuatFileNhomQuyen(layDanhSachNhomQuyen(), phanQuyenBUS.layDanhSachPhanQuyen());
@@ -239,44 +262,65 @@ public class NhomQuyenBUS {
             return false;
         }
 
-        // 1. Đọc dữ liệu từ file Excel thông qua lớp xử lý Excel
         Object[] data = XuLyExcel.nhapFilePhanQuyen(file);
         if (data == null || data.length < 2) {
             JOptionPane.showMessageDialog(null, "Dữ liệu file Excel không đúng định dạng!");
             return false;
         }
 
+        @SuppressWarnings("unchecked")
         ArrayList<NhomQuyen> listNQExcel = (ArrayList<NhomQuyen>) data[0];
+        @SuppressWarnings("unchecked")
         ArrayList<PhanQuyen> listPQExcel = (ArrayList<PhanQuyen>) data[1];
-
-        this.khoiTao();
-        HashSet<String> dsMaHienTai = new HashSet<>();
-        for (NhomQuyen nq : this.listNhomQuyen) {
-            dsMaHienTai.add(nq.getMaNQ());
+        Map<String, NhomQuyen> mapNQ = new HashMap<>();
+        for (NhomQuyen nq : listNQExcel) {
+            if (nq.getListQuyen() == null) {
+                nq.setListQuyen(new ArrayList<>());
+            }
+            mapNQ.put(nq.getMaNQ(), nq);
         }
 
-        for (NhomQuyen nq : listNQExcel) {
-            if (!this.themNhomQuyen(nq)) {
-                return false;
-            }
-
-            Connection conn = DBConnection.getConnection();
-            PhanQuyenDAO pqDAO = new PhanQuyenDAO();
-            try {
-                conn.setAutoCommit(false);
-                for (PhanQuyen pq : listPQExcel) {
-                    if (pqDAO.themPhanQuyen(pq, conn)) {
-                    }
+        QuyenBUS quyenBUS = QuyenBUS.getQuyenBUS();
+        for (PhanQuyen pq : listPQExcel) {
+            NhomQuyen nhomQuyen = mapNQ.get(pq.getMaNQ());
+            if (nhomQuyen != null) {
+                Quyen quyenChiTiet = quyenBUS.timTheoMa(pq.getMaQuyen());
+                if (quyenChiTiet != null) {
+                    nhomQuyen.getListQuyen().add(quyenChiTiet);
+                } else {
+                    System.out.println("Cảnh báo: Không tìm thấy mã quyền " + pq.getMaQuyen() + " trong hệ thống.");
                 }
-                conn.commit();
-            } catch (Exception e) {
+            }
+        }
+
+        ArrayList<NhomQuyen> listNhomQuyen = new ArrayList<>(mapNQ.values());
+
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+            for (NhomQuyen nhomQuyen : listNhomQuyen) {
+                if (!themNhomQuyen(nhomQuyen, conn)) {
+                    throw new Exception();
+                }
+            }
+            conn.commit();
+            this.canUpdate = true;
+            this.khoiTao();
+            return true;
+
+        } catch (Exception e) {
+            if (conn != null) {
                 try {
                     conn.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
                 }
-                e.printStackTrace();
-            } finally {
+            }
+            e.printStackTrace();
+            return false;
+        } finally {
+            if (conn != null) {
                 try {
                     conn.setAutoCommit(true);
                     conn.close();
@@ -284,10 +328,6 @@ public class NhomQuyenBUS {
                     e.printStackTrace();
                 }
             }
-
-            // 5. Thông báo kết quả
-            this.canUpdate = true;
         }
-        return true;
     }
 }

@@ -9,7 +9,7 @@ import dao.conection.DBConnection;
 import dto.NhomQuyen;
 
 public class NhomQuyenDAO {
-    // lay list nhom quyen
+
     public ArrayList<NhomQuyen> layDanhSachNhomQuyen_Dao() {
         ArrayList<NhomQuyen> ds = new ArrayList<>();
         String sql = "SELECT MaNQ, TenNhomQuyen FROM NhomQuyen WHERE TrangThai=1";

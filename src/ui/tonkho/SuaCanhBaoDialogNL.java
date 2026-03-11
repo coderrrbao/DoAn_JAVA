@@ -5,6 +5,7 @@ import javax.swing.border.EmptyBorder;
 
 import bus.NguyenLieuBUS;
 import dto.NguyenLieu;
+import ui.login.LoginUI;
 
 import java.awt.*;
 
@@ -16,13 +17,10 @@ public class SuaCanhBaoDialogNL extends JDialog {
     private JButton btnSua;
     private JButton btnLuu;
 
-    private NguyenLieu nguyenLieu; // Object Nguyên Liệu
-    private TonKhoNguyenLieuPanel tonKhoNguyenLieuPanel;
-
+    private NguyenLieu nguyenLieu;
     public SuaCanhBaoDialogNL(TonKhoNguyenLieuPanel tonKhoNguyenLieuPanel, NguyenLieu nl) {
         super((JFrame) null, "Sửa Mức Cảnh Báo Nguyên Liệu", true);
         this.nguyenLieu = nl;
-        this.tonKhoNguyenLieuPanel = tonKhoNguyenLieuPanel;
         initComponents();
         loadData();
         setupEvents();
@@ -66,7 +64,7 @@ public class SuaCanhBaoDialogNL extends JDialog {
     private void loadData() {
         if (nguyenLieu != null) {
             txtMaNL.setText(nguyenLieu.getMaNL());
-            txtTenNL.setText(nguyenLieu.getTenNL()); // Giả sử hàm get tên là getTenNL()
+            txtTenNL.setText(nguyenLieu.getTenNL());
             txtMucCanhBao.setText(String.valueOf(nguyenLieu.getMucCanhBao()));
         }
     }
@@ -94,7 +92,7 @@ public class SuaCanhBaoDialogNL extends JDialog {
                 if (thanhCong) {
                     JOptionPane.showMessageDialog(null, "Cập nhật thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    tonKhoNguyenLieuPanel.loadDuLieu();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                     dispose();
                 } else {
                     JOptionPane.showMessageDialog(null, "Cập nhật thất bại!", "Lỗi", JOptionPane.ERROR_MESSAGE);

@@ -179,12 +179,12 @@ public class MenuPanel extends JPanel {
         JOptionPane.YES_NO_OPTION);
 
     if (confirm == JOptionPane.YES_OPTION) {
-      // xoa du lieu old
+
       LoginUI loginUI = LoginUI.getLoginUI();
       loginUI.lamMoi();
-      // đóng MainFrame
+
       loginUI.getMainFrame().setVisible(false);
-      // mở lại màn hình đăng nhập
+
       loginUI.setVisible(true);
     }
   }

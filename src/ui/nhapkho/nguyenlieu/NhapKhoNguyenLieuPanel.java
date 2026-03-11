@@ -4,8 +4,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 
 import javax.swing.Box;
@@ -20,8 +18,6 @@ import javax.swing.table.DefaultTableModel;
 
 import bus.NhaCungCapBUS;
 import bus.PhieuNhapNguyenLieuBUS;
-import dao.PhieuNhapNguyenLieuDAO;
-import dao.conection.DBConnection;
 import dto.NhaCungCap;
 import dto.PhieuNhapNguyenLieu;
 import ui.component.LocNgay_Item;
@@ -34,8 +30,6 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
     private LocNgay_Item locNgay_Item;
     private JTable table;
     private DefaultTableModel model;
-    private PhieuNhapNguyenLieuBUS bus = new PhieuNhapNguyenLieuBUS();
-
     public NhapKhoNguyenLieuPanel() {
         setLayout(new BorderLayout());
         JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
@@ -139,21 +133,18 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         });
 
         XuatExcelBtn.addActionListener(e -> {
-            // 1. Khởi tạo hộp thoại lưu file
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn nơi lưu danh sách Phiếu Nhập Nguyên Liệu");
             fileChooser.setSelectedFile(new File("DanhSachPhieuNhapNL.xlsx"));
 
-            // 2. Nếu người dùng nhấn Save
             if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // Tự động kiểm tra và thêm đuôi .xlsx nếu cần
                 if (!file.getName().toLowerCase().endsWith(".xlsx")) {
                     file = new File(file.getParentFile(), file.getName() + ".xlsx");
                 }
 
-                // 3. Gọi BUS xử lý (BUS tự lấy list nội bộ và đẩy qua ExcelUtil)
                 if (PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS().xuatExcel(file)) {
                     JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!",
                             "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -166,17 +157,15 @@ public class NhapKhoNguyenLieuPanel extends JPanel {
         });
 
         NhapExcelBtn.addActionListener(e -> {
-            // 1. Khởi tạo hộp thoại mở file
+
             JFileChooser fileChooser = new JFileChooser();
             fileChooser.setDialogTitle("Chọn file Excel Phiếu Nhập để nhập");
             fileChooser
                     .setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Excel Files (.xlsx)", "xlsx"));
 
-            // 2. Nếu người dùng chọn file và nhấn Open
             if (fileChooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
 
-                // 3. Gọi BUS thực hiện nghiệp vụ (Đọc file -> Kiểm tra mã trùng -> Lưu DB)
                 if (PhieuNhapNguyenLieuBUS.getPhieuNhapNguyenLieuBUS().nhapExcel(file)) {
                     loadDuLieu();
                     JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!",

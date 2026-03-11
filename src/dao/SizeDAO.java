@@ -91,9 +91,8 @@ public class SizeDAO {
     public boolean themSize(Size s, Connection conn) {
         String sql = "INSERT INTO Size (MaSize, MaSP, TenSize, PhanTramGia, PhanTramNL, TrangThai) VALUES (?, ?, ?, ?, ?, ?)";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
-            if (s.getMaSize() == null || s.getMaSize().trim().isEmpty()) {
-                s.setMaSize(layMaSizeKhaDung(conn));
-            }
+
+            s.setMaSize(layMaSizeKhaDung(conn));
             pst.setString(1, s.getMaSize());
             pst.setString(2, s.getMaSP());
             pst.setString(3, s.getTenSize());
@@ -120,7 +119,7 @@ public class SizeDAO {
         return true;
     }
 
-    public boolean capNhapSize(Size size,Connection conn) {
+    public boolean capNhapSize(Size size, Connection conn) {
         String sql = "UPDATE Size SET TenSize=?,PhanTramGia=?,PhanTramNL=? WHERE MaSize=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, size.getTenSize());

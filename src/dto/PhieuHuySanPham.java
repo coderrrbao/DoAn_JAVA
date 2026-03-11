@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class PhieuHuySanPham {
   private String maPH;
-  // private String maLo;
+
   private Date ngayHuy;
   private String maNV;
   private String lyDo;
@@ -15,14 +15,14 @@ public class PhieuHuySanPham {
 
   public PhieuHuySanPham(
       String maPH,
-      // String maLo,
+
       Date ngayHuy,
       String maNV,
       String lyDo,
       double tongGiaTri,
       String trangThai) {
     this.maPH = maPH;
-    // this.maLo = maLo;
+
     this.ngayHuy = ngayHuy;
     this.maNV = maNV;
     this.lyDo = lyDo;
@@ -32,7 +32,7 @@ public class PhieuHuySanPham {
 
   public PhieuHuySanPham() {
     this.maPH = "";
-    // this.maLo = "";
+
     this.ngayHuy = null;
     this.maNV = "";
     this.lyDo = "";
@@ -48,14 +48,6 @@ public class PhieuHuySanPham {
   public void setMaPH(String maPH) {
     this.maPH = maPH;
   }
-
-  //   public String getMaLo() {
-  //     return maLo;
-  //   }
-
-  //   public void setMaLo(String maLo) {
-  //     this.maLo = maLo;
-  //   }
 
   public Date getNgayHuy() {
     return ngayHuy;

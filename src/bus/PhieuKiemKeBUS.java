@@ -170,28 +170,57 @@ public class PhieuKiemKeBUS {
         return XuLyExcel.xuatFilePhieuKiemKe(ds, filePath);
     }
 
-    // ================= XỬ LÝ NHẬP EXCEL (BUS) =================
+    public boolean themPhieuKiemKe(PhieuKiemKe phieuKiemKe, Connection conn) throws SQLException {
+        return phieuKiemKeDAO.themPhieuKiemKe(phieuKiemKe, conn);
+    }
+
     public boolean nhapExcel(File file) {
         ArrayList<PhieuKiemKe> dsNhap = XuLyExcel.nhapFilePhieuKiemKe(file);
 
-        // Kiểm tra nếu file lỗi hoặc rỗng
         if (dsNhap == null || dsNhap.isEmpty()) {
             return false;
         }
 
-        int thanhCong = 0;
-        for (PhieuKiemKe pkk : dsNhap) {
-            try {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (PhieuKiemKe pkk : dsNhap) {
+
                 pkk.setTrangThaiXuLy("Chưa xử lý");
-                if (themPhieuKiemKe(pkk)) {
-                    thanhCong++;
+
+                if (!themPhieuKiemKe(pkk, conn)) {
+
+                    throw new SQLException("Lỗi khi thêm Phiếu Kiểm Kê: " + pkk.getMaKK());
                 }
-            } catch (Exception e) {
-                e.printStackTrace();
-                // Tiếp tục vòng lặp với các dòng khác
+            }
+
+            conn.commit();
+            this.canUpdate = true;
+            this.khoitao();
+            return true;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }
-        return thanhCong > 0;
     }
 
 }

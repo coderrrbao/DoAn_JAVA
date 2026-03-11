@@ -25,15 +25,13 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     super(owner, "Chi Tiết Phiếu Hủy Sản Phẩm", true);
     this.phieuHuy = ph;
     this.parent = parent;
-    setSize(480, 650); // Thu gọn width một chút để form ôm sát đẹp hơn giống bên NCC
+    setSize(480, 650);
     setLocationRelativeTo(owner);
     setLayout(new BorderLayout(10, 10));
 
-    // ==================== PHẦN TOP (TABLE) ====================
     JPanel pnTop = new JPanel(new BorderLayout(5, 10));
     pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
-    // CHỈNH SỬA 1: Ngăn chỉnh sửa các ô trong Table
     modelChiTiet = new DefaultTableModel(new String[] { "Mã Lô", "Tên SP", "Số lượng", "Giá" }, 0) {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -41,7 +39,6 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
       }
     };
 
-    // Sử dụng TaoUI để đồng bộ giao diện Table
     JScrollPane scrollChiTiet = TaoUI.taoTableScroll(modelChiTiet);
     tblChiTiet = (JTable) scrollChiTiet.getViewport().getView();
     tblChiTiet.getTableHeader().setReorderingAllowed(false);
@@ -50,7 +47,6 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     pnTop.add(scrollChiTiet, BorderLayout.CENTER);
     add(pnTop, BorderLayout.NORTH);
 
-    // ==================== PHẦN FORM (CENTER) ====================
     JPanel pnForm = new JPanel();
     pnForm.setLayout(new BoxLayout(pnForm, BoxLayout.Y_AXIS));
     pnForm.setBorder(BorderFactory.createEmptyBorder(15, 20, 10, 20));
@@ -63,16 +59,14 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
     cbTrangThai.setSelectedItem(ph.getTrangThaiXuLy());
 
-    // CHỈNH SỬA 2: Chặn hoàn toàn việc click và hiện con trỏ chuột
     JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong };
     for (JTextField f : fields) {
       f.setEditable(false);
       f.setBackground(Color.WHITE);
-      f.setFocusable(false); // Ngăn hiện con trỏ nhấp nháy
+      f.setFocusable(false);
     }
     cbTrangThai.setEnabled(false);
 
-    // Thêm các thành phần theo cấu trúc: 1 dòng Label - 1 dòng Input
     pnForm.add(taoDong(new JLabel("Mã Phiếu:")));
     pnForm.add(taoDong(txtMaPH));
 
@@ -93,7 +87,6 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
 
     add(pnForm, BorderLayout.CENTER);
 
-    // ==================== PHẦN BOTTOM (NÚT BẤM) ====================
     JPanel pnBottom = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
     btnSua = new JButton("Sửa");
     btnLuu = new JButton("Lưu");
@@ -127,9 +120,8 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
   public void suaLaiGiaoDienTheoQuyen() {
     var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-    // Kiểm tra quyền SỬA phiếu xuất/hủy kho sản phẩm
     if (!listQuyen.contains("XK_SUA")) {
-      // Ẩn hoàn toàn các nút có khả năng thay đổi dữ liệu
+
       btnSua.setVisible(false);
       btnLuu.setVisible(false);
       this.setTitle("Chi Tiết Phiếu Hủy Sản Phẩm (Chế độ chỉ đọc)");

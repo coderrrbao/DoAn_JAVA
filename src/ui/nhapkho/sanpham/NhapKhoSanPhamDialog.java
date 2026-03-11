@@ -35,6 +35,7 @@ import dto.NhaCungCap;
 import dto.PhieuNhapSanPham;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -85,8 +86,9 @@ public class NhapKhoSanPhamDialog extends JDialog {
         modelKhoHang.addColumn("Mã sp");
         modelKhoHang.addColumn("Tên sp");
         modelKhoHang.addColumn("Giá nhập");
+
+        modelKhoHang.addColumn("Giá bán");
         modelKhoHang.addColumn("SL");
-        modelKhoHang.addColumn("Loại SP");
 
         JScrollPane scroll = TaoUI.taoTableScroll(modelKhoHang);
 
@@ -328,21 +330,17 @@ public class NhapKhoSanPhamDialog extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // Kiểm tra quyền lập phiếu nhập kho (NK_TAO)
         if (!listQuyen.contains("NK_TAO")) {
-            // Ẩn nút xác nhận nhập hàng (bước cuối cùng)
+
             if (btnNhapHang != null)
                 btnNhapHang.setVisible(false);
 
-            // Ẩn nút thêm sản phẩm vào danh sách chờ nhập
             if (themSpPNHBtn != null)
                 themSpPNHBtn.setVisible(false);
 
-            // Ẩn nút xóa sản phẩm khỏi danh sách chờ nhập
             if (xoaCTBtn != null)
                 xoaCTBtn.setVisible(false);
 
-            // Cập nhật tiêu đề để người dùng biết họ chỉ có thể xem dữ liệu
             this.setTitle("Xem thông tin nhập kho sản phẩm (Chế độ chỉ đọc)");
         }
     }
@@ -358,11 +356,12 @@ public class NhapKhoSanPhamDialog extends JDialog {
             for (ChiTietNhaCungCap chiTietNhaCungCap : nhaCungCap.getListChiTietNhaCungCap()) {
                 if (chiTietNhaCungCap.getLoaiDoiTuong().equals("Sản phẩm")) {
                     SanPham sanPham = sanPhamBUS.timSanPham(chiTietNhaCungCap.getMaDoiTuong());
-                    if (sanPham.getTenSP().contains(search_Item.getTextSearch())) {
+                    if (sanPham.getTenSP().contains(search_Item.getTextSearch())
+                            && sanPham.getLoaiNuoc().equals("Có sẵn")) {
                         modelKhoHang.addRow(
                                 new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), chiTietNhaCungCap.getGiaNhap(),
-                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()),
-                                        sanPham.getLoaiNuoc() });
+                                        sanPham.getGiaBan(),
+                                        loSanPhamBUS.laySoLuongSanPhamTrongKho(sanPham.getMaSP()) });
                     }
 
                 }
@@ -451,7 +450,7 @@ public class NhapKhoSanPhamDialog extends JDialog {
 
             if (phieuNhapSanPhamBUS.themPhieuNhapSanPham(phieuNhapSanPham)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thành công", "Thông báo", 1);
-                nhapKhoSanPhamPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu nhập thất bại", "Thông báo", 1);
             }
@@ -502,26 +501,23 @@ public class NhapKhoSanPhamDialog extends JDialog {
     }
 
     private boolean kiemTraDuLieu() {
-        // Kiểm tra nhà cung cấp
+
         if (cbNhaCungCap.getSelectedItem() == null
                 || cbNhaCungCap.getSelectedItem().toString().equals("Nhà cung cấp")) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn nhà cung cấp!");
             return false;
         }
 
-        // Kiểm tra nhân viên nhập
         if (txtNhanVien.getText().trim().isEmpty()) {
             JOptionPane.showMessageDialog(this, "Nhân viên nhập không được để trống!");
             return false;
         }
 
-        // Kiểm tra có sản phẩm trong danh sách nhập không
         if (modelChiTietPhieuNhap.getRowCount() == 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng thêm ít nhất một sản phẩm vào phiếu nhập!");
             return false;
         }
 
-        // Kiểm tra tổng tiền
         double tongTien = tinhTongTienNhap();
         if (tongTien <= 0) {
             JOptionPane.showMessageDialog(this, "Tổng tiền phải lớn hơn 0!");

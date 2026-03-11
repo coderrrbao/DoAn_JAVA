@@ -96,9 +96,10 @@ public class BanHangUI extends JPanel {
             public void onSanPhamClicked(SanPham sp) {
                 ArrayList<SanPham> dsTopping = new ArrayList<>();
                 ArrayList<SanPham> dsTatCaSP = sanPhamBUS.layListSanPham();
-                for (SanPham s : dsTatCaSP) {
-                    if ("DM10".equals(s.getDanhMuc().getMaDM())) {
-                        dsTopping.add(s);
+                for (SanPham sanPham : dsTatCaSP) {
+                    if (sanPham.getDanhMuc().getTenDM().equals("Topping") && !sanPham.getTrangThaiXuLy()
+                            .equals("Ẩn")) {
+                        dsTopping.add(sanPham);
                     }
                 }
                 ArrayList<Size> listSize = sp.getListSize();
@@ -134,7 +135,7 @@ public class BanHangUI extends JPanel {
                     for (SanPham tp : toppingChon) {
                         SanPham tpCopy = new SanPham();
                         tpCopy.setMaSP(tp.getMaSP());
-                        tpCopy.setTenSP("  ↳ " + tp.getTenSP());
+                        tpCopy.setTenSP("  ->" + tp.getTenSP());
                         tpCopy.setGiaBan(tp.getGiaBan());
                         tpCopy.setDanhMuc(tp.getDanhMuc());
                         tpCopy.setLoaiNuoc(tp.getLoaiNuoc());
@@ -171,10 +172,16 @@ public class BanHangUI extends JPanel {
         loadDanhSachKhuyenMai();
     }
 
-    private void loadDanhSachKhuyenMai() {
+    public void loadDuLieu(){
+        loadDanhSachKhuyenMai();
+        thongTinKhachHangPanel.loadDataKhachHang();
+    }
+
+    public void loadDanhSachKhuyenMai() {
         KhuyenMaiBUS kmBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
         ArrayList<KhuyenMai> ds = kmBUS.layListKhuyenMai();
         if (ds != null) {
+            thanhToanPanel.getCbxKhuyenMai().removeAllItems();
             for (KhuyenMai mgg : ds) {
                 if (kmBUS.kiemTraTrangThaiHopLe(mgg).isEmpty()) {
                     thanhToanPanel.getCbxKhuyenMai().addItem(mgg.getMaKM() + " - Giảm " + mgg.getPhanTramGiam() + "%");
@@ -193,7 +200,7 @@ public class BanHangUI extends JPanel {
                     JOptionPane.showMessageDialog(this, "Vui lòng chọn mã khuyến mãi từ danh sách!");
                     return;
                 }
-                KhuyenMaiBUS  khuyenMaiBUS =  KhuyenMaiBUS.getKhuyenMaiBUS();
+                KhuyenMaiBUS khuyenMaiBUS = KhuyenMaiBUS.getKhuyenMaiBUS();
                 KhuyenMai mgg = khuyenMaiBUS.timKhuyenMai(inputCode);
 
                 if (mgg != null) {
@@ -226,7 +233,7 @@ public class BanHangUI extends JPanel {
         ArrayList<SanPham> dsDaLoc = new ArrayList<>();
         if (dsGoc != null) {
             for (SanPham sp : dsGoc) {
-                if (sp.getDanhMuc() != null && !"DM10".equals(sp.getDanhMuc().getMaDM())) {
+                if (sp.getDanhMuc() != null && !sp.getDanhMuc().getTenDM().equals("Topping")) {
                     dsDaLoc.add(sp);
                 }
             }
@@ -364,7 +371,8 @@ public class BanHangUI extends JPanel {
                             }
                         }
                     }
-                } else if (spGoc.getListSize() != null && !spGoc.getListSize().isEmpty() && !tenSP.startsWith("  --> ")) {
+                } else if (spGoc.getListSize() != null && !spGoc.getListSize().isEmpty()
+                        && !tenSP.startsWith("  ->")) {
                     sizeChon = spGoc.getListSize().get(0);
                 }
                 ct.setSize(sizeChon);
@@ -395,7 +403,7 @@ public class BanHangUI extends JPanel {
                 resetGiamGia();
                 lockMaGiamGia(false);
 
-                if(onThanhToanSuccess != null) {
+                if (onThanhToanSuccess != null) {
                     onThanhToanSuccess.run();
                 }
 
@@ -407,7 +415,7 @@ public class BanHangUI extends JPanel {
     }
 
     private SanPham timSanPhamTheoTen(ArrayList<SanPham> list, String tenGiaoDien) {
-        String tenGoc = tenGiaoDien.replace("  ↳ ", "");
+        String tenGoc = tenGiaoDien.replace("  ->", "");
 
         if (tenGoc.contains(" (")) {
             tenGoc = tenGoc.substring(0, tenGoc.lastIndexOf(" ("));

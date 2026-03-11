@@ -7,6 +7,7 @@ import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import dto.SanPham;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -18,14 +19,11 @@ import javax.swing.table.DefaultTableModel;
 public class XuatKhoSanPhamDialog extends JDialog {
     private JTable tblTonKho, tblChoXuat;
     private DefaultTableModel modelTonKho, modelChoXuat;
-    private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo; // Đã thêm txtTenSP
+    private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo;
     private JButton btnThem, btnXacNhan;
     private Search_Item search_Item;
-    private XuatKhoSanPhamPanel parentPanel;
-
     public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
         super((Frame) null, "Tạo Phiếu Hủy Sản Phẩm", true);
-        this.parentPanel = parent;
         setSize(1000, 650);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
@@ -51,7 +49,6 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
         left.add(scrollTonKho, BorderLayout.CENTER);
 
-        // ==================== BÊN PHẢI: FORM VÀ DANH SÁCH CHỜ ====================
         JPanel right = new JPanel(new BorderLayout(0, 10));
 
         JPanel form = new JPanel();
@@ -60,18 +57,17 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
         txtMaSP = new JTextField();
         txtMaSP.setEditable(false);
-        
-        // Khởi tạo txtTenSP
+
         txtTenSP = new JTextField();
         txtTenSP.setEditable(false);
-        
+
         txtMaLo = new JTextField();
         txtMaLo.setEditable(false);
         txtSoLuongXuat = new JTextField();
         txtLyDo = new JTextField();
 
         form.add(taoDong("Mã Sản Phẩm:", txtMaSP));
-        form.add(taoDong("Tên Sản Phẩm:", txtTenSP)); // Thêm dòng Tên Sản Phẩm vào UI
+        form.add(taoDong("Tên Sản Phẩm:", txtTenSP));
         form.add(taoDong("Mã Lô:", txtMaLo));
         form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
         form.add(taoDong("Lý do hủy:", txtLyDo));
@@ -172,11 +168,10 @@ public class XuatKhoSanPhamDialog extends JDialog {
             if (r != -1) {
                 txtMaSP.setText(modelTonKho.getValueAt(r, 0).toString());
                 txtMaLo.setText(modelTonKho.getValueAt(r, 1).toString());
-                
-                // Load Tên Sản Phẩm từ database dựa vào Mã SP
+
                 SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
                 txtTenSP.setText(sp != null ? sp.getTenSP() : "N/A");
-                
+
                 txtSoLuongXuat.requestFocus();
             }
         });
@@ -198,7 +193,6 @@ public class XuatKhoSanPhamDialog extends JDialog {
                     return;
                 }
 
-                // Kiểm tra cộng dồn nếu mã lô đã có trong bảng chờ xuất
                 boolean daTonTai = false;
                 for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
                     if (modelChoXuat.getValueAt(i, 3).toString().equals(maLo)) {
@@ -214,10 +208,10 @@ public class XuatKhoSanPhamDialog extends JDialog {
                 }
 
                 if (!daTonTai) {
-                    // Không cần tìm lại SanPham từ DB nữa vì đã lấy hiển thị ở txtTenSP rồi
+
                     modelChoXuat.addRow(new Object[] {
                             txtMaSP.getText(),
-                            txtTenSP.getText(), // Lấy trực tiếp từ TextField
+                            txtTenSP.getText(),
                             sl,
                             maLo,
                             modelTonKho.getValueAt(r, 4)
@@ -244,14 +238,14 @@ public class XuatKhoSanPhamDialog extends JDialog {
             }
 
             PhieuHuySanPham ph = new PhieuHuySanPham();
-            // Lấy mã NV từ Session
+
             String maNV = PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "";
             ph.setMaNV(maNV);
             ph.setLyDo(txtLyDo.getText());
             ph.setTongGiaTri(tongTien);
 
             if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().thucHienHuy(ph, data)) {
-                parentPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thất bại!");

@@ -13,7 +13,7 @@ import util.Anh;
 import util.TaoUI;
 
 public class ThongTinCaNhanPanel extends JPanel {
-    private JTextField tfMaNV, tfTenNV, tfGioiTinh, tfNgaySinh, tfNgayVaoLam, tfSDT, tfDiaChi, tfChucVu;
+    private JTextField tfMaNV, tfTenNV, tfGioiTinh, tfNgaySinh, tfSDT, tfDiaChi, tfChucVu;
     private JButton btnLuuThongTin, btnSua, btnChonAnh;
     private JLabel lblAnhDaiDien;
     private JFileChooser fileChooser = new JFileChooser();

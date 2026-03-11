@@ -14,6 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -27,7 +28,6 @@ public class NguyenLieuUI extends JPanel {
   public NguyenLieuUI() {
     setLayout(new BorderLayout());
 
-    // --- GIAO DIỆN PHẦN TRÊN ---
     JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
     top.setBackground(Color.WHITE);
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
@@ -39,7 +39,6 @@ public class NguyenLieuUI extends JPanel {
     btnXuatExcel = new JButton("Xuất Excel");
     btnNhapExcel = new JButton("Nhập Excel");
 
-    // Thống nhất kích thước nút bấm theo nhánh HEAD (32px)
     TaoUI.setFixSize(btnTao, 80, 32);
     TaoUI.setFixSize(btnXoa, 80, 32);
     TaoUI.setFixSize(btnSua, 80, 32);
@@ -61,14 +60,12 @@ public class NguyenLieuUI extends JPanel {
 
     add(top, BorderLayout.NORTH);
 
-    // --- GIAO DIỆN BẢNG ---
-    model =
-        new DefaultTableModel() {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    model = new DefaultTableModel() {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
 
     model.addColumn("Mã NL");
     model.addColumn("Tên nguyên liệu");
@@ -112,13 +109,12 @@ public class NguyenLieuUI extends JPanel {
   private void addEvents() {
     btnTao.addActionListener(
         e -> {
-          FormNguyenLieu form =
-              new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), null);
+          FormNguyenLieu form = new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), null);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (nlBUS.themNguyenLieu(form.getKetQua())) {
               JOptionPane.showMessageDialog(this, "Thêm thành công!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
               JOptionPane.showMessageDialog(this, "Thêm thất bại!");
             }
@@ -133,13 +129,12 @@ public class NguyenLieuUI extends JPanel {
             return;
           }
           String maNL = model.getValueAt(row, 0).toString();
-          int confirm =
-              JOptionPane.showConfirmDialog(
-                  this, "Xác nhận xóa " + maNL + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
+          int confirm = JOptionPane.showConfirmDialog(
+              this, "Xác nhận xóa " + maNL + "?", "Xác nhận", JOptionPane.YES_NO_OPTION);
           if (confirm == JOptionPane.YES_OPTION) {
             if (nlBUS.xoaNguyenLieu(maNL)) {
               JOptionPane.showMessageDialog(this, "Đã xóa!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             }
           }
         });
@@ -153,13 +148,12 @@ public class NguyenLieuUI extends JPanel {
           }
           String maNL = model.getValueAt(row, 0).toString();
           NguyenLieu nlCanSua = nlBUS.timNguyenLieu(maNL);
-          FormNguyenLieu form =
-              new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), nlCanSua);
+          FormNguyenLieu form = new FormNguyenLieu((Frame) SwingUtilities.getWindowAncestor(this), nlCanSua);
           form.setVisible(true);
           if (form.getKetQua() != null) {
             if (nlBUS.capNhatNguyenLieu(form.getKetQua())) {
               JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             }
           }
         });
@@ -171,11 +165,8 @@ public class NguyenLieuUI extends JPanel {
           fileChooser.setSelectedFile(new java.io.File("NguyenLieu.xlsx"));
           int userSelection = fileChooser.showSaveDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (!path.toLowerCase().endsWith(".xlsx")) {
-              path += ".xlsx";
-            }
-            if (nlBUS.xuatExcel(path)) {
+     
+            if (nlBUS.xuatExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Xuất Excel thành công!");
             } else {
               JOptionPane.showMessageDialog(this, "Xuất Excel thất bại!");
@@ -187,16 +178,14 @@ public class NguyenLieuUI extends JPanel {
         e -> {
           JFileChooser fileChooser = new JFileChooser();
           fileChooser.setDialogTitle("Chọn file Excel để nhập dữ liệu");
-          FileNameExtensionFilter filter =
-              new FileNameExtensionFilter("Excel Files", "xlsx", "xls");
+          FileNameExtensionFilter filter = new FileNameExtensionFilter("Excel Files", "xlsx", "xls");
           fileChooser.setFileFilter(filter);
 
           int userSelection = fileChooser.showOpenDialog(this);
           if (userSelection == JFileChooser.APPROVE_OPTION) {
-            String path = fileChooser.getSelectedFile().getAbsolutePath();
-            if (nlBUS.nhapExcel(path)) {
+            if (nlBUS.nhapExcel(fileChooser.getSelectedFile())) {
               JOptionPane.showMessageDialog(this, "Nhập dữ liệu từ Excel thành công!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
               JOptionPane.showMessageDialog(
                   this,
@@ -235,12 +224,11 @@ public class NguyenLieuUI extends JPanel {
     for (NguyenLieu nl : list) {
       model.addRow(
           new Object[] {
-            nl.getMaNL(), nl.getTenNL(), nl.getGia(), nl.getDonVi(), nl.getMucCanhBao()
+              nl.getMaNL(), nl.getTenNL(), nl.getGia(), nl.getDonVi(), nl.getMucCanhBao()
           });
     }
   }
 
-  // --- Getters ---
   public JButton getBtnTao() {
     return btnTao;
   }

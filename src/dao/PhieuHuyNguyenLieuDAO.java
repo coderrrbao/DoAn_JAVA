@@ -23,10 +23,9 @@ public class PhieuHuyNguyenLieuDAO {
   }
 
   public boolean themPhieuHuy(PhieuHuyNguyenLieu ph, Connection conn) {
-    // CHỈ INSERT các cột thông tin chung, bỏ MaLo
-    String sql =
-        "INSERT INTO PhieuHuyNguyenLieu (MaPH, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy,"
-            + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
+
+    String sql = "INSERT INTO PhieuHuyNguyenLieu (MaPH, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy,"
+        + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getMaPH());
       pst.setString(2, ph.getMaNV());
@@ -41,8 +40,7 @@ public class PhieuHuyNguyenLieuDAO {
 
   public boolean themChiTietHuy(
       String maPH, String maLo, double soLuong, double gia, Connection conn) {
-    String sql =
-        "INSERT INTO ChiTietPhieuHuyNguyenLieu (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
+    String sql = "INSERT INTO ChiTietPhieuHuyNguyenLieu (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, maPH);
       pst.setString(2, maLo);
@@ -104,11 +102,10 @@ public class PhieuHuyNguyenLieuDAO {
 
   public ArrayList<LoNguyenLieu> layChiTietHuyTheoMaPH(String maPH) {
     ArrayList<LoNguyenLieu> list = new ArrayList<>();
-    String sql =
-        "SELECT ct.*, lo.MaNL "
-            + "FROM ChiTietPhieuHuyNguyenLieu ct "
-            + "JOIN LoNguyenLieu lo ON ct.MaLo = lo.MaLoNL "
-            + "WHERE ct.MaPH = ?";
+    String sql = "SELECT ct.*, lo.MaNL "
+        + "FROM ChiTietPhieuHuyNguyenLieu ct "
+        + "JOIN LoNguyenLieu lo ON ct.MaLo = lo.MaLoNL "
+        + "WHERE ct.MaPH = ?";
     try (Connection conn = DBConnection.getConnection();
         PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, maPH);
@@ -116,7 +113,7 @@ public class PhieuHuyNguyenLieuDAO {
       while (rs.next()) {
         LoNguyenLieu lo = new LoNguyenLieu();
         lo.setMaLoNL(rs.getString("MaLo"));
-        lo.setMaNL(rs.getString("MaNL")); // Lấy MaNL từ bảng lô
+        lo.setMaNL(rs.getString("MaNL"));
         lo.setSoLuong(rs.getDouble("SoLuong"));
         lo.setGiaNhap(rs.getDouble("DonGia"));
         list.add(lo);
@@ -127,7 +124,6 @@ public class PhieuHuyNguyenLieuDAO {
     return list;
   }
 
-  // Soft delete - set TrangThai = 0
   public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
     String sql = "UPDATE PhieuHuyNguyenLieu SET TrangThai = 0 WHERE MaPH = ?";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {

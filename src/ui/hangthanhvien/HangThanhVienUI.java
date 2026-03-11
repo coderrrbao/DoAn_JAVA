@@ -1,16 +1,12 @@
 package ui.hangthanhvien;
 
 import bus.HangThanhVienBUS;
-import dao.HangThanhVienDAO;
-import dao.conection.DBConnection;
 import dto.HangThanhVien;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Frame;
 import java.io.File;
-import java.sql.Connection;
-import java.sql.SQLException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
@@ -31,8 +27,6 @@ public class HangThanhVienUI extends JPanel {
   public HangThanhVienUI() {
     setLayout(new BorderLayout());
 
-    // --- GIAO DIỆN PHẦN TRÊN ---
-    // Giữ chiều cao 45 từ HEAD để giao diện thoáng hơn
     JPanel top = TaoUI.taoPanelBoxLayoutNgang(3000, 45);
     top.setBackground(Color.WHITE);
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
@@ -44,7 +38,6 @@ public class HangThanhVienUI extends JPanel {
     btnXuatExcel = new JButton("Xuất Excel");
     btnNhapExcel = new JButton("Nhập Excel");
 
-    // Đồng bộ kích thước nút theo HEAD (32px)
     TaoUI.setFixSize(btnTao, 120, 32);
     TaoUI.setFixSize(btnXoa, 80, 32);
     TaoUI.setFixSize(btnSua, 80, 32);
@@ -66,7 +59,6 @@ public class HangThanhVienUI extends JPanel {
 
     add(top, BorderLayout.NORTH);
 
-    // --- GIAO DIỆN BẢNG ---
     model = new DefaultTableModel() {
       @Override
       public boolean isCellEditable(int row, int column) {
@@ -112,7 +104,7 @@ public class HangThanhVienUI extends JPanel {
   }
 
   private void addEvents() {
-    // Sự kiện Thêm
+
     btnTao.addActionListener(
         e -> {
           FormHangThanhVien form = new FormHangThanhVien((Frame) SwingUtilities.getWindowAncestor(this), null);
@@ -127,7 +119,6 @@ public class HangThanhVienUI extends JPanel {
           }
         });
 
-    // Sự kiện Xóa
     btnXoa.addActionListener(
         e -> {
           int row = tableUI.getSelectedRow();
@@ -146,7 +137,6 @@ public class HangThanhVienUI extends JPanel {
           }
         });
 
-    // Sự kiện Sửa
     btnSua.addActionListener(
         e -> {
           int row = tableUI.getSelectedRow();
@@ -169,21 +159,13 @@ public class HangThanhVienUI extends JPanel {
     btnXuatExcel.addActionListener(e -> {
       JFileChooser fileChooser = new JFileChooser();
       fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
-      fileChooser.setSelectedFile(new File("DanhSachHangThanhVien.xlsx")); // Tên file mặc định
+      fileChooser.setSelectedFile(new File("DanhSachHangThanhVien.xlsx"));
 
       int userSelection = fileChooser.showSaveDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-        File fileToSave = fileChooser.getSelectedFile();
-        String filePath = fileToSave.getAbsolutePath();
-
-        // Đảm bảo file có đuôi .xlsx
-        if (!filePath.toLowerCase().endsWith(".xlsx")) {
-          filePath += ".xlsx";
-        }
-
-        // Gọi hàm logic từ BUS (Giả sử hàm này nằm trong HangThanhVienBUS)
-        boolean success = htvBUS.xuatExcel(filePath);
+     
+        boolean success = htvBUS.xuatExcel(fileChooser.getSelectedFile());
 
         if (success) {
           JOptionPane.showMessageDialog(this,
@@ -207,10 +189,9 @@ public class HangThanhVienUI extends JPanel {
       int userSelection = fileChooser.showOpenDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-        File fileToOpen = fileChooser.getSelectedFile();
-        String filePath = fileToOpen.getAbsolutePath();
 
-        boolean success = htvBUS.nhapExcel(filePath);
+
+        boolean success = htvBUS.nhapExcel(fileChooser.getSelectedFile());
 
         if (success) {
           JOptionPane.showMessageDialog(this,
@@ -228,7 +209,6 @@ public class HangThanhVienUI extends JPanel {
       }
     });
 
-    // Sự kiện Tìm kiếm
     search_Item
         .getSearchText()
         .getDocument()
@@ -260,12 +240,11 @@ public class HangThanhVienUI extends JPanel {
               htv.getMaHang(),
               htv.getTenHang(),
               htv.getPhanTramGiam(),
-              String.format("%,.0f", htv.getDieuKien()) // Định dạng tiền tệ
+              String.format("%,.0f", htv.getDieuKien())
           });
     }
   }
 
-  // --- Getters ---
   public JButton getBtnTao() {
     return btnTao;
   }

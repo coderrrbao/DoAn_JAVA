@@ -7,8 +7,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
+import java.io.File;
 import java.util.ArrayList;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -17,6 +19,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
 import ui.component.LocNgay_Item;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.TaoUI;
 
@@ -44,17 +47,14 @@ public class KhuyenMaiUI extends JPanel {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = PhienDangNhap.getListQuyen();
 
-        // 1. Quyền Thêm khuyến mãi mới
         if (!listQuyen.contains("KM_TAO")) {
             btnThem.setVisible(false);
         }
 
-        // 2. Quyền Sửa chương trình khuyến mãi
         if (!listQuyen.contains("KM_SUA")) {
             btnSua.setVisible(false);
         }
 
-        // 3. Quyền Xóa (kết thúc sớm) khuyến mãi
         if (!listQuyen.contains("KM_XOA")) {
             btnXoa.setVisible(false);
         }
@@ -68,7 +68,6 @@ public class KhuyenMaiUI extends JPanel {
         top.setLayout(new FlowLayout(FlowLayout.LEFT));
         top.setBackground(Color.WHITE);
 
-        // Thay thế Search_Item bằng LocNgay_Item
         locNgay = new LocNgay_Item(400, 32);
         top.add(locNgay);
 
@@ -85,11 +84,11 @@ public class KhuyenMaiUI extends JPanel {
         top.add(btnXoa);
 
         btnNhapExc = new JButton("Nhập Excel");
-        btnNhapExc.setPreferredSize(new Dimension(80, 32));
+        btnNhapExc.setPreferredSize(new Dimension(100, 32));
         top.add(btnNhapExc);
 
         btnXuatExc = new JButton("Xuất Excel");
-        btnXuatExc.setPreferredSize(new Dimension(80, 32));
+        btnXuatExc.setPreferredSize(new Dimension(100, 32));
         top.add(btnXuatExc);
 
         return top;
@@ -113,14 +112,12 @@ public class KhuyenMaiUI extends JPanel {
         return panel;
     }
 
-    // Gộp hàm thucHienTimKiem cũ vào đây và xử lý điều kiện lọc qua LocNgay_Item
     public void loadDataToTable() {
         model.setRowCount(0);
         ArrayList<KhuyenMai> list = kmBUS.layListKhuyenMai();
 
         for (KhuyenMai km : list) {
-            // Kiểm tra xem Từ ngày của khuyến mãi có nằm trong khoảng thời gian đã chọn
-            // không
+
             if (locNgay.ngayTrongKhoan(km.getTuNgay())) {
                 model.addRow(new Object[] {
                         km.getMaKM(),
@@ -140,7 +137,7 @@ public class KhuyenMaiUI extends JPanel {
             if (form.getKetQua() != null) {
                 if (kmBUS.themKhuyenMai(form.getKetQua())) {
                     JOptionPane.showMessageDialog(this, "Thêm khuyến mãi thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Thêm thất bại!");
                 }
@@ -159,7 +156,7 @@ public class KhuyenMaiUI extends JPanel {
             if (confirm == JOptionPane.YES_OPTION) {
                 if (kmBUS.xoaKhuyenMai(maKM)) {
                     JOptionPane.showMessageDialog(this, "Đã xóa thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
             }
         });
@@ -178,37 +175,35 @@ public class KhuyenMaiUI extends JPanel {
             if (form.getKetQua() != null) {
                 if (kmBUS.capNhatKhuyenMai(form.getKetQua())) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thành công!");
-                    loadDataToTable();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
             }
         });
 
         btnXuatExc.addActionListener(e -> {
-            java.util.ArrayList<KhuyenMai> dsXuat = new java.util.ArrayList<>();
-            for (int i = 0; i < table.getRowCount(); i++) {
-                String maKM = table.getValueAt(i, 0).toString();
-                KhuyenMai km = kmBUS.timKhuyenMai(maKM);
-                if (km != null) {
-                    dsXuat.add(km);
-                }
-            }
 
-            if (dsXuat.isEmpty()) {
+            if (table.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "Bảng dữ liệu trống, không có gì để xuất!");
                 return;
             }
-            kmBUS.xuatExcel(dsXuat);
-        });
 
-        btnNhapExc.addActionListener(e -> {
-            int confirm = JOptionPane.showConfirmDialog(this,
-                    "Lưu ý: File nhập phải đúng định dạng cột như file Xuất ra.\nBạn có muốn tiếp tục?",
-                    "Xác nhận Nhập Excel", JOptionPane.YES_NO_OPTION);
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file Khuyến mãi");
+            fileChooser.setSelectedFile(new File("DanhSachKhuyenMai.xlsx"));
 
-            if (confirm == JOptionPane.YES_OPTION) {
-                String ketQua = kmBUS.nhapExcel();
-                JOptionPane.showMessageDialog(this, ketQua);
-                loadDataToTable();
+            if (fileChooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION) {
+                File file = fileChooser.getSelectedFile();
+
+                if (!file.getAbsolutePath().toLowerCase().endsWith(".xlsx")) {
+                    file = new File(file.getAbsolutePath() + ".xlsx");
+                }
+
+                if (kmBUS.xuatExcel(file)) {
+                    JOptionPane.showMessageDialog(this, "Xuất file Excel thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(this, "Lỗi: Không thể xuất file Excel!", "Lỗi",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
 

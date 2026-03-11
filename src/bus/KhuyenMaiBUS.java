@@ -3,10 +3,14 @@ package bus;
 import dao.KhuyenMaiDAO;
 import dao.conection.DBConnection;
 import dto.KhuyenMai;
+import util.XuLyExcel;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class KhuyenMaiBUS {
     private static KhuyenMaiBUS khuyenMaiBUS = null;
@@ -73,6 +77,10 @@ public class KhuyenMaiBUS {
         }
     }
 
+    public boolean themKhuyenMai(KhuyenMai km, Connection conn) throws SQLException {
+        return khuyenMaiDAO.themKhuyenMai(km, conn);
+    }
+
     public boolean capNhatKhuyenMai(KhuyenMai km) {
         Connection conn = DBConnection.getConnection();
         try {
@@ -136,9 +144,8 @@ public class KhuyenMaiBUS {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             long currentMillis = System.currentTimeMillis();
 
-            // Parse chuỗi ngày thành số milliseconds để so sánh
             long tuNgay = sdf.parse(km.getTuNgay()).getTime();
-            long denNgay = sdf.parse(km.getDenNgay()).getTime() + 86400000L - 1; // +1 ngày trừ 1ms
+            long denNgay = sdf.parse(km.getDenNgay()).getTime() + 86400000L - 1;
 
             if (currentMillis < tuNgay)
                 return "Chờ kích hoạt";
@@ -151,76 +158,89 @@ public class KhuyenMaiBUS {
     }
 
     public String kiemTraTrangThaiHopLe(KhuyenMai km) {
-        // 1. Kiểm tra đối tượng null
         if (km == null) {
             return "Mã khuyến mãi không tồn tại!";
         }
-
-        // 2. Kiểm tra tính hợp lệ của chuỗi ngày tháng
         if (km.getTuNgay() == null || km.getDenNgay() == null ||
                 km.getTuNgay().isEmpty() || km.getDenNgay().isEmpty()) {
             return "Dữ liệu thời gian của mã không hợp lệ!";
         }
 
         try {
-            // Định dạng chuẩn yyyy-MM-dd để khớp với dữ liệu từ DAO
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            sdf.setLenient(false); // Kiểm tra nghiêm ngặt tính đúng đắn của ngày
+            sdf.setLenient(false);
 
             long currentTime = System.currentTimeMillis();
-
-            // Chuyển String sang milliseconds
             long timeStart = sdf.parse(km.getTuNgay()).getTime();
-
-            // timeEnd + 86399999ms để tính đến hết 23:59:59 của ngày kết thúc
             long timeEnd = sdf.parse(km.getDenNgay()).getTime() + 86399999L;
 
-            // 3. So sánh thời gian hiện tại với khoảng hiệu lực
             if (currentTime < timeStart) {
                 return "Mã khuyến mãi này chưa đến thời gian bắt đầu áp dụng!";
             }
-
             if (currentTime > timeEnd) {
                 return "Mã khuyến mãi này đã hết hạn sử dụng!";
             }
-
         } catch (Exception e) {
             return "Lỗi định dạng ngày tháng (Yêu cầu: yyyy-MM-dd)!";
         }
-
         return "";
     }
 
-    public boolean xuatExcel(java.util.ArrayList<dto.KhuyenMai> dsXuat) {
-        if (dsXuat == null || dsXuat.isEmpty()) return false;
-        return util.XuLyExcel.xuatFileKhuyenMai(dsXuat);
+    public boolean xuatExcel(File file) {
+        ArrayList<KhuyenMai> dsXuat = layListKhuyenMai();
+        if (dsXuat == null || dsXuat.isEmpty())
+            return false;
+        return XuLyExcel.xuatFileKhuyenMai(file, dsXuat);
     }
 
-    public String nhapExcel() {
-        java.util.ArrayList<dto.KhuyenMai> dsNhap = util.XuLyExcel.nhapFileKhuyenMai();
+    public boolean nhapExcel(File file) {
+        ArrayList<KhuyenMai> dsNhap = XuLyExcel.nhapFileKhuyenMai(file);
         if (dsNhap == null || dsNhap.isEmpty()) {
-            return "Không có dữ liệu hoặc bạn đã hủy chọn file!";
+            return false;
         }
 
-        int thanhCong = 0;
-        int thatBai = 0;
+        HashSet<String> setMaKM = new HashSet<>();
+        for (KhuyenMai kmHienTai : layListKhuyenMai()) {
+            setMaKM.add(kmHienTai.getMaKM().trim().toLowerCase());
+        }
 
-        try (java.sql.Connection conn = dao.conection.DBConnection.getConnection()) {
+        Connection conn = null;
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
 
-            for (dto.KhuyenMai km : dsNhap) {
-                if (khuyenMaiDAO.themKhuyenMai(km, conn)) {
-                    thanhCong++;
-                } else {
-                    thatBai++;
+            for (KhuyenMai km : dsNhap) {
+                String maKmMoi = km.getMaKM().trim().toLowerCase();
+
+                if (setMaKM.contains(maKmMoi)) {
+                    throw new SQLException("Trùng mã khuyến mãi đã tồn tại: " + km.getMaKM());
                 }
+
+                if (!themKhuyenMai(km, conn)) {
+                    throw new SQLException("Lỗi hệ thống khi thêm mã: " + km.getMaKM());
+                }
+
+                setMaKM.add(maKmMoi);
             }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-            return "Lỗi kết nối Cơ sở dữ liệu trong quá trình nhập!";
-        }
+            conn.commit();
+            this.canUpdate = true;
+            this.khoitao();
+            return true;
 
-        return "Kết quả Nhập Excel:\n- Thành công: " + thanhCong + " dòng\n- Thất bại/Trùng mã: " + thatBai + " dòng";
+        } catch (Exception e) {
+            System.err.println("Lỗi Import Excel Khuyến Mãi: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
     }
 
     private void dongKetNoi(Connection conn) {

@@ -7,6 +7,7 @@ import java.awt.event.KeyEvent;
 
 import bus.KhachHangBUS;
 import dto.KhachHang;
+import ui.login.LoginUI;
 import util.TaoUI;
 
 public class ThemKhachHangDialog extends JDialog {
@@ -106,6 +107,7 @@ public class ThemKhachHangDialog extends JDialog {
         hangLabel.setPreferredSize(new Dimension(110, 30));
         hangLabel.setMinimumSize(new Dimension(110, 30));
         hangLabel.setMaximumSize(new Dimension(110, 30));
+
         lblHangThanhVien = new JLabel(khachHang != null ? "" : "Thành Viên Mới");
         hangPanel.add(hangLabel);
         hangPanel.add(lblHangThanhVien);
@@ -144,7 +146,6 @@ public class ThemKhachHangDialog extends JDialog {
             btnThem.setVisible(false);
             anThaoTacSua();
         } else {
-
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
             btnThem.setVisible(true);
@@ -176,9 +177,6 @@ public class ThemKhachHangDialog extends JDialog {
         btnSua.addActionListener(e -> batThaoTacSua());
 
         btnThem.addActionListener(e -> {
-            if (!kiemTraDuLieu()) {
-                return;
-            }
             String name = txtName.getText().trim();
             String phone = txtPhone.getText().trim();
             String gt = (String) cbGioiTinh.getSelectedItem();
@@ -191,47 +189,43 @@ public class ThemKhachHangDialog extends JDialog {
             kh.setMaHang("HTV01");
 
             try {
-                if (!bus.themKhachHang(kh)) {
-                    JOptionPane.showMessageDialog(this, "Thêm thất bại", "Lỗi", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo",
-                            JOptionPane.INFORMATION_MESSAGE);
-                    if (khUI != null) {
-                        khUI.hienThiDanhSachKhachHang();
-                    }
-                    dispose();
+
+                bus.themKhachHang(kh);
+
+                JOptionPane.showMessageDialog(this, "Thêm khách hàng thành công", "Thông báo",
+                        JOptionPane.INFORMATION_MESSAGE);
+                if (khUI != null) {
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
+                dispose();
             } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Thông báo lỗi", JOptionPane.ERROR_MESSAGE);
+
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
             }
         });
 
         btnLuu.addActionListener(e -> {
-            if (!kiemTraDuLieu()) {
-                return;
-            }
             if (khachHang == null) {
                 JOptionPane.showMessageDialog(this, "Không tìm thấy khách hàng để sửa", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
                 return;
             }
 
-            String name = txtName.getText().trim();
-            String phone = txtPhone.getText().trim();
-            String gt = (String) cbGioiTinh.getSelectedItem();
+            khachHang.setTenKH(txtName.getText().trim());
+            khachHang.setSdt(txtPhone.getText().trim());
+            khachHang.setGioiTinh((String) cbGioiTinh.getSelectedItem());
 
-            khachHang.setTenKH(name);
-            khachHang.setSdt(phone);
-            khachHang.setGioiTinh(gt);
+            String errorMsg = bus.capNhatKhachHang(khachHang);
 
-            String result = bus.capNhatKhachHang(khachHang);
-            if (result != null) {
-                JOptionPane.showMessageDialog(this, result, "Lỗi", JOptionPane.ERROR_MESSAGE);
+            if (errorMsg != null) {
+
+                JOptionPane.showMessageDialog(this, errorMsg, "Lỗi cập nhật", JOptionPane.ERROR_MESSAGE);
             } else {
+
                 JOptionPane.showMessageDialog(this, "Cập nhật khách hàng thành công", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
                 if (khUI != null) {
-                    khUI.hienThiDanhSachKhachHang();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 }
                 dispose();
             }
@@ -245,49 +239,7 @@ public class ThemKhachHangDialog extends JDialog {
         txtName.setText(khachHang.getTenKH());
         txtPhone.setText(khachHang.getSdt());
         cbGioiTinh.setSelectedItem(khachHang.getGioiTinh());
-        lblHangThanhVien.setText(tenHangTuMa(khachHang.getMaHang()));
-    }
 
-    private String tenHangTuMa(String maHang) {
-        if (maHang == null)
-            return "Thành Viên Mới";
-        return switch (maHang) {
-            case "HTV01" -> "Thành Viên Mới";
-            case "HTV02" -> "Thành Viên Bạc";
-            case "HTV03" -> "Thành Viên Vàng";
-            case "HTV04" -> "Thành Viên Bạch Kim";
-            case "HTV05" -> "Thành Viên Kim Cương";
-            default -> "Thành Viên Mới";
-        };
-    }
-
-    private boolean kiemTraDuLieu() {
-        String name = txtName.getText().trim();
-        String phone = txtPhone.getText().trim();
-        String gt = (String) cbGioiTinh.getSelectedItem();
-
-        if (name.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Tên khách hàng không được để trống!", "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (phone.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (!phone.matches("\\d{10,11}")) {
-            JOptionPane.showMessageDialog(this, "Số điện thoại phải là 10-11 chữ số!", "Lỗi",
-                    JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        if (gt == null || gt.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn giới tính!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            return false;
-        }
-
-        return true;
+        lblHangThanhVien.setText(bus.layTenHangTuMa(khachHang.getMaHang()));
     }
 }

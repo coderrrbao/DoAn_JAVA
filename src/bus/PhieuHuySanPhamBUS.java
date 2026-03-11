@@ -8,10 +8,7 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import util.XuLyExcel;
 
 public class PhieuHuySanPhamBUS {
   private static PhieuHuySanPhamBUS instance;
@@ -44,10 +41,8 @@ public class PhieuHuySanPhamBUS {
       String maPH = dao.layMaPhieuHuySPKhaDung(conn);
       phieuHuy.setMaPH(maPH);
 
-      // 1. Lưu thông tin phiếu chính
       if (!dao.themPhieuHuy(phieuHuy, conn)) throw new SQLException();
 
-      // 2. Duyệt danh sách từ giao diện để lưu vào bảng chi tiết
       for (Object[] row : data) {
         String maLo = row[3].toString();
         double soLuong = Double.parseDouble(row[2].toString());
@@ -107,155 +102,73 @@ public class PhieuHuySanPhamBUS {
     }
   }
 
-  public boolean xuatExcel(String filePath) {
-    ArrayList<PhieuHuySanPham> dsPhieu = layListPhieuHuy();
+  public boolean themPhieuHuy(PhieuHuySanPham p, Connection conn) throws SQLException {
 
-    try (Workbook workbook = new XSSFWorkbook()) {
-      Sheet sheetPhieu = workbook.createSheet("Danh Sách Phiếu Hủy");
-      String[] headerPhieu = {"Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền"};
-      createHeader(workbook, sheetPhieu, headerPhieu);
+    p.setMaPH(dao.layMaPhieuHuySPKhaDung(conn));
 
-      Sheet sheetChiTiet = workbook.createSheet("Chi Tiết Lô Sản Phẩm");
-      String[] headerCT = {"Mã Phiếu", "Mã Lô SP", "Số Lượng", "Đơn Giá"};
-      createHeader(workbook, sheetChiTiet, headerCT);
-
-      int rowPhieuIdx = 1;
-      int rowCTIdx = 1;
-
-      for (PhieuHuySanPham phieu : dsPhieu) {
-        Row rowP = sheetPhieu.createRow(rowPhieuIdx++);
-        rowP.createCell(0).setCellValue(phieu.getMaPH());
-        rowP.createCell(1).setCellValue(phieu.getMaNV());
-        rowP.createCell(2).setCellValue(phieu.getNgayHuy().toString());
-        rowP.createCell(3).setCellValue(phieu.getLyDo());
-        rowP.createCell(4).setCellValue(phieu.getTongGiaTri());
-
-        ArrayList<LoSanPham> dsChiTiet = phieu.getListLoSanPhamHuy();
-
-        if (dsChiTiet != null) {
-          for (LoSanPham ct : dsChiTiet) {
-
-            Row rowCT = sheetChiTiet.createRow(rowCTIdx++);
-            rowCT.createCell(0).setCellValue(phieu.getMaPH());
-            rowCT.createCell(1).setCellValue(ct.getMaLoSP());
-            rowCT.createCell(2).setCellValue(ct.getSoLuong());
-            rowCT.createCell(3).setCellValue(ct.getGiaNhap());
-          }
-        }
-      }
-
-      for (int i = 0; i < headerPhieu.length; i++) sheetPhieu.autoSizeColumn(i);
-      for (int i = 0; i < headerCT.length; i++) sheetChiTiet.autoSizeColumn(i);
-
-      try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-        workbook.write(fileOut);
-      }
-      return true;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
+    double tongTien = 0;
+    for (LoSanPham lo : p.getListLoSanPhamHuy()) {
+      tongTien += lo.getSoLuong() * lo.getGiaNhap();
     }
+    p.setTongGiaTri(tongTien);
+
+    if (!dao.themPhieuHuy(p, conn)) return false;
+
+    for (LoSanPham lo : p.getListLoSanPhamHuy()) {
+      if (!dao.themChiTietHuy(
+          p.getMaPH(), lo.getMaLoSP(), lo.getSoLuong(), lo.getGiaNhap(), conn)) {
+        return false;
+      }
+    }
+    return true;
   }
 
-  private void createHeader(Workbook workbook, Sheet sheet, String[] headers) {
-    Row headerRow = sheet.createRow(0);
-    CellStyle style = workbook.createCellStyle();
-    Font font = workbook.createFont();
-    font.setBold(true);
-    style.setFont(font);
+  public boolean nhapExcel(File file) {
+    ArrayList<PhieuHuySanPham> dsNhap = XuLyExcel.nhapFilePhieuHuySanPham(file);
+    if (dsNhap == null || dsNhap.isEmpty()) return false;
 
-    for (int i = 0; i < headers.length; i++) {
-      Cell cell = headerRow.createCell(i);
-      cell.setCellValue(headers[i]);
-      cell.setCellStyle(style);
-    }
-  }
-
-  public boolean nhapExcel(String filePath) {
-    Connection conn = DBConnection.getConnection();
-    try (FileInputStream fis = new FileInputStream(filePath);
-        Workbook workbook = new XSSFWorkbook(fis)) {
-
-      Sheet sheetPhieu = workbook.getSheetAt(0);
-      Sheet sheetChiTiet = workbook.getSheetAt(1);
-
-      Map<String, PhieuHuySanPham> mapPhieu = new HashMap<>();
-
-      for (int i = 1; i <= sheetPhieu.getLastRowNum(); i++) {
-        Row row = sheetPhieu.getRow(i);
-        if (row == null) continue;
-
-        String maCu = getCellValueAsString(row.getCell(0));
-        PhieuHuySanPham phieuMoi = new PhieuHuySanPham();
-        phieuMoi.setMaNV(getCellValueAsString(row.getCell(1)));
-        phieuMoi.setLyDo(getCellValueAsString(row.getCell(3)));
-        phieuMoi.setTrangThaiXuLy("Chờ xử lý");
-        phieuMoi.setListLoSanPhamHuy(new ArrayList<>());
-
-        mapPhieu.put(maCu, phieuMoi);
-      }
-
-      for (int i = 1; i <= sheetChiTiet.getLastRowNum(); i++) {
-        Row row = sheetChiTiet.getRow(i);
-        if (row == null) continue;
-
-        String maPhieuLienKet = getCellValueAsString(row.getCell(0));
-        if (mapPhieu.containsKey(maPhieuLienKet)) {
-          LoSanPham lo = new LoSanPham();
-          lo.setMaLoSP(getCellValueAsString(row.getCell(1)));
-          lo.setSoLuong(row.getCell(2).getNumericCellValue());
-          lo.setGiaNhap(row.getCell(3).getNumericCellValue());
-          mapPhieu.get(maPhieuLienKet).getListLoSanPhamHuy().add(lo);
-        }
-      }
-
+    Connection conn = null;
+    try {
+      conn = DBConnection.getConnection();
       conn.setAutoCommit(false);
-      for (PhieuHuySanPham phieu : mapPhieu.values()) {
 
-        String maMoi = dao.layMaPhieuHuySPKhaDung(conn);
-        phieu.setMaPH(maMoi);
-
-        double tongTien = 0;
-        for (LoSanPham lo : phieu.getListLoSanPhamHuy()) {
-          tongTien += lo.getSoLuong() * lo.getGiaNhap();
-        }
-        phieu.setTongGiaTri(tongTien);
-        if (!dao.themPhieuHuy(phieu, conn)) throw new SQLException();
-
-        for (LoSanPham lo : phieu.getListLoSanPhamHuy()) {
-          if (!dao.themChiTietHuy(
-              phieu.getMaPH(), lo.getMaLoSP(), lo.getSoLuong(), lo.getGiaNhap(), conn))
-            throw new SQLException();
+      for (PhieuHuySanPham phieu : dsNhap) {
+        if (!themPhieuHuy(phieu, conn)) {
+          throw new SQLException("Lỗi thêm phiếu hủy sản phẩm từ Excel");
         }
       }
+
       conn.commit();
       canUpdate = true;
       khoiTao();
       return true;
+
     } catch (Exception e) {
-      try {
-        if (conn != null) conn.rollback();
-      } catch (SQLException ex) {
-      }
       e.printStackTrace();
+      if (conn != null) {
+        try {
+          conn.rollback();
+        } catch (SQLException ex) {
+        }
+      }
       return false;
     } finally {
-      try {
-        if (conn != null) conn.close();
-      } catch (SQLException e) {
+      if (conn != null) {
+        try {
+          conn.setAutoCommit(true);
+          conn.close();
+        } catch (SQLException e) {
+        }
       }
     }
   }
 
-  private String getCellValueAsString(Cell cell) {
-    if (cell == null) return "";
-    if (cell.getCellType() == CellType.STRING) return cell.getStringCellValue().trim();
-    if (cell.getCellType() == CellType.NUMERIC)
-      return String.valueOf((int) cell.getNumericCellValue());
-    return "";
+  public boolean xuatExcel(File file) {
+    ArrayList<PhieuHuySanPham> dsPhieu = layListPhieuHuy();
+    if (dsPhieu == null) return false;
+    return XuLyExcel.xuatFilePhieuHuySanPham(file, dsPhieu);
   }
 
-  // Soft delete - set TrangThai = 0
   public boolean xoaMemPhieuHuy(String maPH) {
     Connection conn = DBConnection.getConnection();
     try {

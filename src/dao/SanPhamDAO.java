@@ -26,7 +26,6 @@ public class SanPhamDAO {
                 sp.setTenSP(rs.getNString("TenSP"));
                 sp.setAnh(rs.getString("Anh"));
                 sp.setGiaBan(rs.getLong("GiaBan"));
-                sp.setTrangThai(rs.getBoolean("TrangThai"));
                 sp.setLoaiNuoc(rs.getString("LoaiNuoc"));
                 sp.setTheTich(rs.getInt("TheTich"));
                 sp.setMucCanhBao(rs.getInt("MucCanhBao"));
@@ -71,9 +70,7 @@ public class SanPhamDAO {
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            if (sanPham.getMaSP() == null || sanPham.getMaSP().trim().isEmpty()) {
-                sanPham.setMaSP(layMaSanPhamKhaDung(conn));
-            }
+            sanPham.setMaSP(layMaSanPhamKhaDung(conn));
             pst.setString(1, sanPham.getMaSP());
             pst.setString(2, sanPham.getTenSP());
             pst.setString(3, sanPham.getDanhMuc() != null ? sanPham.getDanhMuc().getMaDM() : null);
@@ -82,7 +79,7 @@ public class SanPhamDAO {
             pst.setString(6, sanPham.getAnh());
             pst.setInt(7, sanPham.getTheTich());
             pst.setInt(8, sanPham.getMucCanhBao());
-            pst.setString(9, sanPham.getTrangThaiXuLy());
+            pst.setString(9, "Đang xử lý");
             pst.setInt(10, 1);
 
             int rowAffected = pst.executeUpdate();

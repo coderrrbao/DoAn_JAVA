@@ -46,7 +46,29 @@ public class TaiKhoanUI extends JPanel {
         TaoUI.setFixSize(btnXoa, 80, 32);
 
         btnXuatExcel = new JButton("Xuất exc");
-        btnXuatExcel.addActionListener(e -> taiKhoanBUS.xuatExc());
+        btnXuatExcel.addActionListener(e -> {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setDialogTitle("Chọn nơi lưu file Excel");
+
+            fileChooser.setSelectedFile(new File("DanhSachTaiKhoan.xlsx"));
+
+            int userSelection = fileChooser.showSaveDialog(null);
+
+            if (userSelection == JFileChooser.APPROVE_OPTION) {
+                File fileToSave = fileChooser.getSelectedFile();
+
+                String filePath = fileToSave.getAbsolutePath();
+                if (!filePath.toLowerCase().endsWith(".xlsx")) {
+                    fileToSave = new File(filePath + ".xlsx");
+                }
+
+                if (taiKhoanBUS.xuatExc(fileToSave)) {
+                    JOptionPane.showMessageDialog(null, "Xuất file Excel thành công!");
+                } else {
+                    JOptionPane.showMessageDialog(null, "Lỗi khi xuất file Excel!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
         TaoUI.setFixSize(btnXuatExcel, 100, 32);
 
         btnNhapExcel = new JButton("Nhập exc");
@@ -72,7 +94,6 @@ public class TaiKhoanUI extends JPanel {
         });
         TaoUI.setFixSize(btnSuaThongTin, 120, 32);
 
-        // Thêm các thành phần vào thanh công cụ phía trên
         top.add(Box.createRigidArea(new Dimension(10, 0)));
         top.add(search_Item);
         top.add(Box.createRigidArea(new Dimension(10, 0)));
@@ -91,7 +112,6 @@ public class TaiKhoanUI extends JPanel {
 
         add(top, BorderLayout.NORTH);
 
-        // Khởi tạo Model cho Table
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
@@ -100,7 +120,7 @@ public class TaiKhoanUI extends JPanel {
         };
         model.addColumn("Mã nhân viên");
         model.addColumn("Tên đăng nhập");
-        model.addColumn("Nhóm quyền"); // Đã thêm lại cột này
+        model.addColumn("Nhóm quyền");
         model.addColumn("Trạng thái");
 
         tableUI = new JTable(model);
@@ -110,7 +130,6 @@ public class TaiKhoanUI extends JPanel {
         tableUI.setFont(new Font("SansSerif", Font.PLAIN, 14));
         tableUI.getTableHeader().setFont(new Font("SansSerif", Font.BOLD, 14));
 
-        // Định dạng độ rộng các cột
         tableUI.getColumnModel().getColumn(0).setPreferredWidth(150);
         tableUI.getColumnModel().getColumn(1).setPreferredWidth(120);
         tableUI.getColumnModel().getColumn(2).setPreferredWidth(150);
@@ -194,7 +213,7 @@ public class TaiKhoanUI extends JPanel {
                 model.addRow(new Object[] {
                         tk.getMaNV(),
                         tk.getTenDangNhap(),
-                        tk.getNhomQuyen().getTenNhomQuyen(), // Thêm lại dữ liệu Nhóm quyền
+                        tk.getNhomQuyen().getTenNhomQuyen(),
                         tk.getTrangThaiXuLy()
                 });
             }
@@ -229,7 +248,6 @@ public class TaiKhoanUI extends JPanel {
         }
     }
 
-    // Các Getter
     public JButton getBtnTao() {
         return btnTao;
     }

@@ -3,267 +3,224 @@ package bus;
 import dao.HangThanhVienDAO;
 import dao.conection.DBConnection;
 import dto.HangThanhVien;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import util.XuLyExcel;
+
+import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import org.apache.poi.ss.usermodel.*;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+import java.util.HashSet;
 
 public class HangThanhVienBUS {
-  private static HangThanhVienBUS hangThanhVienBUS = null;
+    private static HangThanhVienBUS hangThanhVienBUS = null;
 
-  public static HangThanhVienBUS getHangThanhVienBUS() {
-    if (hangThanhVienBUS == null) {
-      hangThanhVienBUS = new HangThanhVienBUS();
-    }
-    return hangThanhVienBUS;
-  }
-
-  private HangThanhVienDAO hangThanhVienDAO = new HangThanhVienDAO();
-  private ArrayList<HangThanhVien> listHangThanhVien;
-  private boolean canUpdate = false;
-
-  public HangThanhVienBUS() {
-    khoitao();
-  }
-
-  public void khoitao() {
-    Connection conn = DBConnection.getConnection();
-    try {
-      listHangThanhVien = hangThanhVienDAO.layListHangThanhVien();
-    } finally {
-      try {
-        if (conn != null)
-          conn.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public ArrayList<HangThanhVien> layListHangThanhVien() {
-    if (canUpdate || listHangThanhVien == null) {
-      khoitao();
-      canUpdate = false;
-    }
-    return listHangThanhVien;
-  }
-
-  public HangThanhVien timHangThanhVien(String ma) {
-    if (canUpdate || listHangThanhVien == null) {
-      khoitao();
-      canUpdate = false;
-    }
-    for (HangThanhVien htv : listHangThanhVien) {
-      if (htv.getMaHang().equals(ma)) {
-        return htv;
-      }
-    }
-    return null;
-  }
-
-  public boolean themHangThanhVien(HangThanhVien htv) {
-    Connection conn = DBConnection.getConnection();
-    try {
-      conn.setAutoCommit(false);
-      if (!hangThanhVienDAO.themHangThanhVien(htv, conn)) {
-        throw new SQLException();
-      }
-      conn.commit();
-      canUpdate = true;
-      return true;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (Exception ex) {
-      }
-      return false;
-    } finally {
-      dongKetNoi(conn);
-    }
-  }
-
-  public boolean xoaHangThanhVien(String maHang) {
-    Connection conn = DBConnection.getConnection();
-    try {
-      conn.setAutoCommit(false);
-      if (!hangThanhVienDAO.xoaHangThanhVien(maHang, conn)) {
-        throw new SQLException();
-      }
-      conn.commit();
-      canUpdate = true;
-      return true;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (Exception ex) {
-      }
-      return false;
-    } finally {
-      dongKetNoi(conn);
-    }
-  }
-
-  public boolean capNhatHangThanhVien(HangThanhVien htv) {
-    Connection conn = DBConnection.getConnection();
-    try {
-      conn.setAutoCommit(false);
-      if (!hangThanhVienDAO.capNhatHangThanhVien(htv, conn)) {
-        throw new SQLException();
-      }
-      conn.commit();
-      canUpdate = true;
-      return true;
-    } catch (SQLException e) {
-      try {
-        conn.rollback();
-      } catch (Exception ex) {
-      }
-      return false;
-    } finally {
-      dongKetNoi(conn);
-    }
-  }
-
-  public ArrayList<HangThanhVien> timKiemHangThanhVien(String keyword) {
-    ArrayList<HangThanhVien> ketQua = new ArrayList<>();
-    ArrayList<HangThanhVien> dsGoc = layListHangThanhVien();
-
-    String lowerKeyword = keyword.toLowerCase().trim();
-    if (keyword == null || keyword.trim().isEmpty()) {
-      return dsGoc;
+    public static HangThanhVienBUS getHangThanhVienBUS() {
+        if (hangThanhVienBUS == null) {
+            hangThanhVienBUS = new HangThanhVienBUS();
+        }
+        return hangThanhVienBUS;
     }
 
-    for (HangThanhVien htv : dsGoc) {
-      if (htv.getMaHang().toLowerCase().contains(lowerKeyword)
-          || htv.getTenHang().toLowerCase().contains(lowerKeyword)) {
-        ketQua.add(htv);
-      }
-    }
-    return ketQua;
-  }
+    private HangThanhVienDAO hangThanhVienDAO = new HangThanhVienDAO();
+    private ArrayList<HangThanhVien> listHangThanhVien;
+    private boolean canUpdate = false;
 
-  private void dongKetNoi(Connection conn) {
-    if (conn != null) {
-      try {
-        conn.setAutoCommit(true);
-        conn.close();
-      } catch (SQLException e) {
-        e.printStackTrace();
-      }
-    }
-  }
-
-  public boolean xuatExcel(String filePath) {
-    ArrayList<HangThanhVien> list = layListHangThanhVien();
-    try (Workbook workbook = new XSSFWorkbook()) {
-      Sheet sheet = workbook.createSheet("Hang Thanh Vien");
-      String[] columns = { "Mã Hạng", "Tên Hạng", "Phần Trăm Giảm (%)", "Điều Kiện (VNĐ)" };
-
-      Row headerRow = sheet.createRow(0);
-      CellStyle headerStyle = workbook.createCellStyle();
-      Font font = workbook.createFont();
-      font.setBold(true);
-      headerStyle.setFont(font);
-
-      for (int i = 0; i < columns.length; i++) {
-        Cell cell = headerRow.createCell(i);
-        cell.setCellValue(columns[i]);
-        cell.setCellStyle(headerStyle);
-      }
-
-      int rowNum = 1;
-      for (HangThanhVien htv : list) {
-        Row row = sheet.createRow(rowNum++);
-        row.createCell(0).setCellValue(htv.getMaHang());
-        row.createCell(1).setCellValue(htv.getTenHang());
-        row.createCell(2).setCellValue(htv.getPhanTramGiam());
-        row.createCell(3).setCellValue(htv.getDieuKien());
-      }
-
-      for (int i = 0; i < columns.length; i++)
-        sheet.autoSizeColumn(i);
-
-      try (FileOutputStream fileOut = new FileOutputStream(filePath)) {
-        workbook.write(fileOut);
-      }
-      return true;
-    } catch (IOException e) {
-      e.printStackTrace();
-      return false;
-    }
-  }
-
-  public boolean nhapExcel(String filePath) {
-    try (FileInputStream fis = new FileInputStream(filePath);
-        Workbook workbook = new XSSFWorkbook(fis)) {
-
-      Sheet sheet = workbook.getSheetAt(0);
-      ArrayList<HangThanhVien> dsMoi = new ArrayList<>();
-
-      for (int i = 1; i <= sheet.getLastRowNum(); i++) {
-        Row row = sheet.getRow(i);
-        if (row == null)
-          continue;
-
-        HangThanhVien htv = new HangThanhVien();
-        // Bỏ qua mã (cột 0), gán null để DAO tự tạo mã
-        htv.setMaHang(null);
-        htv.setTenHang(getCellValueAsString(row.getCell(1)));
-        htv.setPhanTramGiam(
-            row.getCell(2) != null ? (int) row.getCell(2).getNumericCellValue() : 0);
-        htv.setDieuKien(row.getCell(3) != null ? row.getCell(3).getNumericCellValue() : 0);
-
-        dsMoi.add(htv);
-      }
-
-      for (HangThanhVien htv : dsMoi) {
-        this.themHangThanhVien(htv);
-      }
-      canUpdate = true;
-      return true;
-    } catch (Exception e) {
-      e.printStackTrace();
-      return false;
-    }
-  }
-
-  private String getCellValueAsString(Cell cell) {
-    if (cell == null)
-      return "";
-    if (cell.getCellType() == CellType.STRING)
-      return cell.getStringCellValue().trim();
-    if (cell.getCellType() == CellType.NUMERIC)
-      return String.valueOf((int) cell.getNumericCellValue());
-    return "";
-  }
-
-  public String nhapDanhSachTuExcel(java.util.ArrayList<dto.HangThanhVien> danhSachImport) {
-    if (danhSachImport == null || danhSachImport.isEmpty()) {
-      return "Không có dữ liệu hợp lệ để nhập!";
+    public HangThanhVienBUS() {
+        khoitao();
     }
 
-    int soLuongThanhCong = 0;
-    int soLuongThatBai = 0;
-
-    for (dto.HangThanhVien htv : danhSachImport) {
-      // Gọi hàm thêm đã có sẵn trong BUS.
-      // Hàm này cần bao gồm logic tự động sinh Mã Hạng mới.
-      boolean ketQua = themHangThanhVien(htv);
-
-      if (ketQua) {
-        soLuongThanhCong++;
-      } else {
-        soLuongThatBai++;
-      }
+    public void khoitao() {
+        Connection conn = DBConnection.getConnection();
+        try {
+            listHangThanhVien = hangThanhVienDAO.layListHangThanhVien();
+        } finally {
+            try {
+                if (conn != null)
+                    conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
-    // Đánh dấu cần cập nhật lại dữ liệu (nếu class của bạn dùng biến canUpdate)
-    this.canUpdate = true;
+    public ArrayList<HangThanhVien> layListHangThanhVien() {
+        if (canUpdate || listHangThanhVien == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        return listHangThanhVien;
+    }
 
-    return "Nhập Excel hoàn tất!\n- Thành công: " + soLuongThanhCong + "\n- Thất bại: " + soLuongThatBai;
-  }
+    public HangThanhVien timHangThanhVien(String ma) {
+        if (canUpdate || listHangThanhVien == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        for (HangThanhVien htv : listHangThanhVien) {
+            if (htv.getMaHang().equals(ma)) {
+                return htv;
+            }
+        }
+        return null;
+    }
+
+    public boolean themHangThanhVien(HangThanhVien htv) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!hangThanhVienDAO.themHangThanhVien(htv, conn)) {
+                throw new SQLException();
+            }
+            conn.commit();
+            canUpdate = true;
+            return true;
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
+    }
+
+    public boolean themHangThanhVien(HangThanhVien htv, Connection conn) throws SQLException {
+        return hangThanhVienDAO.themHangThanhVien(htv, conn);
+    }
+
+    public boolean xoaHangThanhVien(String maHang) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!hangThanhVienDAO.xoaHangThanhVien(maHang, conn)) {
+                throw new SQLException();
+            }
+            conn.commit();
+            canUpdate = true;
+            return true;
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
+    }
+
+    public boolean capNhatHangThanhVien(HangThanhVien htv) {
+        Connection conn = DBConnection.getConnection();
+        try {
+            conn.setAutoCommit(false);
+            if (!hangThanhVienDAO.capNhatHangThanhVien(htv, conn)) {
+                throw new SQLException();
+            }
+            conn.commit();
+            canUpdate = true;
+            return true;
+        } catch (SQLException e) {
+            try {
+                conn.rollback();
+            } catch (Exception ex) {
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
+    }
+
+    public ArrayList<HangThanhVien> timKiemHangThanhVien(String keyword) {
+        ArrayList<HangThanhVien> ketQua = new ArrayList<>();
+        ArrayList<HangThanhVien> dsGoc = layListHangThanhVien();
+
+        String lowerKeyword = keyword.toLowerCase().trim();
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return dsGoc;
+        }
+
+        for (HangThanhVien htv : dsGoc) {
+            if (htv.getMaHang().toLowerCase().contains(lowerKeyword)
+                    || htv.getTenHang().toLowerCase().contains(lowerKeyword)) {
+                ketQua.add(htv);
+            }
+        }
+        return ketQua;
+    }
+
+    private void dongKetNoi(Connection conn) {
+        if (conn != null) {
+            try {
+                conn.setAutoCommit(true);
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public boolean xuatExcel(File file) {
+        ArrayList<HangThanhVien> list = layListHangThanhVien();
+        return XuLyExcel.xuatFileHangThanhVien(file, list);
+    }
+
+    public boolean nhapExcel(File file) {
+        ArrayList<HangThanhVien> dsNhap = XuLyExcel.nhapFileHangThanhVien(file);
+
+        if (dsNhap == null || dsNhap.isEmpty()) {
+            return false;
+        }
+
+        HashSet<String> setTenHang = new HashSet<>();
+        for (HangThanhVien htv : layListHangThanhVien()) {
+            setTenHang.add(htv.getTenHang().trim().toLowerCase());
+        }
+
+        boolean hasAdded = false;
+        Connection conn = null;
+
+        try {
+            conn = DBConnection.getConnection();
+            conn.setAutoCommit(false);
+
+            for (HangThanhVien htv : dsNhap) {
+
+                if (setTenHang.contains(htv.getTenHang().trim().toLowerCase())) {
+                    System.out.println("Bỏ qua hạng thành viên đã tồn tại: " + htv.getTenHang());
+                    continue;
+                }
+
+                if (themHangThanhVien(htv, conn)) {
+                    setTenHang.add(htv.getTenHang().trim().toLowerCase());
+                    hasAdded = true;
+                } else {
+                    throw new SQLException("Lỗi thao tác DB ở Hạng: " + htv.getTenHang());
+                }
+            }
+
+            if (hasAdded) {
+                conn.commit();
+                this.canUpdate = true;
+                this.khoitao();
+            } else {
+                conn.rollback();
+            }
+
+            return hasAdded;
+
+        } catch (Exception e) {
+            System.err.println("Lỗi khi nhập hạng thành viên: " + e.getMessage());
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            return false;
+        } finally {
+            dongKetNoi(conn);
+        }
+    }
 }

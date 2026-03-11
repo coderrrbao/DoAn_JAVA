@@ -79,15 +79,14 @@ public class FormHangThanhVien extends JDialog {
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
-        // TRƯỜNG HỢP 1: Chế độ thêm mới (isEdit == false)
         if (!isEdit) {
             if (!listQuyen.contains("HTV_TAO")) {
                 btnThem.setVisible(false);
-                setEditableForm(false); // Khóa không cho nhập liệu
+                setEditableForm(false);
                 this.setTitle("Thông tin hạng (Chỉ xem)");
             }
         }
-        // TRƯỜNG HỢP 2: Chế độ xem/sửa (isEdit == true)
+
         else {
             if (!listQuyen.contains("HTV_SUA")) {
                 btnSua.setVisible(false);
@@ -153,7 +152,7 @@ public class FormHangThanhVien extends JDialog {
         txtMa.setText(editHTV.getMaHang());
         txtTen.setText(editHTV.getTenHang());
         txtPhanTram.setText(String.valueOf(editHTV.getPhanTramGiam()));
-        // Loại bỏ số thập phân thừa nếu không cần thiết khi hiển thị
+
         txtDieuKien.setText(String.format("%.0f", editHTV.getDieuKien()));
     }
 

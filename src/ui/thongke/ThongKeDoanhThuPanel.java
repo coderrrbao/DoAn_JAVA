@@ -21,7 +21,7 @@ import org.jfree.data.category.DefaultCategoryDataset;
 
 import com.toedter.calendar.JDateChooser;
 
-import bus.HoaDonBUS;
+import bus.ThongKeBUS;
 import util.TaoUI;
 
 public class ThongKeDoanhThuPanel extends JPanel {
@@ -63,7 +63,7 @@ public class ThongKeDoanhThuPanel extends JPanel {
 
     private void loadDuLieu() {
         dataset.clear();
-        HoaDonBUS hoaDonBUS = new HoaDonBUS();
+        ThongKeBUS thongKeBUS = new ThongKeBUS();
         ArrayList<ThongKeValue> list = new ArrayList<>();
         String loai = cbLoaiTk.getSelectedItem().toString();
         if (loai.equals("Theo ngày")) {
@@ -75,14 +75,14 @@ public class ThongKeDoanhThuPanel extends JPanel {
                     .toLocalDate();
             String ngay = localDate.toString();
 
-            list = hoaDonBUS.getThongKeTheoNgay(ngay);
+            list = thongKeBUS.getThongKeTheoNgay(ngay);
         } else if (loai.equals("Theo tháng")) {
             int thang = Integer.parseInt(cbThang.getSelectedItem().toString());
             int nam = Integer.parseInt(tfNam.getText().trim());
-            list = hoaDonBUS.getThongKeTheoThang(thang, nam);
+            list = thongKeBUS.getThongKeTheoThang(thang, nam);
         } else if (loai.equals("Theo năm")) {
             int nam = Integer.parseInt(tfNam.getText().trim());
-            list = hoaDonBUS.getThongKeTheoNam(nam);
+            list = thongKeBUS.getThongKeTheoNam(nam);
         }
         double tong = 0;
         for (ThongKeValue item : list) {

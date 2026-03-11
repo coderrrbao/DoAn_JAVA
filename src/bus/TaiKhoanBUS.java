@@ -5,9 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.JFileChooser;
-import javax.swing.JOptionPane;
-
 import dao.TaiKhoanDao;
 import dao.conection.DBConnection;
 import dto.NhomQuyen;
@@ -23,7 +20,8 @@ public class TaiKhoanBUS {
         }
         return instance;
     }
-    private NhomQuyenBUS nhomQuyenBUS = new NhomQuyenBUS();
+
+    private NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
     private TaiKhoanDao dao = new TaiKhoanDao();
     private ArrayList<TaiKhoan> listTaiKhoan;
     private boolean canUpdate = false;
@@ -34,7 +32,7 @@ public class TaiKhoanBUS {
 
     public void khoitao() {
         listTaiKhoan = dao.layDanhSachTaiKhoan();
-        NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+
         for (TaiKhoan taiKhoan : listTaiKhoan) {
             if (taiKhoan.getNhomQuyen() != null) {
                 taiKhoan.setNhomQuyen(nhomQuyenBUS.timNhomQuyen(taiKhoan.getNhomQuyen().getMaNQ()));
@@ -55,20 +53,17 @@ public class TaiKhoanBUS {
             khoitao();
             canUpdate = false;
         }
-
         for (TaiKhoan tk : listTaiKhoan) {
             if (tk.getMaTK().equals(maTK)) {
                 return tk;
             }
         }
-
         return null;
     }
 
     public boolean themTaiKhoan(TaiKhoan tk) {
-        if (tk == null) {
+        if (tk == null)
             return false;
-        }
 
         Connection conn = DBConnection.getConnection();
         try {
@@ -101,9 +96,9 @@ public class TaiKhoanBUS {
     }
 
     public boolean xoaTaiKhoan(String tenDangNhap) {
-        if (tenDangNhap == null || tenDangNhap.trim().isEmpty()) {
+        if (tenDangNhap == null || tenDangNhap.trim().isEmpty())
             return false;
-        }
+
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
@@ -133,17 +128,20 @@ public class TaiKhoanBUS {
             }
         }
     }
-    //lay ma tk
+
     public String layMaTaiKhoanKhaDung() {
         String ma = "";
         try (Connection conn = DBConnection.getConnection()) {
             ma = dao.layMaTaiKhoanKhaDung(conn);
+
+            int so = Integer.parseInt(ma.substring(2)) + 1;
+            ma = String.format("TK%02d", so);
         } catch (Exception e) {
             e.printStackTrace();
         }
         return ma;
     }
-    //
+
     public boolean suaMatKhau(String tenDangNhap, String matKhauMoi) {
         if (tenDangNhap == null || tenDangNhap.trim().isEmpty() ||
                 matKhauMoi == null || matKhauMoi.trim().isEmpty()) {
@@ -179,24 +177,20 @@ public class TaiKhoanBUS {
             }
         }
     }
-    //sua tai khoan
+
     public boolean suaTaiKhoan(TaiKhoan tk) {
-        if (tk == null || tk.getMaTK() == null) {
+        if (tk == null || tk.getMaTK() == null)
             return false;
-        }
 
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
-
             if (!dao.suaTaiKhoan(tk, conn)) {
                 throw new SQLException();
             }
-
             conn.commit();
             canUpdate = true;
             return true;
-
         } catch (Exception e) {
             try {
                 if (conn != null)
@@ -206,7 +200,6 @@ public class TaiKhoanBUS {
             }
             e.printStackTrace();
             return false;
-
         } finally {
             try {
                 if (conn != null) {
@@ -222,11 +215,11 @@ public class TaiKhoanBUS {
     public TaiKhoan dangNhap(String tenDangNhap, String matKhau) {
         if (tenDangNhap == null || matKhau == null)
             return null;
+
         TaiKhoan taiKhoan = dao.dangNhap(tenDangNhap, matKhau);
-        if (taiKhoan == null) {
+        if (taiKhoan == null)
             return null;
-        }
-        NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
+
         taiKhoan.setNhomQuyen(nhomQuyenBUS.timNhomQuyen(taiKhoan.getNhomQuyen().getMaNQ()));
         return taiKhoan;
     }
@@ -234,69 +227,77 @@ public class TaiKhoanBUS {
     public Boolean kiemTraUsernameTonTai(String username) {
         if (username == null || username.trim().isEmpty())
             return false;
+
         if (listTaiKhoan == null || canUpdate) {
             khoitao();
             canUpdate = false;
         }
         for (TaiKhoan tk : listTaiKhoan) {
-            if (tk.getTenDangNhap().equalsIgnoreCase(username)) {
+            if (tk.getTenDangNhap().equals(username)) {
                 return true;
             }
         }
         return false;
     }
 
-    //xuat exc
-    public boolean xuatExc(){
-        return XuLyExcel.xuatFileTaiKhoan(layDanhSachTaiKhoan());
+    public boolean xuatExc(File file) {
+        return XuLyExcel.xuatFileTaiKhoan(file, layDanhSachTaiKhoan());
     }
 
-    //nhap excel
     public boolean nhapTaiKhoanExcel(File file) {
         ArrayList<TaiKhoan> list = XuLyExcel.nhapFileTaiKhoan(file);
-        if (list == null || list.isEmpty()) {
+        if (list == null || list.isEmpty())
             return false;
-        }
+
         Connection conn = null;
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
 
             String maHienTai = dao.layMaTaiKhoanKhaDung(conn);
-            int so = 1;
+            int so = 0;
             if (maHienTai != null && !maHienTai.isEmpty()) {
                 so = Integer.parseInt(maHienTai.substring(2));
             }
+
             for (TaiKhoan tk : list) {
                 so++;
                 String maMoi = String.format("TK%02d", so);
                 tk.setMaTK(maMoi);
 
-                // tìm nhóm quyền trong DB
                 if (tk.getNhomQuyen() == null) {
                     throw new Exception("Thiếu nhóm quyền: " + tk.getTenDangNhap());
                 }
+
                 String tenNhom = tk.getNhomQuyen().getTenNhomQuyen();
                 NhomQuyen nq = nhomQuyenBUS.timNhomQuyenTheoTen(tenNhom);
                 if (nq == null) {
-                    throw new Exception("Nhóm quyền không tồn tại: " + tenNhom);
+                    throw new Exception("Nhóm quyền không tồn tại trong hệ thống: " + tenNhom);
                 }
                 tk.setNhomQuyen(nq);
+
                 if (dao.kiemTraTrungUsername(conn, tk.getTenDangNhap())) {
                     throw new Exception("Username đã tồn tại: " + tk.getTenDangNhap());
                 }
-                dao.insertTaiKhoan(conn, tk);
+
+                if (!dao.insertTaiKhoan(conn, tk)) {
+                    throw new Exception("Lỗi khi thêm tài khoản vào DB: " + tk.getTenDangNhap());
+                }
             }
+
             conn.commit();
             canUpdate = true;
+            khoitao();
             return true;
+
         } catch (Exception e) {
+            System.err.println("Lỗi Import Excel: " + e.getMessage());
             try {
-                if (conn != null) conn.rollback();
+                if (conn != null)
+                    conn.rollback();
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            e.printStackTrace();
             return false;
         } finally {
             try {

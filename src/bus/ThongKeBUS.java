@@ -6,15 +6,17 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import dao.HoaDonDAO;
 import dto.ChiTietHoaDon;
 import dto.DanhMuc;
 import dto.SanPham;
+import ui.thongke.ThongKeValue;
 
 public class ThongKeBUS {
     private SanPhamBUS sanPhamBUS = new SanPhamBUS();
+    private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonBUS chiTietHoaDonBUS = new ChiTietHoaDonBUS();
     private Map<SanPham, Integer> laySpBanRa = laySL_SP_BanRaGiamDan();
-    
 
     public void loadLaiTuDatabase() {
         laySpBanRa = laySL_SP_BanRaGiamDan();
@@ -65,5 +67,23 @@ public class ThongKeBUS {
             result.put(sanPhamBUS.timSanPham(maSP), soLuong);
         }
         return result;
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoNgay(String ngay) {
+        if (ngay == null || ngay.isEmpty()) {
+            return new ArrayList<>();
+        }
+        return hoaDonDAO.layKeQuaThongKeTheoNgay(ngay);
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoThang(int thang, int nam) {
+        return hoaDonDAO.layKetQuaThongKeTheoThang(thang, nam);
+    }
+
+    public ArrayList<ThongKeValue> getThongKeTheoNam(int nam) {
+        if (nam < 0) {
+            return new ArrayList<>();
+        }
+        return hoaDonDAO.layKetQuaThongKeTheoNam(nam);
     }
 }
