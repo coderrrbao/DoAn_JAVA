@@ -175,9 +175,8 @@ public class PhieuKiemKeBUS {
     }
 
     public boolean nhapExcel(File file) {
-        System.out.println("1");
         ArrayList<PhieuKiemKe> dsNhap = XuLyExcel.nhapFilePhieuKiemKe(file);
-
+       
         if (dsNhap == null || dsNhap.isEmpty()) {
             return false;
         }
@@ -191,7 +190,7 @@ public class PhieuKiemKeBUS {
 
                 pkk.setTrangThaiXuLy("Chưa xử lý");
 
-                if (!themPhieuKiemKe(pkk, conn)) {
+                if (!themPhieuKiemKe(pkk)) {
 
                     throw new SQLException("Lỗi khi thêm Phiếu Kiểm Kê: " + pkk.getMaKK());
                 }

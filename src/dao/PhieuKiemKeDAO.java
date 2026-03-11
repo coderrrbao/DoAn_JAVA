@@ -64,8 +64,7 @@ public class PhieuKiemKeDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
             pst.setString(1, maPKKKhaDung());
-            System.out.println(pkk.getNgayKiem());
-            pst.setDate(2, Date.valueOf(pkk.getNgayKiem()));
+            pst.setString(2, pkk.getNgayKiem());
             pst.setString(3, pkk.getMaLo());
             pst.setString(4, pkk.getLoaiLo());
             pst.setDouble(5, pkk.getSoLuongSoSach());

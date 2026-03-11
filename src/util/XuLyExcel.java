@@ -664,12 +664,7 @@ public class XuLyExcel {
 
                 row.createCell(1).setCellValue(pkk.getMaNV());
 
-                org.apache.poi.ss.usermodel.CreationHelper createHelper = workbook.getCreationHelper();
-                CellStyle dateStyle = workbook.createCellStyle();
-                dateStyle.setDataFormat(createHelper.createDataFormat().getFormat("yyyy-mm-dd"));
-                SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                row.createCell(2).setCellValue(sdf.parse(pkk.getNgayKiem()));
-                row.createCell(2).setCellStyle(dateStyle);
+                row.createCell(2).setCellValue(pkk.getNgayKiem());
 
                 row.createCell(3).setCellValue(pkk.getMaLo());
 
@@ -724,7 +719,7 @@ public class XuLyExcel {
 
                 pkk.setMaKK(docCell(row.getCell(0))); // Mã Kiểm Kê
                 pkk.setMaNV(docCell(row.getCell(1))); // Mã Nhân Viên từ Excel
-                pkk.setNgayKiem(docCell(row.getCell(2))); // Tự động ra yyyy-MM-dd nhờ docCell
+                pkk.setNgayKiem(row.getCell(2).getStringCellValue()); // Tự động ra yyyy-MM-dd nhờ docCell
                 pkk.setMaLo(maLo); // Mã Lô
                 pkk.setLoaiLo(docCell(row.getCell(4))); // Loại Lô
 
@@ -1447,11 +1442,6 @@ public class XuLyExcel {
             case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
-
-                if (org.apache.poi.ss.usermodel.DateUtil.isCellDateFormatted(cell)) {
-                    java.text.SimpleDateFormat sdf = new java.text.SimpleDateFormat("yyyy-MM-dd");
-                    return sdf.format(cell.getDateCellValue());
-                }
 
                 double value = cell.getNumericCellValue();
 
