@@ -717,13 +717,12 @@ public class XuLyExcel {
 
                 dto.PhieuKiemKe pkk = new dto.PhieuKiemKe();
 
-                pkk.setMaKK(docCell(row.getCell(0))); // Mã Kiểm Kê
-                pkk.setMaNV(docCell(row.getCell(1))); // Mã Nhân Viên từ Excel
-                pkk.setNgayKiem(row.getCell(2).getStringCellValue()); // Tự động ra yyyy-MM-dd nhờ docCell
-                pkk.setMaLo(maLo); // Mã Lô
-                pkk.setLoaiLo(docCell(row.getCell(4))); // Loại Lô
+                pkk.setMaKK(docCell(row.getCell(0)));
+                pkk.setMaNV(docCell(row.getCell(1)));
+                pkk.setNgayKiem(row.getCell(2).getStringCellValue());
+                pkk.setMaLo(maLo);
+                pkk.setLoaiLo(docCell(row.getCell(4)));
 
-                // Xử lý số lượng an toàn
                 try {
                     pkk.setSoLuongSoSach(Double.parseDouble(docCell(row.getCell(5))));
                 } catch (Exception e) {

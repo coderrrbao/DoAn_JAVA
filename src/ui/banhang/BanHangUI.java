@@ -172,7 +172,7 @@ public class BanHangUI extends JPanel {
         loadDanhSachKhuyenMai();
     }
 
-    public void loadDuLieu(){
+    public void loadDuLieu() {
         loadDanhSachKhuyenMai();
         thongTinKhachHangPanel.loadDataKhachHang();
     }
@@ -182,6 +182,7 @@ public class BanHangUI extends JPanel {
         ArrayList<KhuyenMai> ds = kmBUS.layListKhuyenMai();
         if (ds != null) {
             thanhToanPanel.getCbxKhuyenMai().removeAllItems();
+            thanhToanPanel.getCbxKhuyenMai().addItem("-- Không áp dụng --");
             for (KhuyenMai mgg : ds) {
                 if (kmBUS.kiemTraTrangThaiHopLe(mgg).isEmpty()) {
                     thanhToanPanel.getCbxKhuyenMai().addItem(mgg.getMaKM() + " - Giảm " + mgg.getPhanTramGiam() + "%");
