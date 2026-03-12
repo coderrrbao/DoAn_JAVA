@@ -104,6 +104,16 @@ public class ThanhToanPanel extends JPanel {
         }
     }
 
+    public double getTienKhuyenMai() {
+        String text = tienKMText.getText();
+        String soSach = text.replace(".", "").replace(",", "").replace(" VNĐ", "").trim();
+        try {
+            return Double.parseDouble(soSach);
+        } catch (NumberFormatException e) {
+            return 0;
+        }
+    }
+
     public void capNhatThongTinThanhToan(double tongTienHang, double tienGiam) {
         DecimalFormat df = new DecimalFormat("#,###");
 

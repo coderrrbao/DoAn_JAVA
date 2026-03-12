@@ -8,6 +8,7 @@ import bus.SanPhamBUS;
 import dto.*;
 import ui.component.BoLocListener;
 import ui.component.SanPhamClickListener;
+import ui.login.LoginUI;
 import ui.login.PhienDangNhap;
 import util.Xulypdf;
 
@@ -328,9 +329,7 @@ public class BanHangUI extends JPanel {
                 hd.setMaKH(null);
             }
 
-            double tongTienHang = thongTinHoaDonPanel.layTongTienHang();
-            double tienDaGiam = tongTienHang - hd.getTongTien();
-            hd.setTienKhuyenMai(tienDaGiam);
+            hd.setTienKhuyenMai(thanhToanPanel.getTienKhuyenMai());
 
             if (maGiamGiaDangDung != null) {
                 hd.setMaGiamGia(maGiamGiaDangDung);
@@ -381,9 +380,16 @@ public class BanHangUI extends JPanel {
             }
             hd.setListChiTietHoaDon(listCT);
 
-            String loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
-            if (loiTonKho != null) {
-                JOptionPane.showMessageDialog(this, loiTonKho, "Cảnh báo kho hàng", JOptionPane.WARNING_MESSAGE);
+            ArrayList<String> loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
+            String loi = "";
+
+            for (String loiitem : loiTonKho) {
+                loi += "\n " + loiitem;
+            }
+
+            System.out.println(loi);
+            if (loiTonKho.size() != 0) {
+                JOptionPane.showMessageDialog(this, loi, "Cảnh báo kho hàng", JOptionPane.WARNING_MESSAGE);
                 return;
             }
 
@@ -403,6 +409,7 @@ public class BanHangUI extends JPanel {
                 thongTinKhachHangPanel.getTxtTenKh().setText("");
                 resetGiamGia();
                 lockMaGiamGia(false);
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
 
                 if (onThanhToanSuccess != null) {
                     onThanhToanSuccess.run();
@@ -458,7 +465,8 @@ public class BanHangUI extends JPanel {
             }
         }
 
-        tienGiam = tongTienHang * (tongPhanTramGiam / 100.0);
+
+        tienGiam += tongTienHang * (tongPhanTramGiam / 100.0);
 
         if (tienGiam > tongTienHang) {
             tienGiam = tongTienHang;

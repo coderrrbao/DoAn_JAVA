@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Xulypdf",
+      "request": "launch",
+      "mainClass": "util.Xulypdf",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
       "name": "Main",
       "request": "launch",
       "mainClass": "Main",
@@ -35,7 +42,7 @@
       "request": "launch",
       "mainClass": "Main",
       "projectName": "SRC_35a1545c",
-      "vmArgs": "--enable-native-access=ALL-UNNAMED" // Thêm dòng này vào đây
-    },
+      "vmArgs": "--enable-native-access=ALL-UNNAMED"
+    }
   ]
 }

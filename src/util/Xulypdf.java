@@ -9,8 +9,10 @@ import dto.ChiTietHoaDon;
 import dto.HoaDon;
 import dto.NhanVien;
 import dto.SanPham;
+import net.sf.jasperreports.engine.JasperCompileManager;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import net.sf.jasperreports.view.JasperViewer;
 import report.ChiTietHoaDonpdf;
@@ -23,8 +25,10 @@ public class Xulypdf {
             parameters.put("maHD", hoaDon.getMaHD());
             parameters.put("ngayTao", new java.text.SimpleDateFormat("dd/MM/yyyy").format(new Date()));
             parameters.put("tenNV", hoaDon.getNhanVien().getTenNV());
-            parameters.put("tongTien", String.valueOf(hoaDon.getTongTien()));
+            parameters.put("tienKm", String.valueOf(hoaDon.getTienKhuyenMai()));
+            parameters.put("tongTien", String.valueOf(hoaDon.getTongTien() + hoaDon.getTienKhuyenMai()));
             parameters.put("thanhToan", String.valueOf(hoaDon.getTongTien()));
+
             parameters.put("image", System.getProperty("user.dir") + "/src/report/");
 
             for (ChiTietHoaDon ct : hoaDon.getListChiTietHoaDon()) {
@@ -36,9 +40,16 @@ public class Xulypdf {
             }
 
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(listCtHoaDon);
-            String reportPath = "src/report/HoaDon.jasper";
-            JasperPrint print = JasperFillManager.fillReport(reportPath, parameters, dataSource);
-            JasperViewer.viewReport(print, false);
+
+            // Sửa lại đoạn này trong hàm xuatHoaDon
+            try {
+                String sourcePath = "src/report/HoaDon.jrxml";
+                JasperReport jasperReport = JasperCompileManager.compileReport(sourcePath);
+                JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+                JasperViewer.viewReport(print, false);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

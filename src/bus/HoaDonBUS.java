@@ -2,6 +2,7 @@ package bus;
 
 import java.sql.Connection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
@@ -13,6 +14,7 @@ import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.CongThuc;
 import dto.HoaDon;
+import dto.NguyenLieu;
 import dto.Size;
 
 public class HoaDonBUS {
@@ -21,15 +23,17 @@ public class HoaDonBUS {
     private LoSanPhamDAO loSanPhamDAO = new LoSanPhamDAO();
     private LoNguyenLieuDAO loNguyenLieuDAO = new LoNguyenLieuDAO();
 
-    public String kiemTraTonKho(HoaDon hd) {
+    public ArrayList<String> kiemTraTonKho(HoaDon hd) {
+        HashMap<NguyenLieu, Double> listNLCan = new HashMap<>();
+        ArrayList<String> loi = new ArrayList<>();
         for (ChiTietHoaDon ct : hd.getListChiTietHoaDon()) {
             String loaiNuoc = ct.getSanPham().getLoaiNuoc();
             String maSP = ct.getSanPham().getMaSP();
             int soLuongMua = ct.getSoLuong();
             LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
             if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
-                if (loSanPhamBUS.laySoLuongSanPhamTrongKho(maSP)<soLuongMua) {
-                    return "Sản phẩm " + ct.getSanPham().getTenSP() + " không đủ hàng!";
+                if (loSanPhamBUS.laySoLuongSanPhamTrongKho(maSP) < soLuongMua) {
+                    loi.add("Sản phẩm " + ct.getSanPham().getTenSP() + " không đủ hàng!");
                 }
             } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                 CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
@@ -39,16 +43,27 @@ public class HoaDonBUS {
                     System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
                     continue;
                 }
-                LoNguyenLieuBUS loNguyenLieuBUS =  LoNguyenLieuBUS.getLoNguyenLieuBUS();
+                LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
                 for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                     double canDung = ctct.getSoLuong() * soLuongMua;
-                    if (loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(ctct.getNguyenLieu().getMaNL())<canDung) {
-                        return "Nguyên liệu " + ctct.getNguyenLieu().getTenNL() + " không đủ để pha chế!";
+                    if (listNLCan.containsKey(ctct.getNguyenLieu())) {
+                        double soLuong = listNLCan.get(ctct.getNguyenLieu());
+                        soLuong += canDung;
+                        listNLCan.put(ctct.getNguyenLieu(), soLuong);
+                    } else {
+                        listNLCan.put(ctct.getNguyenLieu(), canDung);
                     }
                 }
+                for (NguyenLieu nguyenLieu : listNLCan.keySet()) {
+                    if (loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) < listNLCan
+                            .get(nguyenLieu)) {
+                        loi.add("Không đủ " + nguyenLieu.getTenNL());
+                    }
+                }
+
             }
         }
-        return null;
+        return loi;
     }
 
     public double layTongDanhThu() {
