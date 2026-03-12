@@ -59,7 +59,7 @@ public class ThongKeSanPhamPanel extends JPanel {
         table.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 0));
         add(scrollPane, BorderLayout.CENTER);
         TaoUI.suaBorderChoPanel(this, 0, 10, 0, 10);
-        loaiDuLieu();
+        loadDuLieu();
     }
 
     private void themPhanTuVaoBieuDoTron(String tenDanhMuc, int soLuong) {
@@ -95,7 +95,7 @@ public class ThongKeSanPhamPanel extends JPanel {
         }
     }
 
-    private void loaiDuLieu() {
+    public void loadDuLieu() {
         loadBieuDoTron();
         loadBieuDoCot();
         loadTable();

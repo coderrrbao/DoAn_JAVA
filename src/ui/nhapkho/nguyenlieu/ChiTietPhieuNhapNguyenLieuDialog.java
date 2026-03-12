@@ -7,6 +7,7 @@ import bus.PhieuNhapNguyenLieuBUS;
 import bus.NguyenLieuBUS;
 import dto.LoNguyenLieu;
 import dto.PhieuNhapNguyenLieu;
+import ui.login.LoginUI;
 import dto.NguyenLieu;
 import util.TaoTinNhan;
 import util.TaoUI;
@@ -207,7 +208,7 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
             if (bus.capNhapPhieuNhapNguyenLieu(phieuGoi)) {
                 TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu nhập nguyên liệu thành công", "Thông báo", 1);
-                nhapKhoNguyenLieuPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu nhập nguyên liệu thất bại", "Thông báo", 1);
             }

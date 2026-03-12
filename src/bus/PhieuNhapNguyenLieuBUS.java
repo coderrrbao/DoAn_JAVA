@@ -102,10 +102,11 @@ public class PhieuNhapNguyenLieuBUS {
                 throw new SQLException();
             }
             LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
-            for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
-
-                if (!loNguyenLieuBUS.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
-                    throw new SQLException();
+            if (phieuNhapNguyenLieu.getTrangThaiXuLy().equals("Đã xử lý")) {
+                for (LoNguyenLieu loNguyenLieu : phieuNhapNguyenLieu.getListLoNguyenLieu()) {
+                    if (!loNguyenLieuBUS.xacNhanLoNguyenLieu(loNguyenLieu, conn)) {
+                        throw new SQLException();
+                    }
                 }
             }
 

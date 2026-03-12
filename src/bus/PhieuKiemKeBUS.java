@@ -190,7 +190,7 @@ public class PhieuKiemKeBUS {
 
                 pkk.setTrangThaiXuLy("Chưa xử lý");
 
-                if (!themPhieuKiemKe(pkk)) {
+                if (!themPhieuKiemKe(pkk,conn)) {
 
                     throw new SQLException("Lỗi khi thêm Phiếu Kiểm Kê: " + pkk.getMaKK());
                 }

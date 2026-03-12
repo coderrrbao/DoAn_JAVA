@@ -39,11 +39,10 @@ public class PhieuKiemKeDAO {
         return list;
     }
 
-    public String maPKKKhaDung() {
+    public String maPKKKhaDung(Connection con) {
         String sql = "SELECT COUNT(MaKK) AS tong FROM PhieuKiemKe";
 
-        try (Connection con = DBConnection.getConnection();
-                PreparedStatement pst = con.prepareStatement(sql)) {
+        try ( PreparedStatement pst = con.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -63,7 +62,7 @@ public class PhieuKiemKeDAO {
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
-            pst.setString(1, maPKKKhaDung());
+            pst.setString(1, maPKKKhaDung(conn));
             pst.setString(2, pkk.getNgayKiem());
             pst.setString(3, pkk.getMaLo());
             pst.setString(4, pkk.getLoaiLo());

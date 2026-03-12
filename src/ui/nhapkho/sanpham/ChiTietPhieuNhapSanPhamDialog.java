@@ -8,6 +8,7 @@ import bus.SanPhamBUS;
 import dto.LoSanPham;
 import dto.PhieuNhapSanPham;
 import dto.SanPham;
+import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -211,7 +212,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
             PhieuNhapSanPham pnh = dongGoiPhieuNhapSanPham();
             if (PhieuNhapSanPhamBUS.getPhieuNhapSanPhamBUS().capNhapPhieuNhapSanPham(pnh)) {
                 TaoTinNhan.showAutoCloseMessage("Cập nhật thành công!", "Thông báo", 1);
-                nhapKhoSanPhamPanel.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Cập nhật thất bại!", "Lỗi", 1);

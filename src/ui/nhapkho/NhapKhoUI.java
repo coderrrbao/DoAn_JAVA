@@ -30,4 +30,8 @@ public class NhapKhoUI extends JPanel {
         this.revalidate();
         this.repaint();
     }
+    public void loadData(){
+        nhapKhoNguyenLieu.loadDuLieu();
+        nhapKhoSanPham.loadDuLieu();
+    }
 }

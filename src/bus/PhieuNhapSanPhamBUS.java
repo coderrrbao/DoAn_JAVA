@@ -98,13 +98,13 @@ public class PhieuNhapSanPhamBUS {
                 throw new SQLException();
             }
             LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
-            for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
-                if (!loSanPhamBUS.xacNhanLoSanPham(loSanPham, conn)) {
-                    throw new SQLException();
+            if (phieuNhapSanPham.getTrangThaiXuLy().equals("Đã xử lý")) {
+                for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
+                    if (!loSanPhamBUS.xacNhanLoSanPham(loSanPham, conn)) {
+                        throw new SQLException();
+                    }
                 }
-
             }
-
             conn.commit();
 
         } catch (SQLException e) {

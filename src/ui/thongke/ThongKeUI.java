@@ -1,4 +1,4 @@
-                                                                                                                                                                                                                                                                                package ui.thongke;
+package ui.thongke;
 
 import java.awt.BorderLayout;
 import javax.swing.JPanel;
@@ -23,5 +23,10 @@ public class ThongKeUI extends JPanel {
         tabbedPane.addTab("Nhập hàng", thongKeNhapHang);
 
         add(tabbedPane, BorderLayout.CENTER);
+    }
+
+    public void loadData() {
+        thongKeNhapHang.loadDuLieu();
+        thongKeSanPham.loadDuLieu();
     }
 }
