@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.sql.Date;
 
 import javax.swing.*;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 
 public class BanHangUI extends JPanel {
@@ -272,11 +274,50 @@ public class BanHangUI extends JPanel {
     }
 
     private void ganSuKienThanhToan() {
+
+        thongTinHoaDonPanel.getTable().getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if (e.getType() == TableModelEvent.UPDATE) {
+                    int row = e.getFirstRow();
+                    if (e.getColumn() != 2) {
+                        return;
+                    }
+                    try {
+                        int soLuong = Integer.parseInt(thongTinHoaDonPanel.getModel().getValueAt(row, 2).toString());
+                        if (soLuong < 0) {
+                            JOptionPane.showMessageDialog(null, "Số lượng sản phẩm không được để số âm!", "Lỗi",
+                                    JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        int gia = Integer.parseInt(thongTinHoaDonPanel.getModel().getValueAt(row, 1).toString());
+                        thongTinHoaDonPanel.getModel().setValueAt(soLuong * gia, row, 3);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(null, "Lỗi", "Lỗi định dạng sản phẩm", JOptionPane.ERROR_MESSAGE);
+                    }
+
+                }
+            }
+        });
+
         thanhToanPanel.getBtnThanhToan().addActionListener(e -> {
             DefaultTableModel model = thongTinHoaDonPanel.getModel();
             if (model.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "Giỏ hàng đang trống! Vui lòng chọn món.");
                 return;
+            }
+            DefaultTableModel modeCt = thongTinHoaDonPanel.getModel();
+            for (int i = 0; i < modeCt.getRowCount(); i++) {
+                try {
+                    if (Integer.parseInt(modeCt.getValueAt(i, 2).toString()) < 0) {
+                        JOptionPane.showMessageDialog(this, "Số lượng sản phẩm không được để số âm!");
+                        return;
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(this, "Lỗi định dạng số lượng sản phẩm!");
+                    return;
+                }
+
             }
 
             HoaDon hd = new HoaDon();

@@ -140,4 +140,7 @@ public class ThongTinHoaDonPanel extends JPanel {
         return model;
     }
 
+    public JTable getTable() {
+        return table;
+    }
 }
