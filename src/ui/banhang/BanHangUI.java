@@ -176,6 +176,7 @@ public class BanHangUI extends JPanel {
     public void loadDuLieu() {
         loadDanhSachKhuyenMai();
         thongTinKhachHangPanel.loadDataKhachHang();
+        listSanPhamPanel.render(SanPhamBUS.getSanPhamBUS().layListSanPham());
     }
 
     public void loadDanhSachKhuyenMai() {
@@ -464,7 +465,6 @@ public class BanHangUI extends JPanel {
                 }
             }
         }
-
 
         tienGiam += tongTienHang * (tongPhanTramGiam / 100.0);
 

@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "ThemHangHoaChoNCCDialog",
+      "request": "launch",
+      "mainClass": "ui.nhacungcap.ThemHangHoaChoNCCDialog",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
       "name": "Xulypdf",
       "request": "launch",
       "mainClass": "util.Xulypdf",

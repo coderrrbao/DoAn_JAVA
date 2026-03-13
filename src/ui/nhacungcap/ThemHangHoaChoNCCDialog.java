@@ -126,7 +126,7 @@ public class ThemHangHoaChoNCCDialog extends JDialog {
             ArrayList<SanPham> dsSanPham = sanPhamBUS.layListSanPham();
             if (dsSanPham != null) {
                 for (SanPham sp : dsSanPham) {
-                    if (sp.getTenSP().contains(search_Item.getTextSearch()) && sp.getLoaiNuoc().equals("Có sẳn")) {
+                    if (sp.getTenSP().contains(search_Item.getTextSearch()) && sp.getLoaiNuoc().equals("Có sẵn")) {
                         modelHangHoa.addRow(new Object[] { sp.getMaSP(), sp.getTenSP(), "Sản phẩm" });
                     }
                 }

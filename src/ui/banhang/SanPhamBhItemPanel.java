@@ -8,6 +8,9 @@ import javax.swing.Box;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
+import bus.LoNguyenLieuBUS;
+import bus.LoSanPhamBUS;
+import dto.LoSanPham;
 import dto.SanPham;
 import ui.component.SanPhamClickListener;
 import util.TaoUI;
@@ -36,20 +39,22 @@ public class SanPhamBhItemPanel extends JPanel {
 
         JPanel tonKhoPanel = TaoUI.taoPanelBoxLayoutNgang(100, 15);
         tonKhoPanel.add(Box.createHorizontalGlue());
-        JLabel titleTon = new JLabel("Giá Bán : ");
-        JLabel tonNumber = new JLabel(String.valueOf(sanPham.getGiaBan()));
+
         Font fontNho = new Font(null, Font.BOLD, 10);
-        titleTon.setFont(fontNho);
-        tonNumber.setFont(fontNho);
-        tonKhoPanel.add(titleTon);
-        tonKhoPanel.add(tonNumber);
-        tonKhoPanel.add(Box.createRigidArea(new Dimension(5, 0)));
+        int giaBan = (sanPham.getLoaiNuoc().equals("Có sẵn")
+                ? LoSanPhamBUS.getLoSanPhamBUS().laySoLuongSanPhamTrongKho(sanPham.getMaSP())
+                : LoNguyenLieuBUS.getLoNguyenLieuBUS().laySoLuongSanPhamPhaCheTrongKho(sanPham));
+        JLabel tonKhoLb = new JLabel("Tồn kho : " + giaBan);
+        tonKhoPanel.add(tonKhoLb);
+           tonKhoPanel.add(Box.createHorizontalGlue());
+        tonKhoLb.setFont(fontNho);
 
         add(anhPanel);
         add(tenSanPhamPanel);
         add(giaSpPanel);
         add(sizeSanPhamPanel);
         add(tonKhoPanel);
+
         setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         for (Component c : getComponents()) {
             if (c instanceof JPanel) {

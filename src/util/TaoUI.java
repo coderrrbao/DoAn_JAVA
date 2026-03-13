@@ -59,7 +59,13 @@ public class TaoUI {
         if (src == null) {
             src = "/assets/img/douongmd.png";
         }
-        ImageIcon icon1 = new ImageIcon(TaoUI.class.getResource(src));
+        ImageIcon icon1;
+        try {
+            icon1 = new ImageIcon(TaoUI.class.getResource(src));
+        } catch (Exception e) {
+            src = "/assets/img/douongmd.png";
+            icon1 = new ImageIcon(TaoUI.class.getResource(src));
+        }
 
         Image img1 = icon1.getImage().getScaledInstance(rong, dai, Image.SCALE_SMOOTH);
         ImageIcon avata = new ImageIcon(img1);

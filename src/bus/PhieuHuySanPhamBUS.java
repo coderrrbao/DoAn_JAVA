@@ -77,6 +77,7 @@ public class PhieuHuySanPhamBUS {
         ArrayList<LoSanPham> chiTiet = dao.layChiTietHuyTheoMaPH(ph.getMaPH());
         if (chiTiet == null) throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
         for (LoSanPham Lo : chiTiet) {
+          
           if (!dao.truKhoLoSanPham(Lo.getMaLoSP(), Lo.getSoLuong(), conn))
             throw new SQLException("Trừ kho thất bại");
         }

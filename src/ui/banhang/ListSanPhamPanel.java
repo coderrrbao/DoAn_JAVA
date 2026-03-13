@@ -89,7 +89,7 @@ public class ListSanPhamPanel extends JPanel {
         taoListSpPanel();
     }
 
-    private void renderTrang() {
+    public void renderTrang() {
         listSanPhamPanel.removeAll();
 
         ArrayList<SanPham> dsTrang = new ArrayList<>();
