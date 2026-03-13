@@ -31,7 +31,7 @@ public class ThongTinHoaDonPanel extends JPanel {
         model = new DefaultTableModel() {
             @Override
             public boolean isCellEditable(int row, int column) {
-                return column == 4 || column == 5 || column == 6;
+                return column == 2 || column == 4 || column == 5 || column == 6;
             }
 
             public Class<?> getColumnClass(int columnIndex) {
@@ -52,6 +52,7 @@ public class ThongTinHoaDonPanel extends JPanel {
         HashSet<Integer> set = new HashSet<>();
         set.add(4);
         set.add(5);
+        set.add(2);
         set.add(6);
 
         NutSuKienBanHang nutTru = new NutSuKienBanHang(new JCheckBox());
