@@ -180,7 +180,7 @@ public class ContentPaner extends JPanel {
         hangThanhVienUI.loadDataToTable();
 
       if (banHangUI != null)
-        banHangUI.loadDanhSachKhuyenMai();
+        banHangUI.loadDuLieu();
     });
   }
 }

@@ -95,6 +95,24 @@ public class SanPhamBUS {
         return null;
     }
 
+    public SanPham timSanPhamTheoTen(String ten) {
+        if (canUpdate || listSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        String tenGoc = ten.replace("  ->", "");
+
+        if (tenGoc.contains(" (")) {
+            tenGoc = tenGoc.substring(0, tenGoc.lastIndexOf(" ("));
+        }
+        for (SanPham sanPham : listSanPham) {
+            if (sanPham.getTenSP().equals(tenGoc)) {
+                return sanPham;
+            }
+        }
+        return null;
+    }
+
     public Boolean themSanPham(SanPham sanPham) {
         Connection conn = DBConnection.getConnection();
         try {

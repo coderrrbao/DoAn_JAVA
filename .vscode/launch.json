@@ -3,6 +3,27 @@
   "configurations": [
     {
       "type": "java",
+      "name": "BanHangUI",
+      "request": "launch",
+      "mainClass": "ui.banhang.BanHangUI",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
+      "name": "LoNguyenLieuBUS",
+      "request": "launch",
+      "mainClass": "bus.LoNguyenLieuBUS",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
+      "name": "LoSanPhamBUS",
+      "request": "launch",
+      "mainClass": "bus.LoSanPhamBUS",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
       "name": "ThemHangHoaChoNCCDialog",
       "request": "launch",
       "mainClass": "ui.nhacungcap.ThemHangHoaChoNCCDialog",

@@ -39,54 +39,6 @@ public class LoSanPhamDAO {
         return list;
     }
 
-    public boolean truSoLuong(Connection conn, String maSP, int soLuongCanTru) throws SQLException {
-        String sqlGet = "SELECT MaLoSP, SoLuong FROM LoSanPham WHERE MaSP = ? AND SoLuong > 0 ORDER BY HanSuDung ASC";
-        String sqlUpdate = "UPDATE LoSanPham SET SoLuong = SoLuong - ? WHERE MaLoSP = ?";
-
-        PreparedStatement pstGet = null;
-        PreparedStatement pstUpdate = null;
-        ResultSet rs = null;
-
-        try {
-            pstGet = conn.prepareStatement(sqlGet);
-            pstGet.setString(1, maSP);
-            rs = pstGet.executeQuery();
-
-            pstUpdate = conn.prepareStatement(sqlUpdate);
-
-            int conLai = soLuongCanTru;
-
-            while (rs.next() && conLai > 0) {
-                String maLo = rs.getString("MaLoSP");
-                int slTrongLo = rs.getInt("SoLuong");
-
-                int truO_LoNay = (slTrongLo >= conLai) ? conLai : slTrongLo;
-
-                pstUpdate.setInt(1, truO_LoNay);
-                pstUpdate.setString(2, maLo);
-                pstUpdate.addBatch();
-
-                conLai -= truO_LoNay;
-            }
-
-            if (conLai == 0) {
-                pstUpdate.executeBatch();
-                return true;
-            } else {
-                System.out.println("Lỗi: Kho không đủ hàng (Thiếu " + conLai + ") cho mã " + maSP);
-                return false;
-            }
-
-        } finally {
-            if (rs != null)
-                rs.close();
-            if (pstGet != null)
-                pstGet.close();
-            if (pstUpdate != null)
-                pstUpdate.close();
-        }
-    }
-
     public boolean kiemTraDuHang(String maSP, int soLuongCan) {
         String sql = "SELECT SUM(SoLuong) FROM LoSanPham WHERE MaSP = ?";
         try (Connection conn = DBConnection.getConnection();
@@ -175,6 +127,36 @@ public class LoSanPhamDAO {
 
         } catch (Exception e) {
             System.out.println("Lỗi khi thêm Lô Sản Phẩm: " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean truSoLuongLo(Connection conn,String maLoSP, double soLuongTru) {
+        String sql = "UPDATE LoSanPham SET SoLuong = SoLuong - ? WHERE MaLoSP = ? AND SoLuong >= ?";
+        try (
+                PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setDouble(1, soLuongTru);
+            pst.setString(2, maLoSP);
+            pst.setDouble(3, soLuongTru);
+
+            return pst.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean xoaLoSanPham(Connection conn,String maLoSP) {
+        String sql = "UPDATE LoSanPham SET TrangThai = 0 WHERE MaLoSP = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+
+            pst.setString(1, maLoSP);
+            return pst.executeUpdate() > 0;
+
+        } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }

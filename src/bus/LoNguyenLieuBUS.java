@@ -84,6 +84,81 @@ public class LoNguyenLieuBUS {
         return tong;
     }
 
+    public ArrayList<LoNguyenLieu> layLoConHanChoNguyenLieu(String maNL) {
+        if (canUpdate || listLoNguyenLieu == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<LoNguyenLieu> list = new ArrayList<>();
+        for (LoNguyenLieu lo : listLoNguyenLieu) {
+            LocalDate ngayHetHan = LocalDate.parse(lo.getHanSuDung());
+            if (lo.getMaNL().equals(maNL) && !ngayHetHan.isBefore(LocalDate.now())) {
+                list.add(lo);
+            }
+        }
+        return list;
+    }
+
+    public ArrayList<LoNguyenLieu> layLoNguyenLieuDeBan(String maNL, double soLuongCan) {
+        if (soLuongCan <= 0) {
+            return new ArrayList<>();
+        }
+        ArrayList<LoNguyenLieu> listLoKhaDung = layLoConHanChoNguyenLieu(maNL);
+        ArrayList<LoNguyenLieu> listKetQua = new ArrayList<>();
+
+        try {
+            while (soLuongCan > 0 && !listLoKhaDung.isEmpty()) {
+
+                LoNguyenLieu loSapHetHan = listLoKhaDung.get(0);
+                for (LoNguyenLieu lo : listLoKhaDung) {
+                    LocalDate hsdLoHienTai = LocalDate.parse(lo.getHanSuDung());
+                    LocalDate hsdLoNhoNhat = LocalDate.parse(loSapHetHan.getHanSuDung());
+                    if (hsdLoHienTai.isBefore(hsdLoNhoNhat)) {
+                        loSapHetHan = lo;
+                    }
+                }
+
+                listKetQua.add(loSapHetHan);
+                soLuongCan -= loSapHetHan.getSoLuong();
+
+                listLoKhaDung.remove(loSapHetHan);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return listKetQua;
+    }
+
+    public ArrayList<String> capNhapTonKhoSauKhiBan(Connection conn, NguyenLieu nguyenLieu, double soLuongCan) {
+        ArrayList<LoNguyenLieu> listLoNLCanSLy = layLoNguyenLieuDeBan(nguyenLieu.getMaNL(), soLuongCan);
+        ArrayList<String> listThongBao = new ArrayList<>();
+        for (LoNguyenLieu loNL : listLoNLCanSLy) {
+            if (soLuongCan <= 0)
+                break;
+
+            double slTrongLo = loNL.getSoLuong();
+            double slLayRa;
+
+            if (soLuongCan >= slTrongLo) {
+                slLayRa = slTrongLo;
+                xoaLoNguyenLieu(conn, loNL.getMaLoNL());
+                soLuongCan -= slTrongLo;
+            } else {
+
+                slLayRa = soLuongCan;
+                truSoLuongLo(conn, loNL.getMaLoNL(), soLuongCan);
+                soLuongCan = 0;
+            }
+
+            listThongBao.add("Vui lòng lấy " + slLayRa + " nguyên liệu " + nguyenLieu.getTenNL() +
+                    " ở lô có mã: " + loNL.getMaLoNL() + " để sử dụng.");
+        }
+
+        return listThongBao;
+    }
+
     public ArrayList<LoNguyenLieu> layLoChoNguyenLieu(String maNL) {
         if (canUpdate || listLoNguyenLieu == null) {
             khoitao();
@@ -302,5 +377,30 @@ public class LoNguyenLieuBUS {
             }
         }
         return (int) (soLyToiDa == Double.MAX_VALUE ? 0 : soLyToiDa);
+    }
+
+    public boolean xoaLoNguyenLieu(Connection conn, String maLoNL) {
+        try {
+            boolean result = loNguyenLieuDAO.xoaLoNguyenLieu(conn, maLoNL);
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean truSoLuongLo(Connection conn, String maLoNL, double soLuongTru) {
+        try {
+
+            boolean result = loNguyenLieuDAO.truSoLuongLo(conn, maLoNL, soLuongTru);
+
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    public void setCanUpdate(boolean canUpdate) {
+        this.canUpdate = canUpdate;
     }
 }

@@ -41,12 +41,13 @@ public class SanPhamBhItemPanel extends JPanel {
         tonKhoPanel.add(Box.createHorizontalGlue());
 
         Font fontNho = new Font(null, Font.BOLD, 10);
-        int giaBan = (sanPham.getLoaiNuoc().equals("Có sẵn")
+  
+        int soLuongTon = (sanPham.getLoaiNuoc().equals("Có sẵn")
                 ? LoSanPhamBUS.getLoSanPhamBUS().laySoLuongSanPhamTrongKho(sanPham.getMaSP())
                 : LoNguyenLieuBUS.getLoNguyenLieuBUS().laySoLuongSanPhamPhaCheTrongKho(sanPham));
-        JLabel tonKhoLb = new JLabel("Tồn kho : " + giaBan);
+        JLabel tonKhoLb = new JLabel("Tồn kho : " + soLuongTon);
         tonKhoPanel.add(tonKhoLb);
-           tonKhoPanel.add(Box.createHorizontalGlue());
+        tonKhoPanel.add(Box.createHorizontalGlue());
         tonKhoLb.setFont(fontNho);
 
         add(anhPanel);

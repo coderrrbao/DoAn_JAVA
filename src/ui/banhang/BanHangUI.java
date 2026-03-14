@@ -13,7 +13,9 @@ import ui.login.PhienDangNhap;
 import util.Xulypdf;
 
 import java.awt.*;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.sql.Date;
 
 import javax.swing.*;
@@ -24,11 +26,12 @@ import javax.swing.table.DefaultTableModel;
 public class BanHangUI extends JPanel {
 
     private HoaDonBUS hoaDonBUS = new HoaDonBUS();
-    private SanPhamBUS sanPhamBUS = new SanPhamBUS();
+    private SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
     private Xulypdf xulyPDF = new Xulypdf();
 
     private KhuyenMai maGiamGiaDangDung = null;
 
+ 
     private ThongTinKhachHangPanel thongTinKhachHangPanel;
     private ThanhToanPanel thanhToanPanel;
     private ThongTinHoaDonPanel thongTinHoaDonPanel;
@@ -178,7 +181,7 @@ public class BanHangUI extends JPanel {
     public void loadDuLieu() {
         loadDanhSachKhuyenMai();
         thongTinKhachHangPanel.loadDataKhachHang();
-        listSanPhamPanel.render(SanPhamBUS.getSanPhamBUS().layListSanPham());
+        listSanPhamPanel.renderTrang();
     }
 
     public void loadDanhSachKhuyenMai() {
@@ -381,14 +384,14 @@ public class BanHangUI extends JPanel {
             hd.setTrangThai(true);
 
             ArrayList<ChiTietHoaDon> listCT = new ArrayList<>();
-            ArrayList<SanPham> dsSanPhamHienCo = sanPhamBUS.layListSanPham();
+       
 
             for (int i = 0; i < model.getRowCount(); i++) {
                 String tenSP = model.getValueAt(i, 0).toString();
                 double giaBan = Double.parseDouble(model.getValueAt(i, 1).toString());
                 int soLuong = Integer.parseInt(model.getValueAt(i, 2).toString());
 
-                SanPham spGoc = timSanPhamTheoTen(dsSanPhamHienCo, tenSP);
+                SanPham spGoc = SanPhamBUS.getSanPhamBUS().timSanPhamTheoTen(tenSP);
                 if (spGoc == null) {
                     JOptionPane.showMessageDialog(this, "Lỗi: Không tìm thấy mã sản phẩm cho " + tenSP);
                     return;
@@ -421,7 +424,7 @@ public class BanHangUI extends JPanel {
                 listCT.add(ct);
             }
             hd.setListChiTietHoaDon(listCT);
-
+            
             ArrayList<String> loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
             String loi = "";
 
@@ -434,8 +437,8 @@ public class BanHangUI extends JPanel {
                 JOptionPane.showMessageDialog(this, loi, "Cảnh báo kho hàng", JOptionPane.WARNING_MESSAGE);
                 return;
             }
-
-            if (hoaDonBUS.ThanhToan(hd)) {
+            ArrayList<String> listThongBao = hoaDonBUS.ThanhToan(hd);
+            if (listThongBao != null) {
                 if (hd.getMaKH() != null) {
                     KhachHangBUS khBUS = new KhachHangBUS();
                     khBUS.capNhatTienDaMua(hd.getMaKH(), hd.getTongTien());
@@ -445,6 +448,13 @@ public class BanHangUI extends JPanel {
                 if (luaChon == JOptionPane.YES_OPTION) {
                     xulyPDF.xuatHoaDon(hd);
                 }
+
+                String thongBao = "";
+                for (String tb : listThongBao) {
+                    thongBao += tb + "\n";
+                }
+
+                JOptionPane.showMessageDialog(null, thongBao);
 
                 model.setRowCount(0);
                 thongTinKhachHangPanel.getTxtSdt().setText("");
@@ -464,20 +474,6 @@ public class BanHangUI extends JPanel {
         });
     }
 
-    private SanPham timSanPhamTheoTen(ArrayList<SanPham> list, String tenGiaoDien) {
-        String tenGoc = tenGiaoDien.replace("  ->", "");
-
-        if (tenGoc.contains(" (")) {
-            tenGoc = tenGoc.substring(0, tenGoc.lastIndexOf(" ("));
-        }
-
-        for (SanPham sp : list) {
-            if (sp.getTenSP().equalsIgnoreCase(tenGoc.trim())) {
-                return sp;
-            }
-        }
-        return null;
-    }
 
     private void capNhatGiaoDien() {
         double tongTienHang = thongTinHoaDonPanel.layTongTienHang();

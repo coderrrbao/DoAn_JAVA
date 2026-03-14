@@ -72,6 +72,7 @@ public class TuyChonDialog extends JDialog {
 
             for (int i = 0; i < listSize.size(); i++) {
                 Size size = listSize.get(i);
+
                 String text = size.getTenSize();
                 if (size.getPhanTramGia() > 0) {
                     text += " (+ " + size.getPhanTramGia() + "%)";
@@ -108,8 +109,10 @@ public class TuyChonDialog extends JDialog {
             JPanel pnlToppingGrid = new JPanel(new GridLayout(0, 2, 10, 10));
             pnlToppingGrid.setBackground(Color.WHITE);
 
+            
             for (SanPham topping : listTopping) {
                 JCheckBox chkTopping = new JCheckBox(topping.getTenSP() + " (" + df.format(topping.getGiaBan()) + ")");
+                chkTopping.setActionCommand(topping.getMaSP());
                 chkTopping.setBackground(Color.WHITE);
                 chkTopping.setFont(new Font("SansSerif", Font.PLAIN, 13));
 

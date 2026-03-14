@@ -41,6 +41,29 @@ public class LoNguyenLieuDAO {
         return list;
     }
 
+    public boolean truSoLuongLo(Connection conn, String maLoNL, double soLuongTru) throws SQLException {
+        String sql = "UPDATE LoNguyenLieu SET SoLuong = SoLuong - ? WHERE MaLoNL = ? AND TrangThai = 1";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setDouble(1, soLuongTru);
+            pst.setString(2, maLoNL);
+
+            int rowsAffected = pst.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
+    public boolean xoaLoNguyenLieu(Connection conn, String maLoNL) throws SQLException {
+        String sql = "UPDATE LoNguyenLieu SET TrangThai = 0 WHERE MaLoNL = ?";
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            pst.setString(1, maLoNL);
+            return pst.executeUpdate() > 0;
+        } catch (SQLException e) {
+            throw e;
+        }
+    }
+
     public boolean kiemTraDuNguyenLieu(String maNL, double soLuongCan) {
         String sql = "SELECT SUM(SoLuong) FROM LoNguyenLieu WHERE MaNL = ? AND TrangThai=1";
         try (Connection conn = DBConnection.getConnection();

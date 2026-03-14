@@ -1,8 +1,12 @@
 package bus;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
@@ -20,10 +24,9 @@ import dto.Size;
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonDAO chiTietHoaDonDAO = new ChiTietHoaDonDAO();
-    private LoSanPhamDAO loSanPhamDAO = new LoSanPhamDAO();
-    private LoNguyenLieuDAO loNguyenLieuDAO = new LoNguyenLieuDAO();
 
     public ArrayList<String> kiemTraTonKho(HoaDon hd) {
+
         HashMap<NguyenLieu, Double> listNLCan = new HashMap<>();
         ArrayList<String> loi = new ArrayList<>();
         for (ChiTietHoaDon ct : hd.getListChiTietHoaDon()) {
@@ -43,7 +46,7 @@ public class HoaDonBUS {
                     System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
                     continue;
                 }
-                LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
+
                 for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
                     double canDung = ctct.getSoLuong() * soLuongMua;
                     if (listNLCan.containsKey(ctct.getNguyenLieu())) {
@@ -54,16 +57,31 @@ public class HoaDonBUS {
                         listNLCan.put(ctct.getNguyenLieu(), canDung);
                     }
                 }
-                for (NguyenLieu nguyenLieu : listNLCan.keySet()) {
-                    if (loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) < listNLCan
-                            .get(nguyenLieu)) {
-                        loi.add("Không đủ " + nguyenLieu.getTenNL());
-                    }
-                }
-
             }
         }
+        LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
+        ArrayList<NguyenLieu> listNLRemove = new ArrayList<>();
+        for (Map.Entry<NguyenLieu, Double> entry : listNLCan.entrySet()) {
+            NguyenLieu nguyenLieu = entry.getKey();
+            double soLuongTrongKho = loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL());
+            double soLuongCan = listNLCan.get(nguyenLieu);
+            if (soLuongTrongKho < soLuongCan) {
+                entry.setValue(soLuongCan - soLuongTrongKho);
+            } else {
+                listNLRemove.add(nguyenLieu);
+            }
+
+        }
+
+        for (NguyenLieu nguyenLieu : listNLRemove) {
+            listNLCan.remove(nguyenLieu);
+        }
+
+        for (Map.Entry<NguyenLieu, Double> entry : listNLCan.entrySet()) {
+            loi.add(entry.getKey().getTenNL() + " Còn thiếu " + entry.getValue());
+        }
         return loi;
+
     }
 
     public double layTongDanhThu() {
@@ -75,9 +93,9 @@ public class HoaDonBUS {
         return tong;
     }
 
-    public boolean ThanhToan(HoaDon hd) {
+    public ArrayList<String> ThanhToan(HoaDon hd) {
         Connection conn = null;
-
+        ArrayList<String> listThongBao = new ArrayList<>();
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
@@ -85,12 +103,12 @@ public class HoaDonBUS {
             hd.setNgayBan(now);
 
             if (!hoaDonDAO.themHoaDon(hd)) {
-                return false;
+                throw new SQLException();
             }
 
             for (ChiTietHoaDon ct : hd.getListChiTietHoaDon()) {
                 if (!chiTietHoaDonDAO.themChiTietHoaDon(ct)) {
-                    return false;
+                    throw new SQLException();
                 }
 
                 String loaiNuoc = ct.getSanPham().getLoaiNuoc();
@@ -99,36 +117,31 @@ public class HoaDonBUS {
                 int soLuongMua = ct.getSoLuong();
 
                 if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
-                    if (!loSanPhamDAO.truSoLuong(conn, maSP, soLuongMua)) {
-                        conn.rollback();
-                        return false;
-                    }
+                    ArrayList<String> ketQuaCapNhapKho = LoSanPhamBUS.getLoSanPhamBUS().capNhapTonKhoSauKhiBan(conn,
+                            ct.getSanPham(), soLuongMua);
+                    listThongBao.addAll(ketQuaCapNhapKho);
+
                 } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
-                    CongThuc congThuc = CongThucBUS.getCongThucBUS().timCongThucChoSP(maSP);
-                    if (congThuc.getListChiTietCongThuc().isEmpty()) {
+                    CongThuc congThuc = ct.getSanPham().getCongThuc();
+                    if (ct.getSanPham().getCongThuc() == null) {
                         System.out.println("LỖI NGHIÊM TRỌNG: Món " + maSP + " chưa được cấu hình công thức!");
                         conn.rollback();
-                        return false;
+                        throw new SQLException();
                     }
                     for (ChiTietCongThuc ctct : congThuc.getListChiTietCongThuc()) {
+                        System.out.println(ctct.getNguyenLieu().getTenNL());
                         double canTru = ctct.getSoLuong() * soLuongMua;
                         if (size != null) {
                             canTru = canTru + canTru * ((double) size.getPhanTramNL() / 100);
                         }
-                        String maNL = ctct.getNguyenLieu().getMaNL();
-                        boolean ketQuaTru = loNguyenLieuDAO.truNguyenLieu(conn, maNL, canTru);
-
-                        if (!ketQuaTru) {
-                            conn.rollback();
-                            System.out.println("Thanh toán thất bại do thiếu nguyên liệu: " + maNL);
-                            return false;
-                        }
+                        ArrayList<String> ketQuaCapNhapKho = LoNguyenLieuBUS.getLoNguyenLieuBUS()
+                                .capNhapTonKhoSauKhiBan(conn, ctct.getNguyenLieu(), canTru);
+                        listThongBao.addAll(ketQuaCapNhapKho);
                     }
                 }
             }
 
             conn.commit();
-            return true;
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -138,7 +151,7 @@ public class HoaDonBUS {
             } catch (Exception ex) {
                 ex.printStackTrace();
             }
-            return false;
+            return null;
         } finally {
             try {
                 if (conn != null)
@@ -146,7 +159,10 @@ public class HoaDonBUS {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+            LoSanPhamBUS.getLoSanPhamBUS().setCanUpdate(true);
+            LoNguyenLieuBUS.getLoNguyenLieuBUS().setCanUpdate(true);
         }
+        return listThongBao;
     }
 
     public String taoMaHoaDonMoi() {
@@ -187,4 +203,5 @@ public class HoaDonBUS {
         }
         return util.XuLyExcel.xuatFileHoaDon(dsHoaDonCanXuat);
     }
+
 }
