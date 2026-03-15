@@ -29,7 +29,6 @@ public class BanHangUI extends JPanel {
 
     private KhuyenMai maGiamGiaDangDung = null;
 
- 
     private ThongTinKhachHangPanel thongTinKhachHangPanel;
     private ThanhToanPanel thanhToanPanel;
     private ThongTinHoaDonPanel thongTinHoaDonPanel;
@@ -382,7 +381,6 @@ public class BanHangUI extends JPanel {
             hd.setTrangThai(true);
 
             ArrayList<ChiTietHoaDon> listCT = new ArrayList<>();
-       
 
             for (int i = 0; i < model.getRowCount(); i++) {
                 String tenSP = model.getValueAt(i, 0).toString();
@@ -422,7 +420,7 @@ public class BanHangUI extends JPanel {
                 listCT.add(ct);
             }
             hd.setListChiTietHoaDon(listCT);
-            
+
             ArrayList<String> loiTonKho = hoaDonBUS.kiemTraTonKho(hd);
             String loi = "";
 
@@ -441,11 +439,6 @@ public class BanHangUI extends JPanel {
                     KhachHangBUS khBUS = new KhachHangBUS();
                     khBUS.capNhatTienDaMua(hd.getMaKH(), hd.getTongTien());
                 }
-                int luaChon = JOptionPane.showConfirmDialog(this,
-                        "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
-                if (luaChon == JOptionPane.YES_OPTION) {
-                    xulyPDF.xuatHoaDon(hd);
-                }
 
                 String thongBao = "";
                 for (String tb : listThongBao) {
@@ -453,6 +446,12 @@ public class BanHangUI extends JPanel {
                 }
 
                 JOptionPane.showMessageDialog(null, thongBao);
+
+                int luaChon = JOptionPane.showConfirmDialog(this,
+                        "Thanh toán thành công! Bạn có muốn in hóa đơn không?", "Thông báo", JOptionPane.YES_NO_OPTION);
+                if (luaChon == JOptionPane.YES_OPTION) {
+                    xulyPDF.xuatHoaDon(hd);
+                }
 
                 model.setRowCount(0);
                 thongTinKhachHangPanel.getTxtSdt().setText("");
@@ -471,7 +470,6 @@ public class BanHangUI extends JPanel {
             }
         });
     }
-
 
     private void capNhatGiaoDien() {
         double tongTienHang = thongTinHoaDonPanel.layTongTienHang();

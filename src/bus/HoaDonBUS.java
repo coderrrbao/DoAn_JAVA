@@ -38,7 +38,7 @@ public class HoaDonBUS {
                 CongThucBUS congThucBUS = CongThucBUS.getCongThucBUS();
                 CongThuc congThuc = congThucBUS.timCongThucChoSP(maSP);
 
-                if (congThuc.getListChiTietCongThuc().isEmpty()) {
+                if (congThuc == null || congThuc.getListChiTietCongThuc().isEmpty()) {
                     System.out.println("Cảnh báo: Món " + ct.getSanPham().getTenSP() + " chưa có công thức!");
                     continue;
                 }
