@@ -222,8 +222,8 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         });
 
         btnXacNhan.addActionListener(e -> {
-            if (modelChoXuat.getRowCount() == 0 || txtLyDo.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập lý do và chọn ít nhất 1 nguyên liệu để hủy!");
+            if (modelChoXuat.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất 1 nguyên liệu để hủy!");
                 return;
             }
             double tongTien = 0;
@@ -243,6 +243,7 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
             if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().thucHienHuy(ph, data)) {
                 parentPanel.loadDuLieu();
+                JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thành công!");
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thất bại!");

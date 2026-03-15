@@ -13,7 +13,7 @@ import dto.SanPham;
 import ui.thongke.ThongKeValue;
 
 public class ThongKeBUS {
-    private SanPhamBUS sanPhamBUS = new SanPhamBUS();
+    private SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonBUS chiTietHoaDonBUS = new ChiTietHoaDonBUS();
     private Map<SanPham, Integer> laySpBanRa = laySL_SP_BanRaGiamDan();

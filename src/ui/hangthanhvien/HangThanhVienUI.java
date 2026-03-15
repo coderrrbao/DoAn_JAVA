@@ -14,6 +14,7 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
+import ui.login.LoginUI;
 import util.TaoUI;
 
 public class HangThanhVienUI extends JPanel {
@@ -112,7 +113,7 @@ public class HangThanhVienUI extends JPanel {
           if (form.getKetQua() != null) {
             if (htvBUS.themHangThanhVien(form.getKetQua())) {
               JOptionPane.showMessageDialog(this, "Thêm thành công!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
               JOptionPane.showMessageDialog(this, "Thêm thất bại!");
             }
@@ -132,7 +133,7 @@ public class HangThanhVienUI extends JPanel {
           if (confirm == JOptionPane.YES_OPTION) {
             if (htvBUS.xoaHangThanhVien(maHang)) {
               JOptionPane.showMessageDialog(this, "Đã xóa!");
-              loadDataToTable();
+              LoginUI.getLoginUI().getMainFrame().loadAllData();
             }
           }
         });

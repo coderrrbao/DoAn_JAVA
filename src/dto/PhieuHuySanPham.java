@@ -5,42 +5,20 @@ import java.util.ArrayList;
 
 public class PhieuHuySanPham {
   private String maPH;
-
   private Date ngayHuy;
   private String maNV;
+  private String maNVXacNhan;
   private String lyDo;
   private double tongGiaTri;
-  private String trangThai;
-  private java.util.ArrayList<LoSanPham> listLoSanPhamHuy = new ArrayList<>();
+  private String trangThaiXuLy;
 
-  public PhieuHuySanPham(
-      String maPH,
-
-      Date ngayHuy,
-      String maNV,
-      String lyDo,
-      double tongGiaTri,
-      String trangThai) {
-    this.maPH = maPH;
-
-    this.ngayHuy = ngayHuy;
-    this.maNV = maNV;
-    this.lyDo = lyDo;
-    this.tongGiaTri = tongGiaTri;
-    this.trangThai = trangThai;
-  }
+  // Đổi sang lưu danh sách Chi tiết
+  private ArrayList<ChiTietPhieuHuySanPham> listChiTiet = new ArrayList<>();
 
   public PhieuHuySanPham() {
-    this.maPH = "";
-
-    this.ngayHuy = null;
-    this.maNV = "";
-    this.lyDo = "";
-    this.tongGiaTri = 0;
-    this.trangThai = "";
-    this.listLoSanPhamHuy = new ArrayList<>();
   }
 
+  // Các Getter và Setter
   public String getMaPH() {
     return maPH;
   }
@@ -65,6 +43,14 @@ public class PhieuHuySanPham {
     this.maNV = maNV;
   }
 
+  public String getMaNVXacNhan() {
+    return maNVXacNhan;
+  }
+
+  public void setMaNVXacNhan(String maNVXacNhan) {
+    this.maNVXacNhan = maNVXacNhan;
+  }
+
   public String getLyDo() {
     return lyDo;
   }
@@ -82,18 +68,19 @@ public class PhieuHuySanPham {
   }
 
   public String getTrangThaiXuLy() {
-    return trangThai;
+    return trangThaiXuLy;
   }
 
   public void setTrangThaiXuLy(String trangThai) {
-    this.trangThai = trangThai;
+    this.trangThaiXuLy = trangThai;
   }
 
-  public ArrayList<LoSanPham> getListLoSanPhamHuy() {
-    return listLoSanPhamHuy;
+  // Getter và Setter cho danh sách chi tiết
+  public ArrayList<ChiTietPhieuHuySanPham> getListChiTiet() {
+    return listChiTiet;
   }
 
-  public void setListLoSanPhamHuy(ArrayList<LoSanPham> list) {
-    this.listLoSanPhamHuy = list;
+  public void setListChiTiet(ArrayList<ChiTietPhieuHuySanPham> listChiTiet) {
+    this.listChiTiet = listChiTiet;
   }
 }

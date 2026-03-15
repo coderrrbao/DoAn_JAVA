@@ -210,7 +210,7 @@ public class NhomQuyenDialog extends JDialog {
                 NhomQuyenBUS nhomQuyenBUS = NhomQuyenBUS.getNhomQuyenBUS();
                 if (nhomQuyenBUS.themNhomQuyen(nhomQuyen)) {
                     TaoTinNhan.showAutoCloseMessage("Thêm nhóm quyền thành công", "Thông báo", 1);
-                    nhomQuyenUI.loadDuLieu();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     TaoTinNhan.showAutoCloseMessage("Thêm nhóm quyền thất bại", "Thông báo", 1);
                 }

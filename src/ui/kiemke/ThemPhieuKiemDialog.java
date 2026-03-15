@@ -23,11 +23,11 @@ import dto.LoNguyenLieu;
 import dto.LoSanPham;
 import dto.PhieuKiemKe;
 import ui.component.LocNgay_Item;
+import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
 
 public class ThemPhieuKiemDialog extends JDialog {
-    private KiemKeUI kiemKeUI;
     private DefaultTableModel model;
     private JTable table;
     private LocNgay_Item locNgay_Item;
@@ -46,8 +46,6 @@ public class ThemPhieuKiemDialog extends JDialog {
         setSize(500, 540);
         setLocationRelativeTo(null);
         phieuKiemKe = pkk;
-        this.kiemKeUI = kiemKeUI;
-
         setLayout(new BorderLayout());
         initGUI();
         ganSuKien();
@@ -177,13 +175,11 @@ public class ThemPhieuKiemDialog extends JDialog {
             PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
             if (phieuKiemKeBUS.themPhieuKiemKe(phieuKiemKe)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thành công", "Thông báo", 2);
-                kiemKeUI.loaiDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thất bại", "Thông báo", 2);
             }
-
-            kiemKeUI.loaiDuLieu();
         });
 
         btnSua.addActionListener(e -> {
@@ -202,7 +198,7 @@ public class ThemPhieuKiemDialog extends JDialog {
             PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
             if (phieuKiemKeBUS.capNhapPhieuKiemKe(phieuKiemKe)) {
                 TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thành công", "Thông báo", 1);
-                kiemKeUI.loaiDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thất bại", "Thông báo", 1);

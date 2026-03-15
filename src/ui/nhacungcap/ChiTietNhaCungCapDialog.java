@@ -7,6 +7,7 @@ import bus.NguyenLieuBUS;
 import bus.NhaCungCapBUS;
 import bus.SanPhamBUS;
 import dto.*;
+import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -277,7 +278,7 @@ public class ChiTietNhaCungCapDialog extends JDialog {
             NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
             if (nhaCungCapBUS.themNhaCungCap(nhaCungCap)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm nhà cung cấp thành công", "Thông báo", 1);
-                nhaCungCapUI.loadDuLieu();
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm nhà cung cấp thất bại", "Thông báo", 1);
             }

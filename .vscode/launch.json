@@ -3,6 +3,20 @@
   "configurations": [
     {
       "type": "java",
+      "name": "XuatKhoNguyenLieuDialog",
+      "request": "launch",
+      "mainClass": "ui.xuatkho.nguyenlieu.XuatKhoNguyenLieuDialog",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
+      "name": "ChiTietSanPhamDialog",
+      "request": "launch",
+      "mainClass": "ui.quanlysanpham.ChiTietSanPhamDialog",
+      "projectName": "SRC_35a1545c"
+    },
+    {
+      "type": "java",
       "name": "BanHangUI",
       "request": "launch",
       "mainClass": "ui.banhang.BanHangUI",

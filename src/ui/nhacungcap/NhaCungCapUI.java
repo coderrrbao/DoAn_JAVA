@@ -11,6 +11,7 @@ import bus.NhaCungCapBUS;
 import dto.NhaCungCap;
 import ui.component.Search_Item;
 import ui.login.PhienDangNhap;
+import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
 import java.util.*;
@@ -155,7 +156,7 @@ public class NhaCungCapUI extends JPanel {
                         JOptionPane.YES_NO_OPTION) == JOptionPane.YES_NO_OPTION) {
                     if (nhaCungCapBUS.xoaNhaCungCap(nhaCungCap)) {
                         TaoTinNhan.showAutoCloseMessage("Xóa nhà cung cấp thành công", "Thông báo", 1);
-                        loadDuLieu();
+                        LoginUI.getLoginUI().getMainFrame().loadAllData();
                     } else {
                         TaoTinNhan.showAutoCloseMessage("Xóa nhà cung cấp thất bại", "Thông báo", 1);
                     }

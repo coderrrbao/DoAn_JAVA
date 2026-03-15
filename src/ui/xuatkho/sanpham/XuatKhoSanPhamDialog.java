@@ -22,12 +22,14 @@ public class XuatKhoSanPhamDialog extends JDialog {
     private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo;
     private JButton btnThem, btnXacNhan;
     private Search_Item search_Item;
+    private XuatKhoSanPhamPanel parentPanel;
+
     public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
         super((Frame) null, "Tạo Phiếu Hủy Sản Phẩm", true);
         setSize(1000, 650);
         setLocationRelativeTo(null);
         setLayout(new BorderLayout());
-
+        parentPanel = parent;
         JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
 
         JPanel left = new JPanel(new BorderLayout(0, 10));
@@ -225,8 +227,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
         });
 
         btnXacNhan.addActionListener(e -> {
-            if (modelChoXuat.getRowCount() == 0 || txtLyDo.getText().isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập lý do và chọn ít nhất 1 sản phẩm để hủy!");
+            if (modelChoXuat.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất 1 nguyên liệu để hủy!");
                 return;
             }
             double tongTien = 0;
@@ -245,7 +247,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
             ph.setTongGiaTri(tongTien);
 
             if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().thucHienHuy(ph, data)) {
-                LoginUI.getLoginUI().getMainFrame().loadAllData();
+                parentPanel.loadDuLieu();
+                JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thành công!");
                 dispose();
             } else {
                 JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thất bại!");

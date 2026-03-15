@@ -861,9 +861,12 @@ WHERE name = 'PhieuNhapSanPham')
 BEGIN
     CREATE TABLE PhieuNhapSanPham
     (
-        MaPN VARCHAR(50)NOT NULL PRIMARY KEY,
+        MaPN VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayNhap DATE,
         MaNV VARCHAR(50),
+        -- Nhân viên lập phiếu
+        MaNVXacNhan VARCHAR(50),
+        -- Nhân viên xác nhận (Thêm mới)
         TongTien DECIMAL(18, 2),
         MaNCC VARCHAR(50),
         GhiChu NVARCHAR(MAX),
@@ -871,17 +874,16 @@ BEGIN
         TrangThai BIT
     )
     INSERT INTO PhieuNhapSanPham
-        (MaPN, NgayNhap, MaNV, TongTien, MaNCC,GhiChu ,TrangThaiXuLy, TrangThai)
+        (MaPN, NgayNhap, MaNV, MaNVXacNhan, TongTien, MaNCC, GhiChu, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PNSP01', '2024-01-10', 'NV03', 225000000, 'NCC01', N'Nhập hàng Tết đợt 1', N'Đã xác nhận', 1),
-        ('PNSP02', '2024-01-15', 'NV03', 180000000, 'NCC01', N'Nhập hàng Tết đợt 2', N'Đã xác nhận', 1),
-        ('PNSP03', '2024-02-01', 'NV03', 150000000, 'NCC04', N'Nhập kho đầu tháng', N'Đã xác nhận', 1),
-        ('PNSP04', '2024-02-15', 'NV03', 200000000, 'NCC01', N'Nhập bổ sung', N'Đã xác nhận', 1),
-        ('PNSP05', '2023-05-01', 'NV03', 45000000, 'NCC03', N'Nhập hàng cũ (Đã hết hạn)', N'Đã xác nhận', 1),
-        ('PNSP06', '2025-10-01', 'NV03', 350000000, 'NCC01', N'Nhập hàng chuẩn bị cuối năm', N'Đã xác nhận', 1),
-        ('PNSP07', '2026-01-15', 'NV03', 280000000, 'NCC04', N'Nhập kho đầu năm 2026', N'Đã xác nhận', 1)
+        ('PNSP01', '2024-01-10', 'NV03', 'NV02', 225000000, 'NCC01', N'Nhập hàng Tết đợt 1', N'Đã xác nhận', 1),
+        ('PNSP02', '2024-01-15', 'NV03', 'NV02', 180000000, 'NCC01', N'Nhập hàng Tết đợt 2', N'Đã xác nhận', 1),
+        ('PNSP03', '2024-02-01', 'NV03', 'NV02', 150000000, 'NCC04', N'Nhập kho đầu tháng', N'Đã xác nhận', 1),
+        ('PNSP04', '2024-02-15', 'NV03', 'NV02', 200000000, 'NCC01', N'Nhập bổ sung', N'Đã xác nhận', 1),
+        ('PNSP05', '2023-05-01', 'NV03', 'NV02', 45000000, 'NCC03', N'Nhập hàng cũ (Đã hết hạn)', N'Đã xác nhận', 1),
+        ('PNSP06', '2025-10-01', 'NV03', 'NV02', 350000000, 'NCC01', N'Nhập hàng chuẩn bị cuối năm', N'Đã xác nhận', 1),
+        ('PNSP07', '2026-01-15', 'NV03', 'NV02', 280000000, 'NCC04', N'Nhập kho đầu năm 2026', N'Đã xác nhận', 1)
 END;
-
 /* =============================================
    19. BẢNG LÔ SẢN PHẨM (Product Batches)
    ============================================= */
@@ -939,7 +941,6 @@ BEGIN
         ('LOSP23', 'PNSP07', 'SP27', 4000, '2026-01-15', '2026-01-10', '2027-01-10', 13000, N'Đã xác nhận', 1),
         ('LOSP24', 'PNSP07', 'SP28', 4000, '2026-01-15', '2026-01-10', '2027-01-10', 11000, N'Đã xác nhận', 1)
 END;
-
 /* =============================================
    20. BẢNG PHIẾU NHẬP NGUYÊN LIỆU (Ingredient Import)
    ============================================= */
@@ -952,6 +953,9 @@ BEGIN
         MaPN VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayNhap DATE,
         MaNV VARCHAR(50),
+        -- Nhân viên lập phiếu
+        MaNVXacNhan VARCHAR(50),
+        -- Nhân viên xác nhận (Thêm mới)
         TongTien DECIMAL(18, 2),
         MaNCC VARCHAR(50),
         TrangThaiXuLy NVARCHAR(50),
@@ -959,18 +963,17 @@ BEGIN
         TrangThai BIT
     )
     INSERT INTO PhieuNhapNguyenLieu
-        (MaPN, NgayNhap, MaNV, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
+        (MaPN, NgayNhap, MaNV, MaNVXacNhan, TongTien, MaNCC, TrangThaiXuLy, GhiChu, TrangThai)
     VALUES
-        ('PNNL01', '2024-01-12', 'NV03', 150000000, 'NCC02', N'Đã xác nhận', N'Nhập trà, cà phê số lượng lớn', 1),
-        ('PNNL02', '2024-01-13', 'NV02', 200000000, 'NCC03', N'Đã xác nhận', N'Nhập sữa và chế phẩm sữa', 1),
-        ('PNNL03', '2024-01-20', 'NV03', 120000000, 'NCC05', N'Đã xác nhận', N'Nhập topping và phụ liệu', 1),
-        ('PNNL04', '2024-02-01', 'NV02', 80000000, 'NCC04', N'Đã xác nhận', N'Nhập trái cây và đá', 1),
-        ('PNNL05', '2023-08-10', 'NV02', 85000000, 'NCC03', N'Đã xác nhận', N'Nhập nguyên liệu cũ (Đã hết hạn)', 1),
-        ('PNNL06', '2025-11-20', 'NV03', 420000000, 'NCC02', N'Đã xác nhận', N'Nhập kho số lượng lớn cuối năm', 1),
-        ('PNNL07', '2026-02-10', 'NV02', 150000000, 'NCC04', N'Đã xác nhận', N'Nhập kho đầu năm 2026', 1),
-        ('PNNL08', '2026-03-05', 'NV03', 135000000, 'NCC05', N'Đã xác nhận', N'Nhập nguyên liệu đầu tháng 3/2026 dự trữ bán lễ', 1)
+        ('PNNL01', '2024-01-12', 'NV03', 'NV02', 150000000, 'NCC02', N'Đã xác nhận', N'Nhập trà, cà phê số lượng lớn', 1),
+        ('PNNL02', '2024-01-13', 'NV02', 'NV01', 200000000, 'NCC03', N'Đã xác nhận', N'Nhập sữa và chế phẩm sữa', 1),
+        ('PNNL03', '2024-01-20', 'NV03', 'NV02', 120000000, 'NCC05', N'Đã xác nhận', N'Nhập topping và phụ liệu', 1),
+        ('PNNL04', '2024-02-01', 'NV02', 'NV01', 80000000, 'NCC04', N'Đã xác nhận', N'Nhập trái cây và đá', 1),
+        ('PNNL05', '2023-08-10', 'NV02', 'NV01', 85000000, 'NCC03', N'Đã xác nhận', N'Nhập nguyên liệu cũ (Đã hết hạn)', 1),
+        ('PNNL06', '2025-11-20', 'NV03', 'NV02', 420000000, 'NCC02', N'Đã xác nhận', N'Nhập kho số lượng lớn cuối năm', 1),
+        ('PNNL07', '2026-02-10', 'NV02', 'NV01', 150000000, 'NCC04', N'Đã xác nhận', N'Nhập kho đầu năm 2026', 1),
+        ('PNNL08', '2026-03-05', 'NV03', 'NV02', 135000000, 'NCC05', N'Đã xác nhận', N'Nhập nguyên liệu đầu tháng 3/2026 dự trữ bán lễ', 1)
 END;
-
 /* =============================================
    21. BẢNG LÔ NGUYÊN LIỆU (Ingredient Batches)
    ============================================= */
@@ -1069,16 +1072,19 @@ BEGIN
         MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayHuy DATE,
         MaNV VARCHAR(50),
+        -- Nhân viên lập
+        MaNVXacNhan VARCHAR(50),
+        -- Nhân viên xác nhận (Thêm mới)
         LyDo NVARCHAR(MAX),
         TongGiaTri DECIMAL(18, 2),
         TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO PhieuHuySanPham
-        (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai)
+        (MaPH, NgayHuy, MaNV, MaNVXacNhan, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHSP01', '2024-02-20', 'NV03', N'Sản phẩm hết hạn sử dụng', 4000000, N'Đã xác nhận', 1),
-        ('PHSP02', '2024-02-21', 'NV03', N'Hư hỏng do quá trình vận chuyển', 1500000, N'Đã xác nhận', 1)
+        ('PHSP01', '2024-02-20', 'NV03', 'NV02', N'Sản phẩm hết hạn sử dụng', 4000000, N'Đã xác nhận', 1),
+        ('PHSP02', '2024-02-21', 'NV03', 'NV02', N'Hư hỏng do quá trình vận chuyển', 1500000, N'Đã xác nhận', 1)
 END;
 
 IF NOT EXISTS (SELECT *
@@ -1087,19 +1093,20 @@ WHERE name = 'ChiTietPhieuHuySanPham')
 BEGIN
     CREATE TABLE ChiTietPhieuHuySanPham
     (
+        MaCTPHSP VARCHAR(50) NOT NULL PRIMARY KEY,
+        -- Cột mã độc lập mới
         MaPH VARCHAR(50) NOT NULL,
         MaLo VARCHAR(50) NOT NULL,
         SoLuong FLOAT,
         DonGia DECIMAL(18, 2),
-        PRIMARY KEY (MaPH, MaLo),
         CONSTRAINT FK_CTPHSP_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuySanPham(MaPH),
         CONSTRAINT FK_CTPHSP_LoSP FOREIGN KEY (MaLo) REFERENCES LoSanPham(MaLoSP)
     )
     INSERT INTO ChiTietPhieuHuySanPham
-        (MaPH, MaLo, SoLuong, DonGia)
+        (MaCTPHSP, MaPH, MaLo, SoLuong, DonGia)
     VALUES
-        ('PHSP01', 'LOSP02', 10, 400000),
-        ('PHSP02', 'LOSP05', 5, 300000)
+        ('CTPHSP01', 'PHSP01', 'LOSP02', 10, 400000),
+        ('CTPHSP02', 'PHSP02', 'LOSP05', 5, 300000)
 END;
 
 
@@ -1115,37 +1122,40 @@ BEGIN
         MaPH VARCHAR(50) NOT NULL PRIMARY KEY,
         NgayHuy DATE,
         MaNV VARCHAR(50),
+        -- Nhân viên lập
+        MaNVXacNhan VARCHAR(50),
+        -- Nhân viên xác nhận (Thêm mới)
         LyDo NVARCHAR(MAX),
         TongTien DECIMAL(18, 2),
         TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT
     )
     INSERT INTO PhieuHuyNguyenLieu
-        (MaPH, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy, TrangThai)
+        (MaPH, NgayHuy, MaNV, MaNVXacNhan, LyDo, TongTien, TrangThaiXuLy, TrangThai)
     VALUES
-        ('PHNL01', '2024-02-22', 'NV03', N'Nguyên liệu bị ẩm mốc', 300000, N'Đã xác nhận', 1),
-        ('PHNL02', '2024-02-23', 'NV03', N'Đổ vỡ bao bì', 250000, N'Đã xác nhận', 1)
+        ('PHNL01', '2024-02-22', 'NV03', 'NV02', N'Nguyên liệu bị ẩm mốc', 300000, N'Đã xác nhận', 1),
+        ('PHNL02', '2024-02-23', 'NV03', 'NV02', N'Đổ vỡ bao bì', 250000, N'Đã xác nhận', 1)
 END;
-
 IF NOT EXISTS (SELECT *
 FROM sys.tables
 WHERE name = 'ChiTietPhieuHuyNguyenLieu')
 BEGIN
     CREATE TABLE ChiTietPhieuHuyNguyenLieu
     (
+        MaCTPHNL VARCHAR(50) NOT NULL PRIMARY KEY,
+        -- Cột mã độc lập mới
         MaPH VARCHAR(50) NOT NULL,
         MaLo VARCHAR(50) NOT NULL,
         SoLuong FLOAT,
         DonGia DECIMAL(18, 2),
-        PRIMARY KEY (MaPH, MaLo),
         CONSTRAINT FK_CTPHNL_PhieuHuy FOREIGN KEY (MaPH) REFERENCES PhieuHuyNguyenLieu(MaPH),
         CONSTRAINT FK_CTPHNL_LoNL FOREIGN KEY (MaLo) REFERENCES LoNguyenLieu(MaLoNL)
     )
     INSERT INTO ChiTietPhieuHuyNguyenLieu
-        (MaPH, MaLo, SoLuong, DonGia)
+        (MaCTPHNL, MaPH, MaLo, SoLuong, DonGia)
     VALUES
-        ('PHNL01', 'LONL01', 2, 150000),
-        ('PHNL02', 'LONL02', 1, 250000)
+        ('CTPHNL01', 'PHNL01', 'LONL01', 2, 150000),
+        ('CTPHNL02', 'PHNL02', 'LONL02', 1, 250000)
 END;
 
 IF NOT EXISTS (SELECT *

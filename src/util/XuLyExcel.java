@@ -42,7 +42,6 @@ import dto.PhieuNhapSanPham;
 import dto.SanPham;
 import dto.Size;
 import dto.TaiKhoan;
-import ui.login.PhienDangNhap;
 
 public class XuLyExcel {
 
@@ -1559,7 +1558,8 @@ public class XuLyExcel {
     public static boolean xuatFilePhieuHuyNguyenLieu(File file, ArrayList<PhieuHuyNguyenLieu> dsPhieu) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheetP = workbook.createSheet("Phiếu Hủy Nguyên Liệu");
-            String[] headerP = { "Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền" };
+            // Thêm cột NV Xác Nhận
+            String[] headerP = { "Mã Phiếu", "Mã NV Lập", "NV Xác Nhận", "Ngày Hủy", "Lý Do", "Tổng Tiền" };
             taoHeader(sheetP, headerP, workbook);
 
             Sheet sheetCT = workbook.createSheet("Chi Tiết Lô Nguyên Liệu");
@@ -1571,26 +1571,29 @@ public class XuLyExcel {
                 Row row = sheetP.createRow(rowPIdx++);
                 row.createCell(0).setCellValue(phieu.getMaPH());
                 row.createCell(1).setCellValue(phieu.getMaNV());
-                row.createCell(2).setCellValue(phieu.getNgayHuy() != null ? phieu.getNgayHuy().toString() : "");
-                row.createCell(3).setCellValue(phieu.getLyDo());
-                row.createCell(4).setCellValue(phieu.getTongTien());
+                row.createCell(2).setCellValue(phieu.getMaNVXacNhan() != null ? phieu.getMaNVXacNhan() : ""); // NV Xác
+                                                                                                              // Nhận
+                row.createCell(3).setCellValue(phieu.getNgayHuy() != null ? phieu.getNgayHuy().toString() : "");
+                row.createCell(4).setCellValue(phieu.getLyDo());
+                row.createCell(5).setCellValue(phieu.getTongTien());
 
-                ArrayList<LoNguyenLieu> dsLo = phieu.getListLoNguyenLieuHuy();
-                if (dsLo != null) {
-                    for (LoNguyenLieu lo : dsLo) {
+                // Sử dụng DTO mới: getListChiTiet thay vì getListLoNguyenLieuHuy
+                ArrayList<dto.ChiTietPhieuHuyNguyenLieu> dsCT = phieu.getListChiTiet();
+                if (dsCT != null) {
+                    for (dto.ChiTietPhieuHuyNguyenLieu ct : dsCT) {
                         Row rCT = sheetCT.createRow(rowCTIdx++);
                         rCT.createCell(0).setCellValue(phieu.getMaPH());
-                        rCT.createCell(1).setCellValue(lo.getMaLoNL());
-                        rCT.createCell(2).setCellValue(lo.getSoLuong());
-                        rCT.createCell(3).setCellValue(lo.getGiaNhap());
+                        rCT.createCell(1).setCellValue(ct.getLoNguyenLieu().getMaLoNL());
+                        rCT.createCell(2).setCellValue(ct.getSoLuong());
+                        rCT.createCell(3).setCellValue(ct.getDonGia());
                     }
                 }
             }
 
-            for (int i = 0; i < 5; i++) {
+            for (int i = 0; i < headerP.length; i++)
                 sheetP.autoSizeColumn(i);
+            for (int i = 0; i < headerCT.length; i++)
                 sheetCT.autoSizeColumn(i);
-            }
 
             try (java.io.FileOutputStream out = new java.io.FileOutputStream(file)) {
                 workbook.write(out);
@@ -1621,9 +1624,10 @@ public class XuLyExcel {
 
                 PhieuHuyNguyenLieu p = new PhieuHuyNguyenLieu();
                 p.setMaNV(docCell(row.getCell(1)));
-                p.setLyDo(docCell(row.getCell(3)));
+                p.setMaNVXacNhan(docCell(row.getCell(2))); // Đọc NV Xác nhận
+                p.setLyDo(docCell(row.getCell(4))); // Lý do đẩy sang ô số 4
                 p.setTrangThaiXuLy("Chờ xử lý");
-                p.setListLoNguyenLieuHuy(new ArrayList<>());
+                p.setListChiTiet(new ArrayList<>()); // Khởi tạo list ChiTiet
 
                 mapPhieu.put(maCu, p);
             }
@@ -1635,12 +1639,18 @@ public class XuLyExcel {
 
                 String maLK = docCell(row.getCell(0));
                 if (mapPhieu.containsKey(maLK)) {
-                    LoNguyenLieu lo = new LoNguyenLieu();
+                    // Tạo Lô NL
+                    dto.LoNguyenLieu lo = new dto.LoNguyenLieu();
                     lo.setMaLoNL(docCell(row.getCell(1)));
-                    lo.setSoLuong(chuyenSoDouble(docCell(row.getCell(2))));
-                    lo.setGiaNhap(chuyenSoDouble(docCell(row.getCell(3))));
 
-                    mapPhieu.get(maLK).getListLoNguyenLieuHuy().add(lo);
+                    // Tạo Chi Tiết
+                    dto.ChiTietPhieuHuyNguyenLieu ct = new dto.ChiTietPhieuHuyNguyenLieu();
+                    ct.setMaPH(maLK);
+                    ct.setLoNguyenLieu(lo);
+                    ct.setSoLuong(chuyenSoDouble(docCell(row.getCell(2))));
+                    ct.setDonGia(chuyenSoDouble(docCell(row.getCell(3))));
+
+                    mapPhieu.get(maLK).getListChiTiet().add(ct);
                 }
             }
 
@@ -1655,32 +1665,34 @@ public class XuLyExcel {
     public static boolean xuatFilePhieuHuySanPham(File file, ArrayList<PhieuHuySanPham> dsPhieu) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheetPhieu = workbook.createSheet("Danh Sách Phiếu Hủy");
-            String[] headerPhieu = { "Mã Phiếu", "Mã NV", "Ngày Hủy", "Lý Do", "Tổng Tiền" };
+            // Thêm cột NV Xác Nhận
+            String[] headerPhieu = { "Mã Phiếu", "Mã NV Lập", "NV Xác Nhận", "Ngày Hủy", "Lý Do", "Tổng Tiền" };
             taoHeader(sheetPhieu, headerPhieu, workbook);
 
             Sheet sheetChiTiet = workbook.createSheet("Chi Tiết Lô Sản Phẩm");
             String[] headerCT = { "Mã Phiếu", "Mã Lô SP", "Số Lượng", "Đơn Giá" };
             taoHeader(sheetChiTiet, headerCT, workbook);
 
-            int rowPhieuIdx = 1;
-            int rowCTIdx = 1;
+            int rowPhieuIdx = 1, rowCTIdx = 1;
 
             for (PhieuHuySanPham phieu : dsPhieu) {
                 Row rowP = sheetPhieu.createRow(rowPhieuIdx++);
                 rowP.createCell(0).setCellValue(phieu.getMaPH());
                 rowP.createCell(1).setCellValue(phieu.getMaNV());
-                rowP.createCell(2).setCellValue(phieu.getNgayHuy() != null ? phieu.getNgayHuy().toString() : "");
-                rowP.createCell(3).setCellValue(phieu.getLyDo());
-                rowP.createCell(4).setCellValue(phieu.getTongGiaTri());
+                rowP.createCell(2).setCellValue(phieu.getMaNVXacNhan() != null ? phieu.getMaNVXacNhan() : "");
+                rowP.createCell(3).setCellValue(phieu.getNgayHuy() != null ? phieu.getNgayHuy().toString() : "");
+                rowP.createCell(4).setCellValue(phieu.getLyDo());
+                rowP.createCell(5).setCellValue(phieu.getTongGiaTri());
 
-                ArrayList<LoSanPham> dsChiTiet = phieu.getListLoSanPhamHuy();
+                // Lấy danh sách Chi Tiết thay vì Lô
+                ArrayList<dto.ChiTietPhieuHuySanPham> dsChiTiet = phieu.getListChiTiet();
                 if (dsChiTiet != null) {
-                    for (LoSanPham ct : dsChiTiet) {
+                    for (dto.ChiTietPhieuHuySanPham ct : dsChiTiet) {
                         Row rowCT = sheetChiTiet.createRow(rowCTIdx++);
                         rowCT.createCell(0).setCellValue(phieu.getMaPH());
-                        rowCT.createCell(1).setCellValue(ct.getMaLoSP());
+                        rowCT.createCell(1).setCellValue(ct.getLoSanPham().getMaLoSP());
                         rowCT.createCell(2).setCellValue(ct.getSoLuong());
-                        rowCT.createCell(3).setCellValue(ct.getGiaNhap());
+                        rowCT.createCell(3).setCellValue(ct.getDonGia());
                     }
                 }
             }
@@ -1719,9 +1731,10 @@ public class XuLyExcel {
 
                 PhieuHuySanPham phieuMoi = new PhieuHuySanPham();
                 phieuMoi.setMaNV(docCell(row.getCell(1)));
-                phieuMoi.setLyDo(docCell(row.getCell(3)));
+                phieuMoi.setMaNVXacNhan(docCell(row.getCell(2))); // Cột NV Xác Nhận
+                phieuMoi.setLyDo(docCell(row.getCell(4))); // Cột Lý Do
                 phieuMoi.setTrangThaiXuLy("Chờ xử lý");
-                phieuMoi.setListLoSanPhamHuy(new ArrayList<>());
+                phieuMoi.setListChiTiet(new ArrayList<>()); // Khởi tạo List Chi tiết
 
                 mapPhieu.put(maCu, phieuMoi);
             }
@@ -1733,12 +1746,18 @@ public class XuLyExcel {
 
                 String maPhieuLienKet = docCell(row.getCell(0));
                 if (mapPhieu.containsKey(maPhieuLienKet)) {
-                    LoSanPham lo = new LoSanPham();
+                    // Tạo Lô Sản Phẩm
+                    dto.LoSanPham lo = new dto.LoSanPham();
                     lo.setMaLoSP(docCell(row.getCell(1)));
-                    lo.setSoLuong(chuyenSoDouble(docCell(row.getCell(2))));
-                    lo.setGiaNhap(chuyenSoDouble(docCell(row.getCell(3))));
 
-                    mapPhieu.get(maPhieuLienKet).getListLoSanPhamHuy().add(lo);
+                    // Tạo Chi Tiết Sản Phẩm Hủy
+                    dto.ChiTietPhieuHuySanPham ct = new dto.ChiTietPhieuHuySanPham();
+                    ct.setMaPH(maPhieuLienKet);
+                    ct.setLoSanPham(lo);
+                    ct.setSoLuong(chuyenSoDouble(docCell(row.getCell(2))));
+                    ct.setDonGia(chuyenSoDouble(docCell(row.getCell(3))));
+
+                    mapPhieu.get(maPhieuLienKet).getListChiTiet().add(ct);
                 }
             }
 

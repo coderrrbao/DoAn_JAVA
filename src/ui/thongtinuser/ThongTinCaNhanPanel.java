@@ -136,19 +136,6 @@ public class ThongTinCaNhanPanel extends JPanel {
         return thongTin;
     }
 
-    private JPanel taoPanelItemThongTin(int width, int height, String titleInput1, String titleInput2, int wLb1,
-            int wInput1, int wLb2, int wInput2, JTextField textField1, JComboBox<String> cb) {
-
-        JPanel thongTin = TaoUI.taoPanelBoxLayoutNgang(width, height);
-
-        JPanel input1JPanel = TaoUI.taoFieldText(titleInput1, wLb1, wInput1, height, 3, textField1);
-
-        thongTin.add(input1JPanel);        thongTin.add(Box.createHorizontalGlue());
-        thongTin.add(cb);
-
-        return thongTin;
-    }
-
     private void tacChucNangSua() {
         tfChucVu.setEditable(false);
         tfDiaChi.setEditable(false);

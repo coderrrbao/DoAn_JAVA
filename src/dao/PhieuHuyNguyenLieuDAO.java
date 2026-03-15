@@ -1,6 +1,7 @@
 package dao;
 
 import dao.conection.DBConnection;
+import dto.ChiTietPhieuHuyNguyenLieu;
 import dto.LoNguyenLieu;
 import dto.PhieuHuyNguyenLieu;
 import java.sql.*;
@@ -23,14 +24,14 @@ public class PhieuHuyNguyenLieuDAO {
   }
 
   public boolean themPhieuHuy(PhieuHuyNguyenLieu ph, Connection conn) {
-
-    String sql = "INSERT INTO PhieuHuyNguyenLieu (MaPH, NgayHuy, MaNV, LyDo, TongTien, TrangThaiXuLy,"
-        + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
+    String sql = "INSERT INTO PhieuHuyNguyenLieu (MaPH, NgayHuy, MaNV, MaNVXacNhan, LyDo, TongTien, TrangThaiXuLy, TrangThai) "
+        + "VALUES (?, GETDATE(), ?, ?, ?, ?, N'Đang xử lý', 1)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getMaPH());
       pst.setString(2, ph.getMaNV());
-      pst.setString(3, ph.getLyDo());
-      pst.setDouble(4, ph.getTongTien());
+      pst.setString(3, ph.getMaNVXacNhan());
+      pst.setString(4, ph.getLyDo());
+      pst.setDouble(5, ph.getTongTien());
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -38,14 +39,14 @@ public class PhieuHuyNguyenLieuDAO {
     }
   }
 
-  public boolean themChiTietHuy(
-      String maPH, String maLo, double soLuong, double gia, Connection conn) {
-    String sql = "INSERT INTO ChiTietPhieuHuyNguyenLieu (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
+  public boolean themChiTietHuy(String maCTPHNL, String maPH, String maLo, double soLuong, double gia, Connection conn) {
+    String sql = "INSERT INTO ChiTietPhieuHuyNguyenLieu (MaCTPHNL, MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
-      pst.setString(1, maPH);
-      pst.setString(2, maLo);
-      pst.setDouble(3, soLuong);
-      pst.setDouble(4, gia);
+      pst.setString(1, maCTPHNL);
+      pst.setString(2, maPH);
+      pst.setString(3, maLo);
+      pst.setDouble(4, soLuong);
+      pst.setDouble(5, gia);
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -54,11 +55,12 @@ public class PhieuHuyNguyenLieuDAO {
   }
 
   public boolean capNhatPhieuHuy(PhieuHuyNguyenLieu ph, Connection conn) {
-    String sql = "UPDATE PhieuHuyNguyenLieu SET LyDo = ?, TrangThaiXuLy = ? WHERE MaPH = ?";
+    String sql = "UPDATE PhieuHuyNguyenLieu SET LyDo = ?, TrangThaiXuLy = ?, MaNVXacNhan = ? WHERE MaPH = ?";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getLyDo());
       pst.setString(2, ph.getTrangThaiXuLy());
-      pst.setString(3, ph.getMaPH());
+      pst.setString(3, ph.getMaNVXacNhan());
+      pst.setString(4, ph.getMaPH());
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -89,34 +91,11 @@ public class PhieuHuyNguyenLieuDAO {
         ph.setMaPH(rs.getString("MaPH"));
         ph.setNgayHuy(rs.getDate("NgayHuy"));
         ph.setMaNV(rs.getString("MaNV"));
+        ph.setMaNVXacNhan(rs.getString("MaNVXacNhan"));
         ph.setLyDo(rs.getString("LyDo"));
         ph.setTongTien(rs.getDouble("TongTien"));
         ph.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
         list.add(ph);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return list;
-  }
-
-  public ArrayList<LoNguyenLieu> layChiTietHuyTheoMaPH(String maPH) {
-    ArrayList<LoNguyenLieu> list = new ArrayList<>();
-    String sql = "SELECT ct.*, lo.MaNL "
-        + "FROM ChiTietPhieuHuyNguyenLieu ct "
-        + "JOIN LoNguyenLieu lo ON ct.MaLo = lo.MaLoNL "
-        + "WHERE ct.MaPH = ?";
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement pst = conn.prepareStatement(sql)) {
-      pst.setString(1, maPH);
-      ResultSet rs = pst.executeQuery();
-      while (rs.next()) {
-        LoNguyenLieu lo = new LoNguyenLieu();
-        lo.setMaLoNL(rs.getString("MaLo"));
-        lo.setMaNL(rs.getString("MaNL"));
-        lo.setSoLuong(rs.getDouble("SoLuong"));
-        lo.setGiaNhap(rs.getDouble("DonGia"));
-        list.add(lo);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -134,4 +113,5 @@ public class PhieuHuyNguyenLieuDAO {
       return false;
     }
   }
+  
 }

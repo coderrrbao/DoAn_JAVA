@@ -15,7 +15,7 @@ import util.TaoUI;
 
 public class ListSanPhamPanel extends JPanel {
 
-    private SanPhamBUS sanPhamBUS = new SanPhamBUS();
+    private SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
     private SanPhamClickListener listener;
 
     private final int PAGE_SIZE = 16;

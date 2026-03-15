@@ -277,6 +277,7 @@ public class ThemNhanVienDialog extends JDialog {
             } else {
                 JOptionPane.showMessageDialog(this, "Cập nhật thành công!", "Thông báo",
                         JOptionPane.INFORMATION_MESSAGE);
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
                 if (nvUI != null)
                     LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();

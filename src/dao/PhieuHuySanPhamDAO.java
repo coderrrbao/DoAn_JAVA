@@ -1,6 +1,7 @@
 package dao;
 
 import dao.conection.DBConnection;
+import dto.ChiTietPhieuHuySanPham;
 import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import java.sql.*;
@@ -22,13 +23,14 @@ public class PhieuHuySanPhamDAO {
   }
 
   public boolean themPhieuHuy(PhieuHuySanPham ph, Connection conn) {
-    String sql = "INSERT INTO PhieuHuySanPham (MaPH, NgayHuy, MaNV, LyDo, TongGiaTri, TrangThaiXuLy,"
-        + " TrangThai) VALUES (?, GETDATE(), ?, ?, ?, N'Đang xử lý', 1)";
+    String sql = "INSERT INTO PhieuHuySanPham (MaPH, NgayHuy, MaNV, MaNVXacNhan, LyDo, TongGiaTri, TrangThaiXuLy, TrangThai) "
+        + "VALUES (?, GETDATE(), ?, ?, ?, ?, N'Đang xử lý', 1)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getMaPH());
       pst.setString(2, ph.getMaNV());
-      pst.setString(3, ph.getLyDo());
-      pst.setDouble(4, ph.getTongGiaTri());
+      pst.setString(3, ph.getMaNVXacNhan());
+      pst.setString(4, ph.getLyDo());
+      pst.setDouble(5, ph.getTongGiaTri());
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -36,14 +38,14 @@ public class PhieuHuySanPhamDAO {
     }
   }
 
-  public boolean themChiTietHuy(
-      String maPH, String maLo, double soLuong, double gia, Connection conn) {
-    String sql = "INSERT INTO ChiTietPhieuHuySanPham (MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?)";
+  public boolean themChiTietHuy(String maCTPHSP, String maPH, String maLo, double soLuong, double gia, Connection conn) {
+    String sql = "INSERT INTO ChiTietPhieuHuySanPham (MaCTPHSP, MaPH, MaLo, SoLuong, DonGia) VALUES (?, ?, ?, ?, ?)";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
-      pst.setString(1, maPH);
-      pst.setString(2, maLo);
-      pst.setDouble(3, soLuong);
-      pst.setDouble(4, gia);
+      pst.setString(1, maCTPHSP);
+      pst.setString(2, maPH);
+      pst.setString(3, maLo);
+      pst.setDouble(4, soLuong);
+      pst.setDouble(5, gia);
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -52,11 +54,12 @@ public class PhieuHuySanPhamDAO {
   }
 
   public boolean capNhatPhieuHuy(PhieuHuySanPham ph, Connection conn) {
-    String sql = "UPDATE PhieuHuySanPham SET LyDo = ?, TrangThaiXuLy = ? WHERE MaPH = ?";
+    String sql = "UPDATE PhieuHuySanPham SET LyDo = ?, TrangThaiXuLy = ?, MaNVXacNhan = ? WHERE MaPH = ?";
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, ph.getLyDo());
       pst.setString(2, ph.getTrangThaiXuLy());
-      pst.setString(3, ph.getMaPH());
+      pst.setString(3, ph.getMaNVXacNhan());
+      pst.setString(4, ph.getMaPH());
       return pst.executeUpdate() > 0;
     } catch (Exception e) {
       e.printStackTrace();
@@ -87,6 +90,7 @@ public class PhieuHuySanPhamDAO {
         ph.setMaPH(rs.getString("MaPH"));
         ph.setNgayHuy(rs.getDate("NgayHuy"));
         ph.setMaNV(rs.getString("MaNV"));
+        ph.setMaNVXacNhan(rs.getString("MaNVXacNhan"));
         ph.setLyDo(rs.getString("LyDo"));
         ph.setTongGiaTri(rs.getDouble("TongGiaTri"));
         ph.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
@@ -98,30 +102,6 @@ public class PhieuHuySanPhamDAO {
     return list;
   }
 
-  public ArrayList<LoSanPham> layChiTietHuyTheoMaPH(String maPH) {
-    ArrayList<LoSanPham> list = new ArrayList<>();
-
-    String sql = "SELECT ct.*, lo.MaSP "
-        + "FROM ChiTietPhieuHuySanPham ct "
-        + "JOIN LoSanPham lo ON ct.MaLo = lo.MaLoSP "
-        + "WHERE ct.MaPH = ?";
-    try (Connection conn = DBConnection.getConnection();
-        PreparedStatement pst = conn.prepareStatement(sql)) {
-      pst.setString(1, maPH);
-      ResultSet rs = pst.executeQuery();
-      while (rs.next()) {
-        LoSanPham lo = new LoSanPham();
-        lo.setMaLoSP(rs.getString("MaLo"));
-        lo.setMaSP(rs.getString("MaSP"));
-        lo.setSoLuong(rs.getDouble("SoLuong"));
-        lo.setGiaNhap(rs.getDouble("DonGia"));
-        list.add(lo);
-      }
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
-    return list;
-  }
 
   public boolean xoaMemPhieuHuy(String maPH, Connection conn) {
     String sql = "UPDATE PhieuHuySanPham SET TrangThai = 0 WHERE MaPH = ?";
@@ -133,4 +113,5 @@ public class PhieuHuySanPhamDAO {
       return false;
     }
   }
+  
 }

@@ -10,7 +10,6 @@ import javax.swing.JPanel;
 
 import bus.LoNguyenLieuBUS;
 import bus.LoSanPhamBUS;
-import dto.LoSanPham;
 import dto.SanPham;
 import ui.component.SanPhamClickListener;
 import util.TaoUI;

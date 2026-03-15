@@ -1,10 +1,11 @@
 package ui.xuatkho.sanpham;
 
 import bus.PhieuHuySanPhamBUS;
-import bus.SanPhamBUS;
+import dto.ChiTietPhieuHuySanPham;
 import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import dto.SanPham;
+import ui.login.LoginUI;
 import util.TaoUI;
 
 import java.awt.*;
@@ -15,7 +16,8 @@ import javax.swing.table.DefaultTableModel;
 public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
   private JTable tblChiTiet;
   private DefaultTableModel modelChiTiet;
-  private JTextField txtMaPH, txtNgay, txtNV, txtLyDo, txtTong;
+  // Thêm txtMaNVXacNhan
+  private JTextField txtMaPH, txtNgay, txtNV, txtLyDo, txtTong, txtMaNVXacNhan;
   private JComboBox<String> cbTrangThai;
   private JButton btnLuu, btnSua;
   private PhieuHuySanPham phieuHuy;
@@ -25,7 +27,8 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     super(owner, "Chi Tiết Phiếu Hủy Sản Phẩm", true);
     this.phieuHuy = ph;
     this.parent = parent;
-    setSize(480, 650);
+    // Tăng chiều cao để chứa thêm field NV Xác Nhận
+    setSize(480, 700);
     setLocationRelativeTo(owner);
     setLayout(new BorderLayout(10, 10));
 
@@ -56,10 +59,14 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     txtNV = new JTextField(ph.getMaNV());
     txtLyDo = new JTextField(ph.getLyDo());
     txtTong = new JTextField(String.format("%,.0f VNĐ", ph.getTongGiaTri()));
+    // Khởi tạo txtMaNVXacNhan với dữ liệu cũ (nếu có)
+    txtMaNVXacNhan = new JTextField(ph.getMaNVXacNhan() != null ? ph.getMaNVXacNhan() : "");
+
     cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
     cbTrangThai.setSelectedItem(ph.getTrangThaiXuLy());
 
-    JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong };
+    // Đưa txtMaNVXacNhan vào mảng để thiết lập thuộc tính hàng loạt
+    JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong, txtMaNVXacNhan };
     for (JTextField f : fields) {
       f.setEditable(false);
       f.setBackground(Color.WHITE);
@@ -73,7 +80,7 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     pnForm.add(taoDong(new JLabel("Ngày Hủy:")));
     pnForm.add(taoDong(txtNgay));
 
-    pnForm.add(taoDong(new JLabel("Nhân Viên:")));
+    pnForm.add(taoDong(new JLabel("Nhân Viên Lập:")));
     pnForm.add(taoDong(txtNV));
 
     pnForm.add(taoDong(new JLabel("Lý Do:")));
@@ -84,6 +91,10 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
 
     pnForm.add(taoDong(new JLabel("Trạng Thái:")));
     pnForm.add(taoDong(cbTrangThai));
+
+    // Thêm dòng NV Xác nhận vào Form
+    pnForm.add(taoDong(new JLabel("Mã Nhân Viên Xác Nhận:")));
+    pnForm.add(taoDong(txtMaNVXacNhan));
 
     add(pnForm, BorderLayout.CENTER);
 
@@ -121,7 +132,6 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     var listQuyen = ui.login.PhienDangNhap.getListQuyen();
 
     if (!listQuyen.contains("XK_SUA")) {
-
       btnSua.setVisible(false);
       btnLuu.setVisible(false);
       this.setTitle("Chi Tiết Phiếu Hủy Sản Phẩm (Chế độ chỉ đọc)");
@@ -132,13 +142,17 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
 
   private void loadData() {
     modelChiTiet.setRowCount(0);
-    ArrayList<LoSanPham> list = phieuHuy.getListLoSanPhamHuy();
+    ArrayList<ChiTietPhieuHuySanPham> list = phieuHuy.getListChiTiet();
     if (list != null) {
-      for (LoSanPham lo : list) {
-        SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(lo.getMaSP());
+      for (ChiTietPhieuHuySanPham ct : list) {
+        LoSanPham lo = ct.getLoSanPham();
+        SanPham sp = bus.SanPhamBUS.getSanPhamBUS().timSanPham(lo.getMaSP());
         modelChiTiet.addRow(
             new Object[] {
-                lo.getMaLoSP(), (sp != null ? sp.getTenSP() : "N/A"), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaLoSP(),
+                (sp != null ? sp.getTenSP() : "N/A"),
+                ct.getSoLuong(),
+                ct.getDonGia()
             });
       }
     }
@@ -156,11 +170,35 @@ public class ChiTietPhieuXuatSanPhamDialog extends JDialog {
     });
 
     btnLuu.addActionListener(e -> {
+      String trangThaiMoi = cbTrangThai.getSelectedItem().toString();
+      String trangThaiCu = phieuHuy.getTrangThaiXuLy();
+
+      // Nếu đổi sang "Đã xác nhận" thì gán Mã NV Xác Nhận bằng user đang đăng nhập
+      if ("Đang xử lý".equals(trangThaiCu) && "Đã xác nhận".equals(trangThaiMoi)) {
+        int luaChon = JOptionPane.showConfirmDialog(this,
+            "Sau khi xác nhận, số lượng hàng sẽ được trừ vào kho và không thể sửa.",
+            "Xác trừ kho", JOptionPane.YES_NO_OPTION);
+        if (luaChon == JOptionPane.NO_OPTION) {
+          return;
+        }
+        if (ui.login.PhienDangNhap.getUser() != null) {
+          txtMaNVXacNhan.setText(ui.login.PhienDangNhap.getUser().getMaNV());
+        }
+      }
+
       phieuHuy.setLyDo(txtLyDo.getText());
-      phieuHuy.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
+      phieuHuy.setTrangThaiXuLy(trangThaiMoi);
+      phieuHuy.setMaNVXacNhan(txtMaNVXacNhan.getText()); // Cập nhật vào DTO
+
       if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().capNhatPhieuHuy(phieuHuy)) {
-        parent.loadDuLieu();
+        JOptionPane.showMessageDialog(this, "Cập nhật phiếu hủy thành công!", "Thông báo",
+            JOptionPane.INFORMATION_MESSAGE);
+        LoginUI.getLoginUI().getMainFrame().loadAllData();
         dispose();
+      } else {
+        // Thông báo thất bại
+        JOptionPane.showMessageDialog(this, "Cập nhật thất bại. Vui lòng kiểm tra lại!", "Lỗi",
+            JOptionPane.ERROR_MESSAGE);
       }
     });
   }

@@ -4,88 +4,54 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class PhieuHuyNguyenLieu {
-  private String maPH;
+    private String maPH;
+    private Date ngayHuy;
+    private String maNV;
+    private String maNVXacNhan;
+    private String lyDo;
+    private double tongTien;
+    private String trangThaiXuLy;
+    
+    // Đổi sang lưu danh sách Chi tiết
+    private ArrayList<ChiTietPhieuHuyNguyenLieu> listChiTiet = new ArrayList<>();
 
-  private Date ngayHuy;
-  private String maNV;
-  private String lyDo;
-  private double tongTien;
-  private String trangThaiXuLy;
-  private ArrayList<LoNguyenLieu> listLoNguyenLieuHuy = new ArrayList<>();
+    public PhieuHuyNguyenLieu() {
+    }
 
-  public PhieuHuyNguyenLieu() {
-  }
+    // Getter/Setter tương tự như trên
+    public String getMaPH() { return maPH; }
+    public void setMaPH(String maPH) { this.maPH = maPH; }
+    
+    public String getMaNVXacNhan() { return maNVXacNhan; }
+    public void setMaNVXacNhan(String maNVXacNhan) { this.maNVXacNhan = maNVXacNhan; }
 
-  public PhieuHuyNguyenLieu(
-      String maPH,
+    public ArrayList<ChiTietPhieuHuyNguyenLieu> getListChiTiet() {
+        return listChiTiet;
+    }
 
-      Date ngayHuy,
-      String maNV,
-      String lyDo,
-      double tongTien,
-      String trangThai) {
-    this.maPH = maPH;
-
-    this.ngayHuy = ngayHuy;
-    this.maNV = maNV;
-    this.lyDo = lyDo;
-    this.tongTien = tongTien;
-    this.trangThaiXuLy = trangThai;
-  }
-
-  public String getMaPH() {
-    return maPH;
-  }
-
-  public void setMaPH(String maPH) {
-    this.maPH = maPH;
-  }
-
-  public Date getNgayHuy() {
-    return ngayHuy;
-  }
-
-  public void setNgayHuy(Date ngayHuy) {
-    this.ngayHuy = ngayHuy;
-  }
-
-  public String getMaNV() {
-    return maNV;
-  }
-
-  public void setMaNV(String maNV) {
-    this.maNV = maNV;
-  }
-
-  public String getLyDo() {
-    return lyDo;
-  }
-
-  public void setLyDo(String lyDo) {
-    this.lyDo = lyDo;
-  }
-
-  public double getTongTien() {
-    return tongTien;
-  }
-
-  public void setTongTien(double tongTien) {
-    this.tongTien = tongTien;
-  }
-
-  public String getTrangThaiXuLy() {
-    return trangThaiXuLy;
-  }
-
-  public void setTrangThaiXuLy(String trangThaiXuLy) {
-    this.trangThaiXuLy = trangThaiXuLy;
-  }
-
-  public ArrayList<LoNguyenLieu> getListLoNguyenLieuHuy() {
-    return listLoNguyenLieuHuy;
-  }
-
-  public void setListLoNguyenLieuHuy(ArrayList<LoNguyenLieu> list) {
-    this.listLoNguyenLieuHuy = list;
-  }
+    public void setListChiTiet(ArrayList<ChiTietPhieuHuyNguyenLieu> listChiTiet) {
+        this.listChiTiet = listChiTiet;
+    }
+    
+   public String getLyDo() {
+       return lyDo;
+   }public String getMaNV() {
+       return maNV;
+   }public Date getNgayHuy() {
+       return ngayHuy;
+   }public double getTongTien() {
+       return tongTien;
+   }public String getTrangThaiXuLy() {
+       return trangThaiXuLy;
+   }public void setLyDo(String lyDo) {
+       this.lyDo = lyDo;
+   }public void setMaNV(String maNV) {
+       this.maNV = maNV;
+   }public void setNgayHuy(Date ngayHuy) {
+       this.ngayHuy = ngayHuy;
+   }public void setTongTien(double tongTien) {
+       this.tongTien = tongTien;
+   }public void setTrangThaiXuLy(String trangThaiXuLy) {
+       this.trangThaiXuLy = trangThaiXuLy;
+   }
 }

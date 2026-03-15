@@ -161,6 +161,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnLuuThayDoi.setEnabled(false);
 
         pnlFooter.add(btnSua);
+        pnlFooter.add(Box.createRigidArea(new Dimension(5, 0)));
         pnlFooter.add(btnLuuThayDoi);
 
         JPanel taoSanPhamPanel = TaoUI.taoPanelCanGiua(400, 30);
@@ -168,6 +169,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         btnThemSp.setPreferredSize(new Dimension(150, 35));
 
         taoSanPhamPanel.add(btnThemSp);
+        pnlFooter.add(Box.createRigidArea(new Dimension(5, 0)));
         taoSanPhamPanel.add(btnLamMoi);
 
         chitietPanel.add(lblAnh);
@@ -356,9 +358,9 @@ public class ChiTietSanPhamDialog extends JDialog {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thành công!", "Thành công",
                             JOptionPane.INFORMATION_MESSAGE);
                     anThaotacSua();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                     dispose();
 
-                    LoginUI.getLoginUI().getMainFrame().loadAllData();
                 } else {
                     JOptionPane.showMessageDialog(this, "Cập nhật sản phẩm thất bại!", "Thất bại",
                             JOptionPane.ERROR_MESSAGE);
@@ -452,6 +454,11 @@ public class ChiTietSanPhamDialog extends JDialog {
 
         if (cbDanhMuc.getSelectedIndex() <= 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn danh mục phù hợp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            return false;
+        }
+
+        if (cbTrangThaiXuLy.getSelectedIndex() <= 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn Trạng thái phù hợp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return false;
         }
         if (cbLoaiNuoc.getSelectedIndex() <= 0) {

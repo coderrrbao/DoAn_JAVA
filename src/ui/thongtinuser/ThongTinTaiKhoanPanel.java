@@ -9,6 +9,7 @@ import javax.swing.JPasswordField;
 
 import bus.TaiKhoanBUS;
 import ui.login.PhienDangNhap;
+import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
 
@@ -59,6 +60,7 @@ public class ThongTinTaiKhoanPanel extends JPanel {
                 if (xacNhan.equals(matKhauMoi)) {
                     if (taiKhoanBUS.suaMatKhau(PhienDangNhap.getTaiKhoan().getTenDangNhap(), matKhauMoi)) {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thành công", "Thông báo", 1);
+                        LoginUI.getLoginUI().getMainFrame().loadAllData();
                     } else {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thất bại", "Thông báo", 1);
                     }

@@ -68,7 +68,7 @@ public class BoLocPanel extends JPanel {
 
         String[] loai = { "Tất cả", "Có sẵn", "Pha chế" };
         cbLoaiSanPham = new JComboBox<>(loai);
-        sanPhamBUS = new SanPhamBUS();
+        sanPhamBUS = SanPhamBUS.getSanPhamBUS();
 
 
         cbLoaiSanPham.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));

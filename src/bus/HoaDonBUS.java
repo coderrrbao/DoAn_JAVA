@@ -2,8 +2,6 @@ package bus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,8 +9,6 @@ import java.util.ArrayList;
 
 import dao.ChiTietHoaDonDAO;
 import dao.HoaDonDAO;
-import dao.LoNguyenLieuDAO;
-import dao.LoSanPhamDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;

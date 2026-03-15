@@ -23,6 +23,7 @@ public class PhieuNhapNguyenLieuDAO {
                 phieuNhap.setMaPN(rs.getString("MaPN"));
                 phieuNhap.setNgayNhap(rs.getString("NgayNhap"));
                 phieuNhap.setMaNV(rs.getString("MaNV"));
+                phieuNhap.setMaNVXacNhan(rs.getString("MaNVXacNhan")); // Đọc mã NV xác nhận
                 phieuNhap.setTongTien(rs.getDouble("TongTien"));
                 phieuNhap.setMaNCC(rs.getString("MaNCC"));
                 phieuNhap.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
@@ -57,17 +58,18 @@ public class PhieuNhapNguyenLieuDAO {
     }
 
     public boolean themPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
-        String sql = "INSERT INTO PhieuNhapNguyenLieu(MaPN, NgayNhap, MaNV, TongTien, MaNCC, GhiChu, TrangThaiXuLy, TrangThai) VALUES (?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO PhieuNhapNguyenLieu(MaPN, NgayNhap, MaNV, MaNVXacNhan, TongTien, MaNCC, GhiChu, TrangThaiXuLy, TrangThai) VALUES (?,?,?,?,?,?,?,?,?)";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuNhapNguyenLieu.getMaPN());
             pst.setString(2, phieuNhapNguyenLieu.getNgayNhap());
             pst.setString(3, phieuNhapNguyenLieu.getMaNV());
-            pst.setDouble(4, phieuNhapNguyenLieu.getTongTien());
-            pst.setString(5, phieuNhapNguyenLieu.getMaNCC());
-            pst.setString(6, phieuNhapNguyenLieu.getGhiChu());
-            pst.setString(7, phieuNhapNguyenLieu.getTrangThaiXuLy());
-            pst.setInt(8, 1);
+            pst.setString(4, phieuNhapNguyenLieu.getMaNVXacNhan()); // Ghi mã NV xác nhận
+            pst.setDouble(5, phieuNhapNguyenLieu.getTongTien());
+            pst.setString(6, phieuNhapNguyenLieu.getMaNCC());
+            pst.setString(7, phieuNhapNguyenLieu.getGhiChu());
+            pst.setString(8, phieuNhapNguyenLieu.getTrangThaiXuLy());
+            pst.setInt(9, 1);
 
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
@@ -92,11 +94,12 @@ public class PhieuNhapNguyenLieuDAO {
     }
 
     public boolean capNhapPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
-        String sql = "UPDATE PhieuNhapNguyenLieu SET GhiChu=? , TrangThaiXuLy=? WHERE MaPN=?";
+        String sql = "UPDATE PhieuNhapNguyenLieu SET GhiChu=?, TrangThaiXuLy=?, MaNVXacNhan=? WHERE MaPN=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuNhapNguyenLieu.getGhiChu());
             pst.setString(2, phieuNhapNguyenLieu.getTrangThaiXuLy());
-            pst.setString(3, phieuNhapNguyenLieu.getMaPN());
+            pst.setString(3, phieuNhapNguyenLieu.getMaNVXacNhan()); // Cập nhật mã NV xác nhận
+            pst.setString(4, phieuNhapNguyenLieu.getMaPN());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,7 +108,6 @@ public class PhieuNhapNguyenLieuDAO {
     }
 
     public boolean xoaPhieuNhapNguyenLieu(PhieuNhapNguyenLieu phieuNhapNguyenLieu, Connection conn) {
-
         String sql = "UPDATE PhieuNhapNguyenLieu SET TrangThai=? WHERE MaPN=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setInt(1, 0);

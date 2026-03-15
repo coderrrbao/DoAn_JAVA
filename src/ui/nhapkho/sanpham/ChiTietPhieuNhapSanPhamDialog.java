@@ -19,23 +19,23 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     private JTable tblSanPhamNhap;
     private DefaultTableModel modelSanPham;
 
-    private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC;
+    // --- ĐỒNG BỘ: Thêm txtMaNVXacNhan và pnMaNVXacNhan ---
+    private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC, txtMaNVXacNhan;
     private JTextArea txaGhiChu;
     private JComboBox<String> cbTrangThai;
     private JButton btnSua, btnLuu;
+    private JPanel pnMaNVXacNhan;
 
     private PhieuNhapSanPham phieuNhapSanPham;
-    private NhapKhoSanPhamPanel nhapKhoSanPhamPanel;
-
     public ChiTietPhieuNhapSanPhamDialog(Frame parent, PhieuNhapSanPham phieuNhapSanPham,
             NhapKhoSanPhamPanel nhapKhoSanPhamPanel) {
         super(parent, "Quản lý Phiếu Nhập", true);
-        setSize(550, 750);
+        
+        // --- ĐỒNG BỘ: Tăng chiều cao lên 800 để khớp với bên Nguyên Liệu ---
+        setSize(550, 800); 
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
         this.phieuNhapSanPham = phieuNhapSanPham;
-        this.nhapKhoSanPhamPanel = nhapKhoSanPhamPanel;
-
         JPanel pnTop = new JPanel(new BorderLayout(0, 10));
         pnTop.setBorder(BorderFactory.createEmptyBorder(10, 20, 0, 20));
 
@@ -64,18 +64,21 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         txtMaNV = new JTextField();
         txtTongTien = new JTextField();
         txtMaNCC = new JTextField();
+        txtMaNVXacNhan = new JTextField(); // --- ĐỒNG BỘ: Khởi tạo ---
 
         txtMaPN.setEditable(false);
         txtNgayNhap.setEditable(false);
         txtMaNV.setEditable(false);
         txtTongTien.setEditable(false);
         txtMaNCC.setEditable(false);
+        txtMaNVXacNhan.setEditable(false); // --- ĐỒNG BỘ: Không cho sửa tay ---
 
         txtMaPN.setBackground(Color.WHITE);
         txtNgayNhap.setBackground(Color.WHITE);
         txtMaNV.setBackground(Color.WHITE);
         txtTongTien.setBackground(Color.WHITE);
         txtMaNCC.setBackground(Color.WHITE);
+        txtMaNVXacNhan.setBackground(Color.WHITE);
 
         txaGhiChu = new JTextArea(4, 20);
         txaGhiChu.setLineWrap(true);
@@ -93,7 +96,7 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         pnForm.add(taoDong(new JLabel("Ngày Nhập (yyyy-mm-dd):")));
         pnForm.add(taoDong(txtNgayNhap));
 
-        pnForm.add(taoDong(new JLabel("Mã Nhân Viên:")));
+        pnForm.add(taoDong(new JLabel("Mã Nhân Viên Lập:")));
         pnForm.add(taoDong(txtMaNV));
 
         pnForm.add(taoDong(new JLabel("Mã Nhà Cung Cấp:")));
@@ -104,6 +107,13 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
         pnForm.add(taoDong(new JLabel("Trạng Thái Xử Lý:")));
         pnForm.add(taoDong(cbTrangThai));
+
+        // --- ĐỒNG BỘ: Thêm Panel NV Xác nhận vào Form ---
+        pnMaNVXacNhan = new JPanel();
+        pnMaNVXacNhan.setLayout(new BoxLayout(pnMaNVXacNhan, BoxLayout.Y_AXIS));
+        pnMaNVXacNhan.add(taoDong(new JLabel("Mã Nhân Viên Xác Nhận:")));
+        pnMaNVXacNhan.add(taoDong(txtMaNVXacNhan));
+        pnForm.add(pnMaNVXacNhan);
 
         pnForm.add(taoDong(new JLabel("Ghi Chú:")));
         pnForm.add(taoDongArea(scrollGhiChu));
@@ -127,17 +137,11 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         suaLaiGiaoDienTheoQuyen();
     }
 
-    /**
-     * Cập nhật hiển thị: Ẩn hoàn toàn các nút Sửa và Lưu nếu không có quyền NK_SUA
-     */
     public void suaLaiGiaoDienTheoQuyen() {
         var listQuyen = ui.login.PhienDangNhap.getListQuyen();
-
         if (!listQuyen.contains("NK_SUA")) {
-
             btnSua.setVisible(false);
             btnLuu.setVisible(false);
-
             this.setTitle("Chi Tiết Phiếu Nhập Sản Phẩm (Chế độ chỉ đọc)");
         }
         this.revalidate();
@@ -146,15 +150,19 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
 
     public void loadDuLieu() {
         modelSanPham.setRowCount(0);
-        if (phieuNhapSanPham == null) {
-            return;
-        }
+        if (phieuNhapSanPham == null) return;
+
         SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
         for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
             SanPham sanPham = sanPhamBUS.timSanPham(loSanPham.getMaSP());
-            modelSanPham.addRow(new Object[] { loSanPham.getMaLoSP(), sanPham != null ? sanPham.getTenSP() : "",
-                    loSanPham.getGiaNhap(), loSanPham.getSoLuong(), loSanPham.getNgaySanXuat(),
-                    loSanPham.getHanSuDung() });
+            modelSanPham.addRow(new Object[] { 
+                loSanPham.getMaLoSP(), 
+                sanPham != null ? sanPham.getTenSP() : "",
+                loSanPham.getGiaNhap(), 
+                loSanPham.getSoLuong(), 
+                loSanPham.getNgaySanXuat(),
+                loSanPham.getHanSuDung() 
+            });
         }
         txtMaNCC.setText(phieuNhapSanPham.getMaNCC());
         txtMaNV.setText(phieuNhapSanPham.getMaNV());
@@ -163,14 +171,16 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         txtTongTien.setText(String.valueOf(phieuNhapSanPham.getTongTien()));
         cbTrangThai.setSelectedItem(phieuNhapSanPham.getTrangThaiXuLy());
         txaGhiChu.setText(phieuNhapSanPham.getGhiChu());
-
+        
+        // --- ĐỒNG BỘ: Load mã NV xác nhận ---
+        String maNVXacNhan = phieuNhapSanPham.getMaNVXacNhan();
+        txtMaNVXacNhan.setText(maNVXacNhan != null ? maNVXacNhan : "");
     }
 
     private JPanel taoDong(JComponent comp) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 25));
         panel.add(comp, BorderLayout.CENTER);
-
         JPanel marginPanel = new JPanel(new BorderLayout());
         marginPanel.add(panel, BorderLayout.CENTER);
         marginPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
@@ -180,7 +190,6 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
     private JPanel taoDongArea(JComponent comp) {
         JPanel panel = new JPanel(new BorderLayout());
         panel.add(comp, BorderLayout.CENTER);
-
         JPanel marginPanel = new JPanel(new BorderLayout());
         marginPanel.add(panel, BorderLayout.CENTER);
         marginPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 5, 0));
@@ -205,8 +214,12 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
                         "Xác nhận nhập kho",
                         JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
-                if (luaChon != JOptionPane.YES_OPTION)
-                    return;
+                if (luaChon != JOptionPane.YES_OPTION) return;
+
+                // --- ĐỒNG BỘ: Tự động gắn Mã NV Xác Nhận từ phiên đăng nhập ---
+                if(ui.login.PhienDangNhap.getUser() != null) {
+                    txtMaNVXacNhan.setText(ui.login.PhienDangNhap.getUser().getMaNV());
+                }
             }
 
             PhieuNhapSanPham pnh = dongGoiPhieuNhapSanPham();
@@ -218,12 +231,13 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
                 TaoTinNhan.showAutoCloseMessage("Cập nhật thất bại!", "Lỗi", 1);
             }
         });
-
     }
 
     private PhieuNhapSanPham dongGoiPhieuNhapSanPham() {
         phieuNhapSanPham.setGhiChu(txaGhiChu.getText());
         phieuNhapSanPham.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
+        // --- ĐỒNG BỘ: Đóng gói Mã NV xác nhận ---
+        phieuNhapSanPham.setMaNVXacNhan(txtMaNVXacNhan.getText());
         return phieuNhapSanPham;
     }
 }
