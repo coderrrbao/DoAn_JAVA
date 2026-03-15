@@ -19,7 +19,7 @@ public class PhieuNhapSanPhamDAO {
                 phieuNhapSanPham.setMaPN(rs.getString("MaPN"));
                 phieuNhapSanPham.setNgayNhap(rs.getString("NgayNhap"));
                 phieuNhapSanPham.setMaNV(rs.getString("MaNV"));
-                phieuNhapSanPham.setMaNVXacNhan(rs.getString("MaNVXacNhan")); // Đọc mã NV xác nhận
+                phieuNhapSanPham.setMaNVXacNhan(rs.getString("MaNVXacNhan"));
                 phieuNhapSanPham.setTongTien(rs.getDouble("TongTien"));
                 phieuNhapSanPham.setMaNCC(rs.getString("MaNCC"));
                 phieuNhapSanPham.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
@@ -60,7 +60,7 @@ public class PhieuNhapSanPhamDAO {
             pst.setString(1, phieuNhapSanPham.getMaPN());
             pst.setString(2, phieuNhapSanPham.getNgayNhap());
             pst.setString(3, phieuNhapSanPham.getMaNV());
-            pst.setString(4, phieuNhapSanPham.getMaNVXacNhan()); // Ghi mã NV xác nhận
+            pst.setString(4, phieuNhapSanPham.getMaNVXacNhan());
             pst.setDouble(5, phieuNhapSanPham.getTongTien());
             pst.setString(6, phieuNhapSanPham.getMaNCC());
             pst.setString(7, phieuNhapSanPham.getGhiChu());
@@ -93,7 +93,7 @@ public class PhieuNhapSanPhamDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuNhapSanPham.getGhiChu());
             pst.setString(2, phieuNhapSanPham.getTrangThaiXuLy());
-            pst.setString(3, phieuNhapSanPham.getMaNVXacNhan()); // Cập nhật mã NV xác nhận
+            pst.setString(3, phieuNhapSanPham.getMaNVXacNhan());
             pst.setString(4, phieuNhapSanPham.getMaPN());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {

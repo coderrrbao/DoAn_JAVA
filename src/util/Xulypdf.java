@@ -41,7 +41,6 @@ public class Xulypdf {
 
             JRBeanCollectionDataSource dataSource = new JRBeanCollectionDataSource(listCtHoaDon);
 
-            // Sửa lại đoạn này trong hàm xuatHoaDon
             try {
                 String sourcePath = "src/report/HoaDon.jrxml";
                 JasperReport jasperReport = JasperCompileManager.compileReport(sourcePath);

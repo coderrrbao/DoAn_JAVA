@@ -18,20 +18,19 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
 
     private DefaultTableModel modelNguyenLieu;
 
-    // 1. Thêm txtMaNVXacNhan
     private JTextField txtMaPN, txtNgayNhap, txtMaNV, txtTongTien, txtMaNCC, txtMaNVXacNhan;
     private JTextArea txaGhiChu;
     private JComboBox<String> cbTrangThai;
     private JButton btnSua, btnLuu;
 
-    // 2. Khai báo panel bọc NV xác nhận làm thuộc tính
     private JPanel pnMaNVXacNhan;
 
     private PhieuNhapNguyenLieu phieuNhapNguyenLieu;
+
     public ChiTietPhieuNhapNguyenLieuDialog(Frame parent, PhieuNhapNguyenLieu phieuNhapNguyenLieu,
             NhapKhoNguyenLieuPanel nhapKhoNguyenLieuPanel) {
         super(parent, "Quản lý Phiếu Nhập", true);
-        setSize(550, 800); // Tăng chút chiều cao để chứa thêm field mới
+        setSize(550, 800);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout(10, 10));
 
@@ -61,14 +60,14 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
         txtMaNV = new JTextField();
         txtTongTien = new JTextField();
         txtMaNCC = new JTextField();
-        txtMaNVXacNhan = new JTextField(); // Khởi tạo textfield mới
+        txtMaNVXacNhan = new JTextField();
 
         txtMaPN.setEditable(false);
         txtNgayNhap.setEditable(false);
         txtMaNV.setEditable(false);
         txtTongTien.setEditable(false);
         txtMaNCC.setEditable(false);
-        txtMaNVXacNhan.setEditable(false); // NV xác nhận thường không cho gõ tay mà tự lấy
+        txtMaNVXacNhan.setEditable(false);
 
         txtMaPN.setBackground(Color.WHITE);
         txtNgayNhap.setBackground(Color.WHITE);
@@ -105,13 +104,12 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
         pnForm.add(taoDong(new JLabel("Trạng Thái Xử Lý:")));
         pnForm.add(taoDong(cbTrangThai));
 
-        // 3. Khởi tạo và thiết kế pnMaNVXacNhan bọc lại
         pnMaNVXacNhan = new JPanel();
         pnMaNVXacNhan.setLayout(new BoxLayout(pnMaNVXacNhan, BoxLayout.Y_AXIS));
         pnMaNVXacNhan.add(taoDong(new JLabel("Mã Nhân Viên Xác Nhận:")));
         pnMaNVXacNhan.add(taoDong(txtMaNVXacNhan));
-        
-        pnForm.add(pnMaNVXacNhan); // Thêm panel bọc vào form chính
+
+        pnForm.add(pnMaNVXacNhan);
 
         pnForm.add(taoDong(new JLabel("Ghi Chú:")));
         pnForm.add(taoDongArea(scrollGhiChu));
@@ -171,8 +169,7 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
         txtTongTien.setText(String.valueOf(phieuNhapNguyenLieu.getTongTien()));
         cbTrangThai.setSelectedItem(phieuNhapNguyenLieu.getTrangThaiXuLy());
         txaGhiChu.setText(phieuNhapNguyenLieu.getGhiChu());
-        
-        // Load mã NV xác nhận (nếu có)
+
         String maNVXacNhan = phieuNhapNguyenLieu.getMaNVXacNhan();
         txtMaNVXacNhan.setText(maNVXacNhan != null ? maNVXacNhan : "");
     }
@@ -214,9 +211,8 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
                 if (!(luaChon == JOptionPane.YES_OPTION)) {
                     return;
                 }
-                
-                // Tự động gắn Mã NV Xác Nhận bằng mã NV đang đăng nhập
-                if(ui.login.PhienDangNhap.getUser() != null) {
+
+                if (ui.login.PhienDangNhap.getUser() != null) {
                     txtMaNVXacNhan.setText(ui.login.PhienDangNhap.getUser().getMaNV());
                 }
             }
@@ -237,12 +233,11 @@ public class ChiTietPhieuNhapNguyenLieuDialog extends JDialog {
     private PhieuNhapNguyenLieu dongGoiPhieuNhapNguyenLieu() {
         phieuNhapNguyenLieu.setGhiChu(txaGhiChu.getText());
         phieuNhapNguyenLieu.setTrangThaiXuLy(cbTrangThai.getSelectedItem().toString());
-        // Đóng gói thêm thuộc tính mã NV xác nhận
-        phieuNhapNguyenLieu.setMaNVXacNhan(txtMaNVXacNhan.getText()); 
+
+        phieuNhapNguyenLieu.setMaNVXacNhan(txtMaNVXacNhan.getText());
         return phieuNhapNguyenLieu;
     }
-    
-    // Getter nếu bạn cần lấy panel này từ bên ngoài
+
     public JPanel getPnMaNVXacNhan() {
         return pnMaNVXacNhan;
     }

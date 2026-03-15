@@ -27,22 +27,22 @@ public class PhieuHuyNguyenLieuBUS {
     }
 
     public void khoiTao() {
-    // 1. Lấy danh sách phiếu hủy từ DAO
-    listPhieuHuy = dao.layListPhieuHuy();
-    LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
 
-    for (PhieuHuyNguyenLieu ph : listPhieuHuy) {
-        ph.setListChiTiet(chiTietPhieuHuyNguyenLieuDAO.layChiTietHuyTheoMaPH(ph.getMaPH()));
-        
-        if (ph.getListChiTiet() != null) {
-            for (ChiTietPhieuHuyNguyenLieu ct : ph.getListChiTiet()) {
-                String maLo = ct.getLoNguyenLieu().getMaLoNL();
-                ct.setLoNguyenLieu(loNguyenLieuBUS.timLoNguyenLieu(maLo));
+        listPhieuHuy = dao.layListPhieuHuy();
+        LoNguyenLieuBUS loNguyenLieuBUS = LoNguyenLieuBUS.getLoNguyenLieuBUS();
+
+        for (PhieuHuyNguyenLieu ph : listPhieuHuy) {
+            ph.setListChiTiet(chiTietPhieuHuyNguyenLieuDAO.layChiTietHuyTheoMaPH(ph.getMaPH()));
+
+            if (ph.getListChiTiet() != null) {
+                for (ChiTietPhieuHuyNguyenLieu ct : ph.getListChiTiet()) {
+                    String maLo = ct.getLoNguyenLieu().getMaLoNL();
+                    ct.setLoNguyenLieu(loNguyenLieuBUS.timLoNguyenLieu(maLo));
+                }
             }
         }
+        canUpdate = false;
     }
-    canUpdate = false;
-}
 
     public ArrayList<PhieuHuyNguyenLieu> layListPhieuHuy() {
         if (canUpdate || listPhieuHuy == null)
@@ -77,8 +77,10 @@ public class PhieuHuyNguyenLieuBUS {
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if (conn != null) conn.rollback();
-            } catch (Exception ex) {}
+                if (conn != null)
+                    conn.rollback();
+            } catch (Exception ex) {
+            }
             return false;
         } finally {
             try {
@@ -86,7 +88,8 @@ public class PhieuHuyNguyenLieuBUS {
                     conn.setAutoCommit(true);
                     conn.close();
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -94,11 +97,10 @@ public class PhieuHuyNguyenLieuBUS {
         Connection conn = DBConnection.getConnection();
         try {
             conn.setAutoCommit(false);
-            
-            // Tự động lấy NV đang đăng nhập làm NV Xác Nhận
-            if ("Đã xác nhận".equalsIgnoreCase(ph.getTrangThaiXuLy().trim()) && 
-                (ph.getMaNVXacNhan() == null || ph.getMaNVXacNhan().isEmpty())) {
-                if(ui.login.PhienDangNhap.getUser() != null) {
+
+            if ("Đã xác nhận".equalsIgnoreCase(ph.getTrangThaiXuLy().trim()) &&
+                    (ph.getMaNVXacNhan() == null || ph.getMaNVXacNhan().isEmpty())) {
+                if (ui.login.PhienDangNhap.getUser() != null) {
                     ph.setMaNVXacNhan(ui.login.PhienDangNhap.getUser().getMaNV());
                 }
             }
@@ -110,19 +112,17 @@ public class PhieuHuyNguyenLieuBUS {
                 ArrayList<ChiTietPhieuHuyNguyenLieu> chiTiet = ph.getListChiTiet();
                 if (chiTiet == null || chiTiet.isEmpty())
                     throw new SQLException("Không tìm thấy chi tiết phiếu hủy");
-                
+
                 for (ChiTietPhieuHuyNguyenLieu ct : chiTiet) {
                     String maLo = ct.getLoNguyenLieu().getMaLoNL();
                     double soLuongHuy = ct.getSoLuong();
-                    double soLuongTonHienTai = ct.getLoNguyenLieu().getSoLuong(); // Lấy số lượng trước khi hủy
+                    double soLuongTonHienTai = ct.getLoNguyenLieu().getSoLuong();
 
-                    // 1. Trừ kho dựa trên mã lô
                     if (!dao.truKhoLoNguyenLieu(maLo, soLuongHuy, conn))
                         throw new SQLException("Trừ kho thất bại");
-                        
-                    // 2. Kiểm tra nếu số lượng trừ đi <= 0 thì xóa lô luôn
+
                     if (soLuongTonHienTai - soLuongHuy <= 0) {
-                        // Đảm bảo bạn đã viết hàm xoaLoNguyenLieu trong DAO
+
                         LoNguyenLieuDAO loNguyenLieuDAO = new LoNguyenLieuDAO();
                         if (!loNguyenLieuDAO.xoaLoNguyenLieu(conn, maLo)) {
                             throw new SQLException("Lỗi khi xóa lô nguyên liệu có số lượng = 0");
@@ -138,8 +138,10 @@ public class PhieuHuyNguyenLieuBUS {
         } catch (SQLException e) {
             e.printStackTrace();
             try {
-                if (conn != null) conn.rollback();
-            } catch (Exception ex) {}
+                if (conn != null)
+                    conn.rollback();
+            } catch (Exception ex) {
+            }
             return false;
         } finally {
             try {
@@ -147,7 +149,8 @@ public class PhieuHuyNguyenLieuBUS {
                     conn.setAutoCommit(true);
                     conn.close();
                 }
-            } catch (Exception e) {}
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -155,20 +158,22 @@ public class PhieuHuyNguyenLieuBUS {
         p.setMaPH(dao.layMaPhieuHuyNLKhaDung(conn));
 
         double tong = 0;
-        if(p.getListChiTiet() != null) {
+        if (p.getListChiTiet() != null) {
             for (ChiTietPhieuHuyNguyenLieu ct : p.getListChiTiet()) {
                 tong += ct.getThanhTien();
             }
         }
         p.setTongTien(tong);
 
-        if (!dao.themPhieuHuy(p, conn)) return false;
+        if (!dao.themPhieuHuy(p, conn))
+            return false;
 
         int index = 1;
         if (p.getListChiTiet() != null) {
             for (ChiTietPhieuHuyNguyenLieu ct : p.getListChiTiet()) {
                 String maCT = p.getMaPH() + "_CT" + index;
-                if (!dao.themChiTietHuy(maCT, p.getMaPH(), ct.getLoNguyenLieu().getMaLoNL(), ct.getSoLuong(), ct.getDonGia(), conn)) {
+                if (!dao.themChiTietHuy(maCT, p.getMaPH(), ct.getLoNguyenLieu().getMaLoNL(), ct.getSoLuong(),
+                        ct.getDonGia(), conn)) {
                     return false;
                 }
                 index++;
@@ -179,7 +184,8 @@ public class PhieuHuyNguyenLieuBUS {
 
     public boolean nhapExcel(File file) {
         ArrayList<PhieuHuyNguyenLieu> dsNhap = XuLyExcel.nhapFilePhieuHuyNguyenLieu(file);
-        if (dsNhap == null || dsNhap.isEmpty()) return false;
+        if (dsNhap == null || dsNhap.isEmpty())
+            return false;
 
         Connection conn = null;
         try {
@@ -200,19 +206,27 @@ public class PhieuHuyNguyenLieuBUS {
         } catch (Exception e) {
             e.printStackTrace();
             if (conn != null) {
-                try { conn.rollback(); } catch (SQLException ex) {}
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                }
             }
             return false;
         } finally {
             if (conn != null) {
-                try { conn.setAutoCommit(true); conn.close(); } catch (Exception e) {}
+                try {
+                    conn.setAutoCommit(true);
+                    conn.close();
+                } catch (Exception e) {
+                }
             }
         }
     }
 
     public boolean xuatExcel(File file) {
         ArrayList<PhieuHuyNguyenLieu> dsPhieu = layListPhieuHuy();
-        if (dsPhieu == null) return false;
+        if (dsPhieu == null)
+            return false;
         return XuLyExcel.xuatFilePhieuHuyNguyenLieu(file, dsPhieu);
     }
 
@@ -229,8 +243,10 @@ public class PhieuHuyNguyenLieuBUS {
             return false;
         } finally {
             try {
-                if (conn != null) conn.close();
-            } catch (Exception e) {}
+                if (conn != null)
+                    conn.close();
+            } catch (Exception e) {
+            }
         }
     }
 }

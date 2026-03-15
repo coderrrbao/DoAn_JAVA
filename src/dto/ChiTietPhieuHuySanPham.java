@@ -3,7 +3,7 @@ package dto;
 public class ChiTietPhieuHuySanPham {
     private String maCTPHSP;
     private String maPH;
-    private LoSanPham loSanPham; // Thay vì String maLo
+    private LoSanPham loSanPham;
     private double soLuong;
     private double donGia;
 

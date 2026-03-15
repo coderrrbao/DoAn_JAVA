@@ -12,13 +12,11 @@ public class PhieuHuySanPham {
   private double tongGiaTri;
   private String trangThaiXuLy;
 
-  // Đổi sang lưu danh sách Chi tiết
   private ArrayList<ChiTietPhieuHuySanPham> listChiTiet = new ArrayList<>();
 
   public PhieuHuySanPham() {
   }
 
-  // Các Getter và Setter
   public String getMaPH() {
     return maPH;
   }
@@ -75,7 +73,6 @@ public class PhieuHuySanPham {
     this.trangThaiXuLy = trangThai;
   }
 
-  // Getter và Setter cho danh sách chi tiết
   public ArrayList<ChiTietPhieuHuySanPham> getListChiTiet() {
     return listChiTiet;
   }

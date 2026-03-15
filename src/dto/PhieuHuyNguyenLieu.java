@@ -11,19 +11,27 @@ public class PhieuHuyNguyenLieu {
     private String lyDo;
     private double tongTien;
     private String trangThaiXuLy;
-    
-    // Đổi sang lưu danh sách Chi tiết
+
     private ArrayList<ChiTietPhieuHuyNguyenLieu> listChiTiet = new ArrayList<>();
 
     public PhieuHuyNguyenLieu() {
     }
 
-    // Getter/Setter tương tự như trên
-    public String getMaPH() { return maPH; }
-    public void setMaPH(String maPH) { this.maPH = maPH; }
-    
-    public String getMaNVXacNhan() { return maNVXacNhan; }
-    public void setMaNVXacNhan(String maNVXacNhan) { this.maNVXacNhan = maNVXacNhan; }
+    public String getMaPH() {
+        return maPH;
+    }
+
+    public void setMaPH(String maPH) {
+        this.maPH = maPH;
+    }
+
+    public String getMaNVXacNhan() {
+        return maNVXacNhan;
+    }
+
+    public void setMaNVXacNhan(String maNVXacNhan) {
+        this.maNVXacNhan = maNVXacNhan;
+    }
 
     public ArrayList<ChiTietPhieuHuyNguyenLieu> getListChiTiet() {
         return listChiTiet;
@@ -32,26 +40,44 @@ public class PhieuHuyNguyenLieu {
     public void setListChiTiet(ArrayList<ChiTietPhieuHuyNguyenLieu> listChiTiet) {
         this.listChiTiet = listChiTiet;
     }
-    
-   public String getLyDo() {
-       return lyDo;
-   }public String getMaNV() {
-       return maNV;
-   }public Date getNgayHuy() {
-       return ngayHuy;
-   }public double getTongTien() {
-       return tongTien;
-   }public String getTrangThaiXuLy() {
-       return trangThaiXuLy;
-   }public void setLyDo(String lyDo) {
-       this.lyDo = lyDo;
-   }public void setMaNV(String maNV) {
-       this.maNV = maNV;
-   }public void setNgayHuy(Date ngayHuy) {
-       this.ngayHuy = ngayHuy;
-   }public void setTongTien(double tongTien) {
-       this.tongTien = tongTien;
-   }public void setTrangThaiXuLy(String trangThaiXuLy) {
-       this.trangThaiXuLy = trangThaiXuLy;
-   }
+
+    public String getLyDo() {
+        return lyDo;
+    }
+
+    public String getMaNV() {
+        return maNV;
+    }
+
+    public Date getNgayHuy() {
+        return ngayHuy;
+    }
+
+    public double getTongTien() {
+        return tongTien;
+    }
+
+    public String getTrangThaiXuLy() {
+        return trangThaiXuLy;
+    }
+
+    public void setLyDo(String lyDo) {
+        this.lyDo = lyDo;
+    }
+
+    public void setMaNV(String maNV) {
+        this.maNV = maNV;
+    }
+
+    public void setNgayHuy(Date ngayHuy) {
+        this.ngayHuy = ngayHuy;
+    }
+
+    public void setTongTien(double tongTien) {
+        this.tongTien = tongTien;
+    }
+
+    public void setTrangThaiXuLy(String trangThaiXuLy) {
+        this.trangThaiXuLy = trangThaiXuLy;
+    }
 }

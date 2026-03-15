@@ -16,7 +16,7 @@ import javax.swing.table.DefaultTableModel;
 public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
     private JTable tblChiTiet;
     private DefaultTableModel modelChiTiet;
-    // Thêm txtMaNVXacNhan
+
     private JTextField txtMaPH, txtNgay, txtNV, txtLyDo, txtTong, txtMaNVXacNhan;
     private JComboBox<String> cbTrangThai;
     private JButton btnLuu, btnSua;
@@ -27,7 +27,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
         super(owner, "Chi Tiết Phiếu Hủy Nguyên Liệu", true);
         this.phieuHuy = ph;
         this.parent = parent;
-        // Tăng chiều cao để chứa thêm field NV Xác Nhận
+
         setSize(480, 700);
         setLocationRelativeTo(owner);
         setLayout(new BorderLayout(10, 10));
@@ -59,13 +59,12 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
         txtNV = new JTextField(ph.getMaNV());
         txtLyDo = new JTextField(ph.getLyDo());
         txtTong = new JTextField(String.format("%,.0f VNĐ", ph.getTongTien()));
-        // Khởi tạo txtMaNVXacNhan với dữ liệu cũ (nếu có)
+
         txtMaNVXacNhan = new JTextField(ph.getMaNVXacNhan() != null ? ph.getMaNVXacNhan() : "");
 
         cbTrangThai = new JComboBox<>(new String[] { "Đang xử lý", "Đã xác nhận" });
         cbTrangThai.setSelectedItem(ph.getTrangThaiXuLy());
 
-        // Đưa txtMaNVXacNhan vào mảng để định dạng hàng loạt
         JTextField[] fields = { txtMaPH, txtNgay, txtNV, txtLyDo, txtTong, txtMaNVXacNhan };
         for (JTextField f : fields) {
             f.setEditable(false);
@@ -92,7 +91,6 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
         pnForm.add(taoDong(new JLabel("Trạng Thái:")));
         pnForm.add(taoDong(cbTrangThai));
 
-        // Thêm dòng NV Xác nhận vào Form
         pnForm.add(taoDong(new JLabel("Mã Nhân Viên Xác Nhận:")));
         pnForm.add(taoDong(txtMaNVXacNhan));
 
@@ -173,7 +171,6 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
             String trangThaiMoi = cbTrangThai.getSelectedItem().toString();
             String trangThaiCu = phieuHuy.getTrangThaiXuLy();
 
-            // Nếu đổi sang "Đã xác nhận" thì gán Mã NV Xác Nhận bằng user đang đăng nhập
             if ("Đang xử lý".equals(trangThaiCu) && "Đã xác nhận".equals(trangThaiMoi)) {
                 int luaChon = JOptionPane.showConfirmDialog(this,
                         "Sau khi xác nhận, số lượng hàng sẽ được trừ vào kho và không thể sửa.",
@@ -188,7 +185,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
 
             phieuHuy.setLyDo(txtLyDo.getText());
             phieuHuy.setTrangThaiXuLy(trangThaiMoi);
-            phieuHuy.setMaNVXacNhan(txtMaNVXacNhan.getText()); // Cập nhật vào DTO
+            phieuHuy.setMaNVXacNhan(txtMaNVXacNhan.getText());
 
             if (PhieuHuyNguyenLieuBUS.getPhieuHuyNguyenLieuBUS().capNhatPhieuHuy(phieuHuy)) {
                 JOptionPane.showMessageDialog(this, "Cập nhật phiếu hủy thành công!", "Thông báo",
@@ -196,7 +193,7 @@ public class ChiTietPhieuXuatNguyenLieuDialog extends JDialog {
                 LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
-                // Thông báo thất bại
+
                 JOptionPane.showMessageDialog(this, "Cập nhật thất bại. Vui lòng kiểm tra lại!", "Lỗi",
                         JOptionPane.ERROR_MESSAGE);
             }

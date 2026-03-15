@@ -23,7 +23,7 @@ public class PhieuNhapNguyenLieuDAO {
                 phieuNhap.setMaPN(rs.getString("MaPN"));
                 phieuNhap.setNgayNhap(rs.getString("NgayNhap"));
                 phieuNhap.setMaNV(rs.getString("MaNV"));
-                phieuNhap.setMaNVXacNhan(rs.getString("MaNVXacNhan")); // Đọc mã NV xác nhận
+                phieuNhap.setMaNVXacNhan(rs.getString("MaNVXacNhan"));
                 phieuNhap.setTongTien(rs.getDouble("TongTien"));
                 phieuNhap.setMaNCC(rs.getString("MaNCC"));
                 phieuNhap.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
@@ -64,7 +64,7 @@ public class PhieuNhapNguyenLieuDAO {
             pst.setString(1, phieuNhapNguyenLieu.getMaPN());
             pst.setString(2, phieuNhapNguyenLieu.getNgayNhap());
             pst.setString(3, phieuNhapNguyenLieu.getMaNV());
-            pst.setString(4, phieuNhapNguyenLieu.getMaNVXacNhan()); // Ghi mã NV xác nhận
+            pst.setString(4, phieuNhapNguyenLieu.getMaNVXacNhan());
             pst.setDouble(5, phieuNhapNguyenLieu.getTongTien());
             pst.setString(6, phieuNhapNguyenLieu.getMaNCC());
             pst.setString(7, phieuNhapNguyenLieu.getGhiChu());
@@ -98,7 +98,7 @@ public class PhieuNhapNguyenLieuDAO {
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuNhapNguyenLieu.getGhiChu());
             pst.setString(2, phieuNhapNguyenLieu.getTrangThaiXuLy());
-            pst.setString(3, phieuNhapNguyenLieu.getMaNVXacNhan()); // Cập nhật mã NV xác nhận
+            pst.setString(3, phieuNhapNguyenLieu.getMaNVXacNhan());
             pst.setString(4, phieuNhapNguyenLieu.getMaPN());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
