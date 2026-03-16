@@ -6,258 +6,220 @@ import bus.SanPhamBUS;
 import dto.LoSanPham;
 import dto.PhieuHuySanPham;
 import dto.SanPham;
-import ui.component.Search_Item;
-import ui.login.LoginUI;
-import ui.login.PhienDangNhap;
-import util.TaoUI;
-
 import java.awt.*;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import ui.component.Search_Item;
+import ui.login.PhienDangNhap;
+import ui.xuatkho.ButtonColumn;
+import util.TaoUI;
 
 public class XuatKhoSanPhamDialog extends JDialog {
-    private JTable tblTonKho, tblChoXuat;
-    private DefaultTableModel modelTonKho, modelChoXuat;
-    private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo;
-    private JButton btnThem, btnXacNhan;
-    private Search_Item search_Item;
-    private XuatKhoSanPhamPanel parentPanel;
+  private JTable tblTonKho, tblChoXuat;
+  private DefaultTableModel modelTonKho, modelChoXuat;
+  private JTextField txtMaSP, txtTenSP, txtSoLuongXuat, txtMaLo, txtLyDo;
+  private JButton btnThem, btnXacNhan;
+  private Search_Item search_Item;
+  private XuatKhoSanPhamPanel parentPanel;
 
-    public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
-        super((Frame) null, "Tạo Phiếu Hủy Sản Phẩm", true);
-        setSize(1000, 650);
-        setLocationRelativeTo(null);
-        setLayout(new BorderLayout());
-        parentPanel = parent;
-        JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
+  public XuatKhoSanPhamDialog(XuatKhoSanPhamPanel parent) {
+    super((Frame) null, "Tạo Phiếu Hủy Sản Phẩm", true);
+    this.parentPanel = parent;
+    setSize(1000, 650);
+    setLocationRelativeTo(null);
+    setLayout(new BorderLayout());
 
-        JPanel left = new JPanel(new BorderLayout(0, 10));
+    JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
 
-        search_Item = new Search_Item(250, 32);
+    // --- PANEL BÊN TRÁI: TỒN KHO ---
+    JPanel left = new JPanel(new BorderLayout(0, 10));
+    search_Item = new Search_Item(250, 32);
+    left.add(search_Item, BorderLayout.NORTH);
 
-        left.add(search_Item, BorderLayout.NORTH);
+    modelTonKho =
+        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0) {
+          @Override
+          public boolean isCellEditable(int row, int column) {
+            return false;
+          }
+        };
+    JScrollPane scrollTonKho = TaoUI.taoTableScroll(modelTonKho);
+    tblTonKho = (JTable) scrollTonKho.getViewport().getView();
+    left.add(scrollTonKho, BorderLayout.CENTER);
 
-        modelTonKho = new DefaultTableModel(new String[] { "Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập" }, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
+    // --- PANEL BÊN PHẢI: FORM VÀ DANH SÁCH CHỜ ---
+    JPanel right = new JPanel(new BorderLayout(0, 10));
+    JPanel form = new JPanel();
+    form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
+    form.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 10));
+
+    txtMaSP = new JTextField();
+    txtMaSP.setEditable(false);
+    txtTenSP = new JTextField();
+    txtTenSP.setEditable(false);
+    txtMaLo = new JTextField();
+    txtMaLo.setEditable(false);
+    txtSoLuongXuat = new JTextField();
+    txtLyDo = new JTextField();
+
+    form.add(taoDong("Mã Sản Phẩm:", txtMaSP));
+    form.add(taoDong("Tên Sản Phẩm:", txtTenSP));
+    form.add(taoDong("Mã Lô:", txtMaLo));
+    form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
+    form.add(taoDong("Lý do hủy:", txtLyDo));
+
+    btnThem = new JButton("Thêm vào danh sách chờ");
+    TaoUI.setFixSize(btnThem, 475, 32);
+    form.add(btnThem);
+
+    // KHỞI TẠO MODEL CHỜ XUẤT (Cột cuối là cột nút X)
+    modelChoXuat =
+        new DefaultTableModel(
+            new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập", " "}, 0) {
+          @Override
+          public boolean isCellEditable(int row, int column) {
+            return column == 5; // Quan trọng: Phải cho phép edit để click được nút
+          }
         };
 
-        JScrollPane scrollTonKho = TaoUI.taoTableScroll(modelTonKho);
-        tblTonKho = (JTable) scrollTonKho.getViewport().getView();
-        tblTonKho.getTableHeader().setReorderingAllowed(false);
+    JScrollPane scrollChoXuat = TaoUI.taoTableScroll(modelChoXuat);
+    tblChoXuat = (JTable) scrollChoXuat.getViewport().getView();
 
-        left.add(scrollTonKho, BorderLayout.CENTER);
-
-        JPanel right = new JPanel(new BorderLayout(0, 10));
-
-        JPanel form = new JPanel();
-        form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
-        form.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 10));
-
-        txtMaSP = new JTextField();
-        txtMaSP.setEditable(false);
-
-        txtTenSP = new JTextField();
-        txtTenSP.setEditable(false);
-
-        txtMaLo = new JTextField();
-        txtMaLo.setEditable(false);
-        txtSoLuongXuat = new JTextField();
-        txtLyDo = new JTextField();
-
-        form.add(taoDong("Mã Sản Phẩm:", txtMaSP));
-        form.add(taoDong("Tên Sản Phẩm:", txtTenSP));
-        form.add(taoDong("Mã Lô:", txtMaLo));
-        form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
-        form.add(taoDong("Lý do hủy:", txtLyDo));
-
-        btnThem = new JButton("Thêm vào danh sách chờ");
-        JPanel pnBtnThem = new JPanel();
-        pnBtnThem.setLayout(new BoxLayout(pnBtnThem, BoxLayout.X_AXIS));
-        pnBtnThem.add(btnThem);
-        TaoUI.setFixSize(btnThem, 475, 32);
-
-        form.add(pnBtnThem);
-
-        modelChoXuat = new DefaultTableModel(new String[] { "Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập" }, 0) {
-            @Override
-            public boolean isCellEditable(int row, int column) {
-                return false;
-            }
-        };
-        JScrollPane scrollChoXuat = TaoUI.taoTableScroll(modelChoXuat);
-        tblChoXuat = (JTable) scrollChoXuat.getViewport().getView();
-        tblChoXuat.getTableHeader().setReorderingAllowed(false);
-
-        btnXacNhan = new JButton("XÁC NHẬN");
-        btnXacNhan.setBackground(new Color(220, 53, 69));
-        btnXacNhan.setForeground(Color.WHITE);
-        btnXacNhan.setPreferredSize(new Dimension(0, 40));
-        btnXacNhan.setFont(new Font("Arial", Font.BOLD, 14));
-
-        JPanel pnXacNhan = new JPanel(new BorderLayout());
-        pnXacNhan.add(btnXacNhan, BorderLayout.CENTER);
-
-        right.add(form, BorderLayout.NORTH);
-        right.add(scrollChoXuat, BorderLayout.CENTER);
-        right.add(pnXacNhan, BorderLayout.SOUTH);
-
-        main.add(left);
-        main.add(right);
-        add(main, BorderLayout.CENTER);
-
-        loadData();
-        ganSuKien();
-        suaLaiGiaoDienTheoQuyen();
-    }
-
-    private JPanel taoDong(String tenLabel, JComponent comp) {
-        comp.setPreferredSize(new Dimension(Integer.MAX_VALUE, 30));
-
-        JPanel pn = new JPanel(new BorderLayout(0, 5));
-        pn.add(new JLabel(tenLabel), BorderLayout.NORTH);
-        pn.add(comp, BorderLayout.CENTER);
-        pn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
-        pn.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
-        return pn;
-    }
-
-    public void suaLaiGiaoDienTheoQuyen() {
-        var listQuyen = ui.login.PhienDangNhap.getListQuyen();
-
-        if (!listQuyen.contains("XK_TAO")) {
-            if (btnThem != null)
-                btnThem.setVisible(false);
-            if (btnXacNhan != null)
-                btnXacNhan.setVisible(false);
-
-            txtSoLuongXuat.setEditable(false);
-            txtLyDo.setEditable(false);
-
-            this.setTitle("Xem thông tin tạo phiếu hủy (Chế độ chỉ đọc)");
-        }
-        this.revalidate();
-        this.repaint();
-    }
-
-    private void loadData() {
-        modelTonKho.setRowCount(0);
-        String keyword = search_Item != null && search_Item.getTextSearch() != null
-                ? search_Item.getTextSearch().toString().toLowerCase()
-                : "";
-
-        ArrayList<LoSanPham> list = LoSanPhamBUS.getLoSanPhamBUS().layListLoSanPham();
-        for (LoSanPham lo : list) {
-            if (lo.getSoLuong() > 0 && lo.getMaLoSP().toLowerCase().contains(keyword)) {
-                modelTonKho.addRow(new Object[] {
-                        lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+    // Trong constructor của XuatKhoSanPhamDialog, tìm đoạn deleteAction và thay bằng:
+    Action deleteAction =
+        new AbstractAction() {
+          @Override
+          public void actionPerformed(ActionEvent e) {
+            // Dùng invokeLater để đảm bảo JTable đã hoàn tất việc xử lý click trước khi xóa dòng
+            SwingUtilities.invokeLater(
+                () -> {
+                  try {
+                    int row = Integer.parseInt(e.getActionCommand());
+                    if (row >= 0 && row < modelChoXuat.getRowCount()) {
+                      modelChoXuat.removeRow(row);
+                      tblChoXuat.revalidate();
+                      tblChoXuat.repaint();
+                    }
+                  } catch (Exception ex) {
+                    ex.printStackTrace();
+                  }
                 });
-            }
-        }
+          }
+        };
+    new ButtonColumn(tblChoXuat, deleteAction, 5);
+    tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(35);
+    tblChoXuat.getColumnModel().getColumn(5).setMinWidth(35);
+    tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(40); // Cho cột nút X nhỏ lại
+
+    btnXacNhan = new JButton("XÁC NHẬN");
+    btnXacNhan.setBackground(new Color(220, 53, 69));
+    btnXacNhan.setForeground(Color.WHITE);
+    btnXacNhan.setFont(new Font("Arial", Font.BOLD, 14));
+    btnXacNhan.setPreferredSize(new Dimension(0, 40));
+
+    right.add(form, BorderLayout.NORTH);
+    right.add(scrollChoXuat, BorderLayout.CENTER);
+    right.add(btnXacNhan, BorderLayout.SOUTH);
+
+    main.add(left);
+    main.add(right);
+    add(main, BorderLayout.CENTER);
+
+    loadData();
+    ganSuKien();
+    suaLaiGiaoDienTheoQuyen();
+  }
+
+  private JPanel taoDong(String tenLabel, JComponent comp) {
+    JPanel pn = new JPanel(new BorderLayout(0, 5));
+    pn.add(new JLabel(tenLabel), BorderLayout.NORTH);
+    pn.add(comp, BorderLayout.CENTER);
+    pn.setMaximumSize(new Dimension(Integer.MAX_VALUE, 60));
+    pn.setBorder(BorderFactory.createEmptyBorder(0, 0, 10, 0));
+    return pn;
+  }
+
+  private void loadData() {
+    modelTonKho.setRowCount(0);
+    String keyword = search_Item.getTextSearch().toLowerCase();
+    ArrayList<LoSanPham> list = LoSanPhamBUS.getLoSanPhamBUS().layListLoSanPham();
+    for (LoSanPham lo : list) {
+      if (lo.getSoLuong() > 0 && lo.getMaLoSP().toLowerCase().contains(keyword)) {
+        modelTonKho.addRow(
+            new Object[] {
+              lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+            });
+      }
     }
+  }
 
-    private void ganSuKien() {
-
-        search_Item.setEvent(() -> {
-            loadData();
-        });
-
-        tblTonKho.getSelectionModel().addListSelectionListener(e -> {
-            int r = tblTonKho.getSelectedRow();
-            if (r != -1) {
+  private void ganSuKien() {
+    search_Item.setEvent(this::loadData);
+    tblTonKho
+        .getSelectionModel()
+        .addListSelectionListener(
+            e -> {
+              int r = tblTonKho.getSelectedRow();
+              if (r != -1) {
                 txtMaSP.setText(modelTonKho.getValueAt(r, 0).toString());
                 txtMaLo.setText(modelTonKho.getValueAt(r, 1).toString());
-
                 SanPham sp = SanPhamBUS.getSanPhamBUS().timSanPham(txtMaSP.getText());
                 txtTenSP.setText(sp != null ? sp.getTenSP() : "N/A");
+              }
+            });
 
-                txtSoLuongXuat.requestFocus();
+    btnThem.addActionListener(
+        e -> {
+          try {
+            int r = tblTonKho.getSelectedRow();
+            if (r == -1) return;
+            double sl = Double.parseDouble(txtSoLuongXuat.getText());
+            double ton = (double) modelTonKho.getValueAt(r, 3);
+            if (sl <= 0 || sl > ton) {
+              JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ!");
+              return;
             }
+            modelChoXuat.addRow(
+                new Object[] {
+                  txtMaSP.getText(),
+                  txtTenSP.getText(),
+                  sl,
+                  txtMaLo.getText(),
+                  modelTonKho.getValueAt(r, 4),
+                  ""
+                });
+            txtSoLuongXuat.setText("");
+          } catch (Exception ex) {
+            JOptionPane.showMessageDialog(this, "Nhập số lượng!");
+          }
         });
 
-        btnThem.addActionListener(e -> {
-            try {
-                int r = tblTonKho.getSelectedRow();
-                if (r == -1) {
-                    JOptionPane.showMessageDialog(this, "Vui lòng chọn sản phẩm từ kho!");
-                    return;
-                }
-
-                double sl = Double.parseDouble(txtSoLuongXuat.getText());
-                double tonKho = Double.parseDouble(modelTonKho.getValueAt(r, 3).toString());
-                String maLo = txtMaLo.getText();
-
-                if (sl <= 0 || sl > tonKho) {
-                    JOptionPane.showMessageDialog(this, "Số lượng không hợp lệ hoặc vượt quá tồn kho!");
-                    return;
-                }
-
-                boolean daTonTai = false;
-                for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-                    if (modelChoXuat.getValueAt(i, 3).toString().equals(maLo)) {
-                        double slCu = Double.parseDouble(modelChoXuat.getValueAt(i, 2).toString());
-                        if ((slCu + sl) > tonKho) {
-                            JOptionPane.showMessageDialog(this, "Tổng số lượng xuất vượt quá tồn kho!");
-                            return;
-                        }
-                        modelChoXuat.setValueAt(slCu + sl, i, 2);
-                        daTonTai = true;
-                        break;
-                    }
-                }
-
-                if (!daTonTai) {
-
-                    modelChoXuat.addRow(new Object[] {
-                            txtMaSP.getText(),
-                            txtTenSP.getText(),
-                            sl,
-                            maLo,
-                            modelTonKho.getValueAt(r, 4)
-                    });
-                }
-                txtSoLuongXuat.setText("");
-
-            } catch (Exception ex) {
-                JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng hợp lệ!");
-            }
+    btnXacNhan.addActionListener(
+        e -> {
+          if (modelChoXuat.getRowCount() == 0) return;
+          Object[][] data = new Object[modelChoXuat.getRowCount()][5];
+          double tong = 0;
+          for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
+            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+            tong += (double) data[i][2] * (double) data[i][4];
+          }
+          PhieuHuySanPham ph = new PhieuHuySanPham();
+          ph.setMaNV(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
+          ph.setLyDo(txtLyDo.getText());
+          ph.setTongGiaTri(tong);
+          if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().thucHienHuy(ph, data)) {
+            parentPanel.loadDuLieu();
+            dispose();
+          }
         });
+  }
 
-        btnXacNhan.addActionListener(e -> {
-            if (modelChoXuat.getRowCount() == 0) {
-                JOptionPane.showMessageDialog(this, "Vui lòng chọn ít nhất 1 nguyên liệu để hủy!");
-                return;
-            }
-            double tongTien = 0;
-            Object[][] data = new Object[modelChoXuat.getRowCount()][5];
-            for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-                for (int j = 0; j < 5; j++)
-                    data[i][j] = modelChoXuat.getValueAt(i, j);
-                tongTien += Double.parseDouble(data[i][2].toString()) * Double.parseDouble(data[i][4].toString());
-            }
-
-            PhieuHuySanPham ph = new PhieuHuySanPham();
-
-            String maNV = PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "";
-            ph.setMaNV(maNV);
-            ph.setLyDo(txtLyDo.getText());
-            ph.setTongGiaTri(tongTien);
-
-            if (PhieuHuySanPhamBUS.getPhieuHuySanPhamBUS().thucHienHuy(ph, data)) {
-                parentPanel.loadDuLieu();
-                JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thành công!");
-                dispose();
-            } else {
-                JOptionPane.showMessageDialog(this, "Tạo phiếu hủy thất bại!");
-            }
-        });
+  public void suaLaiGiaoDienTheoQuyen() {
+    if (!PhienDangNhap.getListQuyen().contains("XK_TAO")) {
+      btnThem.setVisible(false);
+      btnXacNhan.setVisible(false);
     }
-
-    public static void main(String[] args) {
-        XuatKhoSanPhamDialog xuatKhoSanPhamDialog = new XuatKhoSanPhamDialog(null);
-        xuatKhoSanPhamDialog.setVisible(true);
-    }
+  }
 }
