@@ -108,9 +108,19 @@ public class KiemKeUI extends JPanel {
         e -> {
           int dongChon = table.getSelectedRow();
           if (dongChon >= 0) {
-            if (!model.getValueAt(dongChon, 5).toString().equals("Đang xử lý")) {
+            if (!model.getValueAt(dongChon, 8).toString().equals("Chưa xử lý")) {
               TaoTinNhan.showAutoCloseMessage(
                   "Phiếu kiểm kê đã xác nhận, không thể xóa", "Thông báo", 1);
+              return;
+            }
+            int confirm = JOptionPane.showConfirmDialog(
+                null,
+                "Bạn có chắc muốn xóa " + model.getValueAt(dongChon, 8).toString() + "?",
+                "Xác nhận xóa",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.WARNING_MESSAGE);
+
+            if (confirm != JOptionPane.YES_OPTION) {
               return;
             }
             if (phieuKiemKeBUS.xoaPhieuKiemKe(
