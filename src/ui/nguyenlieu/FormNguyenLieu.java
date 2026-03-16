@@ -7,7 +7,7 @@ import javax.swing.*;
 import ui.login.PhienDangNhap;
 
 public class FormNguyenLieu extends JDialog {
-  private JTextField txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao;
+  private JTextField txtMa, txtTen, txtDonVi, txtMucCanhBao;
   private JButton btnThem, btnSua, btnLuu, btnHuy;
 
   private NguyenLieu ketQua = null;
@@ -17,7 +17,7 @@ public class FormNguyenLieu extends JDialog {
     super(owner, editNL == null ? "Thêm Nguyên Liệu" : "Chi tiết Nguyên Liệu", true);
     this.isEdit = (editNL != null);
 
-    setSize(new Dimension(500, 350));
+    setSize(new Dimension(500, 300));
     initUI();
 
     if (isEdit) {
@@ -40,14 +40,13 @@ public class FormNguyenLieu extends JDialog {
     txtMa = new JTextField("Tự động");
     txtMa.setEditable(false);
     txtTen = new JTextField();
-    txtGia = new JTextField();
     txtDonVi = new JTextField();
     txtMucCanhBao = new JTextField();
 
     String[] labels = {
-        "Mã nguyên liệu:", "Tên nguyên liệu:", "Giá nhập:", "Đơn vị tính:", "Mức cảnh báo:"
+        "Mã nguyên liệu:", "Tên nguyên liệu:", "Đơn vị tính:", "Mức cảnh báo:"
     };
-    JTextField[] fields = { txtMa, txtTen, txtGia, txtDonVi, txtMucCanhBao };
+    JTextField[] fields = { txtMa, txtTen, txtDonVi, txtMucCanhBao };
 
     for (int i = 0; i < labels.length; i++) {
       Box row = Box.createHorizontalBox();
@@ -115,7 +114,6 @@ public class FormNguyenLieu extends JDialog {
 
   private void setEditableForm(boolean status) {
     txtTen.setEditable(status);
-    txtGia.setEditable(status);
     txtDonVi.setEditable(status);
     txtMucCanhBao.setEditable(status);
   }
@@ -159,7 +157,6 @@ public class FormNguyenLieu extends JDialog {
   private void duLieuCu(NguyenLieu editNL) {
     txtMa.setText(editNL.getMaNL());
     txtTen.setText(editNL.getTenNL());
-    txtGia.setText(String.valueOf(editNL.getGia()));
     txtDonVi.setText(editNL.getDonVi());
     txtMucCanhBao.setText(String.valueOf(editNL.getMucCanhBao()));
   }
@@ -167,11 +164,6 @@ public class FormNguyenLieu extends JDialog {
   private boolean kiemTraDuLieu() {
     if (txtTen.getText().trim().isEmpty()) {
       JOptionPane.showMessageDialog(this, "Vui lòng nhập tên nguyên liệu!");
-      return false;
-    }
-
-    if (txtGia.getText().trim().isEmpty()) {
-      JOptionPane.showMessageDialog(this, "Vui lòng nhập giá!");
       return false;
     }
 
@@ -186,12 +178,6 @@ public class FormNguyenLieu extends JDialog {
     }
 
     try {
-      double gia = Double.parseDouble(txtGia.getText().trim());
-      if (gia <= 0) {
-        JOptionPane.showMessageDialog(this, "Giá phải lớn hơn 0!");
-        return false;
-      }
-
       int mucCanhBao = Integer.parseInt(txtMucCanhBao.getText().trim());
       if (mucCanhBao < 0) {
         JOptionPane.showMessageDialog(this, "Mức cảnh báo phải >= 0!");
@@ -200,14 +186,13 @@ public class FormNguyenLieu extends JDialog {
 
       return true;
     } catch (NumberFormatException ex) {
-      JOptionPane.showMessageDialog(this, "Giá và Mức cảnh báo phải là số hợp lệ!");
+      JOptionPane.showMessageDialog(this, "Mức cảnh báo phải là số hợp lệ!");
       return false;
     }
   }
 
   private void ganDuLieu(NguyenLieu nl) {
     nl.setTenNL(txtTen.getText().trim());
-    nl.setGia(Double.parseDouble(txtGia.getText().trim()));
     nl.setDonVi(txtDonVi.getText().trim());
     nl.setMucCanhBao(Integer.parseInt(txtMucCanhBao.getText().trim()));
   }

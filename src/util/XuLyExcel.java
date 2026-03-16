@@ -1488,7 +1488,7 @@ public class XuLyExcel {
     public static boolean xuatFileNguyenLieu(File file, ArrayList<NguyenLieu> dsNguyenLieu) {
         try (Workbook workbook = new XSSFWorkbook()) {
             Sheet sheet = workbook.createSheet("Nguyen Lieu");
-            String[] columns = { "Mã NL", "Tên Nguyên Liệu", "Giá Nhập", "Đơn Vị", "Mức Cảnh Báo" };
+            String[] columns = { "Mã NL", "Tên Nguyên Liệu", "Đơn Vị", "Mức Cảnh Báo" };
 
             Row headerRow = sheet.createRow(0);
             CellStyle headerStyle = workbook.createCellStyle();
@@ -1507,9 +1507,8 @@ public class XuLyExcel {
                 Row row = sheet.createRow(rowNum++);
                 row.createCell(0).setCellValue(nl.getMaNL());
                 row.createCell(1).setCellValue(nl.getTenNL());
-                row.createCell(2).setCellValue(nl.getGia());
-                row.createCell(3).setCellValue(nl.getDonVi());
-                row.createCell(4).setCellValue(nl.getMucCanhBao());
+                row.createCell(2).setCellValue(nl.getDonVi());
+                row.createCell(3).setCellValue(nl.getMucCanhBao());
             }
 
             for (int i = 0; i < columns.length; i++) {
@@ -1540,9 +1539,8 @@ public class XuLyExcel {
                 NguyenLieu nl = new NguyenLieu();
                 nl.setMaNL(null);
                 nl.setTenNL(docCell(row.getCell(1)));
-                nl.setGia(chuyenSoDouble(docCell(row.getCell(2))));
-                nl.setDonVi(docCell(row.getCell(3)));
-                nl.setMucCanhBao(chuyenSoInt(docCell(row.getCell(4))));
+                nl.setDonVi(docCell(row.getCell(2)));
+                nl.setMucCanhBao(chuyenSoInt(docCell(row.getCell(3))));
 
                 if (!nl.getTenNL().isEmpty()) {
                     dsMoi.add(nl);

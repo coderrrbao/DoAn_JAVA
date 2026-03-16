@@ -69,7 +69,6 @@ public class NguyenLieuUI extends JPanel {
 
     model.addColumn("Mã NL");
     model.addColumn("Tên nguyên liệu");
-    model.addColumn("Giá nhập");
     model.addColumn("Đơn vị tính");
     model.addColumn("Mức cảnh báo");
 
@@ -224,7 +223,7 @@ public class NguyenLieuUI extends JPanel {
     for (NguyenLieu nl : list) {
       model.addRow(
           new Object[] {
-              nl.getMaNL(), nl.getTenNL(), nl.getGia(), nl.getDonVi(), nl.getMucCanhBao()
+              nl.getMaNL(), nl.getTenNL(), nl.getDonVi(), nl.getMucCanhBao()
           });
     }
   }

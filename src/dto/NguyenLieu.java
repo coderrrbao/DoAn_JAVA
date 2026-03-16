@@ -3,18 +3,16 @@ package dto;
 public class NguyenLieu {
     private String maNL;
     private String tenNL;
-    private double gia;
     private String donVi;
     private int mucCanhBao;
 
     public NguyenLieu() {
     }
 
-    public NguyenLieu(String maNL, String tenNL, double gia,
+    public NguyenLieu(String maNL, String tenNL,
             String donVi, int mucCanhBao, boolean trangThai) {
         this.maNL = maNL;
         this.tenNL = tenNL;
-        this.gia = gia;
         this.donVi = donVi;
         this.mucCanhBao = mucCanhBao;
     }
@@ -33,15 +31,6 @@ public class NguyenLieu {
 
     public void setTenNL(String tenNL) {
         this.tenNL = tenNL;
-    }
-
-
-    public double getGia() {
-        return gia;
-    }
-
-    public void setGia(double gia) {
-        this.gia = gia;
     }
 
     public String getDonVi() {

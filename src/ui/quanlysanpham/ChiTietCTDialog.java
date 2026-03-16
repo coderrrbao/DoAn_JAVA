@@ -78,7 +78,6 @@ public class ChiTietCTDialog extends JDialog {
         model = new DefaultTableModel();
         model.addColumn("Mã NL");
         model.addColumn("Tên NL");
-        model.addColumn("Giá NL");
         model.addColumn("Đơn vị");
         JScrollPane scrollPane = TaoUI.taoTableScroll(model);
         table = (JTable) scrollPane.getViewport().getView();
@@ -177,7 +176,7 @@ public class ChiTietCTDialog extends JDialog {
     }
 
     private void themNLVaoBang(NguyenLieu nguyenLieu) {
-        model.addRow(new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(), nguyenLieu.getGia(),
+        model.addRow(new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(),
                 nguyenLieu.getDonVi() });
     }
 

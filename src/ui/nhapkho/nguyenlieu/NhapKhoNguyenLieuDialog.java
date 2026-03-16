@@ -84,7 +84,6 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         modelKhoHang.addColumn("Mã NL");
         modelKhoHang.addColumn("Tên NL");
         modelKhoHang.addColumn("Giá nhập");
-        modelKhoHang.addColumn("Giá bán");
         modelKhoHang.addColumn("SL");
 
         JScrollPane scroll = TaoUI.taoTableScroll(modelKhoHang);
@@ -94,7 +93,6 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
         tblKhoHang.getColumnModel().getColumn(0).setPreferredWidth(80);
         tblKhoHang.getColumnModel().getColumn(1).setPreferredWidth(180);
         tblKhoHang.getColumnModel().getColumn(2).setPreferredWidth(100);
-        tblKhoHang.getColumnModel().getColumn(3).setPreferredWidth(70);
 
         listNlPanel.add(scroll, BorderLayout.CENTER);
         search_Item = new Search_Item(Integer.MAX_VALUE, 32);
@@ -331,7 +329,7 @@ public class NhapKhoNguyenLieuDialog extends JDialog {
                     if (nguyenLieu.getTenNL().contains(search_Item.getTextSearch())) {
                         modelKhoHang.addRow(
                                 new Object[] { nguyenLieu.getMaNL(), nguyenLieu.getTenNL(),
-                                        chiTietNhaCungCap.getGiaNhap(), nguyenLieu.getGia(),
+                                        chiTietNhaCungCap.getGiaNhap(),
                                         loNguyenLieuBUS.laySoLuongNguyenLieuTrongKho(nguyenLieu.getMaNL()) });
                     }
                 }

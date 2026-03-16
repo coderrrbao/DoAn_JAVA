@@ -13,7 +13,7 @@ public class NguyenLieuDAO {
   public ArrayList<NguyenLieu> layListNguyenLieu(Connection conn) {
     ArrayList<NguyenLieu> listNguyenLieu = new ArrayList<>();
 
-    String sql = "SELECT MaNL, TenNL, Gia, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai = 1";
+    String sql = "SELECT MaNL, TenNL, DonVi, MucCanhBao FROM NguyenLieu WHERE TrangThai = 1";
 
     try (PreparedStatement pst = conn.prepareStatement(sql);
         ResultSet rs = pst.executeQuery()) {
@@ -22,7 +22,6 @@ public class NguyenLieuDAO {
         NguyenLieu nl = new NguyenLieu();
         nl.setMaNL(rs.getString("MaNL"));
         nl.setTenNL(rs.getNString("TenNL"));
-        nl.setGia(rs.getDouble("Gia"));
         nl.setDonVi(rs.getString("DonVi"));
         nl.setMucCanhBao(rs.getInt("MucCanhBao"));
         listNguyenLieu.add(nl);
@@ -50,8 +49,8 @@ public class NguyenLieuDAO {
 
   public boolean themNguyenLieu(NguyenLieu nl, Connection conn) {
 
-    String sql = "INSERT INTO NguyenLieu (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?,"
-        + " ?, ?, ?)";
+    String sql = "INSERT INTO NguyenLieu (MaNL, TenNL, DonVi, MucCanhBao, TrangThai) VALUES (?, ?, ?,"
+        + " ?, ?)";
 
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       if (nl.getMaNL() == null || nl.getMaNL().trim().isEmpty()) {
@@ -59,10 +58,9 @@ public class NguyenLieuDAO {
       }
       pst.setString(1, nl.getMaNL());
       pst.setString(2, nl.getTenNL());
-      pst.setDouble(3, nl.getGia());
-      pst.setString(4, nl.getDonVi());
-      pst.setInt(5, nl.getMucCanhBao());
-      pst.setInt(6, 1);
+      pst.setString(3, nl.getDonVi());
+      pst.setInt(4, nl.getMucCanhBao());
+      pst.setInt(5, 1);
 
       return pst.executeUpdate() > 0;
     } catch (SQLException e) {
@@ -72,14 +70,13 @@ public class NguyenLieuDAO {
   }
 
   public boolean capNhatNguyenLieu(NguyenLieu nl, Connection conn) {
-    String sql = "UPDATE NguyenLieu SET TenNL = ?, Gia = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
+    String sql = "UPDATE NguyenLieu SET TenNL = ?, DonVi = ?, MucCanhBao = ? WHERE MaNL = ?";
 
     try (PreparedStatement pst = conn.prepareStatement(sql)) {
       pst.setString(1, nl.getTenNL());
-      pst.setDouble(2, nl.getGia());
-      pst.setString(3, nl.getDonVi());
-      pst.setInt(4, nl.getMucCanhBao());
-      pst.setString(5, nl.getMaNL());
+      pst.setString(2, nl.getDonVi());
+      pst.setInt(3, nl.getMucCanhBao());
+      pst.setString(4, nl.getMaNL());
 
       return pst.executeUpdate() > 0;
     } catch (SQLException e) {

@@ -483,29 +483,38 @@ BEGIN
     (
         MaNL VARCHAR(50) NOT NULL PRIMARY KEY,
         TenNL NVARCHAR(255),
-        Gia DECIMAL(18, 2),
         DonVi NVARCHAR(50),
         MucCanhBao INT,
         TrangThai BIT
     )
     INSERT INTO NguyenLieu
-        (MaNL, TenNL, Gia, DonVi, MucCanhBao, TrangThai)
+        (MaNL, TenNL, DonVi, MucCanhBao, TrangThai)
     VALUES
-        ('NL01', N'Hạt Cà Phê Robusta', 200000, 'kg', 5, 1),
-        ('NL02', N'Sữa Đặc Ngôi Sao', 25000, 'hop', 10, 1),
-        ('NL03', N'Đường Cát Trắng', 20000, 'kg', 5, 1),
-        ('NL04', N'Sữa Tươi Không Đường', 35000, 'lit', 10, 1),
-        ('NL05', N'Bột Trà Sữa Thượng Hạng', 150000, 'kg', 5, 1),
-        ('NL06', N'Bột Trà Thái Xanh', 180000, 'kg', 5, 1),
-        ('NL07', N'Trà Đào Túi Lọc Cozy', 45000, 'hop', 5, 1),
-        ('NL08', N'Syrup Đào Teisseire', 180000, 'chai', 3, 1),
-        ('NL09', N'Bơ Sáp Đắk Lắk', 40000, 'kg', 5, 1),
-        ('NL10', N'Cam Sành Tươi', 30000, 'kg', 10, 1),
-        ('NL11', N'Bột Matcha Nhật Bản', 500000, 'kg', 2, 1),
-        ('NL12', N'Trân Châu Đen Đài Loan', 50000, 'kg', 10, 1),
-        ('NL13', N'Sữa Chua Vinamilk', 6000, 'hop', 50, 1),
-        ('NL14', N'Đá Viên Tinh Khiết', 20000, 'bao', 5, 1),
-        ('NL15', N'Ly Nhựa Nắp Cầu 500ml', 800, 'cai', 200, 1)
+        ('NL01', N'Hạt Cà Phê Robusta', 'kg', 5, 1),
+        ('NL02', N'Sữa Đặc Ngôi Sao', 'hop', 10, 1),
+        ('NL03', N'Đường Cát Trắng', 'kg', 5, 1),
+        ('NL04', N'Sữa Tươi Không Đường', 'lit', 10, 1),
+        ('NL05', N'Bột Trà Sữa Thượng Hạng', 'kg', 5, 1),
+        ('NL06', N'Bột Trà Thái Xanh', 'kg', 5, 1),
+        ('NL07', N'Trà Đào Túi Lọc Cozy', 'hop', 5, 1),
+        ('NL08', N'Syrup Đào Teisseire', 'chai', 3, 1),
+        ('NL09', N'Bơ Sáp Đắk Lắk', 'kg', 5, 1),
+        ('NL10', N'Cam Sành Tươi', 'kg', 10, 1),
+        ('NL11', N'Bột Matcha Nhật Bản', 'kg', 2, 1),
+        ('NL12', N'Trân Châu Đen Đài Loan', 'kg', 10, 1),
+        ('NL13', N'Sữa Chua Vinamilk', 'hop', 50, 1),
+        ('NL14', N'Đá Viên Tinh Khiết', 'bao', 5, 1),
+        ('NL15', N'Ly Nhựa Nắp Cầu 500ml', 'cai', 200, 1),
+        ('NL16', N'Bột Khoai Môn', 'kg', 2, 1),
+        ('NL17', N'Trà Đen Lộc Phát', 'kg', 5, 1),
+        ('NL18', N'Trà Lài Lộc Phát', 'kg', 5, 1),
+        ('NL19', N'Trái Vải Ngâm Ngọt', 'lon', 5, 1),
+        ('NL20', N'Hạt Chia', 'kg', 1, 1),
+        ('NL21', N'Syrup Vải', 'chai', 3, 1),
+        ('NL22', N'Dâu Tây Tươi', 'kg', 3, 1),
+        ('NL23', N'Dưa Hấu', 'kg', 10, 1),
+        ('NL24', N'Kem Béo Rich''s', 'hop', 5, 1),
+        ('NL25', N'Bột Muối Biển', 'kg', 1, 1)
 END;
 
 /* =============================================
@@ -539,7 +548,19 @@ BEGIN
         -- Công thức cho Trân Châu Đen
         ('CT12', 'SP_TOP02', 1),
         -- Công thức cho Thạch Phô Mai
-        ('CT13', 'SP_TOP03', 1)
+        ('CT13', 'SP_TOP03', 1),
+        ('CT21', 'SP21', 1),
+        -- Trà Sữa Khoai Môn
+        ('CT22', 'SP22', 1),
+        -- Trà Vải Hạt Chia
+        ('CT23', 'SP23', 1),
+        -- Trà Dâu Tây Tươi
+        ('CT25', 'SP25', 1),
+        -- Sinh Tố Dâu
+        ('CT26', 'SP26', 1),
+        -- Nước Ép Dưa Hấu
+        ('CT30', 'SP30', 1)
+-- Cà Phê Muối
 END;
 
 /* =============================================
@@ -629,7 +650,56 @@ BEGIN
         -- CT13: Kem Cheese (Dùng Sữa tươi, Sữa đặc tạo form) - Định lượng 1 phần
         ('CTCT51', 'CT13', 'NL04', 0.040, 1),
         -- 40ml sữa tươi
-        ('CTCT52', 'CT13', 'NL02', 0.015, 1)
+        ('CTCT52', 'CT13', 'NL02', 0.015, 1),
+        ('CTCT53', 'CT21', 'NL17', 0.010, 1),
+        ('CTCT54', 'CT21', 'NL16', 0.030, 1),
+        ('CTCT55', 'CT21', 'NL02', 0.025, 1),
+        ('CTCT56', 'CT21', 'NL14', 0.250, 1),
+        ('CTCT57', 'CT21', 'NL15', 1.000, 1),
+
+        -- 2. Trà Vải Hạt Chia (CT22): Cốt trà lài, Syrup vải, Vải ngâm, Hạt chia, Đường, Đá, Ly
+        ('CTCT58', 'CT22', 'NL18', 0.010, 1),
+        ('CTCT59', 'CT22', 'NL21', 0.020, 1),
+        ('CTCT60', 'CT22', 'NL19', 0.050, 1),
+        -- ~2-3 trái vải ngâm
+        ('CTCT61', 'CT22', 'NL20', 0.005, 1),
+        -- 5g hạt chia
+        ('CTCT62', 'CT22', 'NL03', 0.015, 1),
+        ('CTCT63', 'CT22', 'NL14', 0.250, 1),
+        ('CTCT64', 'CT22', 'NL15', 1.000, 1),
+
+        -- 3. Trà Dâu Tây Tươi (CT23): Cốt trà lài, Dâu tươi đầm, Đường, Đá, Ly
+        ('CTCT65', 'CT23', 'NL18', 0.010, 1),
+        ('CTCT66', 'CT23', 'NL22', 0.060, 1),
+        -- 60g dâu tươi đầm nhuyễn
+        ('CTCT67', 'CT23', 'NL03', 0.025, 1),
+        ('CTCT68', 'CT23', 'NL14', 0.250, 1),
+        ('CTCT69', 'CT23', 'NL15', 1.000, 1),
+
+        -- 4. Sinh Tố Dâu (CT25): Dâu tươi, Sữa đặc, Sữa tươi, Đá, Ly
+        ('CTCT70', 'CT25', 'NL22', 0.100, 1),
+        -- 100g dâu tươi xay
+        ('CTCT71', 'CT25', 'NL02', 0.030, 1),
+        ('CTCT72', 'CT25', 'NL04', 0.050, 1),
+        ('CTCT73', 'CT25', 'NL14', 0.200, 1),
+        ('CTCT74', 'CT25', 'NL15', 1.000, 1),
+
+        -- 5. Nước Ép Dưa Hấu (CT26): Dưa hấu ép lấy nước, Đường, Đá, Ly
+        ('CTCT75', 'CT26', 'NL23', 0.300, 1),
+        -- 300g dưa hấu tươi
+        ('CTCT76', 'CT26', 'NL03', 0.015, 1),
+        ('CTCT77', 'CT26', 'NL14', 0.200, 1),
+        ('CTCT78', 'CT26', 'NL15', 1.000, 1),
+
+        -- 6. Cà Phê Muối (CT30): Cà phê, Sữa đặc, Kem béo Rich's (tạo form), Muối biển, Đá, Ly
+        ('CTCT79', 'CT30', 'NL01', 0.025, 1),
+        ('CTCT80', 'CT30', 'NL02', 0.020, 1),
+        ('CTCT81', 'CT30', 'NL24', 0.030, 1),
+        -- 30ml kem béo đánh foam
+        ('CTCT82', 'CT30', 'NL25', 0.002, 1),
+        -- 2g bột muối biển
+        ('CTCT83', 'CT30', 'NL14', 0.200, 1),
+        ('CTCT84', 'CT30', 'NL15', 1.000, 1)
 END;
 
 /* =============================================
@@ -1055,7 +1125,19 @@ BEGIN
         ('LONL28', 'PNNL08', 'NL11', 100.0, '2026-03-05', '2026-02-20', '2027-02-20', 400000, N'Đã xác nhận', 1),
 
         -- Ly Nhựa Nắp Cầu 500ml (Hạn sử dụng: 10/01/2030)
-        ('LONL29', 'PNNL08', 'NL15', 10000.0, '2026-03-05', '2026-01-10', '2030-01-10', 500, N'Đã xác nhận', 1)
+        ('LONL29', 'PNNL08', 'NL15', 10000.0, '2026-03-05', '2026-01-10', '2030-01-10', 500, N'Đã xác nhận', 1),
+        ('LONL30', 'PNNL08', 'NL16', 50.0, '2026-03-05', '2026-02-01', '2027-02-01', 150000, N'Đã xác nhận', 1),
+        ('LONL31', 'PNNL08', 'NL17', 100.0, '2026-03-05', '2026-02-10', '2027-02-10', 120000, N'Đã xác nhận', 1),
+        ('LONL32', 'PNNL08', 'NL18', 100.0, '2026-03-05', '2026-02-10', '2027-02-10', 130000, N'Đã xác nhận', 1),
+        ('LONL33', 'PNNL08', 'NL19', 100.0, '2026-03-05', '2026-01-15', '2027-01-15', 45000, N'Đã xác nhận', 1),
+        ('LONL34', 'PNNL08', 'NL20', 20.0, '2026-03-05', '2026-01-20', '2027-01-20', 100000, N'Đã xác nhận', 1),
+        ('LONL35', 'PNNL08', 'NL21', 50.0, '2026-03-05', '2026-02-01', '2027-02-01', 140000, N'Đã xác nhận', 1),
+        ('LONL36', 'PNNL08', 'NL22', 30.0, '2026-03-05', '2026-03-01', '2026-03-15', 120000, N'Đã xác nhận', 1),
+        -- Dâu tây HSD ngắn
+        ('LONL37', 'PNNL08', 'NL23', 50.0, '2026-03-05', '2026-03-01', '2026-03-15', 15000, N'Đã xác nhận', 1),
+        -- Dưa hấu HSD ngắn
+        ('LONL38', 'PNNL08', 'NL24', 200.0, '2026-03-05', '2026-02-20', '2026-08-20', 65000, N'Đã xác nhận', 1),
+        ('LONL39', 'PNNL08', 'NL25', 10.0, '2026-03-05', '2026-01-10', '2027-01-10', 80000, N'Đã xác nhận', 1)
 -- Đá viên (2000 bao)
 -- Đá viên
 -- Syrup
@@ -1226,7 +1308,17 @@ BEGIN
     VALUES
         ('CT009', 'NCC05', N'Nguyên liệu', 'NL04', 28000),
         -- Sửa mã NCC
-        ('CT010', 'NCC05', N'Sản phẩm', 'SP30', 6000)
+        ('CT010', 'NCC05', N'Sản phẩm', 'SP30', 6000),
+        ('CT011', 'NCC05', N'Nguyên liệu', 'NL16', 150000),
+        ('CT012', 'NCC05', N'Nguyên liệu', 'NL17', 120000),
+        ('CT013', 'NCC05', N'Nguyên liệu', 'NL18', 130000),
+        ('CT014', 'NCC04', N'Nguyên liệu', 'NL19', 45000),
+        ('CT015', 'NCC04', N'Nguyên liệu', 'NL20', 100000),
+        ('CT016', 'NCC05', N'Nguyên liệu', 'NL21', 140000),
+        ('CT017', 'NCC04', N'Nguyên liệu', 'NL22', 120000),
+        ('CT018', 'NCC04', N'Nguyên liệu', 'NL23', 15000),
+        ('CT019', 'NCC03', N'Nguyên liệu', 'NL24', 65000),
+        ('CT020', 'NCC05', N'Nguyên liệu', 'NL25', 80000)
 
     ALTER TABLE ChiTietNhaCungCap 
     ADD CONSTRAINT FK_CTNCC_NhaCungCap FOREIGN KEY (MaNCC) REFERENCES NhaCungCap(MaNCC)

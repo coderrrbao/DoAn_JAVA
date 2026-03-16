@@ -133,7 +133,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         cbLoaiNuoc.setFont(cbLoaiNuoc.getFont().deriveFont(11.0f));
         TaoUI.setFixSize(cbLoaiNuoc, 100, 35);
         thongTin5.add(new JLabel("Loại nước"));
-        thongTin5.add(Box.createRigidArea(new Dimension(25, 0)));
+        thongTin5.add(Box.createRigidArea(new Dimension(32, 0)));
         thongTin5.add(cbLoaiNuoc);
         thongTin5.add(Box.createHorizontalGlue());
         thongTin5.add(new JLabel("Danh mục"));
@@ -149,7 +149,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray(new String[0]));
         cbTrangThaiXuLy.setFont(cbTrangThaiXuLy.getFont().deriveFont(11.0f));
         thongTin5_1.add(new JLabel("Trạng thái"));
-        thongTin5_1.add(Box.createRigidArea(new Dimension(25, 0)));
+        thongTin5_1.add(Box.createRigidArea(new Dimension(30, 0)));
         thongTin5_1.add(cbTrangThaiXuLy);
         thongTin5_1.add(Box.createHorizontalGlue());
 
