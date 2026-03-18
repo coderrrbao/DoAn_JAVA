@@ -144,7 +144,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         ArrayList<String> luaChonTrangThaiXuLy = new ArrayList<>();
         luaChonTrangThaiXuLy.add("-- Tất cả --");
         luaChonTrangThaiXuLy.add("Đã xác nhận");
-        luaChonTrangThaiXuLy.add("Chờ xử lý");
+        luaChonTrangThaiXuLy.add("Đang xử lý");
         luaChonTrangThaiXuLy.add("Ẩn");
         cbTrangThaiXuLy = new JComboBox<>(luaChonTrangThaiXuLy.toArray(new String[0]));
         cbTrangThaiXuLy.setFont(cbTrangThaiXuLy.getFont().deriveFont(11.0f));
@@ -457,7 +457,7 @@ public class ChiTietSanPhamDialog extends JDialog {
             return false;
         }
 
-        if (cbTrangThaiXuLy.getSelectedIndex() <= 0) {
+        if (sanPham != null && cbTrangThaiXuLy.getSelectedIndex() <= 0) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn Trạng thái phù hợp!", "Lỗi", JOptionPane.ERROR_MESSAGE);
             return false;
         }
@@ -530,7 +530,7 @@ public class ChiTietSanPhamDialog extends JDialog {
         }
 
         sp.setListSize(dongGoiListSize());
-        sp.setTrangThaiXuLy("Chờ xử lý");
+        sp.setTrangThaiXuLy("Đang xử lý");
 
         if (lblAnh.getIcon() != null) {
             SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();

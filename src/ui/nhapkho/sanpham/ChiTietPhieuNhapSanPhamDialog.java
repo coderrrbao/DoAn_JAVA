@@ -154,6 +154,9 @@ public class ChiTietPhieuNhapSanPhamDialog extends JDialog {
         SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
         for (LoSanPham loSanPham : phieuNhapSanPham.getListLoSanPham()) {
             SanPham sanPham = sanPhamBUS.timSanPham(loSanPham.getMaSP());
+            if (!sanPham.getTrangThaiXuLy().equals("Đã xác nhận")) {
+                continue;
+            }
             modelSanPham.addRow(new Object[] {
                     loSanPham.getMaLoSP(),
                     sanPham != null ? sanPham.getTenSP() : "",

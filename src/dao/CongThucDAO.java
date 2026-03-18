@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import dao.conection.DBConnection;
 import dto.CongThuc;
 
-
 public class CongThucDAO {
     public CongThuc timCongThuc(String maSP) {
         CongThuc congThuc = null;
@@ -32,12 +31,10 @@ public class CongThucDAO {
         return congThuc;
     }
 
-    public boolean themCongThuc(CongThuc congThuc,Connection conn) {
+    public boolean themCongThuc(CongThuc congThuc, Connection conn) {
         String sql = "INSERT INTO CongThuc (MaCT, MaSP, TrangThai) VALUES (?, ?, ?)";
-        try ( PreparedStatement pst = conn.prepareStatement(sql)) {
-            if (congThuc.getMaCT() == null || congThuc.getMaCT().trim().isEmpty()) {
-                congThuc.setMaCT(layMaCongThucKhaDung(conn));
-            }
+        try (PreparedStatement pst = conn.prepareStatement(sql)) {
+            congThuc.setMaCT(layMaCongThucKhaDung(conn));
             pst.setString(1, layMaCongThucKhaDung(conn));
             pst.setString(2, congThuc.getMaSp());
             pst.setInt(3, 1);

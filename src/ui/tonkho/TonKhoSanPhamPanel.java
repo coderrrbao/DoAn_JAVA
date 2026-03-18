@@ -70,6 +70,9 @@ public class TonKhoSanPhamPanel extends JPanel {
         LoSanPhamBUS loSanPhamBUS = LoSanPhamBUS.getLoSanPhamBUS();
         ArrayList<SanPham> listSanPham = sanPhamBUS.layListSanPham();
         for (SanPham sanPham : listSanPham) {
+            if (!sanPham.getTrangThaiXuLy().equals("Đã xác nhận")){
+                continue;
+            }
             int soLuong = 0;
             if (sanPham.getLoaiNuoc().equals("Pha chế")) {
                 soLuong = LoNguyenLieuBUS.getLoNguyenLieuBUS().laySoLuongSanPhamPhaCheTrongKho(sanPham);

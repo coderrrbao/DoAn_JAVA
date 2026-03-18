@@ -18,7 +18,7 @@ public class ListSanPhamPanel extends JPanel {
     private SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
     private SanPhamClickListener listener;
 
-    private final int PAGE_SIZE = 16;
+    private final int PAGE_SIZE = 12;
     private int currentPage = 1;
 
     private ArrayList<SanPham> dsHienTai = null;
@@ -89,44 +89,70 @@ public class ListSanPhamPanel extends JPanel {
         taoListSpPanel();
     }
 
+    // public void renderTrang() {
+    // listSanPhamPanel.removeAll();
+
+    // ArrayList<SanPham> dsTrang = new ArrayList<>();
+
+    // if (dsHienTai == null) {
+    // dsTrang = sanPhamBUS.layTrang(currentPage, PAGE_SIZE);
+    // } else {
+    // if (dsHienTai.isEmpty()) {
+    // lblPage.setText("0/0");
+    // listSanPhamPanel.revalidate();
+    // listSanPhamPanel.repaint();
+    // return;
+    // }
+
+    // int tongTrang = getTongSoTrang();
+    // if (currentPage > tongTrang) {
+    // currentPage = 1;
+    // }
+
+    // int from = (currentPage - 1) * PAGE_SIZE;
+    // int to = Math.min(from + PAGE_SIZE, dsHienTai.size());
+
+    // dsTrang = new ArrayList<>(dsHienTai.subList(from, to));
+    // }
+
+    // for (SanPham sp : dsTrang) {
+
+    // if (sp.getTrangThaiXuLy().equals("Ẩn")) {
+    // continue;
+    // }
+    // listSanPhamPanel.add(
+    // new SanPhamBhItemPanel(sp, "Mặc định", listener));
+    // }
+
+    // lblPage.setText(currentPage + "/" + getTongSoTrang());
+
+    // listSanPhamPanel.revalidate();
+    // listSanPhamPanel.repaint();
+    // }
+
     public void renderTrang() {
         listSanPhamPanel.removeAll();
+        SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
 
-        ArrayList<SanPham> dsTrang = new ArrayList<>();
-
-        if (dsHienTai == null) {
-            dsTrang = sanPhamBUS.layTrang(currentPage, PAGE_SIZE);
-        } else {
-            if (dsHienTai.isEmpty()) {
-                lblPage.setText("0/0");
-                listSanPhamPanel.revalidate();
-                listSanPhamPanel.repaint();
-                return;
-            }
-
-            int tongTrang = getTongSoTrang();
-            if (currentPage > tongTrang) {
-                currentPage = 1;
-            }
-
-            int from = (currentPage - 1) * PAGE_SIZE;
-            int to = Math.min(from + PAGE_SIZE, dsHienTai.size());
-
-            dsTrang = new ArrayList<>(dsHienTai.subList(from, to));
+        int tongTrang = sanPhamBUS.layTongPageSanPhamBanHang(PAGE_SIZE);
+        if (currentPage > tongTrang) {
+            currentPage = 1;
         }
-
-        for (SanPham sp : dsTrang) {
-            if (sp.getTrangThaiXuLy().equals("Ẩn")) {
-                continue;
-            }
+        ArrayList<SanPham> listSanPham = sanPhamBUS.laySanPhamHienThiBanHang(currentPage, PAGE_SIZE);
+        if (listSanPham.size() == 0) {
+            setChiSoTrang(0, 0);
+        }
+        setChiSoTrang(currentPage, tongTrang);
+        for (SanPham sanPham : listSanPham) {
             listSanPhamPanel.add(
-                    new SanPhamBhItemPanel(sp, "Mặc định", listener));
+                    new SanPhamBhItemPanel(sanPham, "Mặc định", listener));
         }
-
-        lblPage.setText(currentPage + "/" + getTongSoTrang());
-
         listSanPhamPanel.revalidate();
         listSanPhamPanel.repaint();
+    }
+
+    private void setChiSoTrang(int chiSoHt, int csMax) {
+        lblPage.setText(chiSoHt + "/" + csMax);
     }
 
     private int getTongSoTrang() {

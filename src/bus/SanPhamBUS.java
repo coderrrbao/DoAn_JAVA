@@ -61,7 +61,7 @@ public class SanPhamBUS {
         if (canUpdate || listSanPham == null) {
             khoitao();
         }
-        return (int) Math.ceil((double) listSanPham.size() / pageSize);
+        return (int) Math.ceil((double) layListSanPham().size() / pageSize);
     }
 
     public ArrayList<SanPham> layTrang(int page, int pageSize) {
@@ -95,6 +95,46 @@ public class SanPhamBUS {
         return null;
     }
 
+    public ArrayList<SanPham> laySanPhamHienThiBanHang(int chiSo, int soSpMax) {
+        if (canUpdate || listSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<SanPham> listSanPhamBanHang = new ArrayList<>();
+        for (SanPham sanPham : listSanPham) {
+            if ("Đã xác nhận".equals(sanPham.getTrangThaiXuLy())
+                    && !sanPham.getDanhMuc().getTenDM().equals("Topping")) {
+                listSanPhamBanHang.add(sanPham);
+            }
+        }
+        System.out.println(listSanPhamBanHang.size());
+        int tongSoSp = listSanPhamBanHang.size();
+        int batDau = (chiSo - 1) * soSpMax;
+
+        if (batDau < 0 || batDau >= tongSoSp) {
+            return new ArrayList<>();
+        }
+
+        int ketThuc = Math.min(batDau + soSpMax, tongSoSp);
+        return new ArrayList<>(listSanPhamBanHang.subList(batDau, ketThuc));
+    }
+
+    public int layTongPageSanPhamBanHang(int soSpMax) {
+        if (canUpdate || listSanPham == null) {
+            khoitao();
+            canUpdate = false;
+        }
+        ArrayList<SanPham> listSanPhamBanHang = new ArrayList<>();
+        for (SanPham sanPham : listSanPham) {
+            if ("Đã xác nhận".equals(sanPham.getTrangThaiXuLy())
+                    && !sanPham.getDanhMuc().getTenDM().equals("Topping")) {
+                listSanPhamBanHang.add(sanPham);
+            }
+        }
+
+        return (int) Math.ceil((double) listSanPhamBanHang.size() / soSpMax);
+    }
+
     public SanPham timSanPhamTheoTen(String ten) {
         if (canUpdate || listSanPham == null) {
             khoitao();
@@ -124,18 +164,20 @@ public class SanPhamBUS {
             if (!sanPhamDAO.themSanPham(sanPham, conn)) {
                 throw new SQLException();
             }
-
-            sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
-            if (!congThucBUS.themCongThuc(sanPham.getCongThuc(), conn)) {
-                throw new SQLException();
-            }
-
-            for (Size size : sanPham.getListSize()) {
-                size.setMaSP(sanPham.getMaSP());
-                if (!sizeBUS.themSize(size, conn)) {
+            if (sanPham.getLoaiNuoc().equals("Pha chế")) {
+                sanPham.getCongThuc().setMaSp(sanPham.getMaSP());
+                if (!congThucBUS.themCongThuc(sanPham.getCongThuc(), conn)) {
                     throw new SQLException();
                 }
+
+                for (Size size : sanPham.getListSize()) {
+                    size.setMaSP(sanPham.getMaSP());
+                    if (!sizeBUS.themSize(size, conn)) {
+                        throw new SQLException();
+                    }
+                }
             }
+
             conn.commit();
 
         } catch (SQLException e) {

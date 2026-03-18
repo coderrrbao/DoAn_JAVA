@@ -75,6 +75,7 @@ public class ThongKeSanPhamPanel extends JPanel {
     }
 
     private void loadBieuDoTron() {
+        datasetCot.clear();
         Map<DanhMuc, Integer> spBanRaTheoDM = thongKeBUS.laySL_SP_BanRaTheoDanhMuc();
         spBanRaTheoDM.forEach((danhMuc, soLuong) -> {
             themPhanTuVaoBieuDoTron(danhMuc.getTenDM(), soLuong);
@@ -82,6 +83,7 @@ public class ThongKeSanPhamPanel extends JPanel {
     }
 
     private void loadBieuDoCot() {
+        datasetCot.clear();
         Map<SanPham, Integer> top5SanPham = thongKeBUS.layTop5_SanPhamBanChay();
         for (Map.Entry<SanPham, Integer> entry : top5SanPham.entrySet()) {
             themPhanTuVaoBieuDoCot(entry.getKey().getTenSP(), entry.getValue());
@@ -89,6 +91,7 @@ public class ThongKeSanPhamPanel extends JPanel {
     }
 
     private void loadTable() {
+        model.setRowCount(0);
         Map<SanPham, Integer> laySpBanChay = thongKeBUS.laySL_SP_BanRaGiamDan();
         for (Map.Entry<SanPham, Integer> entry : laySpBanChay.entrySet()) {
             themPhanTuVaoTable(entry.getKey(), entry.getValue());
