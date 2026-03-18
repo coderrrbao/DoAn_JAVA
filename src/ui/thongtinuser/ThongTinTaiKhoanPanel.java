@@ -12,12 +12,15 @@ import ui.login.PhienDangNhap;
 import ui.login.LoginUI;
 import util.TaoTinNhan;
 import util.TaoUI;
+import javax.swing.JDialog;
 
 public class ThongTinTaiKhoanPanel extends JPanel {
     private JPasswordField  tfMatKhau,tfMatKhauMoi, tfXacNhan;
     JButton btnXacNhan, btnHuy;
+    private JDialog parentDialog;
 
-    public ThongTinTaiKhoanPanel() {
+    public ThongTinTaiKhoanPanel(JDialog dialog) {
+        this.parentDialog = dialog;
         TaoUI.taoPanelCanGiua(this, 400, 530);
         initGUI();
         ganSuKien();
@@ -61,6 +64,9 @@ public class ThongTinTaiKhoanPanel extends JPanel {
                     if (taiKhoanBUS.suaMatKhau(PhienDangNhap.getTaiKhoan().getTenDangNhap(), matKhauMoi)) {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thành công", "Thông báo", 1);
                         LoginUI.getLoginUI().getMainFrame().loadAllData();
+                        if (parentDialog != null) {
+                            parentDialog.dispose();
+                        }
                     } else {
                         TaoTinNhan.showAutoCloseMessage("Đổi mật khẩu thất bại", "Thông báo", 1);
                     }
