@@ -16,6 +16,7 @@ import com.toedter.calendar.JDateChooser;
 import bus.NhanVienBUS;
 import dto.NhanVien;
 import ui.login.PhienDangNhap;
+import ui.login.LoginUI;
 import util.Anh;
 import util.TaoUI;
 
@@ -28,8 +29,10 @@ public class ThongTinCaNhanPanel extends JPanel {
     private JFileChooser fileChooser = new JFileChooser();
     private boolean daDoiAnh = false;
     private NhanVien nhanVien = null;
+    private JDialog parentDialog;
 
-    public ThongTinCaNhanPanel() {
+    public ThongTinCaNhanPanel(JDialog dialog) {
+        this.parentDialog = dialog;
         TaoUI.taoPanelBoxLayoutDoc(this, 400, 780);
         this.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         initGUI();
@@ -57,8 +60,10 @@ public class ThongTinCaNhanPanel extends JPanel {
                 if (errorMsg == null) {
                     JOptionPane.showMessageDialog(this, "Cập nhật thông tin cá nhân thành công!", "Thông báo",
                             JOptionPane.INFORMATION_MESSAGE);
-                    setDuLieu(nv);
-                    tacChucNangSua();
+                    LoginUI.getLoginUI().getMainFrame().loadAllData();
+                    if (parentDialog != null) {
+                        parentDialog.dispose();
+                    }
                 } else {
                     JOptionPane.showMessageDialog(this, errorMsg, "Lỗi cập nhật",
                             JOptionPane.ERROR_MESSAGE);

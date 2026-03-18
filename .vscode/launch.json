@@ -3,6 +3,13 @@
   "configurations": [
     {
       "type": "java",
+      "name": "Main",
+      "request": "launch",
+      "mainClass": "Main",
+      "projectName": "DoAn_JAVA_5bc8b9eb"
+    },
+    {
+      "type": "java",
       "name": "XuatKhoNguyenLieuDialog",
       "request": "launch",
       "mainClass": "ui.xuatkho.nguyenlieu.XuatKhoNguyenLieuDialog",

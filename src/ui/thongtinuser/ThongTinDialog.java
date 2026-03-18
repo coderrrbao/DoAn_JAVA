@@ -18,8 +18,8 @@ public class ThongTinDialog extends JDialog {
         setLayout(new BorderLayout());
         JTabbedPane tabbedPane = new JTabbedPane();
         add(tabbedPane,BorderLayout.CENTER);
-        thongTinCaNhanPanel = new ThongTinCaNhanPanel();
-        thongTinTaiKhoanPanel = new ThongTinTaiKhoanPanel();
+        thongTinCaNhanPanel = new ThongTinCaNhanPanel(this);
+        thongTinTaiKhoanPanel = new ThongTinTaiKhoanPanel(this);
         tabbedPane.addTab("Thông tin", thongTinCaNhanPanel);
         tabbedPane.addTab("Tài khoản", thongTinTaiKhoanPanel);
     }
