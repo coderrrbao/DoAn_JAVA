@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import dao.LoSanPhamDAO;
 import dao.conection.DBConnection;
 import dto.LoSanPham;
@@ -317,25 +319,36 @@ public class LoSanPhamBUS {
         return list;
     }
 
-    public ArrayList<String> capNhapTonKhoSauKhiBan(Connection conn, SanPham sanPham, double soLuongCan) {
+    public HashMap<LoSanPham, Double> capNhapTonKhoSauKhiBan(Connection conn, SanPham sanPham, double soLuongCan) {
+
+        HashMap<LoSanPham, Double> mapHangHoa = new HashMap<>();
 
         ArrayList<LoSanPham> listLoSPCanSLy = layLoSanPhamDeBan(sanPham, soLuongCan);
-        ArrayList<String> listThongBao = new ArrayList<>();
+
         for (LoSanPham loSanPham : listLoSPCanSLy) {
-            if (soLuongCan >= loSanPham.getSoLuong()) {
+            if (soLuongCan <= 0)
+                break;
+
+            double slTrongLo = loSanPham.getSoLuong();
+            double slThucTeLay;
+
+            if (soLuongCan >= slTrongLo) {
+                slThucTeLay = slTrongLo;
                 xoaLoSanPham(conn, loSanPham.getMaLoSP());
-                soLuongCan -= loSanPham.getSoLuong();
-                listThongBao.add("Vui lòng lấy " + soLuongCan + " sản phẩm " + sanPham.getTenSP() + " ở lô có mã : "
-                        + loSanPham.getMaLoSP() + " để sử dụng");
+                soLuongCan -= slTrongLo;
             } else {
+                slThucTeLay = soLuongCan;
                 truSoLuongLo(conn, loSanPham.getMaLoSP(), soLuongCan);
-                listThongBao.add("Vui lòng lấy " + soLuongCan + " sản phẩm " + sanPham.getTenSP() + " ở lô có mã : "
-                        + loSanPham.getMaLoSP() + " để sử dụng");
                 soLuongCan = 0;
             }
 
+            mapHangHoa.put(loSanPham, mapHangHoa.getOrDefault(loSanPham, 0.0) + slThucTeLay);
+
+            System.out.println("Vui lòng lấy " + slThucTeLay + " sản phẩm " + sanPham.getTenSP() +
+                    " ở lô có mã: " + loSanPham.getMaLoSP() + " để sử dụng.");
         }
-        return listThongBao;
+
+        return mapHangHoa;
     }
 
     public boolean xoaLoSanPham(Connection conn, String maLoSP) {

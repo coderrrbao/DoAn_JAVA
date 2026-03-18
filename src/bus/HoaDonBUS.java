@@ -14,8 +14,12 @@ import dto.ChiTietCongThuc;
 import dto.ChiTietHoaDon;
 import dto.CongThuc;
 import dto.HoaDon;
+import dto.LoNguyenLieu;
+import dto.LoSanPham;
 import dto.NguyenLieu;
+import dto.SanPham;
 import dto.Size;
+import java.text.DecimalFormat;
 
 public class HoaDonBUS {
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
@@ -92,6 +96,8 @@ public class HoaDonBUS {
     public ArrayList<String> ThanhToan(HoaDon hd) {
         Connection conn = null;
         ArrayList<String> listThongBao = new ArrayList<>();
+        HashMap<LoSanPham, Double> mapHangHoaSp = new HashMap<>();
+        HashMap<LoNguyenLieu, Double> mapHangHoaNL = new HashMap<>();
         try {
             conn = DBConnection.getConnection();
             conn.setAutoCommit(false);
@@ -113,9 +119,16 @@ public class HoaDonBUS {
                 int soLuongMua = ct.getSoLuong();
 
                 if (loaiNuoc.equalsIgnoreCase("Có sẵn")) {
-                    ArrayList<String> ketQuaCapNhapKho = LoSanPhamBUS.getLoSanPhamBUS().capNhapTonKhoSauKhiBan(conn,
-                            ct.getSanPham(), soLuongMua);
-                    listThongBao.addAll(ketQuaCapNhapKho);
+
+                    HashMap<LoSanPham, Double> ketQua = LoSanPhamBUS.getLoSanPhamBUS()
+                            .capNhapTonKhoSauKhiBan(conn, ct.getSanPham(), soLuongMua);
+
+                    for (Map.Entry<LoSanPham, Double> entry : ketQua.entrySet()) {
+                        LoSanPham lo = entry.getKey();
+                        Double slLayTuLo = entry.getValue();
+
+                        mapHangHoaSp.put(lo, mapHangHoaSp.getOrDefault(lo, 0.0) + slLayTuLo);
+                    }
 
                 } else if (loaiNuoc.equalsIgnoreCase("Pha chế")) {
                     CongThuc congThuc = ct.getSanPham().getCongThuc();
@@ -130,11 +143,47 @@ public class HoaDonBUS {
                         if (size != null) {
                             canTru = canTru + canTru * ((double) size.getPhanTramNL() / 100);
                         }
-                        ArrayList<String> ketQuaCapNhapKho = LoNguyenLieuBUS.getLoNguyenLieuBUS()
+
+                        HashMap<LoNguyenLieu, Double> ketQua = LoNguyenLieuBUS.getLoNguyenLieuBUS()
                                 .capNhapTonKhoSauKhiBan(conn, ctct.getNguyenLieu(), canTru);
-                        listThongBao.addAll(ketQuaCapNhapKho);
+
+                        for (Map.Entry<LoNguyenLieu, Double> entry : ketQua.entrySet()) {
+                            LoNguyenLieu lo = entry.getKey();
+                            Double slLayTuLo = entry.getValue();
+
+                            mapHangHoaNL.put(lo, mapHangHoaNL.getOrDefault(lo, 0.0) + slLayTuLo);
+                        }
+
                     }
                 }
+            }
+
+            DecimalFormat df = new DecimalFormat("#.###");
+
+            for (Map.Entry<LoNguyenLieu, Double> entry : mapHangHoaNL.entrySet()) {
+                LoNguyenLieu loNL = entry.getKey();
+                Double tongSL = entry.getValue();
+
+                NguyenLieu nguyenLieu = NguyenLieuBUS.getNguyenLieuBUS().timNguyenLieu(loNL.getMaNL());
+                String tenNL = (nguyenLieu != null) ? nguyenLieu.getTenNL() : "Chưa xác định";
+
+                String slDinhDang = df.format(tongSL);
+
+                listThongBao.add("Vui lòng lấy " + slDinhDang + " nguyên liệu " + tenNL +
+                        " ở lô có mã: " + loNL.getMaLoNL() + " để sử dụng.");
+            }
+
+            for (Map.Entry<LoSanPham, Double> entry : mapHangHoaSp.entrySet()) {
+                LoSanPham loSP = entry.getKey();
+                Double tongSL = entry.getValue();
+
+                SanPham sanPham = SanPhamBUS.getSanPhamBUS().timSanPham(loSP.getMaSP());
+                String tenSP = (sanPham != null) ? sanPham.getTenSP() : "Chưa xác định";
+
+                String slDinhDang = df.format(tongSL);
+
+                listThongBao.add("Vui lòng lấy " + slDinhDang + " sản phẩm " + tenSP +
+                        " ở lô có mã: " + loSP.getMaLoSP() + " để sử dụng.");
             }
 
             conn.commit();

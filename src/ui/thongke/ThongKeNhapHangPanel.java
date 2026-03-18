@@ -98,6 +98,9 @@ public class ThongKeNhapHangPanel extends JPanel {
         modelSP.setRowCount(0);
         NhaCungCapBUS nhaCungCapBUS = NhaCungCapBUS.getNhaCungCapBUS();
         for (PhieuNhapNguyenLieu phieuNhapNguyenLieu : listPhieuNhapNguyenLieu) {
+            if (!locNgay.ngayTrongKhoan(phieuNhapNguyenLieu.getNgayNhap())){
+                return;
+            }
             NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapNguyenLieu.getMaNCC());
             modelNL.addRow(new Object[] { phieuNhapNguyenLieu.getMaPN(), phieuNhapNguyenLieu.getNgayNhap(),
                     phieuNhapNguyenLieu.getMaNV(), phieuNhapNguyenLieu.getGhiChu(),
@@ -105,6 +108,9 @@ public class ThongKeNhapHangPanel extends JPanel {
             giaNhapNL += phieuNhapNguyenLieu.getTongTien();
         }
         for (PhieuNhapSanPham phieuNhapSanPham : listPhieuNhapSanPham) {
+             if (!locNgay.ngayTrongKhoan(phieuNhapSanPham.getNgayNhap())){
+                return;
+            }
             NhaCungCap nhaCungCap = nhaCungCapBUS.timNhaCungCap(phieuNhapSanPham.getMaNCC());
             modelSP.addRow(new Object[] { phieuNhapSanPham.getMaPN(), phieuNhapSanPham.getNgayNhap(),
                     phieuNhapSanPham.getMaNV(), phieuNhapSanPham.getGhiChu(), nhaCungCap.getTenNCC() });
@@ -220,6 +226,7 @@ public class ThongKeNhapHangPanel extends JPanel {
     }
 
     private void setupButtonListeners() {
+        locNgay.setEvent(()->{loadDuLieu();});
         xuatExbtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

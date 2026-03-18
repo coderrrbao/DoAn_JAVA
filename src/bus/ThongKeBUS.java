@@ -16,31 +16,26 @@ public class ThongKeBUS {
     private SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();
     private HoaDonDAO hoaDonDAO = new HoaDonDAO();
     private ChiTietHoaDonBUS chiTietHoaDonBUS = new ChiTietHoaDonBUS();
-    private Map<SanPham, Integer> laySpBanRa = laySL_SP_BanRaGiamDan();
 
-    public void loadLaiTuDatabase() {
-        laySpBanRa = laySL_SP_BanRaGiamDan();
-    }
+
 
     public Map<SanPham, Integer> layTop5_SanPhamBanChay() {
         Map<SanPham, Integer> result = new LinkedHashMap<>();
         int soSpCan = 5;
-        for (Map.Entry<SanPham, Integer> entry : laySpBanRa.entrySet()) {
+        for (Map.Entry<SanPham, Integer> entry : laySL_SP_BanRaGiamDan().entrySet()) {
             if (soSpCan <= 0) {
                 break;
             }
             result.put(entry.getKey(), entry.getValue());
             soSpCan--;
         }
-
         return result;
-
     }
 
     public Map<DanhMuc, Integer> laySL_SP_BanRaTheoDanhMuc() {
         Map<DanhMuc, Integer> mapResult = new HashMap<>();
 
-        for (Map.Entry<SanPham, Integer> entry : laySpBanRa.entrySet()) {
+        for (Map.Entry<SanPham, Integer> entry : laySL_SP_BanRaGiamDan().entrySet()) {
             mapResult.put(entry.getKey().getDanhMuc(),
                     mapResult.getOrDefault(entry.getKey().getDanhMuc(), 0) + entry.getValue());
         }
@@ -55,7 +50,7 @@ public class ThongKeBUS {
 
         for (ChiTietHoaDon chiTietHoaDon : listChiTietHoaDon) {
             mapSanPham.put(chiTietHoaDon.getSanPham().getMaSP(),
-                    mapSanPham.getOrDefault(chiTietHoaDon.getSanPham().getMaSP(), 0) + 1);
+                    mapSanPham.getOrDefault(chiTietHoaDon.getSanPham().getMaSP(), 0) + chiTietHoaDon.getSoLuong());
         }
 
         List<Map.Entry<String, Integer>> list = new ArrayList<>(mapSanPham.entrySet());

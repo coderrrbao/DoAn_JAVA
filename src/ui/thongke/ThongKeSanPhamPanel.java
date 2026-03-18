@@ -71,7 +71,7 @@ public class ThongKeSanPhamPanel extends JPanel {
     }
 
     private void themPhanTuVaoTable(SanPham sanPham, int soLuong) {
-        model.addRow(new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), 1 });
+        model.addRow(new Object[] { sanPham.getMaSP(), sanPham.getTenSP(), soLuong });
     }
 
     private void loadBieuDoTron() {

@@ -4,10 +4,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import dao.LoNguyenLieuDAO;
 import dao.conection.DBConnection;
 import dto.ChiTietCongThuc;
 import dto.LoNguyenLieu;
+import dto.LoSanPham;
 import dto.NguyenLieu;
 import dto.SanPham;
 
@@ -131,9 +134,11 @@ public class LoNguyenLieuBUS {
         return listKetQua;
     }
 
-    public ArrayList<String> capNhapTonKhoSauKhiBan(Connection conn, NguyenLieu nguyenLieu, double soLuongCan) {
+    public HashMap<LoNguyenLieu, Double> capNhapTonKhoSauKhiBan(Connection conn, NguyenLieu nguyenLieu,
+            double soLuongCan) {
+        HashMap<LoNguyenLieu, Double> mapHangHoa = new HashMap<>();
         ArrayList<LoNguyenLieu> listLoNLCanSLy = layLoNguyenLieuDeBan(nguyenLieu.getMaNL(), soLuongCan);
-        ArrayList<String> listThongBao = new ArrayList<>();
+
         for (LoNguyenLieu loNL : listLoNLCanSLy) {
             if (soLuongCan <= 0)
                 break;
@@ -146,17 +151,18 @@ public class LoNguyenLieuBUS {
                 xoaLoNguyenLieu(conn, loNL.getMaLoNL());
                 soLuongCan -= slTrongLo;
             } else {
-
                 slLayRa = soLuongCan;
                 truSoLuongLo(conn, loNL.getMaLoNL(), soLuongCan);
                 soLuongCan = 0;
             }
 
-            listThongBao.add("Vui lòng lấy " + slLayRa + " nguyên liệu " + nguyenLieu.getTenNL() +
+            mapHangHoa.put(loNL, mapHangHoa.getOrDefault(loNL, 0.0) + slLayRa);
+
+            System.out.println("Vui lòng lấy " + slLayRa + " nguyên liệu " + nguyenLieu.getTenNL() +
                     " ở lô có mã: " + loNL.getMaLoNL() + " để sử dụng.");
         }
 
-        return listThongBao;
+        return mapHangHoa;
     }
 
     public ArrayList<LoNguyenLieu> layLoChoNguyenLieu(String maNL) {
@@ -400,6 +406,7 @@ public class LoNguyenLieuBUS {
             return false;
         }
     }
+
     public void setCanUpdate(boolean canUpdate) {
         this.canUpdate = canUpdate;
     }

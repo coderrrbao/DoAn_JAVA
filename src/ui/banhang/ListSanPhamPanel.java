@@ -89,47 +89,6 @@ public class ListSanPhamPanel extends JPanel {
         taoListSpPanel();
     }
 
-    // public void renderTrang() {
-    // listSanPhamPanel.removeAll();
-
-    // ArrayList<SanPham> dsTrang = new ArrayList<>();
-
-    // if (dsHienTai == null) {
-    // dsTrang = sanPhamBUS.layTrang(currentPage, PAGE_SIZE);
-    // } else {
-    // if (dsHienTai.isEmpty()) {
-    // lblPage.setText("0/0");
-    // listSanPhamPanel.revalidate();
-    // listSanPhamPanel.repaint();
-    // return;
-    // }
-
-    // int tongTrang = getTongSoTrang();
-    // if (currentPage > tongTrang) {
-    // currentPage = 1;
-    // }
-
-    // int from = (currentPage - 1) * PAGE_SIZE;
-    // int to = Math.min(from + PAGE_SIZE, dsHienTai.size());
-
-    // dsTrang = new ArrayList<>(dsHienTai.subList(from, to));
-    // }
-
-    // for (SanPham sp : dsTrang) {
-
-    // if (sp.getTrangThaiXuLy().equals("Ẩn")) {
-    // continue;
-    // }
-    // listSanPhamPanel.add(
-    // new SanPhamBhItemPanel(sp, "Mặc định", listener));
-    // }
-
-    // lblPage.setText(currentPage + "/" + getTongSoTrang());
-
-    // listSanPhamPanel.revalidate();
-    // listSanPhamPanel.repaint();
-    // }
-
     public void renderTrang() {
         listSanPhamPanel.removeAll();
         SanPhamBUS sanPhamBUS = SanPhamBUS.getSanPhamBUS();

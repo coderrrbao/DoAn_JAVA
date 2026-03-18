@@ -107,7 +107,6 @@ public class SanPhamBUS {
                 listSanPhamBanHang.add(sanPham);
             }
         }
-        System.out.println(listSanPhamBanHang.size());
         int tongSoSp = listSanPhamBanHang.size();
         int batDau = (chiSo - 1) * soSpMax;
 
