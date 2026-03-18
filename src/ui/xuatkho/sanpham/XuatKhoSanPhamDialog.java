@@ -33,23 +33,20 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
 
-    // --- PANEL BÊN TRÁI: TỒN KHO ---
     JPanel left = new JPanel(new BorderLayout(0, 10));
     search_Item = new Search_Item(250, 32);
     left.add(search_Item, BorderLayout.NORTH);
 
-    modelTonKho =
-        new DefaultTableModel(new String[] {"Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    modelTonKho = new DefaultTableModel(new String[] { "Mã SP", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập" }, 0) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
     JScrollPane scrollTonKho = TaoUI.taoTableScroll(modelTonKho);
     tblTonKho = (JTable) scrollTonKho.getViewport().getView();
     left.add(scrollTonKho, BorderLayout.CENTER);
 
-    // --- PANEL BÊN PHẢI: FORM VÀ DANH SÁCH CHỜ ---
     JPanel right = new JPanel(new BorderLayout(0, 10));
     JPanel form = new JPanel();
     form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
@@ -70,48 +67,46 @@ public class XuatKhoSanPhamDialog extends JDialog {
     form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
     form.add(taoDong("Lý do hủy:", txtLyDo));
 
+    JPanel btnthemJPanel = new JPanel();
     btnThem = new JButton("Thêm vào danh sách chờ");
-    TaoUI.setFixSize(btnThem, 475, 32);
-    form.add(btnThem);
+    btnthemJPanel.add(btnThem);
+    TaoUI.setFixSize(btnThem, 490, 25);
+    form.add(btnthemJPanel);
 
-    // KHỞI TẠO MODEL CHỜ XUẤT (Cột cuối là cột nút X)
-    modelChoXuat =
-        new DefaultTableModel(
-            new String[] {"Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập", " "}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return column == 5; // Quan trọng: Phải cho phép edit để click được nút
-          }
-        };
+    modelChoXuat = new DefaultTableModel(
+        new String[] { "Mã SP", "Tên SP", "SL Hủy", "Mã Lô", "Giá Nhập", " " }, 0) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return column == 5;
+      }
+    };
 
     JScrollPane scrollChoXuat = TaoUI.taoTableScroll(modelChoXuat);
     tblChoXuat = (JTable) scrollChoXuat.getViewport().getView();
 
-    // Trong constructor của XuatKhoSanPhamDialog, tìm đoạn deleteAction và thay bằng:
-    Action deleteAction =
-        new AbstractAction() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            // Dùng invokeLater để đảm bảo JTable đã hoàn tất việc xử lý click trước khi xóa dòng
-            SwingUtilities.invokeLater(
-                () -> {
-                  try {
-                    int row = Integer.parseInt(e.getActionCommand());
-                    if (row >= 0 && row < modelChoXuat.getRowCount()) {
-                      modelChoXuat.removeRow(row);
-                      tblChoXuat.revalidate();
-                      tblChoXuat.repaint();
-                    }
-                  } catch (Exception ex) {
-                    ex.printStackTrace();
-                  }
-                });
-          }
-        };
+    Action deleteAction = new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+
+        SwingUtilities.invokeLater(
+            () -> {
+              try {
+                int row = Integer.parseInt(e.getActionCommand());
+                if (row >= 0 && row < modelChoXuat.getRowCount()) {
+                  modelChoXuat.removeRow(row);
+                  tblChoXuat.revalidate();
+                  tblChoXuat.repaint();
+                }
+              } catch (Exception ex) {
+                ex.printStackTrace();
+              }
+            });
+      }
+    };
     new ButtonColumn(tblChoXuat, deleteAction, 5);
     tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(35);
     tblChoXuat.getColumnModel().getColumn(5).setMinWidth(35);
-    tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(40); // Cho cột nút X nhỏ lại
+    tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(40);
 
     btnXacNhan = new JButton("XÁC NHẬN");
     btnXacNhan.setBackground(new Color(220, 53, 69));
@@ -149,7 +144,7 @@ public class XuatKhoSanPhamDialog extends JDialog {
       if (lo.getSoLuong() > 0 && lo.getMaLoSP().toLowerCase().contains(keyword)) {
         modelTonKho.addRow(
             new Object[] {
-              lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaSP(), lo.getMaLoSP(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
             });
       }
     }
@@ -174,7 +169,8 @@ public class XuatKhoSanPhamDialog extends JDialog {
         e -> {
           try {
             int r = tblTonKho.getSelectedRow();
-            if (r == -1) return;
+            if (r == -1)
+              return;
             double sl = Double.parseDouble(txtSoLuongXuat.getText());
             double ton = (double) modelTonKho.getValueAt(r, 3);
             if (sl <= 0 || sl > ton) {
@@ -183,12 +179,12 @@ public class XuatKhoSanPhamDialog extends JDialog {
             }
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaSP.getText(),
-                  txtTenSP.getText(),
-                  sl,
-                  txtMaLo.getText(),
-                  modelTonKho.getValueAt(r, 4),
-                  ""
+                    txtMaSP.getText(),
+                    txtTenSP.getText(),
+                    sl,
+                    txtMaLo.getText(),
+                    modelTonKho.getValueAt(r, 4),
+                    ""
                 });
             txtSoLuongXuat.setText("");
           } catch (Exception ex) {
@@ -198,11 +194,13 @@ public class XuatKhoSanPhamDialog extends JDialog {
 
     btnXacNhan.addActionListener(
         e -> {
-          if (modelChoXuat.getRowCount() == 0) return;
+          if (modelChoXuat.getRowCount() == 0)
+            return;
           Object[][] data = new Object[modelChoXuat.getRowCount()][5];
           double tong = 0;
           for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
+            for (int j = 0; j < 5; j++)
+              data[i][j] = modelChoXuat.getValueAt(i, j);
             tong += (double) data[i][2] * (double) data[i][4];
           }
           PhieuHuySanPham ph = new PhieuHuySanPham();

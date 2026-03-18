@@ -1,9 +1,9 @@
 package dto;
 
-
 public class PhieuKiemKe {
     private String maKK;
     private String maNV;
+    private String maNVXacNhan;
     private String ngayKiem;
     private String maLo;
     private String loaiLo;
@@ -11,7 +11,6 @@ public class PhieuKiemKe {
     private Double soLuongThuc;
     private String ghiChu;
     private String trangThaiXuLy;
-
 
     public PhieuKiemKe() {
 
@@ -55,6 +54,14 @@ public class PhieuKiemKe {
 
     public String getMaNV() {
         return maNV;
+    }
+
+    public String getMaNVXacNhan() {
+        return maNVXacNhan;
+    }
+
+    public void setMaNVXacNhan(String maNVXacNhan) {
+        this.maNVXacNhan = maNVXacNhan;
     }
 
     public void setMaKK(String maKK) {

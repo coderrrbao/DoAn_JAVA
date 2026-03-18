@@ -33,7 +33,7 @@ public class HangThanhVienUI extends JPanel {
     top = TaoUI.suaBorderChoPanel(top, 0, 10, 0, 10);
 
     search_Item = new Search_Item(300, 32);
-    btnTao = new JButton("Thêm Hạng");
+    btnTao = new JButton("Thêm");
     btnSua = new JButton("Sửa");
     btnXoa = new JButton("Xóa");
     btnXuatExcel = new JButton("Xuất Excel");
@@ -165,7 +165,7 @@ public class HangThanhVienUI extends JPanel {
       int userSelection = fileChooser.showSaveDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-     
+
         boolean success = htvBUS.xuatExcel(fileChooser.getSelectedFile());
 
         if (success) {
@@ -190,7 +190,6 @@ public class HangThanhVienUI extends JPanel {
       int userSelection = fileChooser.showOpenDialog(this);
 
       if (userSelection == JFileChooser.APPROVE_OPTION) {
-
 
         boolean success = htvBUS.nhapExcel(fileChooser.getSelectedFile());
 

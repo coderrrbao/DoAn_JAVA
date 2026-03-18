@@ -17,16 +17,21 @@ import dto.PhieuNhapSanPham;
 import ui.component.LocNgay_Item;
 import ui.thongke.thongkechung.ThongKeChungNhapPanel;
 import util.TaoUI;
+import util.XuLyExcel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.File;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.Locale;
+import javax.swing.JFileChooser;
 
 public class ThongKeNhapHangPanel extends JPanel {
     private ThongKeChungNhapPanel thongKeChungNH;
@@ -46,6 +51,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         setBackground(Color.white);
         initGUI();
         loadDuLieu();
+        setupButtonListeners();
     }
 
     private JPanel buttonPanel() {
@@ -122,7 +128,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập sản phẩm");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground( new Color(129, 236, 236));
+        top.setBackground(new Color(129, 236, 236));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelSP = new DefaultTableModel(columns, 0);
@@ -169,7 +175,7 @@ public class ThongKeNhapHangPanel extends JPanel {
         JLabel jLabel = new JLabel("Danh sách nhập nguyên liệu");
         jLabel.setFont(new Font(null, Font.BOLD, 16));
         top.add(jLabel);
-        top.setBackground( new Color(129, 236, 236));
+        top.setBackground(new Color(129, 236, 236));
         String[] columns = { "Mã Phiếu nhập", "Ngày nhập", "Mã NV", "Ghi chú", "Nhà cung cấp" };
 
         modelNL = new DefaultTableModel(columns, 0);
@@ -211,5 +217,39 @@ public class ThongKeNhapHangPanel extends JPanel {
         tongChungPanel.add(javax.swing.Box.createHorizontalStrut(10));
 
         return tongChungPanel;
+    }
+
+    private void setupButtonListeners() {
+        xuatExbtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+                JFileChooser fileChooser1 = new JFileChooser();
+                fileChooser1.setDialogTitle("Chọn nơi lưu file - Danh sách nhập sản phẩm");
+                fileChooser1.setSelectedFile(new File("DanhSachNhapSanPham.xlsx"));
+
+                if (fileChooser1.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave1 = fileChooser1.getSelectedFile();
+                    if (XuLyExcel.xuatFileDanhSachNhapSanPham(fileToSave1, modelSP)) {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Xuất danh sách nhập sản phẩm thành công!");
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Lỗi khi xuất file sản phẩm!");
+                    }
+                }
+
+                JFileChooser fileChooser2 = new JFileChooser();
+                fileChooser2.setDialogTitle("Chọn nơi lưu file - Danh sách nhập nguyên liệu");
+                fileChooser2.setSelectedFile(new File("DanhSachNhapNguyenLieu.xlsx"));
+
+                if (fileChooser2.showSaveDialog(null) == JFileChooser.APPROVE_OPTION) {
+                    File fileToSave2 = fileChooser2.getSelectedFile();
+                    if (XuLyExcel.xuatFileDanhSachNhapNguyenLieu(fileToSave2, modelNL)) {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Xuất danh sách nhập nguyên liệu thành công!");
+                    } else {
+                        javax.swing.JOptionPane.showMessageDialog(null, "Lỗi khi xuất file nguyên liệu!");
+                    }
+                }
+            }
+        });
     }
 }

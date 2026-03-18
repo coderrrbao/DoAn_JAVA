@@ -19,12 +19,10 @@ public class ButtonColumn extends AbstractCellEditor
 
     FlatSVGIcon trashIcon = new FlatSVGIcon("assets/icon/xoa.svg", 45, 45);
 
-    // Nút hiển thị
     renderButton = new JButton(trashIcon);
     renderButton.setBorderPainted(false);
     renderButton.setContentAreaFilled(false);
 
-    // Nút để tương tác
     editButton = new JButton(trashIcon);
     editButton.setBorderPainted(false);
     editButton.setContentAreaFilled(false);
@@ -36,7 +34,6 @@ public class ButtonColumn extends AbstractCellEditor
     columnModel.getColumn(column).setCellRenderer(this);
     columnModel.getColumn(column).setCellEditor(this);
 
-    // MouseListener để click phát ăn ngay
     table.addMouseListener(
         new MouseAdapter() {
           @Override
@@ -44,7 +41,8 @@ public class ButtonColumn extends AbstractCellEditor
             int row = table.rowAtPoint(e.getPoint());
             int col = table.columnAtPoint(e.getPoint());
             if (col == column && row != -1) {
-              if (table.isEditing()) table.getCellEditor().stopCellEditing();
+              if (table.isEditing())
+                table.getCellEditor().stopCellEditing();
               editButton.doClick();
             }
           }
@@ -72,7 +70,8 @@ public class ButtonColumn extends AbstractCellEditor
   public void actionPerformed(ActionEvent e) {
     int row = table.convertRowIndexToModel(table.getEditingRow());
     fireEditingStopped();
-    if (row == -1) row = table.getSelectedRow();
+    if (row == -1)
+      row = table.getSelectedRow();
     if (row != -1) {
       ActionEvent event = new ActionEvent(table, ActionEvent.ACTION_PERFORMED, "" + row);
       action.actionPerformed(event);

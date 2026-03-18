@@ -32,7 +32,7 @@ public class ThemPhieuKiemDialog extends JDialog {
     private JTable table;
     private LocNgay_Item locNgay_Item;
     private JComboBox<String> cbLoaiLo;
-    private JTextField tfMaNv, tfSoLuong;
+    private JTextField tfMaNv, tfSoLuong, tfMaNVXacNhan;
     private JButton btnThem, btnLamMoi, btnSua, btnLuu;
     private JTextArea textArea;
     private JComboBox<String> cbXacNhan;
@@ -62,6 +62,7 @@ public class ThemPhieuKiemDialog extends JDialog {
             textArea.setText(phieuKiemKe.getGhiChu());
             tfMaNv.setText(phieuKiemKe.getMaNV());
             tfSoLuong.setText(String.valueOf(phieuKiemKe.getSoLuongThuc()));
+            tfMaNVXacNhan.setText(phieuKiemKe.getMaNVXacNhan() != null ? phieuKiemKe.getMaNVXacNhan() : "");
 
             cbXacNhan.setSelectedItem(phieuKiemKe.getTrangThaiXuLy());
 
@@ -71,6 +72,7 @@ public class ThemPhieuKiemDialog extends JDialog {
             textArea.setEditable(false);
             tfSoLuong.setEditable(false);
             tfMaNv.setEditable(false);
+            tfMaNVXacNhan.setEditable(false);
             cbXacNhan.setEnabled(false);
             cbLoaiLo.setEnabled(false);
 
@@ -170,15 +172,36 @@ public class ThemPhieuKiemDialog extends JDialog {
             loaiDuLieu();
         });
         btnThem.addActionListener(e -> {
+            PhieuKiemKe phieuMoi = dongGoiPhieuKiemKe();
+
+            if (phieuMoi == null) {
+                return;
+            }
 
             PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
-            PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
-            if (phieuKiemKeBUS.themPhieuKiemKe(phieuKiemKe)) {
+            if (phieuKiemKeBUS.themPhieuKiemKe(phieuMoi)) {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thành công", "Thông báo", 2);
                 LoginUI.getLoginUI().getMainFrame().loadAllData();
                 dispose();
             } else {
                 TaoTinNhan.showAutoCloseMessage("Thêm phiếu kiểm kê thất bại", "Thông báo", 2);
+            }
+        });
+
+        btnLuu.addActionListener(e -> {
+            PhieuKiemKe phieuCapNhat = dongGoiPhieuKiemKe();
+
+            if (phieuCapNhat == null) {
+                return;
+            }
+
+            PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
+            if (phieuKiemKeBUS.capNhapPhieuKiemKe(phieuCapNhat)) {
+                TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu kiểm kê thành công", "Thông báo", 1);
+                LoginUI.getLoginUI().getMainFrame().loadAllData();
+                dispose();
+            } else {
+                TaoTinNhan.showAutoCloseMessage("Cập nhật phiếu kiểm kê thất bại", "Thông báo", 1);
             }
         });
 
@@ -188,20 +211,30 @@ public class ThemPhieuKiemDialog extends JDialog {
             textArea.setEditable(true);
             tfSoLuong.setEditable(true);
             tfMaNv.setEditable(true);
+            tfMaNVXacNhan.setEditable(true);
             cbXacNhan.setEnabled(true);
             cbLoaiLo.setEnabled(true);
             table.setEnabled(true);
         });
 
-        btnLuu.addActionListener(e -> {
-            PhieuKiemKeBUS phieuKiemKeBUS = PhieuKiemKeBUS.getPhieuKiemKeBUS();
-            PhieuKiemKe phieuKiemKe = dongGoiPhieuKiemKe();
-            if (phieuKiemKeBUS.capNhapPhieuKiemKe(phieuKiemKe)) {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thành công", "Thông báo", 1);
-                LoginUI.getLoginUI().getMainFrame().loadAllData();
-                dispose();
-            } else {
-                TaoTinNhan.showAutoCloseMessage("Cập nhập phiếu kiểm kê thất bại", "Thông báo", 1);
+        cbXacNhan.addActionListener(event -> {
+            String trangThaiMoi = cbXacNhan.getSelectedItem().toString();
+            String trangThaiCu = phieuKiemKe != null ? phieuKiemKe.getTrangThaiXuLy() : "Chưa xử lý";
+
+            if (trangThaiCu.equals("Chưa xử lý") && trangThaiMoi.equals("Đã xác nhận")) {
+                int luaChon = JOptionPane.showConfirmDialog(this,
+                        "Sau khi xác nhận, số lượng sẽ được cập nhật vào kho và không thể sửa.",
+                        "Xác nhận kiểm kê",
+                        JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+
+                if (luaChon != JOptionPane.YES_OPTION) {
+                    cbXacNhan.setSelectedItem(trangThaiCu);
+                    return;
+                }
+
+                if (ui.login.PhienDangNhap.getUser() != null) {
+                    tfMaNVXacNhan.setText(ui.login.PhienDangNhap.getUser().getMaNV());
+                }
             }
         });
 
@@ -230,17 +263,21 @@ public class ThemPhieuKiemDialog extends JDialog {
     }
 
     private JPanel taoBottom() {
-        JPanel bottom = TaoUI.taoPanelCanGiua(450, 185);
+        JPanel bottom = TaoUI.taoPanelCanGiua(450, 225);
 
         tfMaNv = new JTextField();
         tfMaNv.setEditable(false);
         tfSoLuong = new JTextField();
+        tfMaNVXacNhan = new JTextField();
+        tfMaNVXacNhan.setEditable(false);
 
         JPanel input1 = TaoUI.taoFieldText("Mã Người kiểm", 100, 250, 30, 5, tfMaNv);
         JPanel soLuongPanel = TaoUI.taoFieldText("Số lượng", 100, 100, 30, 5, tfSoLuong);
         JPanel input2 = TaoUI.taoPanelBoxLayoutNgang(355, 30);
         textArea = new JTextArea();
         JPanel input3 = TaoUI.taoFieldArea("Ghi chú", 355, 30, 70, 5, textArea);
+
+        JPanel input4 = TaoUI.taoFieldText("Mã NV Xác Nhận", 100, 250, 30, 5, tfMaNVXacNhan);
 
         tfMaNv.setText("NV01");
 
@@ -253,8 +290,9 @@ public class ThemPhieuKiemDialog extends JDialog {
         TaoUI.addItem(bottom, input1, 5, false);
         TaoUI.addItem(bottom, input2, 5, false);
         TaoUI.addItem(bottom, input3, 5, false);
+        TaoUI.addItem(bottom, input4, 5, false);
 
-        JPanel ctn = TaoUI.taoPanelBorderLayout(450, 185 + 40);
+        JPanel ctn = TaoUI.taoPanelBorderLayout(450, 225 + 40);
         ctn.add(bottom, BorderLayout.CENTER);
 
         JPanel button = TaoUI.taoPanelCanGiua(450, 40);
@@ -287,39 +325,64 @@ public class ThemPhieuKiemDialog extends JDialog {
     }
 
     private PhieuKiemKe dongGoiPhieuKiemKe() {
-        PhieuKiemKe pkk = new PhieuKiemKe();
         int row = table.getSelectedRow();
-        if (row >= 0) {
-            if (phieuKiemKe != null) {
-                pkk.setMaKK(phieuKiemKe.getMaKK());
+
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn lô để kiểm kê trên bảng!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            return null;
+        }
+
+        if (tfMaNv.getText().trim().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Mã nhân viên không được để trống!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            tfMaNv.requestFocus();
+            return null;
+        }
+
+        String strSoLuong = tfSoLuong.getText().trim();
+        if (strSoLuong.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập số lượng thực tế!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            tfSoLuong.requestFocus();
+            return null;
+        }
+
+        double soLuongThucTe = 0;
+        try {
+            soLuongThucTe = Double.parseDouble(strSoLuong);
+            if (soLuongThucTe < 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng thực tế không được là số âm!", "Lỗi",
+                        JOptionPane.ERROR_MESSAGE);
+                tfSoLuong.requestFocus();
+                return null;
             }
-            pkk.setNgayKiem(LocalDate.now().toString());
-            pkk.setMaLo(model.getValueAt(row, 0).toString());
-            pkk.setLoaiLo(model.getValueAt(row, 1).toString());
-            pkk.setSoLuongSoSach(Double.parseDouble(model.getValueAt(row, 3).toString()));
-            pkk.setSoLuongThuc(Double.parseDouble(tfSoLuong.getText()));
-            pkk.setGhiChu(textArea.getText());
-            pkk.setMaNV(tfMaNv.getText());
-            if (phieuKiemKe == null) {
-                pkk.setTrangThaiXuLy("Chưa xử lý");
-            } else {
-                pkk.setTrangThaiXuLy(cbXacNhan.getSelectedItem().toString());
-            }
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "Số lượng thực tế phải là một con số hợp lệ!", "Lỗi",
+                    JOptionPane.ERROR_MESSAGE);
+            tfSoLuong.selectAll();
+            tfSoLuong.requestFocus();
+            return null;
+        }
+
+        PhieuKiemKe pkk = new PhieuKiemKe();
+        if (phieuKiemKe != null) {
+            pkk.setMaKK(phieuKiemKe.getMaKK());
+        }
+
+        pkk.setNgayKiem(LocalDate.now().toString());
+        pkk.setMaLo(model.getValueAt(row, 0).toString());
+        pkk.setLoaiLo(model.getValueAt(row, 1).toString());
+        pkk.setSoLuongSoSach(Double.parseDouble(model.getValueAt(row, 3).toString()));
+        pkk.setSoLuongThuc(soLuongThucTe);
+        pkk.setGhiChu(textArea.getText().trim());
+        pkk.setMaNV(tfMaNv.getText().trim());
+        pkk.setMaNVXacNhan(tfMaNVXacNhan.getText().trim());
+
+        if (phieuKiemKe == null) {
+            pkk.setTrangThaiXuLy("Chưa xử lý");
         } else {
-            JOptionPane.showMessageDialog(this, "Vui lòng chọn lô để kiểm kê", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            pkk.setTrangThaiXuLy(cbXacNhan.getSelectedItem().toString());
         }
 
         return pkk;
     }
-
-    public static void main(String[] args) {
-        PhieuKiemKe phieuKiemKe = new PhieuKiemKe();
-        phieuKiemKe.setGhiChu("Hihdqidhqihdhq");
-        phieuKiemKe.setMaNV("NV000001");
-        phieuKiemKe.setLoaiLo("Nguyên liệu");
-        phieuKiemKe.setMaLo("LONL03");
-        ThemPhieuKiemDialog themPhieuKiemDialog = new ThemPhieuKiemDialog(null, phieuKiemKe);
-        themPhieuKiemDialog.setVisible(true);
-    }
-
 }

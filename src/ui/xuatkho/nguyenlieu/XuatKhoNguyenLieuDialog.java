@@ -33,23 +33,20 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
     JPanel main = new JPanel(new GridLayout(1, 2, 10, 0));
 
-    // --- PANEL BÊN TRÁI: TỒN KHO ---
     JPanel left = new JPanel(new BorderLayout(0, 10));
     search_Item = new Search_Item(250, 32);
     left.add(search_Item, BorderLayout.NORTH);
 
-    modelTonKho =
-        new DefaultTableModel(new String[] {"Mã NL", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập"}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return false;
-          }
-        };
+    modelTonKho = new DefaultTableModel(new String[] { "Mã NL", "Mã Lô", "Hạn SD", "Tồn", "Giá Nhập" }, 0) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return false;
+      }
+    };
     JScrollPane scrollTonKho = TaoUI.taoTableScroll(modelTonKho);
     tblTonKho = (JTable) scrollTonKho.getViewport().getView();
     left.add(scrollTonKho, BorderLayout.CENTER);
 
-    // --- PANEL BÊN PHẢI: FORM VÀ DANH SÁCH CHỜ ---
     JPanel right = new JPanel(new BorderLayout(0, 10));
     JPanel form = new JPanel();
     form.setLayout(new BoxLayout(form, BoxLayout.Y_AXIS));
@@ -70,42 +67,40 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
     form.add(taoDong("Số lượng hủy:", txtSoLuongXuat));
     form.add(taoDong("Lý do hủy:", txtLyDo));
 
-    btnThem = new JButton("Thêm vào danh sách chờ");
-    TaoUI.setFixSize(btnThem, 475, 32);
-    form.add(btnThem);
+    JPanel btnthemJPanel = new JPanel();
+    btnthemJPanel.add(btnThem);
+    TaoUI.setFixSize(btnThem, 490, 25);
+    form.add(btnthemJPanel);
 
-    // KHỞI TẠO MODEL CHỜ XUẤT (Cột cuối là cột nút X)
-    modelChoXuat =
-        new DefaultTableModel(
-            new String[] {"Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập", " "}, 0) {
-          @Override
-          public boolean isCellEditable(int row, int column) {
-            return column == 5; // Cho phép edit cột nút X
-          }
-        };
+    modelChoXuat = new DefaultTableModel(
+        new String[] { "Mã NL", "Tên NL", "SL Hủy", "Mã Lô", "Giá Nhập", " " }, 0) {
+      @Override
+      public boolean isCellEditable(int row, int column) {
+        return column == 5;
+      }
+    };
 
     JScrollPane scrollChoXuat = TaoUI.taoTableScroll(modelChoXuat);
     tblChoXuat = (JTable) scrollChoXuat.getViewport().getView();
 
-    Action deleteAction =
-        new AbstractAction() {
-          @Override
-          public void actionPerformed(ActionEvent e) {
-            SwingUtilities.invokeLater(
-                () -> {
-                  try {
-                    int row = Integer.parseInt(e.getActionCommand());
-                    if (row >= 0 && row < modelChoXuat.getRowCount()) {
-                      modelChoXuat.removeRow(row);
-                      tblChoXuat.revalidate();
-                      tblChoXuat.repaint();
-                    }
-                  } catch (Exception ex) {
-                    ex.printStackTrace();
-                  }
-                });
-          }
-        };
+    Action deleteAction = new AbstractAction() {
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        SwingUtilities.invokeLater(
+            () -> {
+              try {
+                int row = Integer.parseInt(e.getActionCommand());
+                if (row >= 0 && row < modelChoXuat.getRowCount()) {
+                  modelChoXuat.removeRow(row);
+                  tblChoXuat.revalidate();
+                  tblChoXuat.repaint();
+                }
+              } catch (Exception ex) {
+                ex.printStackTrace();
+              }
+            });
+      }
+    };
     new ButtonColumn(tblChoXuat, deleteAction, 5);
     tblChoXuat.getColumnModel().getColumn(5).setMaxWidth(35);
     tblChoXuat.getColumnModel().getColumn(5).setMinWidth(35);
@@ -147,7 +142,7 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
       if (lo.getSoLuong() > 0 && lo.getMaLoNL().toLowerCase().contains(keyword)) {
         modelTonKho.addRow(
             new Object[] {
-              lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
+                lo.getMaNL(), lo.getMaLoNL(), lo.getHanSuDung(), lo.getSoLuong(), lo.getGiaNhap()
             });
       }
     }
@@ -172,7 +167,8 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
         e -> {
           try {
             int r = tblTonKho.getSelectedRow();
-            if (r == -1) return;
+            if (r == -1)
+              return;
             double sl = Double.parseDouble(txtSoLuongXuat.getText());
             double ton = Double.parseDouble(modelTonKho.getValueAt(r, 3).toString());
             if (sl <= 0 || sl > ton) {
@@ -181,12 +177,12 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
             }
             modelChoXuat.addRow(
                 new Object[] {
-                  txtMaNL.getText(),
-                  txtTenNL.getText(),
-                  sl,
-                  txtMaLo.getText(),
-                  modelTonKho.getValueAt(r, 4),
-                  ""
+                    txtMaNL.getText(),
+                    txtTenNL.getText(),
+                    sl,
+                    txtMaLo.getText(),
+                    modelTonKho.getValueAt(r, 4),
+                    ""
                 });
             txtSoLuongXuat.setText("");
           } catch (Exception ex) {
@@ -196,14 +192,15 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
 
     btnXacNhan.addActionListener(
         e -> {
-          if (modelChoXuat.getRowCount() == 0) return;
+          if (modelChoXuat.getRowCount() == 0)
+            return;
           Object[][] data = new Object[modelChoXuat.getRowCount()][5];
           double tong = 0;
           for (int i = 0; i < modelChoXuat.getRowCount(); i++) {
-            for (int j = 0; j < 5; j++) data[i][j] = modelChoXuat.getValueAt(i, j);
-            tong +=
-                Double.parseDouble(data[i][2].toString())
-                    * Double.parseDouble(data[i][4].toString());
+            for (int j = 0; j < 5; j++)
+              data[i][j] = modelChoXuat.getValueAt(i, j);
+            tong += Double.parseDouble(data[i][2].toString())
+                * Double.parseDouble(data[i][4].toString());
           }
           PhieuHuyNguyenLieu ph = new PhieuHuyNguyenLieu();
           ph.setMaNV(PhienDangNhap.getUser() != null ? PhienDangNhap.getUser().getMaNV() : "");
@@ -222,4 +219,5 @@ public class XuatKhoNguyenLieuDialog extends JDialog {
       btnXacNhan.setVisible(false);
     }
   }
+
 }

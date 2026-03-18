@@ -1240,9 +1240,7 @@ BEGIN
         ('CTPHNL02', 'PHNL02', 'LONL02', 1, 250000)
 END;
 
-IF NOT EXISTS (SELECT *
-FROM sys.tables
-WHERE name = 'PhieuKiemKe')
+IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'PhieuKiemKe')
 BEGIN
     CREATE TABLE PhieuKiemKe
     (
@@ -1253,19 +1251,18 @@ BEGIN
         SoLuongSoSach INT,
         SoLuongThuc INT,
         GhiChu NVARCHAR(MAX),
-        MaNV VARCHAR(50),
+        MaNV VARCHAR(50),          
+        MaNVXacNhan VARCHAR(50),   
         TrangThaiXuLy NVARCHAR(50),
         TrangThai BIT DEFAULT 1
     )
 
     INSERT INTO PhieuKiemKe
-        (MaKK, NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai)
+        (MaKK, NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, MaNVXacNhan, TrangThaiXuLy, TrangThai)
     VALUES
-        ('KK001', '2024-02-01', 'LOSP01', N'Sản phẩm', 1000, 998, N'Hao hụt 2 lon do móp méo', 'NV01', N'Đã xác nhận', 1),
-        ('KK002', '2024-02-02', 'LONL01', N'Nguyên liệu', 25, 25, N'Khớp số lượng', 'NV03', N'Đã xác nhận', 1)
+        ('KK001', '2024-02-01', 'LOSP01', N'Sản phẩm', 1000, 998, N'Hao hụt 2 lon do móp méo', 'NV01', 'NV01', N'Đã xác nhận', 1),
+        ('KK002', '2024-02-02', 'LONL01', N'Nguyên liệu', 25, 25, N'Khớp số lượng', 'NV03', 'NV03', N'Đã xác nhận', 1)
 END;
-
-
 
 IF NOT EXISTS (SELECT *
 FROM sys.tables

@@ -28,6 +28,7 @@ public class PhieuKiemKeDAO {
                 pkk.setSoLuongThuc(rs.getDouble("SoLuongThuc"));
                 pkk.setGhiChu(rs.getString("GhiChu"));
                 pkk.setMaNV(rs.getString("MaNV"));
+                pkk.setMaNVXacNhan(rs.getString("MaNVXacNhan"));
                 pkk.setTrangThaiXuLy(rs.getString("TrangThaiXuLy"));
                 list.add(pkk);
             }
@@ -41,7 +42,7 @@ public class PhieuKiemKeDAO {
     public String maPKKKhaDung(Connection con) {
         String sql = "SELECT COUNT(MaKK) AS tong FROM PhieuKiemKe";
 
-        try ( PreparedStatement pst = con.prepareStatement(sql)) {
+        try (PreparedStatement pst = con.prepareStatement(sql)) {
 
             ResultSet rs = pst.executeQuery();
             if (rs.next()) {
@@ -56,8 +57,8 @@ public class PhieuKiemKeDAO {
     }
 
     public Boolean themPhieuKiemKe(PhieuKiemKe pkk, Connection conn) {
-        String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai) "
-                + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, MaNVXacNhan, TrangThaiXuLy,TrangThai) "
+                + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
@@ -69,8 +70,9 @@ public class PhieuKiemKeDAO {
             pst.setDouble(6, pkk.getSoLuongThuc());
             pst.setString(7, pkk.getGhiChu());
             pst.setString(8, pkk.getMaNV());
-            pst.setString(9, pkk.getTrangThaiXuLy());
-            pst.setInt(10, 1);
+            pst.setString(9, pkk.getMaNVXacNhan());
+            pst.setString(10, pkk.getTrangThaiXuLy());
+            pst.setInt(11, 1);
             return pst.executeUpdate() > 0;
 
         } catch (Exception e) {
@@ -80,7 +82,7 @@ public class PhieuKiemKeDAO {
     }
 
     public boolean capNhapPhieuKiemKe(PhieuKiemKe phieuKiemKe, Connection conn) {
-        String sql = "UPDATE PhieuKiemKe  SET MaLo=?,LoaiLo=?,SoLuongSoSach=?,SoLuongThuc=?,MaNV=?,GhiChu=?,TrangThaiXuLy=? WHERE MaKK=?";
+        String sql = "UPDATE PhieuKiemKe  SET MaLo=?,LoaiLo=?,SoLuongSoSach=?,SoLuongThuc=?,MaNV=?,GhiChu=?,TrangThaiXuLy=?,MaNVXacNhan=? WHERE MaKK=?";
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
             pst.setString(1, phieuKiemKe.getMaLo());
             pst.setString(2, phieuKiemKe.getLoaiLo());
@@ -89,7 +91,8 @@ public class PhieuKiemKeDAO {
             pst.setString(5, phieuKiemKe.getMaNV());
             pst.setString(6, phieuKiemKe.getGhiChu());
             pst.setString(7, phieuKiemKe.getTrangThaiXuLy());
-            pst.setString(8, phieuKiemKe.getMaKK());
+            pst.setString(8, phieuKiemKe.getMaNVXacNhan());
+            pst.setString(9, phieuKiemKe.getMaKK());
             return pst.executeUpdate() > 0;
         } catch (Exception e) {
             e.printStackTrace();
@@ -110,8 +113,8 @@ public class PhieuKiemKeDAO {
     }
 
     public Boolean insert(PhieuKiemKe pkk, Connection conn) {
-        String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, TrangThaiXuLy,TrangThai) "
-                + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO PhieuKiemKe ( MaKK,NgayKiem, MaLo, LoaiLo, SoLuongSoSach, SoLuongThuc, GhiChu, MaNV, MaNVXacNhan, TrangThaiXuLy,TrangThai) "
+                + "VALUES (?,?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = conn.prepareStatement(sql)) {
 
@@ -123,8 +126,9 @@ public class PhieuKiemKeDAO {
             pst.setDouble(6, pkk.getSoLuongThuc());
             pst.setString(7, pkk.getGhiChu());
             pst.setString(8, pkk.getMaNV());
-            pst.setString(9, pkk.getTrangThaiXuLy());
-            pst.setInt(10, 1);
+            pst.setString(9, pkk.getMaNVXacNhan());
+            pst.setString(10, pkk.getTrangThaiXuLy());
+            pst.setInt(11, 1);
             return pst.executeUpdate() > 0;
 
         } catch (Exception e) {

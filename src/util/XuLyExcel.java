@@ -1762,4 +1762,112 @@ public class XuLyExcel {
             return null;
         }
     }
+
+    public static boolean xuatFileDanhSachNhapSanPham(File fileToSave, javax.swing.table.DefaultTableModel modelSP) {
+        if (fileToSave == null) {
+            return false;
+        }
+
+        if (!fileToSave.getName().toLowerCase().endsWith(".xlsx")) {
+            fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".xlsx");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Danh sách nhập sản phẩm");
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < modelSP.getColumnCount(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(modelSP.getColumnName(i));
+                cell.setCellStyle(headerStyle);
+            }
+
+            for (int i = 0; i < modelSP.getRowCount(); i++) {
+                Row row = sheet.createRow(i + 1);
+                for (int j = 0; j < modelSP.getColumnCount(); j++) {
+                    Object value = modelSP.getValueAt(i, j);
+                    Cell cell = row.createCell(j);
+                    if (value != null) {
+                        if (value instanceof Number) {
+                            cell.setCellValue(((Number) value).doubleValue());
+                        } else {
+                            cell.setCellValue(value.toString());
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < modelSP.getColumnCount(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (FileOutputStream out = new FileOutputStream(fileToSave)) {
+                workbook.write(out);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public static boolean xuatFileDanhSachNhapNguyenLieu(File fileToSave, javax.swing.table.DefaultTableModel modelNL) {
+        if (fileToSave == null) {
+            return false;
+        }
+
+        if (!fileToSave.getName().toLowerCase().endsWith(".xlsx")) {
+            fileToSave = new File(fileToSave.getParentFile(), fileToSave.getName() + ".xlsx");
+        }
+
+        try (Workbook workbook = new XSSFWorkbook()) {
+            Sheet sheet = workbook.createSheet("Danh sách nhập nguyên liệu");
+
+            CellStyle headerStyle = workbook.createCellStyle();
+            Font font = workbook.createFont();
+            font.setBold(true);
+            headerStyle.setFont(font);
+            headerStyle.setAlignment(HorizontalAlignment.CENTER);
+
+            Row headerRow = sheet.createRow(0);
+            for (int i = 0; i < modelNL.getColumnCount(); i++) {
+                Cell cell = headerRow.createCell(i);
+                cell.setCellValue(modelNL.getColumnName(i));
+                cell.setCellStyle(headerStyle);
+            }
+
+            for (int i = 0; i < modelNL.getRowCount(); i++) {
+                Row row = sheet.createRow(i + 1);
+                for (int j = 0; j < modelNL.getColumnCount(); j++) {
+                    Object value = modelNL.getValueAt(i, j);
+                    Cell cell = row.createCell(j);
+                    if (value != null) {
+                        if (value instanceof Number) {
+                            cell.setCellValue(((Number) value).doubleValue());
+                        } else {
+                            cell.setCellValue(value.toString());
+                        }
+                    }
+                }
+            }
+
+            for (int i = 0; i < modelNL.getColumnCount(); i++) {
+                sheet.autoSizeColumn(i);
+            }
+
+            try (FileOutputStream out = new FileOutputStream(fileToSave)) {
+                workbook.write(out);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

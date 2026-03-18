@@ -15,12 +15,13 @@ import java.awt.*;
 
 public class ChiTietKiemKeDialog extends JDialog {
 
-    private JTextField txtMaPhieu, txtMaNV, txtMaLo, txtLoaiLo, txtTenDoiTuong, txtSLSoSach, txtSLThucTe, txtChenhLech;
+    private JTextField txtMaPhieu, txtMaNV, txtMaLo, txtLoaiLo, txtTenDoiTuong, txtSLSoSach, txtSLThucTe, txtChenhLech,
+            txtMaNVXacNhan;
     private JTextArea txtGhiChu;
 
     public ChiTietKiemKeDialog(Frame parent, PhieuKiemKe phieuKiemKe) {
         super(parent, "Chi Tiết Phiếu Kiểm Kê", true);
-        setSize(480, 580);
+        setSize(480, 600);
         setLocationRelativeTo(parent);
         setLayout(new BorderLayout());
 
@@ -30,6 +31,7 @@ public class ChiTietKiemKeDialog extends JDialog {
 
         txtMaPhieu = new JTextField(phieuKiemKe.getMaKK());
         txtMaNV = new JTextField(phieuKiemKe.getMaNV());
+        txtMaNVXacNhan = new JTextField(phieuKiemKe.getMaNVXacNhan() != null ? phieuKiemKe.getMaNVXacNhan() : "");
         txtMaLo = new JTextField(phieuKiemKe.getMaLo());
         txtLoaiLo = new JTextField(phieuKiemKe.getLoaiLo());
 
@@ -67,7 +69,8 @@ public class ChiTietKiemKeDialog extends JDialog {
             txtChenhLech.setFont(new Font("Arial", Font.BOLD, 12));
         }
 
-        JTextField[] fields = { txtMaPhieu, txtMaNV, txtMaLo, txtLoaiLo, txtTenDoiTuong, txtSLSoSach, txtSLThucTe,
+        JTextField[] fields = { txtMaPhieu, txtMaNV, txtMaNVXacNhan, txtMaLo, txtLoaiLo, txtTenDoiTuong, txtSLSoSach,
+                txtSLThucTe,
                 txtChenhLech };
         for (JTextField f : fields) {
             f.setEditable(false);
@@ -76,6 +79,7 @@ public class ChiTietKiemKeDialog extends JDialog {
         }
 
         pnForm.add(taoDongDoi("Mã Phiếu Kiểm Kê:", txtMaPhieu, "Mã Nhân Viên:", txtMaNV));
+        pnForm.add(taoDong("Mã NV Xác Nhận:", txtMaNVXacNhan));
         pnForm.add(taoDong("Mã Lô:", txtMaLo));
         pnForm.add(taoDong("Loại Lô:", txtLoaiLo));
 

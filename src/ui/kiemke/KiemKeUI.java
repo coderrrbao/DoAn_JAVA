@@ -70,7 +70,7 @@ public class KiemKeUI extends JPanel {
         e -> {
           int row = table.getSelectedRow();
           if (row >= 0) {
-            if (model.getValueAt(row, 8).equals("Đã xác nhận")) {
+            if (model.getValueAt(row, 9).equals("Đã xác nhận")) {
               JOptionPane.showMessageDialog(
                   null,
                   "Phiểu kiểm kê đã xác nhận không thể sửa",
@@ -108,14 +108,14 @@ public class KiemKeUI extends JPanel {
         e -> {
           int dongChon = table.getSelectedRow();
           if (dongChon >= 0) {
-            if (!model.getValueAt(dongChon, 8).toString().equals("Chưa xử lý")) {
+            if (!model.getValueAt(dongChon, 9).toString().equals("Chưa xử lý")) {
               TaoTinNhan.showAutoCloseMessage(
                   "Phiếu kiểm kê đã xác nhận, không thể xóa", "Thông báo", 1);
               return;
             }
             int confirm = JOptionPane.showConfirmDialog(
                 null,
-                "Bạn có chắc muốn xóa " + model.getValueAt(dongChon, 8).toString() + "?",
+                "Bạn có chắc muốn xóa " + model.getValueAt(dongChon, 0).toString() + "?",
                 "Xác nhận xóa",
                 JOptionPane.YES_NO_OPTION,
                 JOptionPane.WARNING_MESSAGE);
@@ -204,6 +204,7 @@ public class KiemKeUI extends JPanel {
             new Object[] {
                 phieuKiemKe.getMaKK(),
                 phieuKiemKe.getMaNV(),
+                phieuKiemKe.getMaNVXacNhan(),
                 phieuKiemKe.getNgayKiem(),
                 phieuKiemKe.getMaLo(),
                 phieuKiemKe.getLoaiLo(),
@@ -256,6 +257,7 @@ public class KiemKeUI extends JPanel {
     String[] columns = {
         "Mã Phiếu Kiểm",
         "Mã NV",
+        "Mã NV Xác Nhận",
         "Ngày kiểm",
         "Mã lô",
         "Loại lô",
