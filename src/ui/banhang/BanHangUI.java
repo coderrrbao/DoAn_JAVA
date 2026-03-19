@@ -263,6 +263,10 @@ public class BanHangUI extends JPanel {
                         "Xác nhận hủy", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
 
                 if (luaChon == JOptionPane.YES_OPTION) {
+                    if (thongTinHoaDonPanel.getTable().isEditing()) {
+                        thongTinHoaDonPanel.getTable().getCellEditor().cancelCellEditing();
+                        thongTinHoaDonPanel.getTable().removeEditor();
+                    }
                     model.setRowCount(0);
                     thongTinKhachHangPanel.getTxtSdt().setText("");
                     thongTinKhachHangPanel.getTxtTenKh().setText("");
@@ -301,7 +305,21 @@ public class BanHangUI extends JPanel {
         });
 
         thanhToanPanel.getBtnThanhToan().addActionListener(e -> {
+            JTable table = thongTinHoaDonPanel.getTable();
             DefaultTableModel model = thongTinHoaDonPanel.getModel();
+            if (table.isEditing()) {
+                boolean stopThanhCong = table.getCellEditor().stopCellEditing();
+                if (!stopThanhCong) {
+                    JOptionPane.showMessageDialog(this, "Vui lòng nhập đúng định dạng số lượng trước khi thanh toán!");
+                    return;
+                }
+                table.removeEditor(); 
+            }
+
+            if (model.getRowCount() == 0) {
+                JOptionPane.showMessageDialog(this, "Giỏ hàng đang trống! Vui lòng chọn món.");
+                return;
+            }
             if (model.getRowCount() == 0) {
                 JOptionPane.showMessageDialog(this, "Giỏ hàng đang trống! Vui lòng chọn món.");
                 return;

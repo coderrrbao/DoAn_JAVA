@@ -1,8 +1,6 @@
 package dao;
 
 import dao.conection.DBConnection;
-import dto.ChiTietPhieuHuyNguyenLieu;
-import dto.LoNguyenLieu;
 import dto.PhieuHuyNguyenLieu;
 import java.sql.*;
 import java.util.ArrayList;
